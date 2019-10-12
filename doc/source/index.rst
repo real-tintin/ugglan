@@ -5,6 +5,8 @@
 
 Welcome to Ugglan's documentation!
 ==================================
+Hobby project, which serves as a learning platform for the author himself. The
+project is quite broad and contains everything from assembler to docker.
 
 .. toctree::
    :maxdepth: 2
@@ -16,7 +18,6 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
 .. literalinclude:: ugglan.txt
