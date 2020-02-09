@@ -11,6 +11,8 @@ TODO: Producer and consumer structure.
 
 Hardware
 =================
+TODO: Overview of the Hardware and connected busses.
+TODO: Picture of Ugglan.
 The drone hardware is listed below
 
 * Raspberry Pi Zero

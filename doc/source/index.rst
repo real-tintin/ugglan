@@ -12,6 +12,7 @@ project is quite broad and contains everything from assembler to docker.
    :maxdepth: 2
    :caption: Content
 
+   development
    drone
 
 Indices and tables
