@@ -1,4 +1,4 @@
-#include "catch_with_main.h"
+#include "catch.h"
 
 #include "increment.h"
 

@@ -2,7 +2,7 @@
 # C++ unit tests.
 #
 # Note, the project dependencies needs to
-# be compiled before. Use run_tests.sh.
+# be compiled before. Use run_catch_tests.sh.
 #
 
 TARGET := $(TARGET_NAME)
