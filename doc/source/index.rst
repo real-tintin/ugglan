@@ -21,4 +21,4 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`search`
 
-.. literalinclude:: ugglan.txt
+.. literalinclude:: ./figures/ugglan.txt
