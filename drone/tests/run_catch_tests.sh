@@ -1,17 +1,19 @@
 #!/bin/sh
+# Compiles and runs catch C++ tests.
+#
 
+# Setup env for make.
+export BUILD_FOR_TEST="TRUE"
+export TARGET_NAME="catch"
+
+# Setup paths.
 SCRIPT=$(readlink -f "$0")
 CWD=$(dirname "$SCRIPT")
 
-DRONE_ROOT="${CWD}/../"
+DRONE_ROOT="${CWD}/.."
+TARGET_PATH="./build/${TARGET_NAME}"
 
-TARGET_NAME="catch"
-
-# Compile drone dependencies.
+# Compile and run tests.
 cd "${DRONE_ROOT}"
-export DO_NOT_LINK="TRUE" && mingw32-make clean all
-
-# Compile and run catch tests.
-cd "${CWD}"
-rm -f "${CWD}/${TARGET_NAME}"
-export TARGET_NAME && mingw32-make && ./catch
+mingw32-make clean all
+${TARGET_PATH}

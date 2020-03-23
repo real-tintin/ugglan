@@ -1,9 +1,11 @@
 # Makefile for compilation of the drone C++ source
 # code.
-# 	DO_NOT_LINK 	: Set to TRUE, to skip linking.
+#   TARGET_NAME    : Set target name.
+# 	BUILD_FOR_TEST : Set to TRUE, to build for testing.
 #
 
-TARGET := catch
+TARGET := $(TARGET_NAME)
+SRCEXT := cpp
 
 CXX = g++
 CXXFLAGS += -Wall -std=c++11
@@ -11,28 +13,41 @@ CXXFLAGS += -Wall -std=c++11
 SRCDIR := ./src
 BUILDDIR := ./build
 INCLUDEDIR := ./include
+TESTDIR = ./tests
 
-SRCEXT := cpp
 SOURCES := $(wildcard $(SRCDIR)/*.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
+
 LIB :=
 INC := -I $(INCLUDEDIR)
+
+ifeq ($(BUILD_FOR_TEST), TRUE)
+	CXXFLAGS += -D UNIT_TEST
+
+	TESTSOURCES += $(wildcard $(TESTDIR)/*.$(SRCEXT))
+	OBJECTS += $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.o))
+
+	INC += -I $(TESTDIR)
+endif
 
 .PHONY: all clean
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-ifneq ($(DO_NOT_LINK),TRUE)
-	@echo "Linking drone project..."
-	@echo " $(LINK.cc) $^ -o $(TARGET) $(LIB)"; $(LINK.cc) $^ -o $(TARGET) $(LIB)
-endif
+	@echo "Linking..."
+	$(LINK.cc) $^ -o $(BUILDDIR)/$(TARGET) $(LIB)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
-	@echo "Compiling drone objectives..."
+	@echo "Compiling src..."
 	@mkdir -p $(BUILDDIR)
-	@echo " $(LINK.cc) $(INC) -c -o $@ $<"; $(LINK.cc) $(INC) -c -o $@ $<
+	$(LINK.cc) $(INC) -c -o $@ $<
+
+$(BUILDDIR)/%.o: $(TESTDIR)/%.$(SRCEXT)
+	@echo "Compiling tests..."
+	@mkdir -p $(BUILDDIR)
+	$(LINK.cc) $(INC) -c -o $@ $<
 
 clean:
-	@echo " Cleaning drone build...";
-	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
+	@echo " Cleaning...";
+	$(RM) -r $(BUILDDIR) $(TARGET)
