@@ -1,7 +1,7 @@
 # Makefile for compilation of the drone C++ source
 # code.
 #   TARGET_NAME    : Set target name.
-# 	BUILD_FOR_TEST : Set to TRUE, to build for testing.
+#   BUILD_FOR_TEST : Set to TRUE, to build for testing.
 #
 
 TARGET := $(TARGET_NAME)
