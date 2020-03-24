@@ -11,24 +11,22 @@ CXX = g++
 CXXFLAGS += -Wall -std=c++11
 
 SRCDIR := ./src
-BUILDDIR := ./build
-INCLUDEDIR := ./include
-TESTDIR = ./tests
+OBJDIR := ./build
+INCDIR := ./include
+TESTDIR := ./tests
 
 SOURCES := $(wildcard $(SRCDIR)/*.$(SRCEXT))
-OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-
-LIB :=
-INC := -I $(INCLUDEDIR)
+INC := -I $(INCDIR)
 
 ifeq ($(BUILD_FOR_TEST), TRUE)
 	CXXFLAGS += -D UNIT_TEST
 
-	TESTSOURCES += $(wildcard $(TESTDIR)/*.$(SRCEXT))
-	OBJECTS += $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.o))
-
+	SOURCES += $(wildcard $(TESTDIR)/*.$(SRCEXT))
 	INC += -I $(TESTDIR)
 endif
+
+OBJECTS := $(SOURCES:.$(SRCEXT)=.o)
+OBJECTS := $(addprefix $(OBJDIR),$(OBJECTS:.%=%))
 
 .PHONY: all clean
 
@@ -36,18 +34,13 @@ all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	@echo "Linking..."
-	$(LINK.cc) $^ -o $(BUILDDIR)/$(TARGET) $(LIB)
+	$(LINK.cc) $^ -o $(OBJDIR)/$(TARGET) $(LIB)
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
-	@echo "Compiling src..."
-	@mkdir -p $(BUILDDIR)
-	$(LINK.cc) $(INC) -c -o $@ $<
-
-$(BUILDDIR)/%.o: $(TESTDIR)/%.$(SRCEXT)
-	@echo "Compiling tests..."
-	@mkdir -p $(BUILDDIR)
+$(OBJECTS): $(OBJDIR)/%.o: %.$(SRCEXT)
+	@echo "Compiling..."
+	@mkdir -p $(@D)
 	$(LINK.cc) $(INC) -c -o $@ $<
 
 clean:
-	@echo " Cleaning...";
-	$(RM) -r $(BUILDDIR) $(TARGET)
+	@echo "Cleaning...";
+	$(RM) -r $(OBJDIR) $(TARGET)
