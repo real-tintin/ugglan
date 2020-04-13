@@ -33,7 +33,7 @@ State Estimation
 TODO: Summary of master thesis work.
 
 Moment of Inertia
-*****************
+------------------
 TODO: Simulation
 
 Control

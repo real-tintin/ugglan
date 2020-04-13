@@ -1,0 +1,3 @@
+[submodule "drone/tgy"]
+	path = drone/tgy
+	url = https://github.com/real-tintin/tgy
