@@ -3,6 +3,7 @@ from typing import List
 import matplotlib.pyplot as plt
 import numpy as np
 from dataclasses import dataclass, field
+from sympy import Matrix, symbols, pprint
 
 FRAME_ARM_LENGTH = 0.23  # [m]
 THRUST_2_TORQUE = 1 / 50  # Based on empirical relationship from master thesis.
@@ -37,7 +38,7 @@ class Measurements:
 
 # command, rpm, thrust_g (z pointing down)
 raw_pos_meas = [
-    [0, 0, -0],
+    [0, 0, 0],
     [1, 1272, -13],
     [10, 1277, -13],
     [100, 1296, -13],
@@ -91,32 +92,43 @@ def _parse_raw_measurements(raw_measurements) -> Measurements:
     return measurements
 
 
-def _plot_with_polyfit(x, y, deg, label, color):
-    p = np.polyfit(x, y, deg)
-    xp = np.linspace(min(x), max(x), 100)
-    yp = np.polyval(p, xp)
+def _plot_with_polyfit(x, y, used_coefs, skip_first_n, label, color):
+    n_eval = 100
+    deg = len(used_coefs) - 1
+    n_coefs = np.sum(used_coefs)
 
-    poly_coef_str = np.array2string(p, precision=2)
+    xn = x[skip_first_n:]
+    yn = y[skip_first_n:]
+    Xn = np.zeros((len(xn), n_coefs))
+
+    xp = np.linspace(min(xn), max(xn), n_eval)
+    Xp = np.zeros((n_eval, n_coefs))
+
+    for i, used_coef in enumerate(used_coefs):
+        if used_coef:
+            Xn[:, i] = np.array(xn) ** (deg - i)
+            Xp[:, i] = xp ** (deg - i)
+
+    coefs, _, _, _ = np.linalg.lstsq(Xn, yn, rcond=None)
+    yp = Xp @ coefs
+
+    coef_str = np.array2string(coefs, precision=2)
 
     plt.plot(x, y, 'o', label=label + ' raw', color=color)
-    plt.plot(xp, yp, '-', label=label + ' polyfit: ' + poly_coef_str, color=color)
+    plt.plot(xp, yp, '-', label=label + ' polyfit: ' + coef_str, color=color)
 
 
-def _plot_correlation(pos_meas, neg_meas, label_x, label_y, deg, square_x=False):
+def _plot_correlation(pos_meas, neg_meas, label_x, label_y, used_coefs, skip_first_n=0):
     x_pos = getattr(pos_meas, label_x)
     y_pos = getattr(pos_meas, label_y)
 
     x_neg = getattr(neg_meas, label_x)
     y_neg = getattr(neg_meas, label_y)
 
-    if square_x:
-        x_pos = np.array(x_pos) ** 2
-        x_neg = np.array(x_neg) ** 2
-
     plt.figure()
 
-    _plot_with_polyfit(x_pos, y_pos, deg, label='Positive rotation', color='C0')
-    _plot_with_polyfit(x_neg, y_neg, deg, label='Negative rotation', color='C1')
+    _plot_with_polyfit(x_pos, y_pos, used_coefs, skip_first_n, 'Positive rotation', 'C0')
+    _plot_with_polyfit(x_neg, y_neg, used_coefs, skip_first_n, 'Negative rotation', 'C1')
 
     plt.xlabel(LABEL_STRING.format(MATH_SYMBOLS[label_x], UNITS[label_x]))
     plt.ylabel(LABEL_STRING.format(MATH_SYMBOLS[label_y], UNITS[label_y]))
@@ -124,17 +136,31 @@ def _plot_correlation(pos_meas, neg_meas, label_x, label_y, deg, square_x=False)
     plt.legend()
 
 
+def _print_h_inverse():
+    cf, cm, lx = symbols('cf cm, lx')
+    H = Matrix([[-cf, -cf, -cf, -cf],
+                [-lx * cf, -lx * cf, lx * cf, lx * cf],
+                [lx * cf, -lx * cf, -lx * cf, lx * cf],
+                [-cm, cm, -cm, cm]])
+
+    print("H^-1 = ")
+    pprint(H.inv())
+
+
 def main():
     pos_meas = _parse_raw_measurements(raw_pos_meas)
     neg_meas = _parse_raw_measurements(raw_neg_meas)
 
-    _plot_correlation(pos_meas, neg_meas, 'thrust', 'command', deg=2)
-    _plot_correlation(pos_meas, neg_meas, 'thrust', 'command_sq', deg=1)
+    _print_h_inverse()
 
-    _plot_correlation(pos_meas, neg_meas, 'ang_rate', 'thrust', deg=2)
-    _plot_correlation(pos_meas, neg_meas, 'ang_rate_sq', 'thrust', deg=1)
+    _plot_correlation(pos_meas, neg_meas, 'thrust', 'command', used_coefs=[1, 1, 1])
+    _plot_correlation(pos_meas, neg_meas, 'thrust', 'command_sq', used_coefs=[1, 1])
 
-    _plot_correlation(pos_meas, neg_meas, 'command', 'ang_rate', deg=1)
+    _plot_correlation(pos_meas, neg_meas, 'ang_rate', 'thrust', used_coefs=[1, 1, 1])
+    _plot_correlation(pos_meas, neg_meas, 'ang_rate_sq', 'thrust', used_coefs=[1, 0])
+
+    _plot_correlation(pos_meas, neg_meas, 'ang_rate', 'command', used_coefs=[1, 1], skip_first_n=5)
+    _plot_correlation(pos_meas, neg_meas, 'ang_rate_sq', 'command', used_coefs=[1, 1, 1], skip_first_n=5)
 
     plt.show()
 
