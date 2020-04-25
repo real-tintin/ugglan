@@ -15,14 +15,18 @@ TODO: Producer and consumer structure.
 
 Hardware
 =================
-TODO: Overview of the Hardware and connected busses.
-TODO: Picture of Ugglan.
+.. _ugglan_in_person:
+.. figure:: figures/ugglan_in_person.jpg
+    :width: 50%
+
+    Ugglan in person.
+
 The drone hardware components are is listed below
 
 * Raspberry Pi Zero
 * Diatone Q450 with PCB
 * Pololu AltIMU-10 v4
-* Aftro ESC 20 A
+* Afro ESC 20 A
 * Turnigy Evolution Digital AFHDS 2A RC transmitter & controller
 * TGY-iA6C RC receiver
 * ZIPPY Compact 3300mAh 3S (or similar)
@@ -30,7 +34,19 @@ The drone hardware components are is listed below
 * Turnigy 2830 900KV L2215J-900 Brushless Motor
 
 In addition, miscellaneous self manufactured components such as a cut plexiglas
-are used for mounting and connecting. See Figure X.
+are used for mounting, see :numref:`ugglan_in_person`.
+
+Devices & Busses
+-----------------
+.. _connected_busses:
+.. mermaid::
+    :caption: Overview of the hardware devices connected to the Pi Zero and their respective protocols.
+
+    graph TD
+        Esc_i -- i2c read --> Raspi
+        Raspi -- i2c write --> Esc_i
+        Imu -- i2c read --> Raspi
+        RcReceiver -- uart read --> Raspi
 
 Modeling
 ===============
@@ -38,9 +54,21 @@ TODO: Summary of master thesis work.
 
 Moment of Inertia
 ------------------
-TODO: Simulation & Empirical
+TODO: Simulation & Empirical.
 
 Motor Dynamics
+------------------
+TODO: Empirical Studies.
+
+State Estimation
+=================
+TODO: Summary of master thesis work.
+
+Control
+=================
+TODO: Summary of master thesis work. With reversible engine control.
+
+Motor Control
 ------------------
 The body force and torque control inputs :math:`u_z^{body}`, :math:`u_\phi^{body}`,
 :math:`u_\theta^{body}` and :math:`u_\psi^{body}` have to be converted to individual
@@ -147,11 +175,3 @@ Hence, the final conversion is given by
 
 Note, :math:`u_i` should also be range limited since is it a ``int16`` and reversing
 is not used.
-
-State Estimation
-=================
-TODO: Summary of master thesis work.
-
-Control
-=================
-TODO: Summary of master thesis work. With reversible engine control.
