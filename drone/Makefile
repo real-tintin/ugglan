@@ -12,7 +12,7 @@ CXXFLAGS += -Wall -std=c++11
 
 SRCDIR := ./src
 OBJDIR := ./build
-INCDIR := ./include
+INCDIR := ./inc
 TESTDIR := ./tests
 
 SOURCES := $(wildcard $(SRCDIR)/*.$(SRCEXT))
