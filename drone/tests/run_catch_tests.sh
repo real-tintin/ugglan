@@ -15,5 +15,5 @@ TARGET_PATH="./build/${TARGET_NAME}"
 
 # Compile and run tests.
 cd "${DRONE_ROOT}"
-mingw32-make clean all
+make clean all
 ${TARGET_PATH}
