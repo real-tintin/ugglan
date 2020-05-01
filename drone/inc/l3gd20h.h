@@ -48,7 +48,7 @@ static const uint8_t L3GD20H_BUFFER_OUT_Z_L = 0x04;
 static const uint8_t L3GD20H_BUFFER_OUT_Z_H = 0x05;
 
 // Scaling and resolution
-static const double L3GD20H_GYRO_SCALE = 500; // [deg/s]
+static const double L3GD20H_GYRO_SCALE = 8.7267; // (500 / 180 * pi) [rad/s]
 static const double L3GD20H_GYRO_RESOLUTION = 32767; // 2^15-1 (16-bit signed integer)
 
 // Config and read map

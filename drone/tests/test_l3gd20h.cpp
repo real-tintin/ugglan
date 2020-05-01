@@ -4,7 +4,7 @@
 #include <pololu_alt_imu.h>
 #include <l3gd20h.h>
 
-static const double FLOAT_TOL = 0.1;
+static const double FLOAT_TOL = 1e-4;
 
 static I2cWriteMap WRITE_MAP = {L3GD20H_CTRL1, L3GD20H_CTRL4};
 
@@ -35,15 +35,15 @@ TEST_CASE("l3gd20h interpretation")
     SECTION("non-zero")
     {
         uint8_t i2c_stub_data[L3GD20H_BUFFER_SIZE] = {
-            66, 0,    // 66 * 500 / 32767 approx 1
-            244, 253, // -524 * 500 / 32767 approx -8
-            13, 0};   // 13 * 500 / 32767 approx 0.2
+            66, 0,  // 66 * 8.7267 / 32767 approx 1.757e-2
+            2, 128, // -32766 * 8.7267 / 32767 approx -8.7264
+            13, 0}; // 13 * 8.7267 / 32767 approx 3.462e-3
         update_i2c_stub_data(&i2c_conn, i2c_stub_data);
 
         gyro.update();
 
-        REQUIRE(fabs(gyro.get_angular_rate_x() - 1.0) <= FLOAT_TOL);
-        REQUIRE(fabs(gyro.get_angular_rate_y() + 8.0) <= FLOAT_TOL);
-        REQUIRE(fabs(gyro.get_angular_rate_z() - 0.2) <= FLOAT_TOL);
+        REQUIRE(fabs(gyro.get_angular_rate_x() - 1.757e-2) <= FLOAT_TOL);
+        REQUIRE(fabs(gyro.get_angular_rate_y() + 8.7264) <= FLOAT_TOL);
+        REQUIRE(fabs(gyro.get_angular_rate_z() - 3.462e-3) <= FLOAT_TOL);
     }
 }

@@ -5,7 +5,7 @@ L3gd20h::L3gd20h(I2cConn* i2c_conn) : PololuAltImu(i2c_conn)
     _setup(L3GD20H_CONFIG_MAP, L3GD20H_READ_MAP);
 }
 
-// Returns angular rate about x [deg/s]
+// Returns angular rate about x [rad/s]
 double L3gd20h::get_angular_rate_x()
 {
     uint8_t* buffer = _get_buffer(L3GD20H_OUT_X_L);
@@ -16,7 +16,7 @@ double L3gd20h::get_angular_rate_x()
     return ang_rate_x;
 }
 
-// Returns angular rate about y [deg/s]
+// Returns angular rate about y [rad/s]
 double L3gd20h::get_angular_rate_y()
 {
     uint8_t* buffer = _get_buffer(L3GD20H_OUT_X_L);
@@ -27,7 +27,7 @@ double L3gd20h::get_angular_rate_y()
     return ang_rate_y;
 }
 
-// Returns angular rate about z [deg/s]
+// Returns angular rate about z [rad/s]
 double L3gd20h::get_angular_rate_z()
 {
     uint8_t* buffer = _get_buffer(L3GD20H_OUT_X_L);
