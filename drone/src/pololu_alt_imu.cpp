@@ -55,7 +55,10 @@ void PololuAltImu::_setup(ConfigMap config_map, ReadMap read_map)
             did_write = _i2c_conn->write_byte_data(pair.first, pair.second);
         }
 
-        if (!did_write) { _status |= POLOLU_STATUS_ERR_CONF; }
+        if (!did_write)
+        {
+            _status |= POLOLU_STATUS_ERR_CONF;
+        }
     }
 
     for (auto const& pair: _read_map)
