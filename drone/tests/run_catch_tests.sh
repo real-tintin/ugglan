@@ -15,5 +15,5 @@ TARGET_PATH="./build/${TARGET_NAME}"
 
 # Compile and run tests.
 cd "${DRONE_ROOT}"
-make clean all
+make all
 ${TARGET_PATH}

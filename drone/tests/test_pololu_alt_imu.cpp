@@ -26,10 +26,10 @@ class TestPololuAltImu : public PololuAltImu
 public:
     TestPololuAltImu(I2cConn* i2c_conn) : PololuAltImu(i2c_conn)
     {
-        setup(CONFIG_MAP, READ_MAP);
+        _setup(CONFIG_MAP, READ_MAP);
     }
 
-    uint8_t* get_bytes() { return get_buffer(TEST_READ_REG); }
+    uint8_t* get_bytes() { return _get_buffer(TEST_READ_REG); }
 };
 
 I2cConn get_i2c_conn_stub(I2cReadBlockMap read_map, I2cWriteMap write_map)

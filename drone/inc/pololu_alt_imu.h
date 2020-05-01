@@ -26,84 +26,19 @@ typedef std::map<uint8_t, uint8_t*> BufferMap;
 class PololuAltImu
 {
 public:
-    PololuAltImu(I2cConn* i2c_conn) : _i2c_conn{ i2c_conn }
-    {
-    }
+    PololuAltImu(I2cConn* i2c_conn);
 
-    ~PololuAltImu()
-    {
-        for (auto const& pair: _buffer)
-        {
-            uint8_t* buf = pair.second;
-            delete[] buf;
-        }
-    }
+    ~PololuAltImu();
 
-    void update()
-    {
-        bool did_read = true;
+    void update();
 
-        for (auto const &pair: _read_map)
-        {
-            did_read = _i2c_conn->read_block_data(pair.first | POLOLU_AUTO_INCREMENT, pair.second, get_buffer(pair.first));
-        }
-
-        if (!did_read)
-        {
-            _status |= POLOLU_STATUS_ERR_READ;
-        }
-        else
-        {
-            _status &= ~POLOLU_STATUS_ERR_READ;
-        }
-    }
-
-    uint8_t get_status()
-    {
-        return _status;
-    }
+    uint8_t get_status();
 protected:
     BufferMap _buffer;
 
-    void setup(ConfigMap config_map, ReadMap read_map)
-    {
-        _config_map = config_map;
-        _read_map = read_map;
+    void _setup(ConfigMap config_map, ReadMap read_map);
 
-        if (!_i2c_conn->open())
-        {
-            _status = POLOLU_STATUS_ERR_INIT;
-        }
-        else
-        {
-            bool did_write = true;
-
-            for (auto const& pair: _config_map)
-            {
-                did_write = _i2c_conn->write_byte_data(pair.first, pair.second);
-            }
-
-            if (!did_write) { _status |= POLOLU_STATUS_ERR_CONF; }
-        }
-
-        for (auto const& pair: _read_map)
-        {
-            uint8_t* buf = new uint8_t[pair.second];
-            _buffer.insert({pair.first, buf});
-        }
-    }
-
-    uint8_t* get_buffer(uint8_t reg)
-    {
-        auto it = _buffer.find(reg);
-
-        if (it != _buffer.end())
-        {
-            return it->second;
-        }
-
-        throw std::out_of_range("Register was not found in buffer");
-    }
+    uint8_t* _get_buffer(uint8_t reg);
 private:
     uint8_t _status = POLOLU_STATUS_OK;
 
