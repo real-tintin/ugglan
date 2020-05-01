@@ -1,6 +1,6 @@
-#include "catch.h"
+#include <catch.h>
 
-#include "motor_control.h"
+#include <motor_control.h>
 
 TEST_CASE("body_to_motor_controls")
 {
