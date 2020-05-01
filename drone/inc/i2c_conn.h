@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <cstdint>
+
 #include <ioctl.h>
 #include <linux/i2c-dev.h>
 
@@ -12,8 +13,14 @@ static const char* const I2C_DEVICE = "/dev/i2c-1";
 class I2cConn
 {
 public:
-    I2cConn(uint8_t address) : _address{ address } {}
-    ~I2cConn() { close(_fd); }
+    I2cConn(uint8_t address) : _address{ address }
+    {
+    }
+
+    ~I2cConn()
+    {
+        close(_fd);
+    }
 
     bool open()
     {

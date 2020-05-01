@@ -1,5 +1,5 @@
-#ifndef I2C_CONN_H
-#define I2C_CONN_H
+#ifndef I2C_CONN_STUB_H
+#define I2C_CONN_STUB_H
 
 #include <stdio.h>
 #include <fcntl.h>
