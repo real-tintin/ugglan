@@ -1,10 +1,12 @@
-/* L3GD20H gyro sensor, see data sheet
+/*
+L3GD20H gyro sensor, see data sheet
 https://www.pololu.com/file/download/L3GD20H.pdf?file_id=0J731
 */
 
 #ifndef L3GD20H_H
 #define L3GD20H_H
 
+#include <cstdint>
 #include <pololu_alt_imu.h>
 
 static const uint8_t L3GD20H_I2C_ADDRESS = 0x6B;
@@ -39,13 +41,13 @@ static const uint8_t L3GD20H_IG_DURATION = 0x38;
 static const uint8_t L3GD20H_LOW_ODR     = 0x39;
 
 // Buffer indices and size
-static const uint8_t L3GD20H_BUFFER_SIZE    = 6;
-static const uint8_t L3GD20H_BUFFER_OUT_X_L = 0x00;
-static const uint8_t L3GD20H_BUFFER_OUT_X_H = 0x01;
-static const uint8_t L3GD20H_BUFFER_OUT_Y_L = 0x02;
-static const uint8_t L3GD20H_BUFFER_OUT_Y_H = 0x03;
-static const uint8_t L3GD20H_BUFFER_OUT_Z_L = 0x04;
-static const uint8_t L3GD20H_BUFFER_OUT_Z_H = 0x05;
+static const uint8_t L3GD20H_BUF_SIZE    = 6;
+static const uint8_t L3GD20H_BUF_OUT_X_L = 0x00;
+static const uint8_t L3GD20H_BUF_OUT_X_H = 0x01;
+static const uint8_t L3GD20H_BUF_OUT_Y_L = 0x02;
+static const uint8_t L3GD20H_BUF_OUT_Y_H = 0x03;
+static const uint8_t L3GD20H_BUF_OUT_Z_L = 0x04;
+static const uint8_t L3GD20H_BUF_OUT_Z_H = 0x05;
 
 // Scaling and resolution
 static const double L3GD20H_GYRO_SCALE = 8.7267; // (500 / 180 * pi) [rad/s]
@@ -58,7 +60,7 @@ static const ConfigMap L3GD20H_CONFIG_MAP = {
     };
 
 static const ReadMap L3GD20H_READ_MAP = {
-    {L3GD20H_OUT_X_L, L3GD20H_BUFFER_SIZE}
+    {L3GD20H_OUT_X_L, L3GD20H_BUF_SIZE}
     };
 
 class L3gd20h : public PololuAltImu

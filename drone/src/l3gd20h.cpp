@@ -8,9 +8,9 @@ L3gd20h::L3gd20h(I2cConn* i2c_conn) : PololuAltImu(i2c_conn)
 // Returns angular rate about x [rad/s]
 double L3gd20h::get_angular_rate_x()
 {
-    uint8_t* buffer = _get_buffer(L3GD20H_OUT_X_L);
+    uint8_t* buf = _get_buffer(L3GD20H_OUT_X_L);
 
-    int16_t raw_ang_rate_x = (buffer[L3GD20H_BUFFER_OUT_X_H] << 8) | buffer[L3GD20H_BUFFER_OUT_X_L];
+    int16_t raw_ang_rate_x = (buf[L3GD20H_BUF_OUT_X_H] << 8) | buf[L3GD20H_BUF_OUT_X_L];
     double ang_rate_x = double(raw_ang_rate_x) * double(L3GD20H_GYRO_SCALE) / double(L3GD20H_GYRO_RESOLUTION);
 
     return ang_rate_x;
@@ -19,9 +19,9 @@ double L3gd20h::get_angular_rate_x()
 // Returns angular rate about y [rad/s]
 double L3gd20h::get_angular_rate_y()
 {
-    uint8_t* buffer = _get_buffer(L3GD20H_OUT_X_L);
+    uint8_t* buf = _get_buffer(L3GD20H_OUT_X_L);
 
-    int16_t raw_ang_rate_y = (buffer[L3GD20H_BUFFER_OUT_Y_H] << 8) | buffer[L3GD20H_BUFFER_OUT_Y_L];
+    int16_t raw_ang_rate_y = (buf[L3GD20H_BUF_OUT_Y_H] << 8) | buf[L3GD20H_BUF_OUT_Y_L];
     double ang_rate_y = double(raw_ang_rate_y) * double(L3GD20H_GYRO_SCALE) / double(L3GD20H_GYRO_RESOLUTION);
 
     return ang_rate_y;
@@ -30,9 +30,9 @@ double L3gd20h::get_angular_rate_y()
 // Returns angular rate about z [rad/s]
 double L3gd20h::get_angular_rate_z()
 {
-    uint8_t* buffer = _get_buffer(L3GD20H_OUT_X_L);
+    uint8_t* buf = _get_buffer(L3GD20H_OUT_X_L);
 
-    int16_t raw_ang_rate_z = (buffer[L3GD20H_BUFFER_OUT_Z_H] << 8) | buffer[L3GD20H_BUFFER_OUT_Z_L];
+    int16_t raw_ang_rate_z = (buf[L3GD20H_BUF_OUT_Z_H] << 8) | buf[L3GD20H_BUF_OUT_Z_L];
     double ang_rate_z = double(raw_ang_rate_z) * double(L3GD20H_GYRO_SCALE) / double(L3GD20H_GYRO_RESOLUTION);
 
     return ang_rate_z;
