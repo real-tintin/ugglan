@@ -12,33 +12,14 @@ https://www.pololu.com/file/download/L3GD20H.pdf?file_id=0J731
 static const uint8_t L3GD20H_I2C_ADDRESS = 0x6B;
 
 // Register addresses
-static const uint8_t L3GD20H_WHO_AM_I    = 0x0F;
 static const uint8_t L3GD20H_CTRL1       = 0x20;
-static const uint8_t L3GD20H_CTRL2       = 0x21;
-static const uint8_t L3GD20H_CTRL3       = 0x22;
 static const uint8_t L3GD20H_CTRL4       = 0x23;
-static const uint8_t L3GD20H_CTRL5       = 0x24;
-static const uint8_t L3GD20H_REFERENCE   = 0x25;
-static const uint8_t L3GD20H_OUT_TEMP    = 0x26;
-static const uint8_t L3GD20H_STATUS      = 0x27;
 static const uint8_t L3GD20H_OUT_X_L     = 0x28;
 static const uint8_t L3GD20H_OUT_X_H     = 0x29;
 static const uint8_t L3GD20H_OUT_Y_L     = 0x2A;
 static const uint8_t L3GD20H_OUT_Y_H     = 0x2B;
 static const uint8_t L3GD20H_OUT_Z_L     = 0x2C;
 static const uint8_t L3GD20H_OUT_Z_H     = 0x2D;
-static const uint8_t L3GD20H_FIFO_CTRL   = 0x2E;
-static const uint8_t L3GD20H_FIFO_SRC    = 0x2F;
-static const uint8_t L3GD20H_IG_CFG      = 0x30;
-static const uint8_t L3GD20H_IG_SRC      = 0x31;
-static const uint8_t L3GD20H_IG_THS_XH   = 0x32;
-static const uint8_t L3GD20H_IG_THS_XL   = 0x33;
-static const uint8_t L3GD20H_IG_THS_YH   = 0x34;
-static const uint8_t L3GD20H_IG_THS_YL   = 0x35;
-static const uint8_t L3GD20H_IG_THS_ZH   = 0x36;
-static const uint8_t L3GD20H_IG_THS_ZL   = 0x37;
-static const uint8_t L3GD20H_IG_DURATION = 0x38;
-static const uint8_t L3GD20H_LOW_ODR     = 0x39;
 
 // Buffer indices and size
 static const uint8_t L3GD20H_BUF_SIZE    = 6;

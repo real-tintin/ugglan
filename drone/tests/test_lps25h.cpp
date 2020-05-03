@@ -9,7 +9,7 @@ static const double FLOAT_TOL = 1e-4;
 
 static I2cWriteMap WRITE_MAP = {LPS25H_CTRL_REG1, LPS25H_RES_CONF};
 
-void update_i2c_stub_data(I2cConn* i2c_conn, uint8_t pres[LPS25H_BUF_PRES_SIZE],
+void set_lps25h_stub_data(I2cConn* i2c_conn, uint8_t pres[LPS25H_BUF_PRES_SIZE],
                           uint8_t temp[LPS25H_BUF_TEMP_SIZE])
 {
     I2cReadBlockMap read_map = {
@@ -33,7 +33,7 @@ TEST_CASE("lps25h interpretation")
         uint8_t temp_data[LPS25H_BUF_TEMP_SIZE] = {
             80, 176}; // Compensate for offset on temperature -42.5 * 480 = -20400
 
-        update_i2c_stub_data(&i2c_conn, pres_data, temp_data);
+        set_lps25h_stub_data(&i2c_conn, pres_data, temp_data);
         barometer.update();
 
         REQUIRE(barometer.get_pressure() == 0.0);
@@ -46,7 +46,7 @@ TEST_CASE("lps25h interpretation")
         uint8_t temp_data[LPS25H_BUF_TEMP_SIZE] = {
             176, 245}; // (37 - 42.5) * 480 = -2640
 
-        update_i2c_stub_data(&i2c_conn, pres_data, temp_data);
+        set_lps25h_stub_data(&i2c_conn, pres_data, temp_data);
         barometer.update();
 
         REQUIRE(fabs(barometer.get_pressure() - 101325.0) <= FLOAT_TOL);
