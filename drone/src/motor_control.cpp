@@ -2,18 +2,18 @@
 
 typedef std::array<double, N_MOTORS> AngularRate;
 
-static AngularRate body_to_ang_rates(BodyControl body);
-static MotorControl ang_rates_to_motor_controls(AngularRate ang_rates);
+static AngularRate _body_to_ang_rates(BodyControl body);
+static MotorControl _ang_rates_to_motor_controls(AngularRate ang_rates);
 
 MotorControl body_to_motor_controls(BodyControl body_controls)
 {
-    AngularRate ang_rates = body_to_ang_rates(body_controls);
-    MotorControl motor_controls = ang_rates_to_motor_controls(ang_rates);
+    AngularRate ang_rates = _body_to_ang_rates(body_controls);
+    MotorControl motor_controls = _ang_rates_to_motor_controls(ang_rates);
 
     return motor_controls;
 }
 
-static AngularRate body_to_ang_rates(BodyControl body_controls)
+static AngularRate _body_to_ang_rates(BodyControl body_controls)
 {
     AngularRate ang_rates = {0.0, 0.0, 0.0, 0.0};
     AngularRate sq_ang_rates = {0.0, 0.0, 0.0, 0.0};
@@ -39,7 +39,7 @@ static AngularRate body_to_ang_rates(BodyControl body_controls)
     return ang_rates;
 }
 
-static MotorControl ang_rates_to_motor_controls(AngularRate ang_rates)
+static MotorControl _ang_rates_to_motor_controls(AngularRate ang_rates)
 {
     double motor_control = 0.0;
     MotorControl motor_controls = {0, 0, 0, 0};

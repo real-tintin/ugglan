@@ -26,11 +26,11 @@ bool I2cConn::open()
 
 bool I2cConn::read_byte_data(uint8_t reg, uint8_t* data)
 {
-    auto pair = _read_byte_map.find(reg);
+    auto it = _read_byte_map.find(reg);
 
-    if (pair != _read_byte_map.end())
+    if (it != _read_byte_map.end())
     {
-        *data = pair->second;
+        *data = it->second;
         return true;
     }
     return false;
@@ -38,11 +38,11 @@ bool I2cConn::read_byte_data(uint8_t reg, uint8_t* data)
 
 bool I2cConn::read_block_data(uint8_t reg, uint8_t size, uint8_t* buf)
 {
-    auto pair = _read_block_map.find(reg);
+    auto it = _read_block_map.find(reg);
 
-    if (pair != _read_block_map.end())
+    if (it != _read_block_map.end())
     {
-        std::memcpy(buf, pair->second, size);
+        std::memcpy(buf, it->second, size);
         return true;
     }
     return false;

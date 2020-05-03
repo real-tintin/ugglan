@@ -34,9 +34,14 @@ public:
 
     uint8_t get_status();
 protected:
-    BufferMap _buffer;
+    void _open_i2c_conn();
 
     void _setup(ConfigMap config_map, ReadMap read_map);
+
+    void _write_config();
+
+    void _allocate_buffer();
+    void _deallocate_buffer();
 
     uint8_t* _get_buffer(uint8_t reg);
 private:
@@ -46,6 +51,7 @@ private:
 
     ConfigMap _config_map;
     ReadMap _read_map;
+    BufferMap _buffer;
 };
 
 #endif

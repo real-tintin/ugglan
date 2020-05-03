@@ -2,24 +2,24 @@
 
 PololuAltImu::PololuAltImu(I2cConn* i2c_conn) : _i2c_conn{ i2c_conn }
 {
+    _open_i2c_conn();
 }
 
 PololuAltImu::~PololuAltImu()
 {
-    for (auto const& pair: _buffer)
-    {
-        uint8_t* buf = pair.second;
-        delete[] buf;
-    }
+    _deallocate_buffer();
 }
 
 void PololuAltImu::update()
 {
     bool did_read = true;
 
-    for (auto const &pair: _read_map)
+    for (auto const &it: _read_map)
     {
-        did_read = _i2c_conn->read_block_data(pair.first | POLOLU_AUTO_INCREMENT, pair.second, _get_buffer(pair.first));
+        uint8_t reg = it.first;
+        uint8_t size = it.second;
+
+        did_read = _i2c_conn->read_block_data(reg | POLOLU_AUTO_INCREMENT, size, _get_buffer(reg));
     }
 
     if (!did_read)
@@ -37,34 +37,59 @@ uint8_t PololuAltImu::get_status()
     return _status;
 }
 
+void PololuAltImu::_open_i2c_conn()
+{
+    if (!_i2c_conn->open())
+    {
+        _status = POLOLU_STATUS_ERR_INIT;
+    }
+}
+
 void PololuAltImu::_setup(ConfigMap config_map, ReadMap read_map)
 {
     _config_map = config_map;
     _read_map = read_map;
 
-    if (!_i2c_conn->open())
-    {
-        _status = POLOLU_STATUS_ERR_INIT;
-    }
-    else
-    {
-        bool did_write = true;
+    _write_config();
+    _allocate_buffer();
+}
 
-        for (auto const& pair: _config_map)
-        {
-            did_write = _i2c_conn->write_byte_data(pair.first, pair.second);
-        }
+void PololuAltImu::_write_config()
+{
+    bool did_write = true;
 
-        if (!did_write)
-        {
-            _status |= POLOLU_STATUS_ERR_CONF;
-        }
+    for (auto const& it: _config_map)
+    {
+        uint8_t reg = it.first;
+        uint8_t data = it.second;
+
+        did_write = _i2c_conn->write_byte_data(reg, data);
     }
 
-    for (auto const& pair: _read_map)
+    if (!did_write)
     {
-        uint8_t* buf = new uint8_t[pair.second];
-        _buffer.insert({pair.first, buf});
+        _status |= POLOLU_STATUS_ERR_CONF;
+    }
+}
+
+void PololuAltImu::_allocate_buffer()
+{
+    for (auto const& it: _read_map)
+    {
+        uint8_t reg = it.first;
+        uint8_t size = it.second;
+
+        uint8_t* buf = new uint8_t[size];
+        _buffer.insert({reg, buf});
+    }
+}
+
+void PololuAltImu::_deallocate_buffer()
+{
+    for (auto const& it: _buffer)
+    {
+        uint8_t* buf = it.second;
+        delete[] buf;
     }
 }
 
