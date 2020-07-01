@@ -54,4 +54,4 @@ public:
     double get_angular_rate_z();
 };
 
-#endif
+#endif /* L3GD20H_H */

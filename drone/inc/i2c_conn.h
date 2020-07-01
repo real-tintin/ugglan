@@ -4,13 +4,12 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <cstdint>
-
-#if !defined(UNIT_TEST)
 #include <ioctl.h>
 #include <linux/i2c-dev.h>
 
 static const char* const I2C_DEVICE = "/dev/i2c-1";
 
+#if !defined(UNIT_TEST)
 class I2cConn
 {
 public:
@@ -30,6 +29,6 @@ private:
     int8_t _fd;
     uint8_t _address;
 };
+#endif
 
-#endif
-#endif
+#endif /* I2C_CONN_H */

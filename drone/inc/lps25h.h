@@ -57,4 +57,4 @@ public:
     double get_temperature();
 };
 
-#endif
+#endif /* LPS25H_H */

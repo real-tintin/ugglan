@@ -28,4 +28,4 @@ typedef std::array<int16_t, N_MOTORS> MotorControl;
 
 MotorControl body_to_motor_controls(BodyControl body_controls);
 
-#endif
+#endif /* MOTOR_CONTROL_H */

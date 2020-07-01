@@ -83,4 +83,4 @@ public:
     double get_magnetic_field_z();
 };
 
-#endif
+#endif /* LSM303D_H */

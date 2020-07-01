@@ -54,4 +54,4 @@ private:
     BufferMap _buffer;
 };
 
-#endif
+#endif /* POLOLU_ALT_IMU_H */

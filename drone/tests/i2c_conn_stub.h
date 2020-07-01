@@ -1,6 +1,8 @@
 #ifndef I2C_CONN_STUB_H
 #define I2C_CONN_STUB_H
 
+#include <i2c_conn.h>
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <cstdint>
@@ -37,4 +39,4 @@ private:
     I2cWriteMap _write_map;
 };
 
-#endif
+#endif /* I2C_CONN_STUB_H */

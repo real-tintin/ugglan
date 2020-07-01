@@ -1,6 +1,7 @@
 #include <pololu_alt_imu.h>
 
-PololuAltImu::PololuAltImu(I2cConn* i2c_conn) : _i2c_conn{ i2c_conn }
+PololuAltImu::PololuAltImu(I2cConn* i2c_conn) :
+    _i2c_conn(i2c_conn)
 {
     _open_i2c_conn();
 }
