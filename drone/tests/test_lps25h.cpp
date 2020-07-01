@@ -2,7 +2,6 @@
 
 #include <i2c_conn_stub.h>
 #include <pololu_alt_imu.h>
-
 #include <lps25h.h>
 
 static const double FLOAT_TOL = 1e-4;

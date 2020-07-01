@@ -1,7 +1,6 @@
 #include <catch.h>
 
 #include <serial_conn_stub.h>
-
 #include <tgyia6c.h>
 
 TEST_CASE("tgyia6c parse data")
