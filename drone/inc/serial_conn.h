@@ -27,7 +27,8 @@ public:
 
     bool open(Mode mode, ControlFlags flags);
 
-    uint32_t read(uint8_t* buf);
+    uint32_t get_bytes_available();
+    uint32_t read(uint8_t* buf, uint32_t size);
 private:
     int8_t _fd;
     const char* _device;

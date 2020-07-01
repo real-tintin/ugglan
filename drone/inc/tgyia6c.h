@@ -17,7 +17,8 @@ https://hobbyking.com/en_us/turnigy-ia6c-ppm-sbus-receiver.html
 
 static const uint8_t TGYIA6C_STATUS_OK       = 0x00;
 static const uint8_t TGYIA6C_STATUS_ERR_INIT = 0x01;
-static const uint8_t TGYIA6C_STATUS_ERR_READ = 0x02;
+
+static const uint8_t TGYIA6C_BUF_SIZE = 255;
 
 static const Mode TGYIA6C_SERIAL_MODE = (O_RDWR | O_NOCTTY | O_NDELAY);
 static const ControlFlags TGYIA6C_SERIAL_OPT =
@@ -50,9 +51,13 @@ public:
 	uint8_t get_status();
 private:
     uint8_t _status = TGYIA6C_STATUS_OK;
+	uint8_t _buf[TGYIA6C_BUF_SIZE] = {0};
+	uint32_t _n_bytes = 0;
+
 	SerialConn* _serial_conn;
 
 	void _open_serial_conn();
+	void _read_to_buffer();
     void _parse_buffer();
 };
 

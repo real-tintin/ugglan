@@ -34,10 +34,19 @@ bool SerialConn::open(Mode mode, ControlFlags flags)
     return false;
 }
 
-uint32_t SerialConn::read(uint8_t* buf)
+uint32_t SerialConn::get_bytes_available()
+{
+	uint32_t bytes_available;
+
+	ioctl(_fd, FIONREAD, &bytes_available);
+
+	return bytes_available;
+}
+
+uint32_t SerialConn::read(uint8_t* buf, uint32_t size)
 {
 	if (_fd != -1) {
-		return = ::read(_fd, buf, sizeof(buf));  // :: to avoid collision
+		return ::read(_fd, buf, size); // :: to avoid collision
 	}
 
     return 0;

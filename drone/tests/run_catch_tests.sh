@@ -15,5 +15,9 @@ TARGET_PATH="./build/${TARGET_NAME}"
 
 # Compile and run tests.
 cd "${DRONE_ROOT}"
-make all
-${TARGET_PATH}
+make all -j8
+exit_code=$?
+
+if [ $exit_code -eq 0 ]; then
+    ${TARGET_PATH}
+fi

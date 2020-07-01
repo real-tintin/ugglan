@@ -8,7 +8,8 @@ Tgyia6c::Tgyia6c(SerialConn* serial_conn) :
 
 void Tgyia6c::update()
 {
-    // TODO
+    _read_to_buffer();
+    _parse_buffer();
 }
 
 // Returns gimbal left X [0-1000]
@@ -78,6 +79,11 @@ void Tgyia6c::_open_serial_conn()
     {
         _status = TGYIA6C_STATUS_ERR_INIT;
     }
+}
+
+void Tgyia6c::_read_to_buffer()
+{
+    _n_bytes = _serial_conn->read(_buf, TGYIA6C_BUF_SIZE); // Non-blocking mode
 }
 
 void Tgyia6c::_parse_buffer()

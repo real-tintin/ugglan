@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <cstdint>
-#include <ioctl.h>
+#include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 
 static const char* const I2C_DEVICE = "/dev/i2c-1";
