@@ -56,15 +56,15 @@ static const double TGYIA6C_KNOB_SCALE  = 0.001;
 
 static const std::map<uint16_t, SwitchLr> SwitchLrMap =
 {
-	{TGYIA6C_RAW_SWITCH_LR_LOW, SwitchLr::Low},
-	{TGYIA6C_RAW_SWITCH_LR_MIDDLE, SwitchLr::Middle},
-	{TGYIA6C_RAW_SWITCH_LR_HIGH, SwitchLr::High}
+    {TGYIA6C_RAW_SWITCH_LR_LOW, SwitchLr::Low},
+    {TGYIA6C_RAW_SWITCH_LR_MIDDLE, SwitchLr::Middle},
+    {TGYIA6C_RAW_SWITCH_LR_HIGH, SwitchLr::High}
 };
 
 static const std::map<uint16_t, SwitchM> SwitchMMap =
 {
-	{TGYIA6C_RAW_SWITCH_M_LOW, SwitchM::Low},
-	{TGYIA6C_RAW_SWITCH_M_HIGH, SwitchM::High}
+    {TGYIA6C_RAW_SWITCH_M_LOW, SwitchM::Low},
+    {TGYIA6C_RAW_SWITCH_M_HIGH, SwitchM::High}
 };
 
 static const uint16_t TGYIA6C_INIT_GIMBAL_LEFT_X  = 1500; // Centered
@@ -84,10 +84,10 @@ static const uint8_t TGYIA6C_BUF_SIZE = 255;
 static const Mode TGYIA6C_SERIAL_MODE = (O_RDWR | O_NOCTTY | O_NDELAY);
 static const ControlFlags TGYIA6C_SERIAL_OPT =
 {
-	(B115200 | CS8 | CLOCAL | CREAD), // 115200 bps
-	IGNPAR,
-	0,
-	0
+    (B115200 | CS8 | CLOCAL | CREAD), // 115200 bps
+    IGNPAR,
+    0,
+    0
 };
 
 class Tgyia6c
@@ -97,28 +97,28 @@ public:
 
     void update();
 
-	double get_gimbal_left_x();
-	double get_gimbal_left_y();
+    double get_gimbal_left_x();
+    double get_gimbal_left_y();
 
-	double get_gimbal_right_x();
-	double get_gimbal_right_y();
+    double get_gimbal_right_x();
+    double get_gimbal_right_y();
 
-	double get_knob();
+    double get_knob();
 
-	SwitchLr get_switch_left();
-	SwitchLr get_switch_right();
-	SwitchM get_switch_middle();
+    SwitchLr get_switch_left();
+    SwitchLr get_switch_right();
+    SwitchM get_switch_middle();
 
-	uint8_t get_status();
+    uint8_t get_status();
 private:
     uint8_t _status = TGYIA6C_STATUS_OK;
 
-	uint8_t _buf[TGYIA6C_BUF_SIZE] = {0};
-	uint32_t _n_bytes = 0;
+    uint8_t _buf[TGYIA6C_BUF_SIZE] = {0};
+    uint32_t _n_bytes = 0;
 
-	uint8_t _parse_state = TGYIA6C_PARSE_DISCARD;
+    uint8_t _parse_state = TGYIA6C_PARSE_DISCARD;
 
-	uint8_t _pkg_len = 0;
+    uint8_t _pkg_len = 0;
     uint8_t _pkg_lchksum = 0;
     uint16_t _pkg_chksum = 0;
 
@@ -127,11 +127,11 @@ private:
 
     uint16_t _channel[TGYIA6C_PROTOCOL_CHANNELS] = {0};
 
-	SerialConn* _serial_conn;
+    SerialConn* _serial_conn;
 
-	void _open_serial_conn();
-	void _set_init_values();
-	void _read_to_buffer();
+    void _open_serial_conn();
+    void _set_init_values();
+    void _read_to_buffer();
     void _parse_buffer();
 };
 
