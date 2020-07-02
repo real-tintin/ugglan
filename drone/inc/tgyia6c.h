@@ -32,6 +32,8 @@ static const uint8_t TGYIA6C_PARSE_CHKSUML = 0x02;
 static const uint8_t TGYIA6C_PARSE_CHKSUMH = 0x03;
 static const uint8_t TGYIA6C_PARSE_DISCARD = 0x04;
 
+static const uint8_t TGYIA6C_RAW_CHANNEL_COMMAND = 0x00;
+
 static const uint8_t TGYIA6C_CHANNEL_GIMBAL_LEFT_X  = 0x03;
 static const uint8_t TGYIA6C_CHANNEL_GIMBAL_LEFT_Y  = 0x02;
 static const uint8_t TGYIA6C_CHANNEL_GIMBAL_RIGHT_X = 0x00;
@@ -119,8 +121,8 @@ private:
     uint8_t _parse_state = TGYIA6C_PARSE_DISCARD;
 
     uint8_t _pkg_len = 0;
-    uint8_t _pkg_lchksum = 0;
     uint16_t _pkg_chksum = 0;
+    uint8_t _rec_chksum_l = 0;
 
     uint8_t _raw_channel_idx = 0;
     uint8_t _raw_channel[TGYIA6C_PROTOCOL_LENGTH] = {0};

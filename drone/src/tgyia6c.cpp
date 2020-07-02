@@ -101,5 +101,86 @@ void Tgyia6c::_read_to_buffer()
 
 void Tgyia6c::_parse_buffer()
 {
-    // TODO
+    uint8_t byte;
+    uint16_t rec_chksum;
+
+    for (uint32_t i_byte = 0; i_byte < _n_bytes; i_byte++)
+    {
+        byte = _buf[i_byte];
+
+        if (_parse_state == TGYIA6C_PARSE_DISCARD)
+        {
+            _parse_state = TGYIA6C_PARSE_LENGTH;
+        }
+
+        switch (_parse_state)
+        {
+            case TGYIA6C_PARSE_LENGTH:
+
+                if ((byte <= TGYIA6C_PROTOCOL_LENGTH) &&
+                    (byte > TGYIA6C_PROTOCOL_OVERHEAD))
+                {
+                  _raw_channel_idx = 0;
+                  _pkg_len = byte - TGYIA6C_PROTOCOL_OVERHEAD;
+                  _pkg_chksum = 0xFFFF - byte;
+
+                  _parse_state = TGYIA6C_PARSE_DATA;
+                }
+                else
+                {
+                  _parse_state = TGYIA6C_PARSE_DISCARD;
+                }
+
+                break;
+
+            case TGYIA6C_PARSE_DATA:
+
+                _raw_channel[_raw_channel_idx++] = byte;
+                _pkg_chksum -= byte;
+
+                if (_raw_channel_idx >= _pkg_len)
+                {
+                  _parse_state = TGYIA6C_PARSE_CHKSUML;
+                }
+
+                break;
+
+            case TGYIA6C_PARSE_CHKSUML:
+
+                _rec_chksum_l = byte;
+                _parse_state = TGYIA6C_PARSE_CHKSUMH;
+
+                break;
+
+            case TGYIA6C_PARSE_CHKSUMH:
+
+                rec_chksum = (byte << 8) + _rec_chksum_l;
+
+                if (_pkg_chksum == rec_chksum)
+                {
+                    switch (_raw_channel[TGYIA6C_RAW_CHANNEL_COMMAND])
+                    {
+                        case TGYIA6C_PROTOCOL_COMMAND40:
+
+                            for (uint8_t i_raw = 1; i_raw < (TGYIA6C_PROTOCOL_CHANNELS * 2 + 1); i_raw += 2)
+                            {
+                                _channel[i_raw / 2] = (_raw_channel[i_raw + 1] << 8) | _raw_channel[i_raw];
+                            }
+
+                            break;
+
+                        default:
+                            break;
+
+                    }
+                }
+                _parse_state = TGYIA6C_PARSE_DISCARD;
+
+                break;
+
+            case TGYIA6C_PARSE_DISCARD:
+            default:
+                break;
+        }
+    }
 }
