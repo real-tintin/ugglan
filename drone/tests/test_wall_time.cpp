@@ -1,21 +1,24 @@
 #include <catch.h>
 
+#include <thread>
 #include <wall_time.h>
 
-TEST_CASE("Wall time")
+TEST_CASE("wall time")
 {
-    double t_start_ms = wall_time.millis();
-    double t_start_us = wall_time.micros();
+    uint32_t t_start_ms = wall_time.millis();
+    uint32_t t_start_us = wall_time.micros();
 
-    SECTION("close to zero")
+    SECTION("init not too large")
     {
-        REQUIRE(fabs(t_start_ms - 0.0) <= 100);
-        REQUIRE(fabs(t_start_us - 0.0) <= (100 * 1000));
+        REQUIRE((t_start_ms - 0.0) <= (60 * 1000));
+        REQUIRE((t_start_us - 0.0) <= (60 * 1000 * 1000));
     }
-    SECTION("increasing")
+    SECTION("monotonically increasing")
     {
-        double t_now_ms = wall_time.millis();
-        double t_now_us = wall_time.micros();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1U));
+
+        uint32_t t_now_ms = wall_time.millis();
+        uint32_t t_now_us = wall_time.micros();
 
         REQUIRE(t_now_ms > t_start_ms);
         REQUIRE(t_now_us > t_start_us);

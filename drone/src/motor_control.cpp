@@ -1,4 +1,4 @@
-#include "motor_control.h"
+#include <motor_control.h>
 
 typedef std::array<double, N_MOTORS> AngularRate;
 

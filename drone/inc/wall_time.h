@@ -2,12 +2,13 @@
 #define WALL_TIME_H
 
 #include <chrono>
+#include <cstdint>
 
 class WallTime
 {
 public:
-    double millis();
-    double micros();
+    uint32_t millis();
+    uint32_t micros();
 };
 
 extern WallTime wall_time;

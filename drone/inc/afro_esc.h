@@ -22,7 +22,7 @@ static const uint8_t AFRO_READ_CURRENT_H   = 0x08;
 static const uint8_t AFRO_READ_CURRENT_L   = 0x09;
 static const uint8_t AFRO_READ_ID          = 0x0A;
 
-static const uint8_t AFRO_IF_ALIVE_BYTE = 0xab;
+static const uint8_t AFRO_IF_ALIVE_BYTE = 0xAB;
 
 static const uint8_t AFRO_MOTOR_POLES = 7;
 
@@ -84,8 +84,8 @@ private:
     uint8_t _buf_read[AFRO_READ_BUF_SIZE] = {0};
     uint8_t _buf_write[AFRO_WRITE_BUF_SIZE] = {0};
 
-    double _rpm_t_ms = wall_time.millis();
-    double _rpm_dt_ms = 0.0;
+    uint32_t _rpm_t_ms = wall_time.millis();
+    uint32_t _rpm_dt_ms = 0.0;
 
     uint8_t _status = AFRO_STATUS_OK;
 };

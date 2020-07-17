@@ -1,6 +1,7 @@
-#include "afro_esc.h"
+#include <afro_esc.h>
 
-AfroEsc::AfroEsc(I2cConn* i2c_conn)
+AfroEsc::AfroEsc(I2cConn* i2c_conn) :
+    _i2c_conn(i2c_conn)
 {
     _open_i2c_conn();
     _arm();
@@ -105,24 +106,19 @@ void AfroEsc::_arm()
     bool was_alive = false;
 
     // First arm ESC for AFRO_ARM_TIME_MS.
-    double arm_t_ms = wall_time.millis();
-    while (AFRO_ARM_TIME_MS > (wall_time.millis() - arm_t_ms)) { write(0); }
+    uint32_t arm_t_ms = wall_time.millis();
+    while (AFRO_ARM_TIME_MS > (wall_time.millis() - arm_t_ms)) { write(0U); }
 
     // Then try to turn motor and check if alive.
-    double turn_t_ms = wall_time.millis();
+    uint32_t turn_t_ms = wall_time.millis();
     while ((AFRO_TURN_TIME_MS > (wall_time.millis() - turn_t_ms)) && !was_alive)
     {
-        write(1);
+        write(1U);
         read();
-
-        if (_is_alive())
-        {
-            was_alive = true;
-        }
+        if (_is_alive()) { was_alive = true; }
     }
-    write(0);
+    write(0U);
 
-    // Finally check if successful.
     if (was_alive)
     {
         _status = AFRO_STATUS_OK;
