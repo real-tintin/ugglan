@@ -13,14 +13,14 @@ PololuAltImu::~PololuAltImu()
 
 void PololuAltImu::update()
 {
-    bool did_read = false;
+    bool did_read = true;
 
     for (auto const &it: _read_map)
     {
         uint8_t reg = it.first;
         uint8_t size = it.second;
 
-        did_read = _i2c_conn->read_block_data(reg | POLOLU_AUTO_INCREMENT, size, _get_buffer(reg));
+        did_read &= _i2c_conn->read_block_data(reg | POLOLU_AUTO_INCREMENT, size, _get_buffer(reg));
     }
 
     if (!did_read)
@@ -57,14 +57,14 @@ void PololuAltImu::_setup(ConfigMap config_map, ReadMap read_map)
 
 void PololuAltImu::_write_config()
 {
-    bool did_write = false;
+    bool did_write = true;
 
     for (auto const& it: _config_map)
     {
         uint8_t reg = it.first;
         uint8_t data = it.second;
 
-        did_write = _i2c_conn->write_byte_data(reg, data);
+        did_write &= _i2c_conn->write_byte_data(reg, data);
     }
 
     if (!did_write)

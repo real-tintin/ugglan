@@ -9,10 +9,9 @@ AfroEsc::AfroEsc(I2cConn* i2c_conn) :
 
 void AfroEsc::read()
 {
-    bool did_read = false;
     _buf_read[AFRO_READ_BUF_ID] = 0x00; // Reset AFRO_READ_BUF_ID (to check for alive) TODO: Break-out?
 
-    did_read |= _i2c_conn->read_block_data(AFRO_READ_REV_H, AFRO_READ_BUF_SIZE, _buf_read);
+    bool did_read = _i2c_conn->read_block_data(AFRO_READ_REV_H, AFRO_READ_BUF_SIZE, _buf_read);
 
     if (did_read)
     {
@@ -27,12 +26,10 @@ void AfroEsc::read()
 
 void AfroEsc::write(int16_t command)
 {
-    bool did_write = false;
-
     _buf_write[0] = command >> 8;
     _buf_write[1] = command;
 
-    did_write |= _i2c_conn->write_block_data(AFRO_WRITE_THROTTLE_H, AFRO_WRITE_BUF_SIZE, _buf_write);
+    bool did_write = _i2c_conn->write_block_data(AFRO_WRITE_THROTTLE_H, AFRO_WRITE_BUF_SIZE, _buf_write);
 
     if (did_write)
     {
@@ -103,23 +100,20 @@ void AfroEsc::_open_i2c_conn()
 
 void AfroEsc::_arm()
 {
-    bool was_alive = false;
-
-    // First arm ESC for AFRO_ARM_TIME_MS.
+    // First arm for AFRO_ARM_TIME_MS.
     uint32_t arm_t_ms = wall_time.millis();
     while (AFRO_ARM_TIME_MS > (wall_time.millis() - arm_t_ms)) { write(0U); }
 
     // Then try to turn motor and check if alive.
     uint32_t turn_t_ms = wall_time.millis();
-    while ((AFRO_TURN_TIME_MS > (wall_time.millis() - turn_t_ms)) && !was_alive)
+    while ((AFRO_TURN_TIME_MS > (wall_time.millis() - turn_t_ms)) && !_is_alive())
     {
         write(1U);
         read();
-        if (_is_alive()) { was_alive = true; }
     }
     write(0U);
 
-    if (was_alive)
+    if (_is_alive())
     {
         _status = AFRO_STATUS_OK;
     }
