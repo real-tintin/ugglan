@@ -13,7 +13,7 @@ PololuAltImu::~PololuAltImu()
 
 void PololuAltImu::update()
 {
-    bool did_read = true;
+    bool did_read = false;
 
     for (auto const &it: _read_map)
     {
@@ -57,7 +57,7 @@ void PololuAltImu::_setup(ConfigMap config_map, ReadMap read_map)
 
 void PololuAltImu::_write_config()
 {
-    bool did_write = true;
+    bool did_write = false;
 
     for (auto const& it: _config_map)
     {
