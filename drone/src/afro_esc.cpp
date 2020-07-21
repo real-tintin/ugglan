@@ -45,14 +45,14 @@ void AfroEsc::write(int16_t command)
 double AfroEsc::get_voltage()
 {
     uint16_t raw_voltage = (_buf_read[AFRO_READ_BUF_VBAT_H] << 8) | _buf_read[AFRO_READ_BUF_VBAT_L];
-    return double(raw_voltage) / 65536.0l * 5.0l * 6.45l;
+    return double(raw_voltage) * AFRO_VOLTAGE_SCALE / AFRO_VOLTAGE_RESOLUTION;
 }
 
 // Returns current [A]
 double AfroEsc::get_current()
 {
     uint16_t raw_current = (_buf_read[AFRO_READ_BUF_CURRENT_H] << 8) | _buf_read[AFRO_READ_BUF_CURRENT_L];
-    return (double(raw_current) - 32767) / 65535.0l * 5.0l * 14.706l;
+    return (double(raw_current) + AFRO_CURRENT_OFFSET) * AFRO_CURRENT_SCALE / AFRO_CURRENT_RESOLUTION;
 }
 
 // Returns temperature [C]
@@ -67,7 +67,7 @@ double AfroEsc::get_temperature()
     steinhart /= AFRO_BCOEFFICIENT;                        // 1/B * ln(R/Ro)
     steinhart += 1.0 / (AFRO_TEMPERATURENOMINAL + 273.15); // + (1/To)
     steinhart = 1.0 / steinhart;                           // Invert
-    steinhart -= 273.15;                                   // convert to C
+    steinhart -= 273.15;                                   // Convert to [C]
 
     return steinhart;
 }
@@ -104,7 +104,7 @@ void AfroEsc::_arm()
     uint32_t arm_t_ms = wall_time.millis();
     while (AFRO_ARM_TIME_MS > (wall_time.millis() - arm_t_ms)) { write(0U); }
 
-    // Then try to turn motor and check if alive.
+    // Then try to turn motor and check if alive for AFRO_TURN_TIME_MS.
     uint32_t turn_t_ms = wall_time.millis();
     while ((AFRO_TURN_TIME_MS > (wall_time.millis() - turn_t_ms)) && !_is_alive())
     {

@@ -1,3 +1,10 @@
+/*
+Afro ESC (Electronic Speed Controller), see data sheet
+https://rcexplorer.se/wp-content/uploads/2016/03/AFRO-Esc-1.pdf.
+
+Heavily inspired by https://github.com/bluerobotics/Arduino_I2C_ESC.
+*/
+
 #ifndef AFRO_ESC_H
 #define AFRO_ESC_H
 
@@ -26,10 +33,18 @@ static const uint8_t AFRO_IF_ALIVE_BYTE = 0xAB;
 
 static const uint8_t AFRO_MOTOR_POLES = 7;
 
-static const double AFRO_THERMISTORNOMINAL  = 10000; // Resistance at 25 degrees C.
-static const double AFRO_TEMPERATURENOMINAL = 25;    // Temperature for nominal resistance [C].
-static const double AFRO_BCOEFFICIENT       = 3900;  // The beta coefficient of the thermistor (usually 3000-4000).
-static const double AFRO_SERIESRESISTOR     = 3300;  // The value of the 'other' resistor.
+static const double AFRO_VOLTAGE_RESOLUTION = 65535;
+static const double AFRO_CURRENT_RESOLUTION = 65535;
+
+static const double AFRO_VOLTAGE_SCALE = 32.25; // Derived from (5 * 6.45)
+static const double AFRO_CURRENT_SCALE = 73.53; // Derived from (5 * 14.706)
+
+static const double AFRO_CURRENT_OFFSET = -32767;
+
+static const double AFRO_THERMISTORNOMINAL  = 10000; // Resistance at 25 degrees [C]
+static const double AFRO_TEMPERATURENOMINAL = 25;    // Temperature for nominal resistance [C]
+static const double AFRO_BCOEFFICIENT       = 3900;  // The beta coefficient of the thermistor (usually 3000-4000)
+static const double AFRO_SERIESRESISTOR     = 3300;  // The value of the 'other' resistor
 
 static const uint8_t AFRO_READ_BUF_SIZE      = 9;
 static const uint8_t AFRO_READ_BUF_REV_H     = 0x00;
