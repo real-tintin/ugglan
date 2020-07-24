@@ -21,10 +21,10 @@ void set_lps25h_stub_data(I2cConn* i2c_conn, uint8_t pres[LPS25H_BUF_PRES_SIZE],
 
 TEST_CASE("lps25h interpretation")
 {
-    I2cConn i2c_conn = I2cConn();
+    I2cConn i2c_conn;
     i2c_conn.set_write_map(WRITE_MAP);
 
-    Lps25h barometer = Lps25h(&i2c_conn);
+    Lps25h barometer(&i2c_conn);
 
     SECTION("zero")
     {

@@ -22,10 +22,10 @@ void set_lsm303d_stub_data(I2cConn* i2c_conn, uint8_t acc[LSM303D_BUF_ACC_SIZE],
 
 TEST_CASE("lsm303d interpretation")
 {
-    I2cConn i2c_conn = I2cConn();
+    I2cConn i2c_conn;
     i2c_conn.set_write_map(WRITE_MAP);
 
-    Lsm303d acc_mag = Lsm303d(&i2c_conn);
+    Lsm303d acc_mag(&i2c_conn);
 
     SECTION("zero")
     {

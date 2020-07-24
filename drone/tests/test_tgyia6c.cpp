@@ -108,8 +108,8 @@ void assert_valid_values(Tgyia6c* rc_receiver)
 
 TEST_CASE("tgyia6c initialized")
 {
-    SerialConn serial_conn = SerialConn();
-    Tgyia6c rc_receiver = Tgyia6c(&serial_conn);
+    SerialConn serial_conn;
+    Tgyia6c rc_receiver(&serial_conn);
 
     SECTION("status")
     {
@@ -123,8 +123,8 @@ TEST_CASE("tgyia6c initialized")
 
 TEST_CASE("tgyia6c parse data")
 {
-    SerialConn serial_conn = SerialConn();
-    Tgyia6c rc_receiver = Tgyia6c(&serial_conn);
+    SerialConn serial_conn;
+    Tgyia6c rc_receiver(&serial_conn);
 
     SECTION("valid")
     {

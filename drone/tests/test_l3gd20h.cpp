@@ -16,10 +16,10 @@ void set_l3gd20h_stub_data(I2cConn* i2c_conn, uint8_t data[L3GD20H_BUF_SIZE])
 
 TEST_CASE("l3gd20h interpretation")
 {
-    I2cConn i2c_conn = I2cConn();
+    I2cConn i2c_conn;
     i2c_conn.set_write_map(WRITE_MAP);
 
-    L3gd20h gyro = L3gd20h(&i2c_conn);
+    L3gd20h gyro(&i2c_conn);
 
     SECTION("zero")
     {
