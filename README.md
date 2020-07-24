@@ -5,9 +5,9 @@ Raspberry Pi Zero (amongst other things).
 <img src="./doc/source/figures/drone_multi_body.png" width="200" height="200" />
 
 The project serves as a learning platform for the author himself and
-is quite broad, containing everything from assembler to docker and
-UI web-development. It also contains some multi body modelling
-and simulation as well as state space estimation and control.
+is quite broad, containing everything from assembler to docker. It
+also contains some multi body modelling and simulation as well as
+state space estimation and control.
 
 ## Setup
 

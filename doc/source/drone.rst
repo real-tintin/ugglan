@@ -9,9 +9,57 @@ are not covered in this document, for details see the arthur's master thesis
 
 Software
 =================
-TODO: Design of sampling sensors, executing the control loop, data logging and
-updating the motors.
-TODO: Producer and consumer structure.
+
+The Drone
+---------------
+The drone's top level software design can be seen as a task manager, (asynchronous
+and synchronous) solving the producer and consumer problem. Where the producers are
+the sensors (IMU, ESC and RC). And where the control loop, data logging etc. are
+the consumers, see :numref:`drone_sw_design`
+
+.. _drone_sw_design:
+.. mermaid::
+    :caption: Overview of the drone software design. Tasks are stadium-shaped nodes.
+
+    graph LR
+        ImuAccMag([ImuAccMag])
+        ImuGyro([ImuGyro])
+        ImuPres([ImuPres])
+        EscRead_i([EscRead_i])
+        RcReceiver([RcReceiver])
+        StateControl([StateControl])
+        DataLogging([DataLogging])
+        InputQueue[(InputQueue)]
+
+        ImuAccMag -- 50 Hz --> InputQueue
+        ImuGyro -- 50 Hz --> InputQueue
+        ImuPres -- 10 Hz --> InputQueue
+        EscRead_i -- 10 Hz --> InputQueue
+        RcReceiver -- 30 Hz --> InputQueue
+
+        InputQueue -- 50 Hz--> StateControl
+        InputQueue -- on new sample --> DataLogging
+
+        subgraph Producers
+        ImuAccMag
+        ImuGyro
+        ImuPres
+        EscRead_i
+        RcReceiver
+        end
+
+        subgraph Consumers
+        StateControl
+        DataLogging
+        end
+
+As one can see the consumers will fetch data from the ``InputQueue`` in different
+fashions. This since the state controller will run at a constant execution/sample
+rate to simplify the signal processing e.g., filtering. Whereas the data logger only
+will store a sample once.
+
+Note, some signals such as the ones from the pressure sensor will only be sampled
+at 10 Hz. This has to be handled by the state controller.
 
 Hardware
 =================
@@ -45,7 +93,7 @@ Devices & Busses
     graph TD
         Esc_i -- i2c read --> Raspi
         Raspi -- i2c write --> Esc_i
-        Imu -- i2c read --> Raspi
+        Imu_i -- i2c read --> Raspi
         RcReceiver -- uart read --> Raspi
 
 Modeling
