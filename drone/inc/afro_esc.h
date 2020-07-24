@@ -81,7 +81,9 @@ public:
     void read();
     void write(int16_t command);
 
-    int16_t get_rpm();
+    bool get_is_alive();
+
+    double get_rpm();
     double get_voltage();
     double get_current();
     double get_temperature();
@@ -91,8 +93,7 @@ private:
     void _arm();
     void _open_i2c_conn();
     void _update_rpm_timer();
-
-    uint8_t _is_alive();
+    void _reset_is_alive_byte();
 
     I2cConn* _i2c_conn;
 

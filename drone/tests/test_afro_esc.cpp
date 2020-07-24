@@ -4,6 +4,7 @@
 #include <i2c_conn_stub.h>
 #include <afro_esc.h>
 
+static const double RPM_TOL = 1.0;
 static const double FLOAT_TOL = 1e-1;
 static const uint16_t ONE_S_IN_MS = 6000;
 
@@ -58,10 +59,14 @@ TEST_CASE("afro esc")
         std::this_thread::sleep_for(std::chrono::milliseconds(ONE_S_IN_MS));
         esc.read();
 
-        REQUIRE(fabs(esc.get_rpm() - 4321.0) <= FLOAT_TOL);
+        REQUIRE(esc.get_is_alive() == true);
+
+        REQUIRE(fabs(esc.get_rpm() - 4321.0) <= RPM_TOL);
         REQUIRE(fabs(esc.get_voltage() - 13.7) <= FLOAT_TOL);
         REQUIRE(fabs(esc.get_current() - 7.3) <= FLOAT_TOL);
         REQUIRE(fabs(esc.get_temperature() - 24.7) <= FLOAT_TOL);
+
+        REQUIRE(esc.get_status() == AFRO_STATUS_OK);
     }
 
     SECTION("write")

@@ -9,7 +9,7 @@ AfroEsc::AfroEsc(I2cConn* i2c_conn) :
 
 void AfroEsc::read()
 {
-    _buf_read[AFRO_READ_BUF_ID] = 0x00; // Reset AFRO_READ_BUF_ID (to check for alive) TODO: Break-out?
+    _reset_is_alive_byte();
 
     bool did_read = _i2c_conn->read_block_data(AFRO_READ_REV_H, AFRO_READ_BUF_SIZE, _buf_read);
 
@@ -39,6 +39,11 @@ void AfroEsc::write(int16_t command)
     {
         _status |= AFRO_STATUS_ERR_WRITE;
     }
+}
+
+bool AfroEsc::get_is_alive()
+{
+    return (_buf_read[AFRO_READ_BUF_ID] == AFRO_IF_ALIVE_BYTE);
 }
 
 // Returns voltage [V]
@@ -73,12 +78,12 @@ double AfroEsc::get_temperature()
 }
 
 // Returns RPM [rpm]
-int16_t AfroEsc::get_rpm()
+double AfroEsc::get_rpm()
 {
     int16_t raw_rpm = (_buf_read[AFRO_READ_BUF_REV_H] << 8) | _buf_read[AFRO_READ_BUF_REV_L];
     double rpm = double(raw_rpm) / (double(_rpm_dt_ms) / AFRO_MS_IN_MIN) / double(AFRO_MOTOR_POLES);
 
-    return int16_t(rpm);
+    return rpm;
 }
 
 uint8_t AfroEsc::get_status()
@@ -106,14 +111,14 @@ void AfroEsc::_arm()
 
     // Then try to turn motor and check if alive for AFRO_TURN_TIME_MS.
     uint32_t turn_t_ms = wall_time.millis();
-    while ((AFRO_TURN_TIME_MS > (wall_time.millis() - turn_t_ms)) && !_is_alive())
+    while ((AFRO_TURN_TIME_MS > (wall_time.millis() - turn_t_ms)) && !get_is_alive())
     {
         write(1U);
         read();
     }
     write(0U);
 
-    if (_is_alive())
+    if (get_is_alive())
     {
         _status = AFRO_STATUS_OK;
     }
@@ -123,15 +128,15 @@ void AfroEsc::_arm()
     }
 }
 
-uint8_t AfroEsc::_is_alive()
-{
-    return (_buf_read[AFRO_READ_BUF_ID] == AFRO_IF_ALIVE_BYTE);
-}
-
 void AfroEsc::_update_rpm_timer()
 {
     double t_now_ms = wall_time.millis();
 
     _rpm_dt_ms = t_now_ms - _rpm_t_ms;
     _rpm_t_ms = t_now_ms;
+}
+
+void AfroEsc::_reset_is_alive_byte()
+{
+    _buf_read[AFRO_READ_BUF_ID] = 0x00;
 }
