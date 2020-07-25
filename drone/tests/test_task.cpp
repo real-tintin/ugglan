@@ -2,34 +2,82 @@
 
 #include <task.h>
 
-static const uint32_t EXECUTION_TIME_MS = 100;
-static const uint32_t SLEEP_MS = 1000;
+static const uint32_t NOT_ENOUGH_EXEC_TIME_MS = 50;
+static const uint32_t ENOUGH_EXEC_TIME_MS = 200;
 
-static uint8_t n_calls_setup = 0;
-static uint8_t n_calls_execute = 0;
-static uint8_t n_calls_finish = 0;
+static const uint32_t EXEC_SLEEP_MS = 100;
+static const uint32_t MAIN_SLEEP_MS = 1000;
+
+static uint8_t n_calls_setup;
+static uint8_t n_calls_execute;
+static uint8_t n_calls_finish;
+static uint8_t n_calls_exec_time_exceeded;
 
 class TestTask : public Task
 {
 public:
-    TestTask(uint32_t execution_time_ms) : Task(execution_time_ms)
+    TestTask(uint32_t execution_time_ms, void (*exec_time_exceeded_cb)()) :
+        Task(execution_time_ms, exec_time_exceeded_cb)
     {
     }
 protected:
-    void _setup() { n_calls_setup++; }
-    void _execute() { n_calls_execute++; }
-    void _finish() { n_calls_finish++; }
+    void _setup()
+    {
+        n_calls_setup++;
+    }
+    void _execute()
+    {
+        n_calls_execute++;
+        std::this_thread::sleep_for(std::chrono::milliseconds(EXEC_SLEEP_MS));
+    }
+    void _finish()
+    {
+        n_calls_finish++;
+    }
 };
+
+void exec_time_exceeded_cb()
+{
+    n_calls_exec_time_exceeded++;
+}
+
+void reset_test_vars()
+{
+    n_calls_setup = 0;
+    n_calls_execute = 0;
+    n_calls_finish = 0;
+    n_calls_exec_time_exceeded = 0;
+}
+
+void launch_and_teardown(uint32_t exec_time_ms)
+{
+    TestTask test_task(exec_time_ms, &exec_time_exceeded_cb);
+
+    test_task.launch();
+    std::this_thread::sleep_for(std::chrono::milliseconds(MAIN_SLEEP_MS));
+    test_task.teardown();
+}
 
 TEST_CASE("launch and teardown")
 {
-    TestTask test_task(EXECUTION_TIME_MS);
+    reset_test_vars();
 
-    test_task.launch();
-    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS));
-    test_task.teardown();
+    SECTION("enough exec time")
+    {
+        launch_and_teardown(ENOUGH_EXEC_TIME_MS);
 
-    REQUIRE(n_calls_setup == 1);
-    REQUIRE(n_calls_execute == (SLEEP_MS / EXECUTION_TIME_MS));
-    REQUIRE(n_calls_finish == 1);
+        REQUIRE(n_calls_setup == 1);
+        REQUIRE(n_calls_execute >= (MAIN_SLEEP_MS / ENOUGH_EXEC_TIME_MS));
+        REQUIRE(n_calls_finish == 1);
+        REQUIRE(n_calls_exec_time_exceeded == 0);
+    }
+    SECTION("not enough exec time")
+    {
+        launch_and_teardown(NOT_ENOUGH_EXEC_TIME_MS);
+
+        REQUIRE(n_calls_setup == 1);
+        REQUIRE(n_calls_execute <= (MAIN_SLEEP_MS / NOT_ENOUGH_EXEC_TIME_MS));
+        REQUIRE(n_calls_finish == 1);
+        REQUIRE(n_calls_exec_time_exceeded >= (MAIN_SLEEP_MS / EXEC_SLEEP_MS));
+    }
 }
