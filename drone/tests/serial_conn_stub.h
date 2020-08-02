@@ -10,7 +10,7 @@
 #include <cassert>
 #include <algorithm>
 
-static const uint32_t MAX_BUF_SIZE = 4096;
+inline const uint32_t MAX_BUF_SIZE = 4096;
 
 class SerialConn
 {

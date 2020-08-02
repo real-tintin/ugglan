@@ -21,70 +21,70 @@ Heavily inspired by https://github.com/aanon4/FlySkyIBus.
 enum class SwitchLr {Low, Middle, High};
 enum class SwitchM {Low, High};
 
-static const uint8_t TGYIA6C_PROTOCOL_LENGTH    = 0x20;
-static const uint8_t TGYIA6C_PROTOCOL_OVERHEAD  = 3; // <len><cmd><data....><chkl><chkh>
-static const uint8_t TGYIA6C_PROTOCOL_CHANNELS  = 10;
-static const uint8_t TGYIA6C_PROTOCOL_COMMAND40 = 0x40; // Command is always 0x40
+inline const uint8_t TGYIA6C_PROTOCOL_LENGTH    = 0x20;
+inline const uint8_t TGYIA6C_PROTOCOL_OVERHEAD  = 3; // <len><cmd><data....><chkl><chkh>
+inline const uint8_t TGYIA6C_PROTOCOL_CHANNELS  = 10;
+inline const uint8_t TGYIA6C_PROTOCOL_COMMAND40 = 0x40; // Command is always 0x40
 
-static const uint8_t TGYIA6C_PARSE_LENGTH  = 0x00;
-static const uint8_t TGYIA6C_PARSE_DATA    = 0x01;
-static const uint8_t TGYIA6C_PARSE_CHKSUML = 0x02;
-static const uint8_t TGYIA6C_PARSE_CHKSUMH = 0x03;
-static const uint8_t TGYIA6C_PARSE_DISCARD = 0x04;
+inline const uint8_t TGYIA6C_PARSE_LENGTH  = 0x00;
+inline const uint8_t TGYIA6C_PARSE_DATA    = 0x01;
+inline const uint8_t TGYIA6C_PARSE_CHKSUML = 0x02;
+inline const uint8_t TGYIA6C_PARSE_CHKSUMH = 0x03;
+inline const uint8_t TGYIA6C_PARSE_DISCARD = 0x04;
 
-static const uint8_t TGYIA6C_RAW_CHANNEL_COMMAND = 0x00;
+inline const uint8_t TGYIA6C_RAW_CHANNEL_COMMAND = 0x00;
 
-static const uint8_t TGYIA6C_CHANNEL_GIMBAL_LEFT_X  = 0x03;
-static const uint8_t TGYIA6C_CHANNEL_GIMBAL_LEFT_Y  = 0x02;
-static const uint8_t TGYIA6C_CHANNEL_GIMBAL_RIGHT_X = 0x00;
-static const uint8_t TGYIA6C_CHANNEL_GIMBAL_RIGHT_Y = 0x01;
-static const uint8_t TGYIA6C_CHANNEL_KNOB           = 0x06;
-static const uint8_t TGYIA6C_CHANNEL_SWITCH_LEFT    = 0x07;
-static const uint8_t TGYIA6C_CHANNEL_SWITCH_RIGHT   = 0x04; // Currently not available!
-static const uint8_t TGYIA6C_CHANNEL_SWITCH_MIDDLE  = 0x05;
+inline const uint8_t TGYIA6C_CHANNEL_GIMBAL_LEFT_X  = 0x03;
+inline const uint8_t TGYIA6C_CHANNEL_GIMBAL_LEFT_Y  = 0x02;
+inline const uint8_t TGYIA6C_CHANNEL_GIMBAL_RIGHT_X = 0x00;
+inline const uint8_t TGYIA6C_CHANNEL_GIMBAL_RIGHT_Y = 0x01;
+inline const uint8_t TGYIA6C_CHANNEL_KNOB           = 0x06;
+inline const uint8_t TGYIA6C_CHANNEL_SWITCH_LEFT    = 0x07;
+inline const uint8_t TGYIA6C_CHANNEL_SWITCH_RIGHT   = 0x04; // Currently not available!
+inline const uint8_t TGYIA6C_CHANNEL_SWITCH_MIDDLE  = 0x05;
 
-static const uint16_t TGYIA6C_RAW_SWITCH_LR_LOW    = 2000;
-static const uint16_t TGYIA6C_RAW_SWITCH_LR_MIDDLE = 1500;
-static const uint16_t TGYIA6C_RAW_SWITCH_LR_HIGH   = 1000;
+inline const uint16_t TGYIA6C_RAW_SWITCH_LR_LOW    = 2000;
+inline const uint16_t TGYIA6C_RAW_SWITCH_LR_MIDDLE = 1500;
+inline const uint16_t TGYIA6C_RAW_SWITCH_LR_HIGH   = 1000;
 
-static const uint16_t TGYIA6C_RAW_SWITCH_M_LOW   = 2000;
-static const uint16_t TGYIA6C_RAW_SWITCH_M_HIGH  = 1000;
+inline const uint16_t TGYIA6C_RAW_SWITCH_M_LOW   = 2000;
+inline const uint16_t TGYIA6C_RAW_SWITCH_M_HIGH  = 1000;
 
-static const double TGYIA6C_GIMBAL_OFFSET = -1000;
-static const double TGYIA6C_GIMBAL_SCALE  = 0.001;
+inline const double TGYIA6C_GIMBAL_OFFSET = -1000;
+inline const double TGYIA6C_GIMBAL_SCALE  = 0.001;
 
-static const double TGYIA6C_KNOB_OFFSET = -1000;
-static const double TGYIA6C_KNOB_SCALE  = 0.001;
+inline const double TGYIA6C_KNOB_OFFSET = -1000;
+inline const double TGYIA6C_KNOB_SCALE  = 0.001;
 
-static const std::map<uint16_t, SwitchLr> SwitchLrMap =
+inline const std::map<uint16_t, SwitchLr> SwitchLrMap =
 {
     {TGYIA6C_RAW_SWITCH_LR_LOW, SwitchLr::Low},
     {TGYIA6C_RAW_SWITCH_LR_MIDDLE, SwitchLr::Middle},
     {TGYIA6C_RAW_SWITCH_LR_HIGH, SwitchLr::High}
 };
 
-static const std::map<uint16_t, SwitchM> SwitchMMap =
+inline const std::map<uint16_t, SwitchM> SwitchMMap =
 {
     {TGYIA6C_RAW_SWITCH_M_LOW, SwitchM::Low},
     {TGYIA6C_RAW_SWITCH_M_HIGH, SwitchM::High}
 };
 
-static const uint16_t TGYIA6C_INIT_GIMBAL_LEFT_X  = 1500; // Centered
-static const uint16_t TGYIA6C_INIT_GIMBAL_LEFT_Y  = 1000; // Low (default, throttle low)
-static const uint16_t TGYIA6C_INIT_GIMBAL_RIGHT_X = 1500; // Centered
-static const uint16_t TGYIA6C_INIT_GIMBAL_RIGHT_Y = 1500; // Centered
-static const uint16_t TGYIA6C_INIT_KNOB           = 1000; // Zero
-static const uint16_t TGYIA6C_INIT_SWITCH_LEFT    = TGYIA6C_RAW_SWITCH_LR_HIGH; // High
-static const uint16_t TGYIA6C_INIT_SWITCH_RIGHT   = TGYIA6C_RAW_SWITCH_LR_HIGH; // High
-static const uint16_t TGYIA6C_INIT_SWITCH_MIDDLE  = TGYIA6C_RAW_SWITCH_M_HIGH; // High
+inline const uint16_t TGYIA6C_INIT_GIMBAL_LEFT_X  = 1500; // Centered
+inline const uint16_t TGYIA6C_INIT_GIMBAL_LEFT_Y  = 1000; // Low (default, throttle low)
+inline const uint16_t TGYIA6C_INIT_GIMBAL_RIGHT_X = 1500; // Centered
+inline const uint16_t TGYIA6C_INIT_GIMBAL_RIGHT_Y = 1500; // Centered
+inline const uint16_t TGYIA6C_INIT_KNOB           = 1000; // Zero
+inline const uint16_t TGYIA6C_INIT_SWITCH_LEFT    = TGYIA6C_RAW_SWITCH_LR_HIGH; // High
+inline const uint16_t TGYIA6C_INIT_SWITCH_RIGHT   = TGYIA6C_RAW_SWITCH_LR_HIGH; // High
+inline const uint16_t TGYIA6C_INIT_SWITCH_MIDDLE  = TGYIA6C_RAW_SWITCH_M_HIGH; // High
 
-static const uint8_t TGYIA6C_STATUS_OK       = 0x00;
-static const uint8_t TGYIA6C_STATUS_ERR_INIT = 0x01;
+inline const uint8_t TGYIA6C_STATUS_OK       = 0x00;
+inline const uint8_t TGYIA6C_STATUS_ERR_INIT = 0x01;
 
-static const uint8_t TGYIA6C_BUF_SIZE = 255;
+inline const uint8_t TGYIA6C_BUF_SIZE = 255;
 
-static const Mode TGYIA6C_SERIAL_MODE = (O_RDWR | O_NOCTTY | O_NDELAY);
-static const ControlFlags TGYIA6C_SERIAL_OPT =
+inline const Mode TGYIA6C_SERIAL_MODE = (O_RDWR | O_NOCTTY | O_NDELAY);
+inline const ControlFlags TGYIA6C_SERIAL_OPT =
 {
     (B115200 | CS8 | CLOCAL | CREAD), // 115200 bps
     IGNPAR,

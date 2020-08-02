@@ -11,12 +11,12 @@
 #include <i2c_conn.h>
 #endif
 
-static const uint8_t POLOLU_AUTO_INCREMENT = 0b10000000;
+inline const uint8_t POLOLU_AUTO_INCREMENT = 0b10000000;
 
-static const uint8_t POLOLU_STATUS_OK       = 0x00;
-static const uint8_t POLOLU_STATUS_ERR_INIT = 0x01;
-static const uint8_t POLOLU_STATUS_ERR_CONF = 0x02;
-static const uint8_t POLOLU_STATUS_ERR_READ = 0x04;
+inline const uint8_t POLOLU_STATUS_OK       = 0x00;
+inline const uint8_t POLOLU_STATUS_ERR_INIT = 0x01;
+inline const uint8_t POLOLU_STATUS_ERR_CONF = 0x02;
+inline const uint8_t POLOLU_STATUS_ERR_READ = 0x04;
 
 typedef std::map<uint8_t, uint8_t> ConfigMap;
 typedef std::map<uint8_t, uint8_t> ReadMap;

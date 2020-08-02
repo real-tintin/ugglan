@@ -7,7 +7,7 @@
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 
-static const char* const I2C_DEVICE = "/dev/i2c-1";
+inline const char* const I2C_DEVICE = "/dev/i2c-1";
 
 #if !defined(UNIT_TEST)
 class I2cConn
