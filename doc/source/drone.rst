@@ -25,20 +25,28 @@ the consumers, see :numref:`drone_sw_design`
         ImuAccMag([ImuAccMag])
         ImuGyro([ImuGyro])
         ImuPres([ImuPres])
+
         EscRead_i([EscRead_i])
         RcReceiver([RcReceiver])
+
+        Inputs((Inputs))
+        InputHolder[InputHolder]
+        DataLogQueue[(DataLogQueue)]
+
         StateControl([StateControl])
-        DataLogging([DataLogging])
-        InputQueue[(InputQueue)]
+        DataLogger([DataLogger])
 
-        ImuAccMag -- 50 Hz --> InputQueue
-        ImuGyro -- 50 Hz --> InputQueue
-        ImuPres -- 10 Hz --> InputQueue
-        EscRead_i -- 10 Hz --> InputQueue
-        RcReceiver -- 30 Hz --> InputQueue
+        ImuAccMag -- 50 Hz --> Inputs
+        ImuGyro -- 50 Hz --> Inputs
+        ImuPres -- 10 Hz --> Inputs
+        EscRead_i -- 10 Hz --> Inputs
+        RcReceiver -- 30 Hz --> Inputs
 
-        InputQueue -- 50 Hz--> StateControl
-        InputQueue -- on new sample --> DataLogging
+        Inputs --> InputHolder
+        Inputs --> DataLogQueue
+
+        InputHolder -- 50 Hz--> StateControl
+        DataLogQueue -- 100 Hz --> DataLogger
 
         subgraph Producers
         ImuAccMag
@@ -50,13 +58,14 @@ the consumers, see :numref:`drone_sw_design`
 
         subgraph Consumers
         StateControl
-        DataLogging
+        DataLogger
         end
 
-As one can see the consumers will fetch data from the ``InputQueue`` in different
-fashions. This since the state controller will run at a constant execution/sample
-rate to simplify the signal processing e.g., filtering. Whereas the data logger only
-will store a sample once.
+As one can see, some consumers will fetch data from the ``InputHolder``. This is
+a thread safe data structure which holds the latest input samples e.g., used by the
+``StateControl`` which runs at a constant execution/sample rate i.e. to simplify
+the signal processing. Whereas the data logger only will store a sample once and uses
+the thread safe queue ``DataLogQueue``. Note other task may also populate this queue.
 
 Note, some signals such as the ones from the pressure sensor will only be sampled
 at 10 Hz. This has to be handled by the state controller.
@@ -110,11 +119,60 @@ TODO: Empirical Studies.
 
 State Estimation
 =================
-TODO: Summary of master thesis work.
+
+Attitude Estimation
+--------------------
+For attitude control, the Euler angles :math:`\eta = [\phi, \theta, \psi]` and their respective
+time derivatives (angular rates) :math:`\dot{\eta} = \omega` have to be estimated.
+
+By using the IMU (accelerometer, gyro and magnetometer), :math:`\eta` and :math:`\dot{\eta}` can
+easily be estimated. This is common problem and without going into detail - geometrical
+relationships yield
+
+.. math::
+
+    \phi_{acc} &= \text{atan2}(-a_y, -a_z) \\
+    \theta_{acc} &= \text{atan2}(a_x, \sqrt{a_y^2 + a_z^2}) \\
+    \psi_{mag} &= \text{atan2}(-B_{fy}, B_{fx})
+
+where
+
+.. math::
+
+    B_{fx} &= m_x\cos(\theta) + m_y\sin(\phi)\sin(\theta) + m_z\sin(\theta)\cos(\phi) \\
+    B_{fy} &= m_y\cos(\phi) - m_z\sin(\phi)
+
+and :math:`a` is the acceleration and :math:`m` is the earths magnetic field supplied by the
+IMU. These estimates can be improved by using the gyro and a simple first order complementary
+filter
+
+.. math::
+
+    \tilde{\phi}^{k+1} &= \text{cf}(\phi_{acc}^k, \dot{\phi}_{gyro}^k, \tilde{\phi}^k, \tau_{\phi}) \\
+    \tilde{\theta}^{k+1} &= \text{cf}(\theta_{acc}^k, \dot{\theta}_{gyro}^k, \tilde{\theta}^k, \tau_{\theta}) \\
+    \tilde{\psi}^{k+1} &= \text{cf}(\psi_{mag}^k, \dot{\psi}_{gyro}^k, \tilde{\psi}^k, \tau_{\psi})
+
+where
+
+.. math::
+
+    y^{k+1} &= \text{cf}(u^k, \dot{u}^k, y^k, \tau) \\
+            &= \alpha(y^k + \dot{u}^k\Delta t) + (1-\alpha)u^k
+
+where :math:`\alpha = \tfrac{\tau}{\tau + \Delta t}` and :math:`\tau` is the cut-off frequency.
+Note the estimates also need range limiting (module of angles) and offset compensation.
+
+Motor Torque Estimation
+------------------------
+TODO: Reduced observer. Summary of master thesis work.
 
 Control
 =================
-TODO: Summary of master thesis work. With reversible engine control.
+TODO: Summary of master thesis work. With flow chart.
+
+State Control
+-----------------
+TODO: Summary of master thesis work.
 
 Motor Control
 ------------------
