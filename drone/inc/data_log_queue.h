@@ -84,7 +84,7 @@ void DataLogQueue::push(T data, DataLogSignal signal)
     }
     else
     {
-        throw std::runtime_error("Un-supported data type.");
+        throw std::runtime_error("Unsupported data type.");
     }
 
     _samples.push_back(sample);

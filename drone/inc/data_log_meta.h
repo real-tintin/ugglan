@@ -46,8 +46,8 @@ inline const DataLogGroupInfo DATA_LOG_GROUP_INFO = {
 
 inline const DataLogSignalInfo DATA_LOG_SIGNAL_INFO = {
     {DataLogSignal::ImuAccelerationX, {"AccelerationX", DataLogGroup::Imu, DataLogType::DOUBLE}},
-    {DataLogSignal::ImuAccelerationX, {"AccelerationY", DataLogGroup::Imu, DataLogType::DOUBLE}},
-    {DataLogSignal::ImuAccelerationX, {"AccelerationZ", DataLogGroup::Imu, DataLogType::DOUBLE}}
+    {DataLogSignal::ImuAccelerationY, {"AccelerationY", DataLogGroup::Imu, DataLogType::DOUBLE}},
+    {DataLogSignal::ImuAccelerationZ, {"AccelerationZ", DataLogGroup::Imu, DataLogType::DOUBLE}}
     };
 
 #endif /* DATA_LOG_META_H */
