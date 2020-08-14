@@ -65,7 +65,8 @@ As one can see, some consumers will fetch data from the ``InputHolder``. This is
 a thread safe data structure which holds the latest input samples e.g., used by the
 ``StateControl`` which runs at a constant execution/sample rate i.e. to simplify
 the signal processing. Whereas the data logger only will store a sample once and uses
-the thread safe queue ``DataLogQueue``. Note other task may also populate this queue.
+the thread safe queue ``DataLogQueue``. Note that other tasks may also populate this
+queue.
 
 Note, some signals such as the ones from the pressure sensor will only be sampled
 at 10 Hz. This has to be handled by the state controller.

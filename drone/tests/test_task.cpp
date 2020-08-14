@@ -1,5 +1,6 @@
 #include <catch.h>
 
+#include <thread>
 #include <task.h>
 
 static const uint32_t EXEC_SLEEP_MS = 100;
