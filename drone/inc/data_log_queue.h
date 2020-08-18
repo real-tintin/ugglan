@@ -29,6 +29,13 @@ private:
     uint32_t _prev_timestamp_ms = wall_time.millis();
     std::deque<DataLogSample> _samples;
     std::mutex _mutex;
+
+    template <typename T>
+    DataLogType _get_data_type(T data);
+
+    uint32_t _get_rel_timestamp();
+
+    void _check_signal_type(DataLogSignal signal, DataLogType type);
 };
 
 template <typename T>
@@ -37,57 +44,60 @@ void DataLogQueue::push(T data, DataLogSignal signal)
     const std::lock_guard<std::mutex> lock(_mutex);
 
     DataLogSample sample;
+
     std::memcpy(&sample.data, &data, sizeof(T));
+    sample.rel_timestamp_ms = _get_rel_timestamp();
+    sample.type = _get_data_type(data);
     sample.signal = signal;
 
-    if ((wall_time.millis() - _prev_timestamp_ms) < UINT8_MAX)
-    {
-        sample.rel_timestamp_ms = wall_time.millis() - _prev_timestamp_ms;
-    }
-    else
-    {
-        sample.rel_timestamp_ms = UINT8_MAX;
-        throw std::runtime_error("Data log queue timstamp overflow. Called too seldom");
-    }
+    _check_signal_type(signal, sample.type);
+
+    _samples.push_back(sample);
+}
+
+template <typename T>
+DataLogType DataLogQueue::_get_data_type(T data)
+{
+    DataLogType type;
 
     if (std::is_same<T, uint8_t>::value)
     {
-        sample.type = DataLogType::UINT8;
+        type = DataLogType::UINT8;
     }
     else if (std::is_same<T, uint16_t>::value)
     {
-        sample.type = DataLogType::UINT16;
+        type = DataLogType::UINT16;
     }
     else if (std::is_same<T, uint32_t>::value)
     {
-        sample.type = DataLogType::UINT32;
+        type = DataLogType::UINT32;
     }
     else if (std::is_same<T, int8_t>::value)
     {
-        sample.type = DataLogType::SINT8;
+        type = DataLogType::SINT8;
     }
     else if (std::is_same<T, int16_t>::value)
     {
-        sample.type = DataLogType::SINT16;
+        type = DataLogType::SINT16;
     }
     else if (std::is_same<T, int32_t>::value)
     {
-        sample.type = DataLogType::SINT32;
+        type = DataLogType::SINT32;
     }
     else if (std::is_same<T, float>::value)
     {
-        sample.type = DataLogType::FLOAT;
+        type = DataLogType::FLOAT;
     }
     else if (std::is_same<T, double>::value)
     {
-        sample.type = DataLogType::DOUBLE;
+        type = DataLogType::DOUBLE;
     }
     else
     {
-        throw std::runtime_error("Unsupported data type.");
+        throw std::runtime_error("Unsupported data type");
     }
 
-    _samples.push_back(sample);
+    return type;
 }
 
 #endif /* DATA_LOG_QUEUE_H */

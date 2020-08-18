@@ -28,23 +28,23 @@ enum class DataLogSignal {
 
 typedef struct {
     std::string name;
-} GroupInfo;
+} DataLogGroupInfo;
 
 typedef struct {
     std::string name;
     DataLogGroup group;
-    DataLogType data_type;
-} SignalInfo;
+    DataLogType type;
+} DataLogSignalInfo;
 
-typedef std::map<DataLogGroup, GroupInfo> DataLogGroupInfo;
-typedef std::map<DataLogSignal, SignalInfo> DataLogSignalInfo;
+typedef std::map<DataLogGroup, DataLogGroupInfo> DataLogGroupMap;
+typedef std::map<DataLogSignal, DataLogSignalInfo> DataLogSignalMap;
 
-inline const DataLogGroupInfo DATA_LOG_GROUP_INFO = {
+inline const DataLogGroupMap DATA_LOG_GROUP_MAP = {
     {DataLogGroup::Imu, {"IMU"}},
     {DataLogGroup::Esc, {"ESC"}}
     };
 
-inline const DataLogSignalInfo DATA_LOG_SIGNAL_INFO = {
+inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::ImuAccelerationX, {"AccelerationX", DataLogGroup::Imu, DataLogType::DOUBLE}},
     {DataLogSignal::ImuAccelerationY, {"AccelerationY", DataLogGroup::Imu, DataLogType::DOUBLE}},
     {DataLogSignal::ImuAccelerationZ, {"AccelerationZ", DataLogGroup::Imu, DataLogType::DOUBLE}}
