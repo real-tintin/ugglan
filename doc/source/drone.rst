@@ -10,7 +10,7 @@ are not covered in this document, for details see the arthur's master thesis
 Software
 =================
 
-The Drone
+Tasks
 ---------------
 The drone's top level software design can be seen as a task manager, (asynchronous
 and synchronous) solving the producer and consumer problem. Where the producers are
@@ -70,6 +70,53 @@ queue.
 
 Note, some signals such as the ones from the pressure sensor will only be sampled
 at 10 Hz. This has to be handled by the state controller.
+
+Data Logging
+-----------------
+The ``DataLogger`` handles the data serialization of signals e.g., the IMU acceleration
+which is continuously written to disk. It consists of a **HEADER** and the **DATA**.
+The header is a json-file describing the underlying data. See :numref:`data_log_protocol`
+for an illustration of the data protocol.
+
+.. _data_log_protocol:
+.. figure:: figures/data_log_protocol.svg
+    :width: 100%
+
+    Data logging protocol specification.
+
+The json-file is used to parse the **DATA** section, see example below.
+
+.. code-block:: json
+
+    {
+        "start_time": "1990-08-30T22:52:50Z",
+        "types": {
+            "UINT8": 0,
+            "UINT16": 1,
+            "UINT32": 2,
+            "SINT8": 3,
+            "SINT16": 4,
+            "SINT32": 5,
+            "FLOAT": 6,
+            "DOUBLE": 7
+        },
+        "groups": {
+            "IMU": 0,
+            "ESC": 1
+        },
+        "signals": {
+            "0": {
+                "name": "AccelerationX",
+                "group": 0,
+                "type": 7
+            },
+            "1": {
+                "name": "Status",
+                "group": 2,
+                "type": 0
+            }
+        }
+    }
 
 Hardware
 =================
