@@ -14,7 +14,7 @@
    viewBox="0 0 576.7254 233.26556"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
    sodipodi:docname="data_log_protocol.svg">
   <defs
      id="defs2" />
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49450749"
-     inkscape:cx="958.30029"
-     inkscape:cy="27.323989"
+     inkscape:zoom="0.76095916"
+     inkscape:cx="1289.605"
+     inkscape:cy="388.49805"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -54,7 +54,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1238,21 +1238,21 @@
        style="fill:#fe0000;fill-opacity:0.30434798;stroke:#000000;stroke-width:0.84852815;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <rect
        id="rect3713-4-5-1-3-3-9"
-       width="121.70834"
+       width="100.54168"
        height="31.750006"
        x="370.41666"
        y="106.5"
-       style="fill:#000000;fill-opacity:0.1835749;stroke:#000000;stroke-width:0.80000001;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="fill:#000000;fill-opacity:0.1835749;stroke:#000000;stroke-width:0.72711462;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.64569134"
-       x="178.61923"
+       x="179.20825"
        y="114.67258"
        id="text4532-1-1-9"
        transform="scale(0.89837638,1.1131192)"><tspan
          sodipodi:role="line"
          id="tspan887"
-         x="178.61923"
+         x="179.20825"
          y="114.67258">SIGNAL ID</tspan></text>
     <text
        xml:space="preserve"
@@ -1268,14 +1268,14 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.64569134"
-       x="417.24075"
-       y="114.71347"
+       x="419.00781"
+       y="114.23808"
        id="text4532-1-1-9-2"
        transform="scale(0.89837638,1.1131192)"><tspan
          sodipodi:role="line"
          id="tspan891"
-         x="417.24075"
-         y="114.71347">REL TIMESTAMP MS</tspan></text>
+         x="419.00781"
+         y="114.23808">REL TIMESTAMP</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3, 1;stroke-dashoffset:0;stroke-opacity:0.52156863"
        d="M 216.95833,64.166664 153.45833,106.5"
@@ -1315,9 +1315,9 @@
        id="path951"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:4, 2;stroke-dashoffset:0;stroke-opacity:0.52156863"
-       d="M 291.04166,64.166664 492.12499,106.5"
-       id="path1898"
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.52156866;stroke-miterlimit:4;stroke-dasharray:4, 2;stroke-dashoffset:0"
+       d="M 291.04167,64.166631 470.95833,106.49996"
+       id="path5126"
        inkscape:connector-curvature="0" />
   </g>
 </svg>
