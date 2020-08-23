@@ -7,8 +7,6 @@
 
 #include <data_logger.h>
 
-#include <iostream>
-
 static const std::time_t HEADER_TIME = 0;
 static const std::string HEADER_PATH = "./tests/resources/header.json";
 
@@ -27,9 +25,6 @@ TEST_CASE("data_logger: generate header")
 {
     std::string exp_header = read_file(HEADER_PATH);
     std::string act_header = generate_header(HEADER_TIME);
-
-    std::cout << "exp_header: " << exp_header << std::endl;
-    std::cout << "act_header: " << act_header << std::endl;
 
     REQUIRE(act_header.size() > 0);
     REQUIRE(exp_header.compare(act_header) == 0);

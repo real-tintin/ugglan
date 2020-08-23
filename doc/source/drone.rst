@@ -93,18 +93,18 @@ The json-file is compressed using gzip to save space. See example header below.
     {
         "start_time": "1990-08-30T22:52:50Z",
         "types": {
-            "UINT8": 0,
-            "UINT16": 1,
-            "UINT32": 2,
-            "SINT8": 3,
-            "SINT16": 4,
-            "SINT32": 5,
-            "FLOAT": 6,
-            "DOUBLE": 7
+            "0": "UINT8",
+            "1": "UINT16",
+            "2": "UINT32",
+            "3": "SINT8",
+            "4": "SINT16",
+            "5": "SINT32",
+            "6": "FLOAT",
+            "7": "DOUBLE"
         },
         "groups": {
-            "IMU": 0,
-            "ESC": 1
+            "0": "IMU",
+            "1": "ESC"
         },
         "signals": {
             "0": {
@@ -113,8 +113,8 @@ The json-file is compressed using gzip to save space. See example header below.
                 "type": 7
             },
             "1": {
-                "name": "Status",
-                "group": 2,
+                "name": "Status0",
+                "group": 1,
                 "type": 0
             }
         }
