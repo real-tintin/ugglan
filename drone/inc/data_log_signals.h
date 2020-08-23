@@ -1,19 +1,9 @@
-#ifndef DATA_LOG_META_H
-#define DATA_LOG_META_H
+#ifndef DATA_LOG_SIGNALS_H
+#define DATA_LOG_SIGNALS_H
 
 #include <cstdint>
 #include <map>
-
-enum class DataLogType {
-    UINT8,
-    UINT16,
-    UINT32,
-    SINT8,
-    SINT16,
-    SINT32,
-    FLOAT,
-    DOUBLE
-};
+#include <data_log_types.h>
 
 enum class DataLogGroup {
     Imu,
@@ -23,7 +13,9 @@ enum class DataLogGroup {
 enum class DataLogSignal {
     ImuAccelerationX,
     ImuAccelerationY,
-    ImuAccelerationZ
+    ImuAccelerationZ,
+
+    EscStatus0
 };
 
 typedef struct {
@@ -47,7 +39,9 @@ inline const DataLogGroupMap DATA_LOG_GROUP_MAP = {
 inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::ImuAccelerationX, {"AccelerationX", DataLogGroup::Imu, DataLogType::DOUBLE}},
     {DataLogSignal::ImuAccelerationY, {"AccelerationY", DataLogGroup::Imu, DataLogType::DOUBLE}},
-    {DataLogSignal::ImuAccelerationZ, {"AccelerationZ", DataLogGroup::Imu, DataLogType::DOUBLE}}
+    {DataLogSignal::ImuAccelerationZ, {"AccelerationZ", DataLogGroup::Imu, DataLogType::DOUBLE}},
+
+    {DataLogSignal::EscStatus0, {"Status0", DataLogGroup::Esc, DataLogType::UINT8}}
     };
 
-#endif /* DATA_LOG_META_H */
+#endif /* DATA_LOG_SIGNALS_H */

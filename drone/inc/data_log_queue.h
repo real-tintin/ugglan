@@ -7,7 +7,12 @@
 #include <mutex>
 #include <type_traits>
 #include <wall_time.h>
-#include <data_log_meta.h>
+
+#if defined(UNIT_TEST)
+#include <data_log_test_signals.h>
+#else
+#include <data_log_signals.h>
+#endif
 
 typedef struct {
     uint64_t data;
