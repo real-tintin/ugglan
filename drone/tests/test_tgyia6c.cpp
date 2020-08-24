@@ -76,40 +76,40 @@ uint8_t VALID_BUF[VALID_BUF_SIZE] =
     0b11111000
 };
 
-void assert_init_values(Tgyia6c* rc_receiver)
+void assert_init_values(Tgyia6c& rc_receiver)
 {
-    REQUIRE(fabs(rc_receiver->get_gimbal_left_x() - 0.5) <= FLOAT_TOL);
-    REQUIRE(fabs(rc_receiver->get_gimbal_left_y() - 0.0) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_gimbal_left_x() - 0.5) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_gimbal_left_y() - 0.0) <= FLOAT_TOL);
 
-    REQUIRE(fabs(rc_receiver->get_gimbal_right_x() - 0.5) <= FLOAT_TOL);
-    REQUIRE(fabs(rc_receiver->get_gimbal_right_y() - 0.5) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_gimbal_right_x() - 0.5) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_gimbal_right_y() - 0.5) <= FLOAT_TOL);
 
-    REQUIRE(fabs(rc_receiver->get_knob() - 0.0) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_knob() - 0.0) <= FLOAT_TOL);
 
-    REQUIRE(rc_receiver->get_switch_left() == SwitchLr::High);
-    REQUIRE(rc_receiver->get_switch_right() == SwitchLr::High);
-    REQUIRE(rc_receiver->get_switch_middle() == SwitchM::High);
+    REQUIRE(rc_receiver.get_switch_left() == SwitchLr::High);
+    REQUIRE(rc_receiver.get_switch_right() == SwitchLr::High);
+    REQUIRE(rc_receiver.get_switch_middle() == SwitchM::High);
 }
 
-void assert_valid_values(Tgyia6c* rc_receiver)
+void assert_valid_values(Tgyia6c& rc_receiver)
 {
-    REQUIRE(fabs(rc_receiver->get_gimbal_left_x() - 0.0) <= FLOAT_TOL);
-    REQUIRE(fabs(rc_receiver->get_gimbal_left_y() - 1.0) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_gimbal_left_x() - 0.0) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_gimbal_left_y() - 1.0) <= FLOAT_TOL);
 
-    REQUIRE(fabs(rc_receiver->get_gimbal_right_x() - 0.0) <= FLOAT_TOL);
-    REQUIRE(fabs(rc_receiver->get_gimbal_right_y() - 0.5) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_gimbal_right_x() - 0.0) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_gimbal_right_y() - 0.5) <= FLOAT_TOL);
 
-    REQUIRE(fabs(rc_receiver->get_knob() - 0.0) <= FLOAT_TOL);
+    REQUIRE(fabs(rc_receiver.get_knob() - 0.0) <= FLOAT_TOL);
 
-    REQUIRE(rc_receiver->get_switch_left() == SwitchLr::Middle);
-    REQUIRE(rc_receiver->get_switch_right() == SwitchLr::Middle);
-    REQUIRE(rc_receiver->get_switch_middle() == SwitchM::Low);
+    REQUIRE(rc_receiver.get_switch_left() == SwitchLr::Middle);
+    REQUIRE(rc_receiver.get_switch_right() == SwitchLr::Middle);
+    REQUIRE(rc_receiver.get_switch_middle() == SwitchM::Low);
 }
 
 TEST_CASE("tgyia6c initialized")
 {
     SerialConn serial_conn;
-    Tgyia6c rc_receiver(&serial_conn);
+    Tgyia6c rc_receiver(serial_conn);
 
     SECTION("status")
     {
@@ -117,27 +117,27 @@ TEST_CASE("tgyia6c initialized")
     }
     SECTION("init values")
     {
-       assert_init_values(&rc_receiver);
+       assert_init_values(rc_receiver);
     }
 }
 
 TEST_CASE("tgyia6c parse data")
 {
     SerialConn serial_conn;
-    Tgyia6c rc_receiver(&serial_conn);
+    Tgyia6c rc_receiver(serial_conn);
 
     SECTION("valid")
     {
         serial_conn.set_read_buf(VALID_BUF, VALID_BUF_SIZE);
         rc_receiver.update();
 
-        assert_valid_values(&rc_receiver);
+        assert_valid_values(rc_receiver);
     }
     SECTION("invalid")
     {
         serial_conn.set_read_buf(INVALID_BUF, INVALID_BUF_SIZE);
         rc_receiver.update();
 
-        assert_init_values(&rc_receiver);
+        assert_init_values(rc_receiver);
     }
 }

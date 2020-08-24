@@ -76,7 +76,7 @@ inline const double AFRO_MS_IN_MIN = 60000.0;
 class AfroEsc
 {
 public:
-    AfroEsc(I2cConn* i2c_conn);
+    AfroEsc(I2cConn& i2c_conn);
 
     void read();
     void write(int16_t command);
@@ -95,7 +95,7 @@ private:
     void _update_rpm_timer();
     void _reset_is_alive_byte();
 
-    I2cConn* _i2c_conn;
+    I2cConn& _i2c_conn;
 
     uint8_t _buf_read[AFRO_READ_BUF_SIZE] = {0};
     uint8_t _buf_write[AFRO_WRITE_BUF_SIZE] = {0};

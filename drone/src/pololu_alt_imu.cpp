@@ -1,6 +1,6 @@
 #include <pololu_alt_imu.h>
 
-PololuAltImu::PololuAltImu(I2cConn* i2c_conn) :
+PololuAltImu::PololuAltImu(I2cConn& i2c_conn) :
     _i2c_conn(i2c_conn)
 {
     _open_i2c_conn();
@@ -20,7 +20,7 @@ void PololuAltImu::update()
         uint8_t reg = it.first;
         uint8_t size = it.second;
 
-        did_read &= _i2c_conn->read_block_data(reg | POLOLU_AUTO_INCREMENT, size, _get_buffer(reg));
+        did_read &= _i2c_conn.read_block_data(reg | POLOLU_AUTO_INCREMENT, size, _get_buffer(reg));
     }
 
     if (!did_read)
@@ -40,7 +40,7 @@ uint8_t PololuAltImu::get_status()
 
 void PololuAltImu::_open_i2c_conn()
 {
-    if (!_i2c_conn->open())
+    if (!_i2c_conn.open())
     {
         _status = POLOLU_STATUS_ERR_INIT;
     }
@@ -64,7 +64,7 @@ void PololuAltImu::_write_config()
         uint8_t reg = it.first;
         uint8_t data = it.second;
 
-        did_write &= _i2c_conn->write_byte_data(reg, data);
+        did_write &= _i2c_conn.write_byte_data(reg, data);
     }
 
     if (!did_write)

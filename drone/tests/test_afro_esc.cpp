@@ -47,7 +47,7 @@ TEST_CASE("afro esc")
     i2c_conn.set_write_map(WRITE_MAP);
     i2c_conn.set_read_block_map(READ_MAP);
 
-    AfroEsc esc(&i2c_conn);
+    AfroEsc esc(i2c_conn);
 
     SECTION("initialized")
     {

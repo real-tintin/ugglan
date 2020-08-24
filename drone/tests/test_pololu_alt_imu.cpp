@@ -44,7 +44,7 @@ static I2cWriteMap INVALID_WRITE_MAP = {
 class TestPololuAltImu : public PololuAltImu
 {
 public:
-    TestPololuAltImu(I2cConn* i2c_conn) : PololuAltImu(i2c_conn)
+    TestPololuAltImu(I2cConn& i2c_conn) : PololuAltImu(i2c_conn)
     {
         _setup(CONFIG_MAP, READ_MAP);
     }
@@ -66,7 +66,7 @@ I2cConn get_i2c_conn_stub(I2cReadBlockMap read_map, I2cWriteMap write_map)
 TEST_CASE("pololu_alt_imu: valid")
 {
     I2cConn valid_i2c_conn = get_i2c_conn_stub(VALID_READ_MAP, VALID_WRITE_MAP);
-    TestPololuAltImu alt_imu(&valid_i2c_conn);
+    TestPololuAltImu alt_imu(valid_i2c_conn);
 
     SECTION("config")
     {
@@ -85,7 +85,7 @@ TEST_CASE("pololu_alt_imu: valid")
 TEST_CASE("pololu_alt_imu: invalid")
 {
     I2cConn invalid_i2c_conn = get_i2c_conn_stub(INVALID_READ_MAP, INVALID_WRITE_MAP);
-    TestPololuAltImu alt_imu(&invalid_i2c_conn);
+    TestPololuAltImu alt_imu(invalid_i2c_conn);
 
     SECTION("config")
     {
@@ -104,7 +104,7 @@ TEST_CASE("pololu_alt_imu: invalid")
 TEST_CASE("pololu_alt_imu: recover error read status")
 {
     I2cConn i2c_conn = get_i2c_conn_stub(VALID_READ_MAP, VALID_WRITE_MAP);
-    TestPololuAltImu alt_imu(&i2c_conn);
+    TestPololuAltImu alt_imu(i2c_conn);
 
     alt_imu.update();
     REQUIRE(alt_imu.get_status() == POLOLU_STATUS_OK);

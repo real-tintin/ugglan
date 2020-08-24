@@ -47,7 +47,7 @@ inline const ReadMap L3GD20H_READ_MAP = {
 class L3gd20h : public PololuAltImu
 {
 public:
-    L3gd20h(I2cConn* i2c_conn);
+    L3gd20h(I2cConn& i2c_conn);
 
     double get_angular_rate_x();
     double get_angular_rate_y();

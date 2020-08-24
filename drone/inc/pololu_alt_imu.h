@@ -25,7 +25,7 @@ typedef std::map<uint8_t, uint8_t*> BufferMap;
 class PololuAltImu
 {
 public:
-    PololuAltImu(I2cConn* i2c_conn);
+    PololuAltImu(I2cConn& i2c_conn);
 
     ~PololuAltImu();
 
@@ -46,7 +46,7 @@ protected:
 private:
     uint8_t _status = POLOLU_STATUS_OK;
 
-    I2cConn* _i2c_conn;
+    I2cConn& _i2c_conn;
 
     ConfigMap _config_map;
     ReadMap _read_map;

@@ -1,6 +1,6 @@
 #include <afro_esc.h>
 
-AfroEsc::AfroEsc(I2cConn* i2c_conn) :
+AfroEsc::AfroEsc(I2cConn& i2c_conn) :
     _i2c_conn(i2c_conn)
 {
     _open_i2c_conn();
@@ -11,7 +11,7 @@ void AfroEsc::read()
 {
     _reset_is_alive_byte();
 
-    bool did_read = _i2c_conn->read_block_data(AFRO_READ_REV_H, AFRO_READ_BUF_SIZE, _buf_read);
+    bool did_read = _i2c_conn.read_block_data(AFRO_READ_REV_H, AFRO_READ_BUF_SIZE, _buf_read);
 
     if (did_read)
     {
@@ -29,7 +29,7 @@ void AfroEsc::write(int16_t command)
     _buf_write[0] = command >> 8;
     _buf_write[1] = command;
 
-    bool did_write = _i2c_conn->write_block_data(AFRO_WRITE_THROTTLE_H, AFRO_WRITE_BUF_SIZE, _buf_write);
+    bool did_write = _i2c_conn.write_block_data(AFRO_WRITE_THROTTLE_H, AFRO_WRITE_BUF_SIZE, _buf_write);
 
     if (did_write)
     {
@@ -93,7 +93,7 @@ uint8_t AfroEsc::get_status()
 
 void AfroEsc::_open_i2c_conn()
 {
-    if (!_i2c_conn->open())
+    if (!_i2c_conn.open())
     {
         _status = AFRO_STATUS_ERR_INIT;
     }

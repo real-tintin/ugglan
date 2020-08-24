@@ -2,10 +2,10 @@
 
 using json = nlohmann::ordered_json;
 
-void _add_header_start_time(json &header, std::time_t start_time);
-void _add_header_types(json &header);
-void _add_header_groups(json &header);
-void _add_header_signals(json &header);
+void _add_header_start_time(json& header, std::time_t start_time);
+void _add_header_types(json& header);
+void _add_header_groups(json& header);
+void _add_header_signals(json& header);
 
 std::string generate_header(std::time_t start_time)
 {
@@ -19,7 +19,7 @@ std::string generate_header(std::time_t start_time)
     return header.dump(4);
 }
 
-void _add_header_start_time(json &header, std::time_t t)
+void _add_header_start_time(json& header, std::time_t t)
 {
     std::stringstream buf;
 
@@ -29,7 +29,7 @@ void _add_header_start_time(json &header, std::time_t t)
     header["start_time"] = buf.str();
 }
 
-void _add_header_types(json &header)
+void _add_header_types(json& header)
 {
     for (auto const& it: DATA_LOG_TYPE_MAP)
     {
@@ -40,7 +40,7 @@ void _add_header_types(json &header)
     }
 }
 
-void _add_header_groups(json &header)
+void _add_header_groups(json& header)
 {
     for (auto const& it: DATA_LOG_GROUP_MAP)
     {
@@ -51,7 +51,7 @@ void _add_header_groups(json &header)
     }
 }
 
-void _add_header_signals(json &header)
+void _add_header_signals(json& header)
 {
     for (auto const& it: DATA_LOG_SIGNAL_MAP)
     {

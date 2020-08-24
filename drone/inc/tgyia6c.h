@@ -95,7 +95,7 @@ inline const ControlFlags TGYIA6C_SERIAL_OPT =
 class Tgyia6c
 {
 public:
-    Tgyia6c(SerialConn* serial_conn);
+    Tgyia6c(SerialConn& serial_conn);
 
     void update();
 
@@ -129,7 +129,7 @@ private:
 
     uint16_t _channel[TGYIA6C_PROTOCOL_CHANNELS] = {0};
 
-    SerialConn* _serial_conn;
+    SerialConn& _serial_conn;
 
     void _open_serial_conn();
     void _set_init_values();

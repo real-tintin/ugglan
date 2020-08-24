@@ -1,6 +1,6 @@
 #include <tgyia6c.h>
 
-Tgyia6c::Tgyia6c(SerialConn* serial_conn) :
+Tgyia6c::Tgyia6c(SerialConn& serial_conn) :
     _serial_conn(serial_conn)
 {
     _open_serial_conn();
@@ -73,7 +73,7 @@ uint8_t Tgyia6c::get_status()
 
 void Tgyia6c::_open_serial_conn()
 {
-    if (!_serial_conn->open(TGYIA6C_SERIAL_MODE, TGYIA6C_SERIAL_OPT))
+    if (!_serial_conn.open(TGYIA6C_SERIAL_MODE, TGYIA6C_SERIAL_OPT))
     {
         _status = TGYIA6C_STATUS_ERR_INIT;
     }
@@ -96,7 +96,7 @@ void Tgyia6c::_set_init_values()
 
 void Tgyia6c::_read_to_buffer()
 {
-    _n_bytes = _serial_conn->read(_buf, TGYIA6C_BUF_SIZE); // Non-blocking mode
+    _n_bytes = _serial_conn.read(_buf, TGYIA6C_BUF_SIZE); // Non-blocking mode
 }
 
 void Tgyia6c::_parse_buffer()

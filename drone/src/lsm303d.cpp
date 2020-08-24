@@ -1,6 +1,6 @@
 #include <lsm303d.h>
 
-Lsm303d::Lsm303d(I2cConn* i2c_conn) : PololuAltImu(i2c_conn)
+Lsm303d::Lsm303d(I2cConn& i2c_conn) : PololuAltImu(i2c_conn)
 {
     _setup(LSM303D_CONFIG_MAP, LSM303D_READ_MAP);
 }

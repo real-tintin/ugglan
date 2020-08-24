@@ -1,6 +1,6 @@
 #include <l3gd20h.h>
 
-L3gd20h::L3gd20h(I2cConn* i2c_conn) : PololuAltImu(i2c_conn)
+L3gd20h::L3gd20h(I2cConn& i2c_conn) : PololuAltImu(i2c_conn)
 {
     _setup(L3GD20H_CONFIG_MAP, L3GD20H_READ_MAP);
 }

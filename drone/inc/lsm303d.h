@@ -72,7 +72,7 @@ inline const ReadMap LSM303D_READ_MAP = {
 class Lsm303d : public PololuAltImu
 {
 public:
-    Lsm303d(I2cConn* i2c_conn);
+    Lsm303d(I2cConn& i2c_conn);
 
     double get_acceleration_x();
     double get_acceleration_y();
