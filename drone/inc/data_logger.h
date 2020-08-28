@@ -5,7 +5,7 @@
 #include <string>
 #include <ctime>
 #include <fstream>
-#include <nlohmann/json.h>
+#include <gzip/compress.hpp>
 #include <data_log_header.h>
 #include <data_log_queue.h>
 

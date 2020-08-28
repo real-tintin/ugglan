@@ -9,6 +9,7 @@ SRCEXT := cpp
 
 CXX = g++
 CXXFLAGS += -Wall -std=c++17 -pthread
+LDFLAGS += -lz
 
 SRCDIR := ./src
 OBJDIR := ./build
@@ -34,7 +35,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	@echo "Linking..."
-	$(LINK.cc) $^ -o $(OBJDIR)/$(TARGET) $(LIB)
+	$(LINK.cc) $^ -o $(OBJDIR)/$(TARGET) $(LIB) $(LDFLAGS)
 
 $(OBJECTS): $(OBJDIR)/%.o: %.$(SRCEXT)
 	@echo "Compiling..."

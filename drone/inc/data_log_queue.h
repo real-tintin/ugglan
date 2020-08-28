@@ -31,7 +31,8 @@ public:
 
     bool is_empty();
 private:
-    uint32_t _prev_timestamp_ms = wall_time.millis();
+    bool _first_sample = true;
+    uint32_t _prev_timestamp_ms;
     std::deque<DataLogSample> _samples;
     std::mutex _mutex;
 

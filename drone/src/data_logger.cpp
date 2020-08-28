@@ -26,10 +26,11 @@ void DataLogger::stop()
 void DataLogger::_create_and_write_header()
 {
     std::time_t now_time = std::time(nullptr);
-    std::string header = generate_header(now_time);
 
-    // TODO: gzip header.
-    _write(header.c_str(), header.size());
+    std::string header_json = generate_header(now_time);
+    std::string header_gzip = gzip::compress(header_json.c_str(), header_json.size());
+
+    _write(header_gzip.c_str(), header_gzip.size());
 }
 
 void DataLogger::_open()

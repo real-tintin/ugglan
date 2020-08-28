@@ -21,6 +21,12 @@ uint32_t DataLogQueue::_get_rel_timestamp()
     uint32_t rel_timestamp_ms;
     uint32_t now_timestamp_ms = wall_time.millis();
 
+    if (_first_sample)
+    {
+        _prev_timestamp_ms = now_timestamp_ms;
+        _first_sample = false;
+    }
+
     if ((now_timestamp_ms - _prev_timestamp_ms) < UINT8_MAX)
     {
         rel_timestamp_ms = now_timestamp_ms - _prev_timestamp_ms;
