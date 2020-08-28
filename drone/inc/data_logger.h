@@ -4,9 +4,9 @@
 #include <cstdint>
 #include <string>
 #include <ctime>
-#include <iomanip>
-#include <sstream>
+#include <fstream>
 #include <nlohmann/json.h>
+#include <data_log_header.h>
 #include <data_log_queue.h>
 
 #if defined(UNIT_TEST)
@@ -18,13 +18,21 @@
 class DataLogger
 {
 public:
-    DataLogger(DataLogQueue& data_log_queue);
+    DataLogger(DataLogQueue& queue, std::string path);
 
     void start();
     void pack();
     void stop();
 private:
-    DataLogQueue& _data_log_queue;
+    DataLogQueue& _queue;
+    std::string _path;
+    std::ofstream _ofs;
+
+    void _create_and_write_header();
+
+    void _open();
+    void _write(const char* buf, uint32_t size);
+    void _close();
 };
 
 #endif /* DATA_LOGGER_H */
