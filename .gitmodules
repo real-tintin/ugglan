@@ -1,3 +1,6 @@
 [submodule "drone/tgy"]
-	path = drone/tgy
+	path = submodules/tgy
 	url = https://github.com/real-tintin/tgy
+[submodule "drone/json"]
+	path = submodules/json
+	url = https://github.com/real-tintin/json

@@ -12,3 +12,7 @@ source "${PYENV_ROOT}/Scripts/activate"
 
 pip install --upgrade pip
 pip install -r "${PYENV_REQ}"
+
+# Init and update submodules
+git submodule init
+git submodule update
