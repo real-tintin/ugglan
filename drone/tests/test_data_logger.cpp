@@ -6,7 +6,7 @@
 #include <data_log_queue.h>
 #include <data_logger.h>
 
-static const std::string DATA_LOG_PATH = "./tests/test.dat";
+catch_utils::TmpDir tmpdir;
 
 static const uint32_t EXEC_PERIOD_IMU_MS = 20; // 50 Hz
 static const uint32_t EXEC_PERIOD_ESC_MS = 10; // 100 Hz
@@ -15,7 +15,7 @@ static const uint32_t EXEC_PERIOD_LOGGER_MS = 5; // 200 Hz
 static const uint32_t SLEEP_MAIN_MS = 200;
 
 DataLogQueue queue;
-DataLogger logger(queue, DATA_LOG_PATH);
+DataLogger logger(queue, tmpdir.get_path());
 
 class TestTaskImu : public Task
 {
@@ -46,7 +46,6 @@ protected:
     void _finish() {  logger.stop(); }
 };
 
-
 TEST_CASE("data_logger")
 {
     TestTaskImu task_imu(EXEC_PERIOD_IMU_MS, nullptr);
@@ -63,8 +62,7 @@ TEST_CASE("data_logger")
     task_esc.teardown();
     task_logger.teardown();
 
-    std::string data = read_file(DATA_LOG_PATH);
+    std::string data = catch_utils::read_file(logger.get_file_path());
     REQUIRE(data.size() > 0);
     // TODO: Compare file size to exp estimated size.
-    // TODO: Create a test area/folder which is created/cleaned by catch.
 }
