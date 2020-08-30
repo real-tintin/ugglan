@@ -60,7 +60,7 @@ void DataLogger::_pack_queue_until_empty()
     {
         sample = _queue.pop();
 
-        _write((char*) &sample.signal, sizeof(uint16_t));
+        _write((const char*) &sample.signal, sizeof(uint16_t));
 
         switch(sample.type)
         {
@@ -90,7 +90,7 @@ void DataLogger::_pack_queue_until_empty()
                 break;
         }
 
-        _write((char*) &sample.rel_timestamp_ms, sizeof(uint8_t));
+        _write((const char*) &sample.rel_timestamp_ms, sizeof(uint8_t));
     }
 }
 
