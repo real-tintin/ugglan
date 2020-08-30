@@ -7,6 +7,7 @@
 #include <fstream>
 #include <filesystem>
 #include <gzip/compress.hpp>
+#include <base64/base64.hpp>
 #include <data_log_header.h>
 #include <data_log_queue.h>
 
@@ -16,6 +17,7 @@
 #include <data_log_signals.h>
 #endif
 
+inline const std::string DATA_LOG_ENDL = "\n";
 inline const std::string DATA_LOG_FILE_EXT = "dat";
 
 class DataLogger
@@ -37,6 +39,8 @@ private:
 
     void _create_and_write_header();
     void _create_file_path();
+
+    void _pack_queue_until_empty();
 
     void _open();
     void _write(const char* buf, uint32_t size);

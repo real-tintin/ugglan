@@ -1,9 +1,3 @@
 [submodule "submodules/tgy"]
 	path = submodules/tgy
 	url = https://github.com/real-tintin/tgy
-[submodule "submodules/json"]
-	path = submodules/json
-	url = https://github.com/real-tintin/json
-[submodule "submodules/gzip"]
-	path = submodules/gzip
-	url = https://github.com/real-tintin/gzip-hpp

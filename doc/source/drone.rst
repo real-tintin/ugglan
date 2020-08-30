@@ -86,7 +86,8 @@ section. The **HEADER** is a json-file describing the **DATA** section. See
     and of type ``uint16``. The **REL TIMESTAMP** is the relative timestamp in ms
     between each **PAYLOAD** and of type ``uint8``.
 
-The json-file is compressed using gzip to save space. See example header below.
+The json-file is compressed using gzip (and base64 encoded) to save space. See example
+header below.
 
 .. code-block:: json
 
