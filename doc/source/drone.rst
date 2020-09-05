@@ -74,17 +74,17 @@ at 10 Hz. This has to be handled by the state controller.
 Data Logging
 -----------------
 The ``DataLogger`` handles the data serialization of signals e.g., the IMU acceleration
-which is continuously written to disk. It consists of a **HEADER** section and a **DATA**
-section. The **HEADER** is a json-file describing the **DATA** section. See
-:numref:`data_log_protocol` for an illustration of the data protocol.
+which is continuously written to disk. It consists of a **HEADER** section - a json string,
+describing the content of the second **DATA PACKAGES** section. See :numref:`data_log_protocol`
+for an illustration of the data-log protocol.
 
 .. _data_log_protocol:
 .. figure:: figures/data_log_protocol.svg
     :width: 100%
 
-    The data logging protocol. The **SIGNAL ID** is an unique identifer for each signal
+    The data logging protocol. The **SIGNAL ID** is an unique identifer for each signal/package
     and of type ``uint16``. The **REL TIMESTAMP** is the relative timestamp in ms
-    between each **PAYLOAD** and of type ``uint8``.
+    between each **PACKAGE** and of type ``uint8``.
 
 The json-file is compressed using gzip (and base64 encoded) to save space. See example
 header below.

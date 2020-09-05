@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.76095916"
-     inkscape:cx="706.30568"
-     inkscape:cy="125.67186"
+     inkscape:cx="1229.363"
+     inkscape:cy="493.62853"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -99,14 +99,14 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25.7527771px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.64569134"
-       x="386.96136"
+       x="326.97195"
        y="-42.090435"
        id="text4532-1"
        transform="scale(0.89837638,1.1131192)"><tspan
          sodipodi:role="line"
          id="tspan4585"
-         x="386.96136"
-         y="-42.090435">DATA</tspan></text>
+         x="326.97195"
+         y="-42.090435">DATA PACKAGES</tspan></text>
     <rect
        id="rect3713-3"
        width="95.25"
@@ -131,7 +131,7 @@
          sodipodi:role="line"
          id="tspan1027"
          x="246.45535"
-         y="48.129894">PAYLOAD 0</tspan></text>
+         y="48.129894">PACKAGE 0</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.64569134"
@@ -142,7 +142,7 @@
          sodipodi:role="line"
          id="tspan1062"
          x="329.08817"
-         y="48.182621">PAYLOAD 1</tspan></text>
+         y="48.182621">PACKAGE 1</tspan></text>
     <rect
        id="rect3713-4-5-1-1-2"
        width="74.083328"
@@ -160,7 +160,7 @@
          sodipodi:role="line"
          id="tspan4840"
          x="517.56744"
-         y="48.221466">PAYLOAD N</tspan></text>
+         y="48.221466">PACKAGE N</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.80000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:6.4, 3.2;stroke-dashoffset:0;stroke-opacity:1"
        d="m 365.125,48.291664 h 95.24999"
@@ -274,35 +274,7 @@
        id="path5126"
        inkscape:connector-curvature="0" />
     <g
-       aria-label="    {
-        &quot;start_time&quot;: &quot;1990-08-30T22:52:50Z&quot;,
-        &quot;types&quot;: {
-            &quot;0&quot;: &quot;UINT8&quot;,
-            &quot;1&quot;: &quot;UINT16&quot;,
-            &quot;2&quot;: &quot;UINT32&quot;,
-            &quot;3&quot;: &quot;SINT8&quot;,
-            &quot;4&quot;: &quot;SINT16&quot;,
-            &quot;5&quot;: &quot;SINT32&quot;,
-            &quot;6&quot;: &quot;FLOAT&quot;,
-            &quot;7&quot;: &quot;DOUBLE&quot;
-        },
-        &quot;groups&quot;: {
-            &quot;0&quot;: &quot;IMU&quot;,
-            &quot;1&quot;: &quot;ESC&quot;
-        },
-        &quot;signals&quot;: {
-            &quot;0&quot;: {
-                &quot;name&quot;: &quot;AccelerationX&quot;,
-                &quot;group&quot;: 0,
-                &quot;type&quot;: 7
-            },
-            &quot;1&quot;: {
-                &quot;name&quot;: &quot;Status0&quot;,
-                &quot;group&quot;: 1,
-                &quot;type&quot;: 0
-            }
-        }
-    }"
+       aria-label="    {         &quot;start_time&quot;: &quot;1990-08-30T22:52:50Z&quot;,         &quot;types&quot;: {             &quot;0&quot;: &quot;UINT8&quot;,             &quot;1&quot;: &quot;UINT16&quot;,             &quot;2&quot;: &quot;UINT32&quot;,             &quot;3&quot;: &quot;SINT8&quot;,             &quot;4&quot;: &quot;SINT16&quot;,             &quot;5&quot;: &quot;SINT32&quot;,             &quot;6&quot;: &quot;FLOAT&quot;,             &quot;7&quot;: &quot;DOUBLE&quot;         },         &quot;groups&quot;: {             &quot;0&quot;: &quot;IMU&quot;,             &quot;1&quot;: &quot;ESC&quot;         },         &quot;signals&quot;: {             &quot;0&quot;: {                 &quot;name&quot;: &quot;AccelerationX&quot;,                 &quot;group&quot;: 0,                 &quot;type&quot;: 7             },             &quot;1&quot;: {                 &quot;name&quot;: &quot;Status0&quot;,                 &quot;group&quot;: 1,                 &quot;type&quot;: 0             }         }     }"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        id="text1120"
        transform="translate(-2.2545853,0.0740053)">
