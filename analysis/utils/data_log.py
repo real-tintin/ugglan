@@ -67,15 +67,19 @@ def _unpack_packages(header: Dict, packages: bytes) -> Signals:
         abs_timestamp_s += rel_timestamp_ms * S_IN_MS
 
         if not hasattr(data, group_name):
-            setattr(data, group_name, Group())
+            group = Group()
+            setattr(data, group_name, group)
+        else:
+            group = getattr(data, group_name)
 
-        group = getattr(data, group_name)
         if not hasattr(group, signal_name):
-            setattr(group, signal_name, Signal([value], [abs_timestamp_s]))
+            signal = Signal([], [])
+            setattr(group, signal_name, signal)
         else:
             signal = getattr(group, signal_name)
-            signal.val.append(value)
-            signal.t_s.append(abs_timestamp_s)
+
+        signal.val.append(value)
+        signal.t_s.append(abs_timestamp_s)
 
     return data
 
