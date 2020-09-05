@@ -34,3 +34,10 @@ For simplified compiling and flashing, use the included `makefile` or the
 `KKMulitCopter GUI <https://lazyzero.de/en/modellbau/kkmulticopterflashtool>`_.
 
 Note, to change the default rotation direction, modify ``MOTOR_REVERSE`` in *tgy.asm*.
+
+Python Modules
+===============
+When new Python modules are needed and installed, the *requirements.txt* shall be
+updated accordingly. Under python virtual env::
+
+    py -m pip freeze > requirements.txt
