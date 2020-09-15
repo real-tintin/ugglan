@@ -3,8 +3,9 @@
 
 #include <stdio.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <cstdint>
-
+#include <sys/ioctl.h>
 #include <termios.h>
 
 typedef struct

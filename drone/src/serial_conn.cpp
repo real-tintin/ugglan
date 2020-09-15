@@ -2,19 +2,19 @@
 
 #if !defined(UNIT_TEST)
 
-SerialConn::SerialConn(uint8_t address) :
+SerialConn::SerialConn(const char* device) :
     _device(device)
 {
 }
 
 SerialConn::~SerialConn()
 {
-    close(_fd);
+    ::close(_fd);
 }
 
 bool SerialConn::open(Mode mode, ControlFlags flags)
 {
-    if ((_fd = open(_device, mode)) < 0)
+    if ((_fd = ::open(_device, mode)) < 0)
     {
         struct termios options;
 
@@ -46,7 +46,7 @@ uint32_t SerialConn::get_bytes_available()
 uint32_t SerialConn::read(uint8_t* buf, uint32_t size)
 {
     if (_fd != -1) {
-        return ::read(_fd, buf, size); // :: to avoid collision
+        return ::read(_fd, buf, size);
     }
 
     return 0;

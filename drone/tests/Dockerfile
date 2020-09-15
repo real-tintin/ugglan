@@ -1,1 +1,5 @@
-FROM gcc:9.3
+FROM gcc:9.1
+
+# Create symbolic links ("alias") for GCC 9.1
+RUN cd /bin && ln -s /usr/local/bin/gcc gcc-9.1
+RUN cd /bin && ln -s /usr/local/bin/g++ g++-9.1

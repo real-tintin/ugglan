@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <cstdint>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
