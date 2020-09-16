@@ -1,0 +1,7 @@
+Package: ugglan
+Version: 0.0.1
+Architecture: all
+Maintainer: Oscar Goldring <oscar_goldring@outlook.com>
+Description: Ugglan
+ Runs the Ugglan executable.
+ 

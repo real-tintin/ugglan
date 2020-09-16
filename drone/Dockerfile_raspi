@@ -1,5 +1,8 @@
 FROM raspbian/stretch:latest
 
+# Copy dependent files (instead of mount to support Windows)
+COPY . /drone
+
 # Install dependenies
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y \

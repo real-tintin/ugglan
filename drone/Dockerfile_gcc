@@ -1,5 +1,8 @@
 FROM gcc:9.1
 
+# Copy dependent files (instead of mount to support Windows)
+COPY . /drone
+
 # Create symbolic links ("alias") for GCC 9.1
 RUN cd /bin && ln -s /usr/local/bin/gcc gcc-9.1
 RUN cd /bin && ln -s /usr/local/bin/g++ g++-9.1

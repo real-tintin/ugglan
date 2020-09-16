@@ -1,0 +1,11 @@
+[Unit]
+Description=Runs the Ugglan executable.
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=./ugglan
+WorkingDirectory=/usr/local/bin/ugglan
+
+[Install]
+WantedBy=multi-user.target

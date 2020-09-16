@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Reload systemd manager configuration and enable service
+systemctl daemon-reload
+systemctl enable ugglan.service

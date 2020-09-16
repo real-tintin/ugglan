@@ -1,0 +1,9 @@
+# Makefile for compiling and running C++ catch
+# tests in docker container.
+#
+
+.PHONY: run_tests_in_docker
+
+run_tests_in_docker:
+	docker build -f Dockerfile_gcc . -t gcc
+	docker run gcc /drone/run_tests.sh

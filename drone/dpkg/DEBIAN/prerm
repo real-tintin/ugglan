@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Stop and disable service
+systemctl stop ugglan.service
+systemctl disable ugglan.service

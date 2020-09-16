@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Reload systemd manager configuration
+systemctl daemon-reload

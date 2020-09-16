@@ -9,7 +9,7 @@ the test framework `Catch 2 <https://github.com/catchorg/Catch2>`_ is used.
 
 To run all unit tests in docker::
 
-    cd ./drone/tests && make
+    cd ./drone && make -f Makefile_tests
 
 ESC Compile & Flash
 =====================
@@ -34,6 +34,17 @@ For simplified compiling and flashing, use the included `makefile` or the
 `KKMulitCopter GUI <https://lazyzero.de/en/modellbau/kkmulticopterflashtool>`_.
 
 Note, to change the default rotation direction, modify ``MOTOR_REVERSE`` in *tgy.asm*.
+
+Build & Deploy on Target
+=========================
+To build for target (Raspbian). The source is cross compiled in a Raspbian Docker container::
+
+    cd ./drone && make -f Makefile_dpkg
+
+This will also create a Debian package (*ugglan.deb*) which can easily be deployed on target
+by using::
+
+    dpkg --install path/to/ugglan.deb
 
 Python Modules
 ===============
