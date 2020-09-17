@@ -6,8 +6,6 @@
 export BUILD_FOR_TEST="TRUE"
 export TARGET_NAME="catch"
 
-# Setup paths.
-ROOT="/drone"
 TARGET_PATH="${ROOT}/build/${TARGET_NAME}"
 
 # Compile and run tests.

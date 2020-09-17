@@ -3,10 +3,13 @@
 # a Debian package.
 #
 
-DRONE_SOURCE_PATH = /$(shell pwd)/
+DRONE_ROOT = /$(shell pwd)/
+DRONE_ROOT_MOUNTED = /drone_mount
 
 .PHONY: build_dpkg_in_docker
 
 build_dpkg_in_docker:
 	docker build -f Dockerfile_raspi . -t raspi
-	docker run -v $(DRONE_SOURCE_PATH):/drone_mount raspi /drone/build_dpkg.sh
+	docker run -v $(DRONE_ROOT):${DRONE_ROOT_MOUNTED} \
+	           -e ROOT_MOUNTED=${DRONE_ROOT_MOUNTED} \
+			    raspi /drone/build_dpkg.sh
