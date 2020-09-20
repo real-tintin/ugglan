@@ -4,6 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
+Environment="DATA_LOG_ROOT=/usr/local/bin/ugglan/data_logs"
+ExecStartPre=mkdir -p ${DATA_LOG_ROOT}
 ExecStart=./ugglan
 WorkingDirectory=/usr/local/bin/ugglan
 
