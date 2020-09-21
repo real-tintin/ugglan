@@ -1,7 +1,7 @@
 #include <catch.h>
 
 #include <string>
-#include <main.h>
+#include <utils.h>
 
 static const std::string VALID_ENV = "CATCH_TEST_GETENV";
 static const std::string VALID_ENV_EXP = "test_getenv";
