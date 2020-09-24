@@ -7,6 +7,7 @@
 #include <mutex>
 #include <type_traits>
 #include <wall_time.h>
+#include <utils.h>
 
 #if defined(UNIT_TEST)
 #include <data_log_test_signals.h>

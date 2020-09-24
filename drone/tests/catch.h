@@ -17168,6 +17168,7 @@ namespace Catch {
 
 #ifdef CATCH_CONFIG_MAIN
 // start catch_default_main.hpp
+void run_before_catch();
 
 #ifndef __OBJC__
 
@@ -17178,7 +17179,7 @@ extern "C" int wmain (int argc, wchar_t * argv[], wchar_t * []) {
 // Standard C/C++ main entry point
 int main (int argc, char * argv[]) {
 #endif
-
+    run_before_catch();
     return Catch::Session().run( argc, argv );
 }
 

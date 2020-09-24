@@ -114,14 +114,4 @@ TEST_CASE("data_log_queue: error handling")
         REQUIRE_THROWS_WITH(data_log_queue.push(data, DataLogSignal::ImuAccelerationX),
                             "Data log signal type missmatch");
     }
-    SECTION("timestamp overflow")
-    {
-        double data = 0.0;
-
-        data_log_queue.push(data, DataLogSignal::ImuAccelerationX);
-        std::this_thread::sleep_for(std::chrono::milliseconds(UINT8_MAX + 1));
-
-        REQUIRE_THROWS_WITH(data_log_queue.push(data, DataLogSignal::ImuAccelerationX),
-                            "Data log queue timstamp overflow. Called too seldom");
-    }
 }

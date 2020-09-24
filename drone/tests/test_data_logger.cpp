@@ -27,7 +27,7 @@ static uint8_t i_push_imu = 0;
 static uint8_t i_push_esc = 0;
 
 DataLogQueue queue;
-DataLogger logger(queue, tmpdir.get_path());
+DataLogger data_logger(queue, tmpdir.get_path());
 
 class TestTaskImu : public Task
 {
@@ -67,9 +67,9 @@ public:
     TestTaskLogger(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
         Task(exec_period_ms, exec_period_exceeded_cb) {}
 protected:
-    void _setup() {  logger.start(); }
-    void _execute() {  logger.pack(); }
-    void _finish() {  logger.stop(); }
+    void _setup() {  data_logger.start(); }
+    void _execute() {  data_logger.pack(); }
+    void _finish() {  data_logger.stop(); }
 };
 
 void split_raw_into_header_and_data(std::string& raw,
@@ -99,7 +99,7 @@ TEST_CASE("data_logger")
     task_logger.teardown();
 
     std::string header, data;
-    std::string raw = catch_utils::read_file(logger.get_file_path());
+    std::string raw = catch_utils::read_file(data_logger.get_file_path());
     split_raw_into_header_and_data(raw, header, data);
 
     REQUIRE(header.size() > 0);
