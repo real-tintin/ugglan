@@ -17168,7 +17168,7 @@ namespace Catch {
 
 #ifdef CATCH_CONFIG_MAIN
 // start catch_default_main.hpp
-void run_before_catch();
+extern void run_before_catch();
 
 #ifndef __OBJC__
 

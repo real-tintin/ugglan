@@ -3,9 +3,9 @@
 
 #include <string>
 #include <cstdlib>
-#include "spdlog/spdlog.h"
+#include "logger.h"
 
-inline const auto logger = spdlog::default_logger_raw();
+extern Logger logger;
 
 std::string get_env_str(std::string env);
 

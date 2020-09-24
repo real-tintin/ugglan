@@ -4,5 +4,5 @@
 
 void run_before_catch()
 {
-    logger->set_level(spdlog::level::off);
+    logger.set_level(LogLevel::off);
 }
