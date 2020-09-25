@@ -1,7 +1,5 @@
 #include <utils.h>
 
-Logger logger;
-
 std::string get_env_str(std::string env)
 {
     const char* val = std::getenv(env.c_str());

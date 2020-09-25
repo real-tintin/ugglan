@@ -6,6 +6,7 @@
 #include <ctime>
 #include <iomanip>
 #include <stdexcept>
+#include <mutex>
 
 enum class LogLevel {
     debug,
@@ -15,45 +16,27 @@ enum class LogLevel {
     off
 };
 
+inline const std::string OUT_LEVEL_DEBUG = "DEBUG";
+inline const std::string OUT_LEVEL_INFO  = "INFO ";
+inline const std::string OUT_LEVEL_WARN  = "WARN ";
+inline const std::string OUT_LEVEL_ERROR = "ERROR";
+
 class Logger
 {
 public:
-    void debug(std::string msg) { if (_level <= LogLevel::debug) { _disp_msg(msg, LogLevel::debug); } }
-    void info(std::string msg) { if (_level <= LogLevel::info) { _disp_msg(msg, LogLevel::info); } }
-    void warn(std::string msg) { if (_level <= LogLevel::warn) { _disp_msg(msg, LogLevel::warn); } }
-    void error(std::string msg) { if (_level <= LogLevel::error) { _disp_msg(msg, LogLevel::error); } }
+    void debug(std::string msg);
+    void info(std::string msg);
+    void warn(std::string msg);
+    void error(std::string msg);
 
-    void set_level(LogLevel level) { _level = level; };
+    void set_level(LogLevel level);
 private:
     LogLevel _level = LogLevel::info;
+    std::mutex _mutex;
 
-    void _disp_msg(std::string msg, LogLevel level)
-    {
-        std::time_t t_now = std::time(nullptr);
-        std::string level_str;
-
-        switch(level)
-        {
-            case LogLevel::debug:
-                level_str = "DEBUG";
-                break;
-            case LogLevel::info:
-                level_str = "INFO ";
-                break;
-            case LogLevel::warn:
-                level_str = "WARN ";
-                break;
-            case LogLevel::error:
-                level_str = "ERROR";
-                break;
-            default:
-                throw std::runtime_error("Invalid logger level");
-                break;
-        }
-
-        std::cout << std::put_time(std::localtime(&t_now), "[%F %T]") << " : "
-                  << level_str << " : " << msg << std::endl;
-    }
+    void _disp_msg(std::string msg, LogLevel level);
 };
+
+extern Logger logger;
 
 #endif /* LOGGER_H */

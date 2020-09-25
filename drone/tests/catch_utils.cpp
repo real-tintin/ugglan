@@ -13,6 +13,18 @@ namespace catch_utils
         return buf.str();
     }
 
+    bool str_contains_all(std::string str, std::vector<std::string> contains)
+    {
+        for(auto const& s: contains) { if (str.find(s) == std::string::npos) { return false; } }
+        return true;
+    }
+
+    bool str_contains_non(std::string str, std::vector<std::string> contains)
+    {
+        for(auto const& s: contains) { if (str.find(s) != std::string::npos) { return false; } }
+        return true;
+    }
+
     TmpDir::TmpDir(bool remove_when_done) :
         _remove_when_done(remove_when_done)
     {
@@ -40,4 +52,14 @@ namespace catch_utils
 
         return "tmpdir_" + buf.str();
     }
+
+    PatchStdCout::PatchStdCout()
+    {
+        _org_buf = std::cout.rdbuf();
+        std::cout.rdbuf(_patch_buf.rdbuf());
+    }
+
+    PatchStdCout::~PatchStdCout() { std::cout.rdbuf(_org_buf); }
+
+    std::string PatchStdCout::get() { return _patch_buf.str(); }
 }
