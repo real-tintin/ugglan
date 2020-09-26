@@ -69,6 +69,8 @@ void DataLogQueue::push(T data, DataLogSignal signal)
 template <typename T>
 void DataLogQueue::last_signal_data(T* data, DataLogSignal signal, T default_data)
 {
+    const std::lock_guard<std::mutex> lock(_mutex);
+
     auto it = _last_signal_map.find(signal);
 
     if (it != _last_signal_map.end())
