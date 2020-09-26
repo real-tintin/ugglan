@@ -10,12 +10,7 @@
 #include <base64/base64.hpp>
 #include <data_log_header.h>
 #include <data_log_queue.h>
-
-#if defined(UNIT_TEST)
-#include <data_log_test_signals.h>
-#else
 #include <data_log_signals.h>
-#endif
 
 inline const std::string DATA_LOG_ENDL = "\n";
 inline const std::string DATA_LOG_FILE_EXT = "dat";

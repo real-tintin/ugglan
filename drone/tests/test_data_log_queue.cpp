@@ -16,7 +16,7 @@ public:
     TestTaskOne(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
         Task(exec_period_ms, exec_period_exceeded_cb) {}
 protected:
-    void _execute() { data_log_queue_multi.push(1.0, DataLogSignal::ImuAccelerationX); }
+    void _execute() { data_log_queue_multi.push(double(1.0), DataLogSignal::ImuAccelerationX); }
 };
 
 class TestTaskTwo : public Task
@@ -25,7 +25,7 @@ public:
     TestTaskTwo(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
         Task(exec_period_ms, exec_period_exceeded_cb) {}
 protected:
-    void _execute() { data_log_queue_multi.push(2.0, DataLogSignal::ImuAccelerationY); }
+    void _execute() { data_log_queue_multi.push(uint8_t(0x02), DataLogSignal::EscStatus0); }
 };
 
 TEST_CASE("data_log_queue: single thread")
@@ -72,7 +72,7 @@ TEST_CASE("data_log_queue: multi thread")
     uint8_t n_act_two_samples = 0;
 
     double exp_one_sample_data = 1.0;
-    double exp_two_sample_data = 2.0;
+    uint8_t exp_two_sample_data = 0x02;
 
     while (!data_log_queue_multi.is_empty())
     {
@@ -83,8 +83,8 @@ TEST_CASE("data_log_queue: multi thread")
         {
             n_act_one_samples++;
         }
-        else if ((std::memcmp(&exp_two_sample_data, &sample.data, sizeof(double)) == 0) &&
-                  sample.signal == DataLogSignal::ImuAccelerationY)
+        else if ((std::memcmp(&exp_two_sample_data, &sample.data, sizeof(uint8_t)) == 0) &&
+                  sample.signal == DataLogSignal::EscStatus0)
         {
             n_act_two_samples++;
         }
@@ -96,6 +96,52 @@ TEST_CASE("data_log_queue: multi thread")
 
     REQUIRE(n_act_one_samples >= 10);
     REQUIRE(n_act_two_samples >= 5);
+}
+
+TEST_CASE("last_signal_data")
+{
+    DataLogQueue data_log_queue;
+
+    SECTION("empty queue - unset default data")
+    {
+        double act_data;
+        double exp_data = 0;
+        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX);
+
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+    }
+    SECTION("empty queue - set default data")
+    {
+        double act_data;
+        double exp_data = -3.14;
+        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX, -3.14);
+
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+    }
+    SECTION("non empty queue")
+    {
+        /* Push a first sample */
+        double act_data;
+        double exp_data = 1.1;
+
+        data_log_queue.push(double(1.1), DataLogSignal::ImuAccelerationX);
+        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX);
+
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+
+        /* Push a second sample */
+        exp_data = 2.2;
+        data_log_queue.push(double(2.2), DataLogSignal::ImuAccelerationX);
+        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX);
+
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+
+        /* Empty queue */
+        while (!data_log_queue.is_empty()) { data_log_queue.pop(); };
+        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX);
+
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+    }
 }
 
 TEST_CASE("data_log_queue: error handling")

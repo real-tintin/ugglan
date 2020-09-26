@@ -8,13 +8,12 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 
-typedef struct
-{
+struct ControlFlags {
     tcflag_t c_cflag;
     tcflag_t c_iflag;
     tcflag_t c_oflag;
     tcflag_t c_lflag;
-} ControlFlags;
+};
 
 typedef uint16_t Mode;
 

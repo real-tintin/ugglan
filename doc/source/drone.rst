@@ -14,8 +14,8 @@ Tasks
 ---------------
 The drone's top level software design can be seen as a task manager, (asynchronous
 and synchronous) solving the producer and consumer problem. Where the producers are
-the sensors (IMU, ESC and RC). And where the control loop, data logging etc. are
-the consumers, see :numref:`drone_sw_design`
+the sensors (IMU, ESC etc.). And where the control loop, data logging etc. are
+the consumers, see :numref:`drone_sw_design`.
 
 .. _drone_sw_design:
 .. mermaid::
@@ -29,24 +29,19 @@ the consumers, see :numref:`drone_sw_design`
         EscRead_i([EscRead_i])
         RcReceiver([RcReceiver])
 
-        Inputs((Inputs))
-        InputHolder[InputHolder]
         DataLogQueue[(DataLogQueue)]
 
         StateControl([StateControl])
         DataLogger([DataLogger])
 
-        ImuAccMag -- 50 Hz --> Inputs
-        ImuGyro -- 50 Hz --> Inputs
-        ImuPres -- 10 Hz --> Inputs
-        EscRead_i -- 10 Hz --> Inputs
-        RcReceiver -- 30 Hz --> Inputs
+        ImuAccMag -- 50 Hz --> DataLogQueue
+        ImuGyro -- 50 Hz --> DataLogQueue
+        ImuPres -- 10 Hz --> DataLogQueue
+        EscRead_i -- 10 Hz --> DataLogQueue
+        RcReceiver -- 30 Hz --> DataLogQueue
 
-        Inputs --> InputHolder
-        Inputs --> DataLogQueue
-
-        InputHolder -- 50 Hz--> StateControl
-        DataLogQueue -- 100 Hz --> DataLogger
+        DataLogQueue -- last value 50 Hz--> StateControl
+        DataLogQueue -- pop 100 Hz --> DataLogger
 
         subgraph Producers
         ImuAccMag
@@ -61,12 +56,11 @@ the consumers, see :numref:`drone_sw_design`
         DataLogger
         end
 
-As one can see, some consumers will fetch data from the ``InputHolder``. This is
-a thread safe data structure which holds the latest input samples e.g., used by the
-``StateControl`` which runs at a constant execution/sample rate i.e. to simplify
-the signal processing. Whereas the data logger only will store a sample once and uses
-the thread safe queue ``DataLogQueue``. Note that other tasks may also populate this
-queue.
+As one can see, the ``DataLogQueue`` maintains a thread safe queue for the producers to
+push to and the ``DataLogger`` to pop from. But it also stores the last (pushed) sample
+for consumers to use e.g., the ``StateControl`` which runs at a constant execution/sample
+rate i.e. to simplify the signal processing. Note, other tasks than producers may populate
+the queue e.g., estimated states which are useful for offline tuning of control laws.
 
 Note, some signals such as the ones from the pressure sensor will only be sampled
 at 10 Hz. This has to be handled by the state controller.
