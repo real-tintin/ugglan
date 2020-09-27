@@ -2,7 +2,7 @@
 
 #if !defined(UNIT_TEST)
 
-SerialConn::SerialConn(const char* device) :
+SerialConn::SerialConn(std::string device) :
     _device(device)
 {
 }
@@ -14,7 +14,7 @@ SerialConn::~SerialConn()
 
 bool SerialConn::open(Mode mode, ControlFlags flags)
 {
-    if ((_fd = ::open(_device, mode)) < 0)
+    if ((_fd = ::open(_device.c_str(), mode)) < 0)
     {
         struct termios options;
 

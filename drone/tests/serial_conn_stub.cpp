@@ -1,6 +1,7 @@
 #include <serial_conn_stub.h>
 
-SerialConn::SerialConn()
+SerialConn::SerialConn(std::string device) :
+    _device(device)
 {
 }
 

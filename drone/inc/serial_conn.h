@@ -1,10 +1,11 @@
 #ifndef SERIAL_CONN_H
 #define SERIAL_CONN_H
 
+#include <string>
+#include <cstdint>
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <cstdint>
 #include <sys/ioctl.h>
 #include <termios.h>
 
@@ -21,7 +22,7 @@ typedef uint16_t Mode;
 class SerialConn
 {
 public:
-    SerialConn(const char* device);
+    SerialConn(std::string device);
 
     ~SerialConn();
 
@@ -31,7 +32,7 @@ public:
     uint32_t read(uint8_t* buf, uint32_t size);
 private:
     int8_t _fd;
-    const char* _device;
+    std::string _device;
 };
 #endif
 
