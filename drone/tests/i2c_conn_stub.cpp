@@ -1,6 +1,6 @@
 #include <i2c_conn_stub.h>
 
-I2cConn::I2cConn()
+I2cConn::I2cConn(uint8_t address) : _address{ address }
 {
 }
 
