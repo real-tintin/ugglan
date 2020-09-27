@@ -17,10 +17,7 @@ static uint8_t n_calls_exec_period_exceeded;
 class TestTask : public Task
 {
 public:
-    TestTask(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
-        Task(exec_period_ms, exec_period_exceeded_cb)
-    {
-    }
+    using Task::Task;
 protected:
     void _setup()
     {

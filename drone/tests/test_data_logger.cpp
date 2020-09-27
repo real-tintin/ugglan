@@ -32,8 +32,7 @@ DataLogger data_logger(queue, tmpdir.get_path());
 class TestTaskImu : public Task
 {
 public:
-    TestTaskImu(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
-        Task(exec_period_ms, exec_period_exceeded_cb) {}
+    using Task::Task;
 protected:
     void _execute()
     {
@@ -48,8 +47,7 @@ protected:
 class TestTaskEsc : public Task
 {
 public:
-    TestTaskEsc(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
-        Task(exec_period_ms, exec_period_exceeded_cb) {}
+    using Task::Task;
 protected:
     void _execute()
     {
@@ -64,8 +62,7 @@ protected:
 class TestTaskLogger : public Task
 {
 public:
-    TestTaskLogger(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
-        Task(exec_period_ms, exec_period_exceeded_cb) {}
+    using Task::Task;
 protected:
     void _setup() {  data_logger.start(); }
     void _execute() {  data_logger.pack(); }

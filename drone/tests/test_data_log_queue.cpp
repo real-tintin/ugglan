@@ -13,8 +13,7 @@ DataLogQueue data_log_queue_multi;
 class TestTaskOne : public Task
 {
 public:
-    TestTaskOne(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
-        Task(exec_period_ms, exec_period_exceeded_cb) {}
+    using Task::Task;
 protected:
     void _execute() { data_log_queue_multi.push(double(1.0), DataLogSignal::ImuAccelerationX); }
 };
@@ -22,8 +21,7 @@ protected:
 class TestTaskTwo : public Task
 {
 public:
-    TestTaskTwo(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
-        Task(exec_period_ms, exec_period_exceeded_cb) {}
+    using Task::Task;
 protected:
     void _execute() { data_log_queue_multi.push(uint8_t(0x02), DataLogSignal::EscStatus0); }
 };
