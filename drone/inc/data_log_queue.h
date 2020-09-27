@@ -9,7 +9,10 @@
 #include <type_traits>
 #include <wall_time.h>
 #include <utils.h>
+#include <logger.h>
 #include <data_log_signals.h>
+
+inline const uint32_t DATA_LOG_QUEUE_WARN_LARGE = 1e4;
 
 struct DataLogSample{
     uint64_t data;
@@ -64,6 +67,12 @@ void DataLogQueue::push(T data, DataLogSignal signal)
 
     _samples.push_back(sample);
     _update_last_signal_map(data, signal);
+
+    if (_samples.size() >= DATA_LOG_QUEUE_WARN_LARGE)
+    {
+        logger.warn("Data log queue contains " + std::to_string(_samples.size()) + \
+                    " sample(s). Consider calling more often." );
+    }
 }
 
 template <typename T>

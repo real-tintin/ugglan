@@ -16,6 +16,7 @@ void write_at_all_levels()
 
 TEST_CASE("logger levels")
 {
+    LogLevel org_level = logger.get_level();
     catch_utils::PatchStdCout patched_cout;
 
     SECTION("off")
@@ -90,4 +91,6 @@ TEST_CASE("logger levels")
         REQUIRE(catch_utils::str_contains_all(patched_cout.get(), should_contain));
         REQUIRE(catch_utils::str_contains_non(patched_cout.get(), should_not_contain));
     }
+
+    logger.set_level(org_level);
 }

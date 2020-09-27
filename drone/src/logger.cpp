@@ -49,6 +49,13 @@ void Logger::set_level(LogLevel level)
     _level = level;
 }
 
+LogLevel Logger::get_level()
+{
+    const std::lock_guard<std::mutex> lock(_mutex);
+
+    return _level;
+}
+
 void Logger::_disp_msg(std::string msg, LogLevel level)
 {
     std::time_t t_now = std::time(nullptr);

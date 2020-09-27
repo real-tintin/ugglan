@@ -11,6 +11,8 @@ void DataLogger::start()
     _create_file_path();
     _open();
     _create_and_write_header();
+
+    logger.info("Data logger starting new log file: " + _file_path.string());
 }
 
 void DataLogger::pack()

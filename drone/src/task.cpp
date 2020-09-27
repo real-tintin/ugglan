@@ -1,8 +1,11 @@
 #include <task.h>
 
-Task::Task(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)()) :
+Task::Task(uint32_t exec_period_ms,
+           void (*exec_period_exceeded_cb)(),
+           std::string name) :
     _exec_period_ms(exec_period_ms),
-    _exec_period_exceeded_cb(exec_period_exceeded_cb)
+    _exec_period_exceeded_cb(exec_period_exceeded_cb),
+    _name(name)
 {
 }
 
@@ -11,6 +14,8 @@ void Task::launch()
     _setup();
     _run_thread = true;
     _thread = std::thread(&Task::_execute_thread, this);
+
+    logger.debug("Launching task " + _name + ".");
 }
 
 void Task::teardown()
@@ -18,6 +23,8 @@ void Task::teardown()
     _run_thread = false;
     _thread.join();
     _finish();
+
+    logger.debug("Tearing down task " + _name + ".");
 }
 
 void Task::_execute_thread()

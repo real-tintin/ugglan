@@ -2,15 +2,19 @@
 #define TASK_H
 
 #include <cstdint>
+#include <string>
 #include <thread>
 #include <atomic>
 #include <chrono>
+#include <logger.h>
 #include <wall_time.h>
 
 class Task
 {
 public:
-    Task(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)());
+    Task(uint32_t exec_period_ms,
+         void (*exec_period_exceeded_cb)() = nullptr,
+         std::string name = "N.N.");
 
     void launch();
     void teardown();
@@ -21,6 +25,7 @@ protected:
 private:
     uint32_t _exec_period_ms;
     void (*_exec_period_exceeded_cb)();
+    std::string _name;
 
     std::atomic<bool> _run_thread;
     std::thread _thread;

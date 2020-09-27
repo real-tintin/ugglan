@@ -30,6 +30,7 @@ public:
     void error(std::string msg);
 
     void set_level(LogLevel level);
+    LogLevel get_level();
 private:
     LogLevel _level = LogLevel::info;
     std::mutex _mutex;

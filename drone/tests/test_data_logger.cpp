@@ -81,9 +81,9 @@ void split_raw_into_header_and_data(std::string& raw,
 
 TEST_CASE("data_logger")
 {
-    TestTaskImu task_imu(EXEC_PERIOD_IMU_MS, nullptr);
-    TestTaskEsc task_esc(EXEC_PERIOD_ESC_MS, nullptr);
-    TestTaskLogger task_logger(EXEC_PERIOD_LOGGER_MS, nullptr);
+    TestTaskImu task_imu(EXEC_PERIOD_IMU_MS);
+    TestTaskEsc task_esc(EXEC_PERIOD_ESC_MS);
+    TestTaskLogger task_logger(EXEC_PERIOD_LOGGER_MS);
 
     task_imu.launch();
     task_esc.launch();

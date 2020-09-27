@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <gzip/compress.hpp>
 #include <base64/base64.hpp>
+#include <logger.h>
 #include <data_log_header.h>
 #include <data_log_queue.h>
 #include <data_log_signals.h>

@@ -120,10 +120,12 @@ void AfroEsc::_arm()
 
     if (get_is_alive())
     {
+        logger.debug("Armed ESC successfully.");
         _status = AFRO_STATUS_OK;
     }
     else
     {
+        logger.error("Armed ESC failed.");
         _status = AFRO_STATUS_ERR_ARM;
     }
 }

@@ -34,7 +34,7 @@ uint32_t DataLogQueue::_get_rel_timestamp()
     else
     {
         rel_timestamp_ms = UINT8_MAX;
-        logger.error("Data log queue timstamp overflow. Called too seldom");
+        logger.error("Data log queue timstamp overflow. Called too seldom.");
     }
 
     _prev_timestamp_ms = now_timestamp_ms;

@@ -53,8 +53,8 @@ TEST_CASE("data_log_queue: single thread")
 
 TEST_CASE("data_log_queue: multi thread")
 {
-    TestTaskOne task_one(10, nullptr); // Runs at 100 Hz
-    TestTaskTwo task_two(20, nullptr); // Runs at 50 Hz
+    TestTaskOne task_one(10); // Runs at 100 Hz
+    TestTaskTwo task_two(20); // Runs at 50 Hz
 
     task_one.launch();
     task_two.launch();

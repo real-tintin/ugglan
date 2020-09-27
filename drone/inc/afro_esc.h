@@ -10,6 +10,7 @@ Heavily inspired by https://github.com/bluerobotics/Arduino_I2C_ESC.
 
 #include <math.h>
 #include <wall_time.h>
+#include <logger.h>
 
 #if defined(UNIT_TEST)
 #include <i2c_conn_stub.h>
