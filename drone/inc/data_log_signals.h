@@ -134,13 +134,13 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::ImuTemperature, {"Temperature", DataLogGroup::Imu, DataLogType::DOUBLE}},
 
     {DataLogSignal::ImuAccMagStatus, {"AccMagStatus", DataLogGroup::Imu, DataLogType::UINT8}},
-    {DataLogSignal::ImuAccMagStatus, {"ImuGyroStatus", DataLogGroup::Imu, DataLogType::UINT8}},
-    {DataLogSignal::ImuAccMagStatus, {"ImuBarometerStatus", DataLogGroup::Imu, DataLogType::UINT8}},
+    {DataLogSignal::ImuGyroStatus, {"GyroStatus", DataLogGroup::Imu, DataLogType::UINT8}},
+    {DataLogSignal::ImuBarometerStatus, {"BarometerStatus", DataLogGroup::Imu, DataLogType::UINT8}},
 
-    {DataLogSignal::EscIsAlive0, {"IsAlive0", DataLogGroup::Esc, DataLogType::DOUBLE}},
-    {DataLogSignal::EscIsAlive1, {"IsAlive0", DataLogGroup::Esc, DataLogType::DOUBLE}},
-    {DataLogSignal::EscIsAlive2, {"IsAlive0", DataLogGroup::Esc, DataLogType::DOUBLE}},
-    {DataLogSignal::EscIsAlive3, {"IsAlive0", DataLogGroup::Esc, DataLogType::DOUBLE}},
+    {DataLogSignal::EscIsAlive0, {"IsAlive0", DataLogGroup::Esc, DataLogType::UINT8}},
+    {DataLogSignal::EscIsAlive1, {"IsAlive1", DataLogGroup::Esc, DataLogType::UINT8}},
+    {DataLogSignal::EscIsAlive2, {"IsAlive2", DataLogGroup::Esc, DataLogType::UINT8}},
+    {DataLogSignal::EscIsAlive3, {"IsAlive3", DataLogGroup::Esc, DataLogType::UINT8}},
 
     {DataLogSignal::EscRpm0, {"Rpm0", DataLogGroup::Esc, DataLogType::DOUBLE}},
     {DataLogSignal::EscRpm1, {"Rpm1", DataLogGroup::Esc, DataLogType::DOUBLE}},
@@ -165,7 +165,7 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::EscStatus0, {"Status0", DataLogGroup::Esc, DataLogType::UINT8}},
     {DataLogSignal::EscStatus1, {"Status1", DataLogGroup::Esc, DataLogType::UINT8}},
     {DataLogSignal::EscStatus2, {"Status2", DataLogGroup::Esc, DataLogType::UINT8}},
-    {DataLogSignal::EscStatus0, {"Status3", DataLogGroup::Esc, DataLogType::UINT8}},
+    {DataLogSignal::EscStatus3, {"Status3", DataLogGroup::Esc, DataLogType::UINT8}},
 
     {DataLogSignal::RcGimbalLeftX, {"GimbalLeftX", DataLogGroup::Rc, DataLogType::DOUBLE}},
     {DataLogSignal::RcGimbalLeftY, {"GimbalLeftY", DataLogGroup::Rc, DataLogType::DOUBLE}},
@@ -178,7 +178,7 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::RcSwitchMiddle, {"SwitchMiddle", DataLogGroup::Rc, DataLogType::UINT8}},
 
     {DataLogSignal::RcKnob, {"Knob", DataLogGroup::Rc, DataLogType::DOUBLE}},
-    {DataLogSignal::RcStatus, {"Knob", DataLogGroup::Rc, DataLogType::UINT8}}
+    {DataLogSignal::RcStatus, {"Status", DataLogGroup::Rc, DataLogType::UINT8}}
     };
 #endif
 
