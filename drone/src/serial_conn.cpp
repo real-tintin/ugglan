@@ -28,10 +28,14 @@ bool SerialConn::open(Mode mode, ControlFlags flags)
         tcflush(_fd, TCIFLUSH);
         tcsetattr(_fd, TCSANOW, &options);
 
+        logger.debug("Successfully opened serial connection at: " + _device);
         return true;
     }
-
-    return false;
+    else
+    {
+        logger.error("Failed to open serial connection at: " + _device);
+        return false;
+    }
 }
 
 uint32_t SerialConn::get_bytes_available()

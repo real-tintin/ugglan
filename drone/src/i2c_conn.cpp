@@ -13,8 +13,16 @@ I2cConn::~I2cConn()
 
 bool I2cConn::open()
 {
-    if (((_fd = ::open(I2C_DEVICE, O_RDWR)) < 0) || (ioctl(_fd, I2C_SLAVE, _address) < 0)) { return true; }
-    return false;
+    if (((_fd = ::open(I2C_DEVICE, O_RDWR)) < 0) || (ioctl(_fd, I2C_SLAVE, _address) < 0))
+    {
+        logger.debug("Successfully opened i2c connection at: " + std::to_string(_address));
+        return true;
+    }
+    else
+    {
+        logger.error("Failed to open i2c connection at: " + std::to_string(_address));
+        return false;
+    }
 }
 
 bool I2cConn::read_byte_data(uint8_t reg, uint8_t* data)

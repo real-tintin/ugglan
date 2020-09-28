@@ -219,9 +219,9 @@ protected:
         _data_log_queue.push(_rc.get_gimbal_right_x(), DataLogSignal::RcGimbalRightX);
         _data_log_queue.push(_rc.get_gimbal_right_y(), DataLogSignal::RcGimbalRightY);
 
-        _data_log_queue.push(_rc.get_switch_left(), DataLogSignal::RcSwitchLeft);
-        _data_log_queue.push(_rc.get_switch_right(), DataLogSignal::RcSwitchRight);
-        _data_log_queue.push(_rc.get_switch_middle(), DataLogSignal::RcSwitchMiddle);
+        _data_log_queue.push(uint8_t(_rc.get_switch_left()), DataLogSignal::RcSwitchLeft);
+        _data_log_queue.push(uint8_t(_rc.get_switch_right()), DataLogSignal::RcSwitchRight);
+        _data_log_queue.push(uint8_t(_rc.get_switch_middle()), DataLogSignal::RcSwitchMiddle);
 
         _data_log_queue.push(_rc.get_knob(), DataLogSignal::RcKnob);
         _data_log_queue.push(_rc.get_status(), DataLogSignal::RcStatus);
@@ -257,7 +257,7 @@ void set_logger_level()
     else                              { /* Keep default. */ }
 }
 
-void print_for_debug()
+void print_env_vars()
 {
     logger.debug("DATA_LOG_ROOT: " + DATA_LOG_ROOT.string());
     logger.debug("LOGGER_LEVEL: " + LOGGER_LEVEL);
@@ -289,6 +289,9 @@ void wait_for_shutdown(DataLogQueue& data_log_queue)
 
 int main()
 {
+    set_logger_level();
+    print_env_vars();
+
     DataLogQueue data_log_queue;
     std::vector<std::unique_ptr<Task>> tasks;
 
@@ -311,9 +314,6 @@ int main()
 
     tasks.emplace_back(new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, nullptr, "DataLogger",
                                           DATA_LOG_ROOT, data_log_queue));
-
-    set_logger_level();
-    print_for_debug();
 
     for(auto const& task: tasks) { task->launch(); }
     wait_for_shutdown(data_log_queue);

@@ -1,12 +1,14 @@
 #ifndef I2C_CONN_H
 #define I2C_CONN_H
 
+#include <string>
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <cstdint>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
+#include <logger.h>
 
 inline const char* const I2C_DEVICE = "/dev/i2c-1";
 

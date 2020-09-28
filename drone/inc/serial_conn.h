@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <termios.h>
+#include <logger.h>
 
 struct ControlFlags {
     tcflag_t c_cflag;

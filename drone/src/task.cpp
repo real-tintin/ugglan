@@ -41,6 +41,9 @@ void Task::_execute_thread()
         {
             _exec_period_exceeded_cb();
             sleep_ms = 0;
+
+            logger.warn("Execution period exceeded for task " + _name + " by " + \
+                        std::to_string(exec_time_ms - _exec_period_ms)  + " ms.");
         }
         else
         {
