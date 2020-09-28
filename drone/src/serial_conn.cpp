@@ -14,7 +14,7 @@ SerialConn::~SerialConn()
 
 bool SerialConn::open(Mode mode, ControlFlags flags)
 {
-    if ((_fd = ::open(_device.c_str(), mode)) < 0)
+    if ((_fd = ::open(_device.c_str(), mode)) != -1)
     {
         struct termios options;
 
@@ -38,10 +38,9 @@ bool SerialConn::open(Mode mode, ControlFlags flags)
     }
 }
 
-uint32_t SerialConn::get_bytes_available()
+uint32_t SerialConn::bytes_available()
 {
     uint32_t bytes_available;
-
     ioctl(_fd, FIONREAD, &bytes_available);
 
     return bytes_available;
@@ -49,11 +48,11 @@ uint32_t SerialConn::get_bytes_available()
 
 uint32_t SerialConn::read(uint8_t* buf, uint32_t size)
 {
-    if (_fd != -1) {
-        return ::read(_fd, buf, size);
-    }
+    ssize_t n_bytes = -1;
+    if (_fd != -1) { n_bytes = ::read(_fd, buf, size); }
 
-    return 0;
+    if (n_bytes >= 0) { return n_bytes; }
+    else { return 0; }
 }
 
 #endif

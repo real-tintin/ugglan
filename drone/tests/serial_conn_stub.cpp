@@ -18,7 +18,7 @@ bool SerialConn::open(Mode mode, ControlFlags flags)
     return true;
 }
 
-uint32_t SerialConn::get_bytes_available()
+uint32_t SerialConn::bytes_available()
 {
     return _read_buf_size;
 }
