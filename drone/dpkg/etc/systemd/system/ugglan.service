@@ -4,10 +4,12 @@ After=network.target
 
 [Service]
 Type=simple
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/gcc-9.1.0/bin"
+Environment="LD_LIBRARY_PATH=/opt/gcc-9.1.0/lib"
 Environment="DATA_LOG_ROOT=/usr/local/bin/ugglan/data_logs"
 Environment="LOGGER_LEVEL=DEBUG"
-ExecStartPre=mkdir -p ${DATA_LOG_ROOT}
-ExecStart=./ugglan
+ExecStartPre=/bin/mkdir -p ${DATA_LOG_ROOT}
+ExecStart=/usr/local/bin/ugglan/ugglan
 WorkingDirectory=/usr/local/bin/ugglan
 
 [Install]

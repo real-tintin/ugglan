@@ -35,9 +35,17 @@ For simplified compiling and flashing, use the included `makefile` or the
 
 Note, to change the default rotation direction, modify ``MOTOR_REVERSE`` in *tgy.asm*.
 
-Build & Deploy on Target
-=========================
-To build for target (Raspbian). The source is cross compiled in a Raspbian Docker container::
+Setup Env on Target
+====================
+Before deploying on target (Raspbian)
+
+* Enable i2c and explicitly set its baudrate to 100 kb/s.
+* Install GCC 9.1 (see ``./drone/Dockerfile_raspi``)
+* Setup wpa supplicant (for remote access) e.g., connect to a hotspot.
+
+Build for & Deploy on Target
+=============================
+To build for target. The source is cross compiled in a Raspbian Docker container::
 
     cd ./drone && make -f Makefile_dpkg
 

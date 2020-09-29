@@ -190,11 +190,11 @@ private:
     int16_t _get_rpm_cmd(uint8_t i_esc)
     {
         // TODO: Should be given by the state controller.
-        double rc_gimbal_left_x;
-        _data_log_queue.last_signal_data(&rc_gimbal_left_x, DataLogSignal::RcGimbalLeftX);
+        double rc_gimbal_left_y;
+        _data_log_queue.last_signal_data(&rc_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
 
-        int16_t rpm_cmd = rc_gimbal_left_x * 1000.0;
-        if (rpm_cmd > 1000) { rpm_cmd = 1000; }
+        int16_t rpm_cmd = rc_gimbal_left_y * 10000;
+        if (rpm_cmd > 10000) { rpm_cmd = 10000; }
         if (rpm_cmd < 0) { rpm_cmd = 0; }
 
         return rpm_cmd;

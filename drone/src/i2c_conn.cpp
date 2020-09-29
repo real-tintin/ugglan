@@ -15,13 +15,13 @@ bool I2cConn::open()
 {
     if (((_fd = ::open(I2C_DEVICE, O_RDWR)) < 0) || (ioctl(_fd, I2C_SLAVE, _address) < 0))
     {
-        logger.debug("Successfully opened i2c connection at: " + std::to_string(_address));
-        return true;
+        logger.error("Failed to open i2c connection at: " + std::to_string(_address));
+        return false;
     }
     else
     {
-        logger.error("Failed to open i2c connection at: " + std::to_string(_address));
-        return false;
+        logger.debug("Successfully opened i2c connection at: " + std::to_string(_address));
+        return true;
     }
 }
 
