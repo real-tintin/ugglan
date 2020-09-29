@@ -1,10 +1,8 @@
 #include <task.h>
 
 Task::Task(uint32_t exec_period_ms,
-           void (*exec_period_exceeded_cb)(),
            std::string name) :
     _exec_period_ms(exec_period_ms),
-    _exec_period_exceeded_cb(exec_period_exceeded_cb),
     _name(name)
 {
 }
@@ -39,9 +37,7 @@ void Task::_execute_thread()
 
         if (exec_time_ms > _exec_period_ms)
         {
-            _exec_period_exceeded_cb();
             sleep_ms = 0;
-
             logger.warn("Execution period exceeded for task " + _name + " by " + \
                         std::to_string(exec_time_ms - _exec_period_ms)  + " ms.");
         }

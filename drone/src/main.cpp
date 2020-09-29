@@ -41,9 +41,9 @@ static const uint32_t MAIN_SLEEP_MS = 1000;
 class TaskAccMag : public Task
 {
 public:
-    TaskAccMag(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)(), std::string name,
+    TaskAccMag(uint32_t exec_period_ms, std::string name,
                uint8_t i2c_address, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, exec_period_exceeded_cb, name),
+        Task(exec_period_ms, name),
              _i2c_conn(i2c_address), _acc_mag(_i2c_conn), _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
@@ -69,9 +69,9 @@ private:
 class TaskGyro : public Task
 {
 public:
-    TaskGyro(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)(), std::string name,
+    TaskGyro(uint32_t exec_period_ms, std::string name,
              uint8_t i2c_address, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, exec_period_exceeded_cb, name),
+        Task(exec_period_ms, name),
              _i2c_conn(i2c_address), _gyro(_i2c_conn), _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
@@ -93,9 +93,9 @@ private:
 class TaskBarometer : public Task
 {
 public:
-    TaskBarometer(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)(), std::string name,
+    TaskBarometer(uint32_t exec_period_ms, std::string name,
                   uint8_t i2c_address, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, exec_period_exceeded_cb, name),
+        Task(exec_period_ms, name),
              _i2c_conn(i2c_address), _barometer(_i2c_conn), _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
@@ -116,11 +116,11 @@ private:
 class TaskEsc : public Task
 {
 public:
-    TaskEsc(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)(), std::string name,
+    TaskEsc(uint32_t exec_period_ms, std::string name,
             uint8_t i2c_address_0, uint8_t i2c_address_1,
             uint8_t i2c_address_2, uint8_t i2c_address_3,
             DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, exec_period_exceeded_cb, name),
+        Task(exec_period_ms, name),
              _i2c_conn_0(i2c_address_0), _i2c_conn_1(i2c_address_1),
              _i2c_conn_2(i2c_address_2), _i2c_conn_3(i2c_address_3),
              _esc{AfroEsc(_i2c_conn_0), AfroEsc(_i2c_conn_1),
@@ -204,9 +204,9 @@ private:
 class TaskRcReceiver : public Task
 {
 public:
-    TaskRcReceiver(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)(), std::string name,
+    TaskRcReceiver(uint32_t exec_period_ms, std::string name,
                    std::string serial_device, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, exec_period_exceeded_cb, name),
+        Task(exec_period_ms, name),
              _serial_conn(serial_device), _rc(_serial_conn), _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
@@ -235,9 +235,9 @@ private:
 class TaskDataLogger : public Task
 {
 public:
-    TaskDataLogger(uint32_t exec_period_ms, void (*exec_period_exceeded_cb)(), std::string name,
+    TaskDataLogger(uint32_t exec_period_ms, std::string name,
                    std::filesystem::path root_path, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, exec_period_exceeded_cb, name),
+        Task(exec_period_ms, name),
              _data_logger(data_log_queue, root_path) {}
 protected:
     void _setup() { _data_logger.start(); }
@@ -295,24 +295,24 @@ int main()
     DataLogQueue data_log_queue;
     std::vector<std::unique_ptr<Task>> tasks;
 
-    tasks.emplace_back(new TaskAccMag(TASK_ACC_MAG_EXEC_PERIOD_MS, nullptr, "ImuAccMag",
+    tasks.emplace_back(new TaskAccMag(TASK_ACC_MAG_EXEC_PERIOD_MS, "ImuAccMag",
                                       I2C_ADDRESS_ACC_MAG, data_log_queue));
 
-    tasks.emplace_back(new TaskGyro(TASK_GYRO_EXEC_PERIOD_MS, nullptr, "ImuGyro",
+    tasks.emplace_back(new TaskGyro(TASK_GYRO_EXEC_PERIOD_MS, "ImuGyro",
                                     I2C_ADDRESS_GYRO, data_log_queue));
 
-    tasks.emplace_back(new TaskBarometer(TASK_BAROMETER_EXEC_PERIOD_MS, nullptr, "ImuBarometer",
+    tasks.emplace_back(new TaskBarometer(TASK_BAROMETER_EXEC_PERIOD_MS, "ImuBarometer",
                                          I2C_ADDRESS_BAROMETER, data_log_queue));
 
-    tasks.emplace_back(new TaskEsc(TASK_ESC_READ_EXEC_PERIOD_MS, nullptr, "Esc",
+    tasks.emplace_back(new TaskEsc(TASK_ESC_READ_EXEC_PERIOD_MS, "Esc",
                                       I2C_ADDRESS_ESC_0, I2C_ADDRESS_ESC_1,
                                       I2C_ADDRESS_ESC_2, I2C_ADDRESS_ESC_3,
                                       data_log_queue));
 
-    tasks.emplace_back(new TaskRcReceiver(TASK_RC_RECEIVER_EXEC_PERIOD_MS, nullptr, "RcReceiver",
+    tasks.emplace_back(new TaskRcReceiver(TASK_RC_RECEIVER_EXEC_PERIOD_MS, "RcReceiver",
                                           SERIAL_DEVICE_RC_RECEIVER, data_log_queue));
 
-    tasks.emplace_back(new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, nullptr, "DataLogger",
+    tasks.emplace_back(new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, "DataLogger",
                                           DATA_LOG_ROOT, data_log_queue));
 
     for(auto const& task: tasks) { task->launch(); }
