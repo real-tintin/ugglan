@@ -92,7 +92,10 @@ def _get_signal_id(packages, offset):
 
 
 def _get_signal_value(packages, offset, type_name):
-    if type_name == 'UINT8':
+    if type_name == 'BOOL':
+        value = struct.unpack_from('<B', packages, offset)[0]
+        offset += 1
+    elif type_name == 'UINT8':
         value = struct.unpack_from('<B', packages, offset)[0]
         offset += 1
     elif type_name == 'UINT16':

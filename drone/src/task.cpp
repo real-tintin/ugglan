@@ -38,8 +38,14 @@ void Task::_execute_thread()
         if (exec_time_ms > _exec_period_ms)
         {
             sleep_ms = 0;
-            logger.warn("Execution period exceeded for task " + _name + " by " + \
-                        std::to_string(exec_time_ms - _exec_period_ms)  + " ms.");
+            uint32_t exec_exceed_perc = (exec_time_ms - _exec_period_ms) * 100 / _exec_period_ms;
+
+            if (exec_exceed_perc > TASK_WARN_EXCEEDED_EXEC_PERIOD_PERC)
+            {
+                logger.warn("Execution period exceeded for task " + _name + \
+                    " by " + std::to_string(exec_time_ms - _exec_period_ms)  + \
+                    " ms (" + std::to_string(exec_exceed_perc) + " %).");
+            }
         }
         else
         {

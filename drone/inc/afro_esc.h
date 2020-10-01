@@ -80,11 +80,11 @@ public:
     AfroEsc(I2cConn& i2c_conn);
 
     void read();
-    void write(int16_t command);
+    void write(int16_t motor_cmd);
 
     bool get_is_alive();
 
-    double get_rpm();
+    double get_angular_rate();
     double get_voltage();
     double get_current();
     double get_temperature();
@@ -93,7 +93,7 @@ public:
 private:
     void _arm();
     void _open_i2c_conn();
-    void _update_rpm_timer();
+    void _update_rev_timer();
     void _reset_is_alive_byte();
 
     I2cConn& _i2c_conn;
@@ -101,8 +101,8 @@ private:
     uint8_t _buf_read[AFRO_READ_BUF_SIZE] = {0};
     uint8_t _buf_write[AFRO_WRITE_BUF_SIZE] = {0};
 
-    uint32_t _rpm_t_ms = wall_time.millis();
-    uint32_t _rpm_dt_ms = 0.0;
+    uint32_t _rev_t_ms = wall_time.millis();
+    uint32_t _rev_dt_ms = 0;
 
     uint8_t _status = AFRO_STATUS_OK;
 };

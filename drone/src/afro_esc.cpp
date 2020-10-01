@@ -15,7 +15,7 @@ void AfroEsc::read()
 
     if (did_read)
     {
-        _update_rpm_timer();
+        _update_rev_timer();
         _status &= ~AFRO_STATUS_ERR_READ;
     }
     else
@@ -24,10 +24,10 @@ void AfroEsc::read()
     }
 }
 
-void AfroEsc::write(int16_t command)
+void AfroEsc::write(int16_t motor_cmd)
 {
-    _buf_write[0] = command >> 8;
-    _buf_write[1] = command;
+    _buf_write[0] = motor_cmd >> 8;
+    _buf_write[1] = motor_cmd;
 
     bool did_write = _i2c_conn.write_block_data(AFRO_WRITE_THROTTLE_H, AFRO_WRITE_BUF_SIZE, _buf_write);
 
@@ -77,13 +77,18 @@ double AfroEsc::get_temperature()
     return steinhart;
 }
 
-// Returns RPM [rpm]
-double AfroEsc::get_rpm()
+// Returns angular rate [rpm]
+double AfroEsc::get_angular_rate()
 {
-    int16_t raw_rpm = (_buf_read[AFRO_READ_BUF_REV_H] << 8) | _buf_read[AFRO_READ_BUF_REV_L];
-    double rpm = double(raw_rpm) / (double(_rpm_dt_ms) / AFRO_MS_IN_MIN) / double(AFRO_MOTOR_POLES);
+    int16_t raw_rev = (_buf_read[AFRO_READ_BUF_REV_H] << 8) | _buf_read[AFRO_READ_BUF_REV_L];
+    double angular_rate = 0;
 
-    return rpm;
+    if (_rev_dt_ms > 0)
+    {
+        angular_rate = (double(raw_rev) * AFRO_MS_IN_MIN) / (double(_rev_dt_ms) * double(AFRO_MOTOR_POLES));
+    }
+
+    return angular_rate;
 }
 
 uint8_t AfroEsc::get_status()
@@ -130,12 +135,12 @@ void AfroEsc::_arm()
     }
 }
 
-void AfroEsc::_update_rpm_timer()
+void AfroEsc::_update_rev_timer()
 {
-    double t_now_ms = wall_time.millis();
+    uint32_t t_now_ms = wall_time.millis();
 
-    _rpm_dt_ms = t_now_ms - _rpm_t_ms;
-    _rpm_t_ms = t_now_ms;
+    _rev_dt_ms = t_now_ms - _rev_t_ms;
+    _rev_t_ms = t_now_ms;
 }
 
 void AfroEsc::_reset_is_alive_byte()

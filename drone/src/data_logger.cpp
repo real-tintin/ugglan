@@ -66,6 +66,9 @@ void DataLogger::_pack_queue_until_empty()
 
         switch(sample.type)
         {
+            case DataLogType::BOOL:
+                _write((const char*) &sample.data, sizeof(bool));
+                break;
             case DataLogType::UINT8:
                 _write((const char*) &sample.data, sizeof(uint8_t));
                 break;

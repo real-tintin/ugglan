@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Union
 
-from data_log import read_data_log
+from read_data_log import read_data_log
 
 ROOT_PATH = Path(__file__).parent.absolute()
 DATA_LOG_PATH = ROOT_PATH / 'resources' / '20200904193108.dat'

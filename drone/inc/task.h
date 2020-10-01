@@ -9,6 +9,8 @@
 #include <logger.h>
 #include <wall_time.h>
 
+inline const uint32_t TASK_WARN_EXCEEDED_EXEC_PERIOD_PERC = 20; // [%]
+
 class Task
 {
 public:

@@ -144,11 +144,12 @@ TEST_CASE("last_signal_data")
 
 TEST_CASE("data_log_queue: error handling")
 {
+    struct NewType {bool data; };
     DataLogQueue data_log_queue;
 
     SECTION("unsupported type")
     {
-        bool data = false;
+        NewType data;
         REQUIRE_THROWS_WITH(data_log_queue.push(data, DataLogSignal::ImuAccelerationX),
                             "Unsupported data type");
     }

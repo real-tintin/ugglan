@@ -15,7 +15,7 @@ ESC Compile & Flash
 =====================
 The drone uses the Afro ESC (Electronic Speed Controllers) to control the
 brushless motors. They allow for communication via i2c and motor feedback such
-as rpm, temperature and voltage.
+as its angular-rate, temperature and voltage.
 
 In order to enable the i2c feedback and update its address, the onboard Atmel AVR
 Atmega8 have to be re-flashed. For flashing, the `Afro ESC USB programming tool <https://hobbyking.com/en_us/afro-esc-usb-programming-tool.html>`_

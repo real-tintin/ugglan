@@ -97,7 +97,11 @@ DataLogType DataLogQueue::_get_data_type(T data)
 {
     DataLogType type;
 
-    if (std::is_same<T, uint8_t>::value)
+    if (std::is_same<T, bool>::value)
+    {
+        type = DataLogType::BOOL;
+    }
+    else if (std::is_same<T, uint8_t>::value)
     {
         type = DataLogType::UINT8;
     }

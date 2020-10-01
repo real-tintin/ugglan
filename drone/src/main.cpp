@@ -20,8 +20,8 @@ static const std::string LOGGER_LEVEL = get_env_str("LOGGER_LEVEL");
 static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 20; // 50 Hz
 static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 20; // 50 Hz
 static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS   = 100; // 10 Hz
-static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 100; // 10 Hz
-static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 10; // 100 Hz
+static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 200; // 5 Hz
+static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 20; // 50 Hz
 static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 20; // 50 Hz
 static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 10; // 100 Hz
 
@@ -129,20 +129,16 @@ public:
 protected:
     void _execute()
     {
-        bool do_read = false;
-        if (_read_counter >= _read_counter_reset) { _read_counter = 0; }
-
         for (uint8_t i_esc = 0; i_esc < _n_esc; i_esc++)
         {
-            int16_t rpm_cmd = _get_rpm_cmd(i_esc);
-            _esc[i_esc].write(rpm_cmd);
+            _esc[i_esc].write(_get_motor_cmd(i_esc));
 
-            if (do_read)
+            if (_do_read)
             {
                 _esc[i_esc].read();
 
                 _data_log_queue.push(_esc[i_esc].get_is_alive(), _sid_is_alive[i_esc]);
-                _data_log_queue.push(_esc[i_esc].get_rpm(), _sid_rpm[i_esc]);
+                _data_log_queue.push(_esc[i_esc].get_angular_rate(), _sid_ang_rate[i_esc]);
                 _data_log_queue.push(_esc[i_esc].get_voltage(), _sid_voltage[i_esc]);
                 _data_log_queue.push(_esc[i_esc].get_current(), _sid_current[i_esc]);
                 _data_log_queue.push(_esc[i_esc].get_temperature(), _sid_temperature[i_esc]);
@@ -150,7 +146,8 @@ protected:
             }
         }
 
-        _read_counter++;
+        if (_read_counter >= _read_counter_reset) { _read_counter = 0; _do_read = true; }
+        else { _read_counter++; _do_read = false; }
     }
 private:
     static const uint8_t _n_esc = 4;
@@ -159,9 +156,9 @@ private:
         DataLogSignal::EscIsAlive0, DataLogSignal::EscIsAlive1,
         DataLogSignal::EscIsAlive2, DataLogSignal::EscIsAlive3};
 
-    static constexpr DataLogSignal _sid_rpm[_n_esc] = {
-        DataLogSignal::EscRpm0, DataLogSignal::EscRpm1,
-        DataLogSignal::EscRpm2, DataLogSignal::EscRpm3};
+    static constexpr DataLogSignal _sid_ang_rate[_n_esc] = {
+        DataLogSignal::EscAngularRate0, DataLogSignal::EscAngularRate1,
+        DataLogSignal::EscAngularRate2, DataLogSignal::EscAngularRate3};
 
     static constexpr DataLogSignal _sid_voltage[_n_esc] = {
         DataLogSignal::EscVoltage0, DataLogSignal::EscVoltage1,
@@ -179,25 +176,26 @@ private:
         DataLogSignal::EscStatus0, DataLogSignal::EscStatus1,
         DataLogSignal::EscStatus2, DataLogSignal::EscStatus3};
 
-    static constexpr uint8_t _read_counter_reset =
+    static const uint8_t _read_counter_reset =
         (TASK_ESC_READ_EXEC_PERIOD_MS / TASK_ESC_WRITE_EXEC_PERIOD_MS) - 1;
     uint8_t _read_counter = 0;
+    bool _do_read = false;
 
     I2cConn _i2c_conn_0, _i2c_conn_1, _i2c_conn_2, _i2c_conn_3;
     AfroEsc _esc[_n_esc];
     DataLogQueue& _data_log_queue;
 
-    int16_t _get_rpm_cmd(uint8_t i_esc)
+    int16_t _get_motor_cmd(uint8_t i_esc)
     {
         // TODO: Should be given by the state controller.
         double rc_gimbal_left_y;
         _data_log_queue.last_signal_data(&rc_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
 
-        int16_t rpm_cmd = rc_gimbal_left_y * 10000;
-        if (rpm_cmd > 10000) { rpm_cmd = 10000; }
-        if (rpm_cmd < 0) { rpm_cmd = 0; }
+        int16_t motor_cmd = rc_gimbal_left_y * 10000;
+        if (motor_cmd > 10000) { motor_cmd = 10000; }
+        if (motor_cmd < 0) { motor_cmd = 0; }
 
-        return rpm_cmd;
+        return motor_cmd;
     }
 };
 
@@ -304,7 +302,7 @@ int main()
     tasks.emplace_back(new TaskBarometer(TASK_BAROMETER_EXEC_PERIOD_MS, "ImuBarometer",
                                          I2C_ADDRESS_BAROMETER, data_log_queue));
 
-    tasks.emplace_back(new TaskEsc(TASK_ESC_READ_EXEC_PERIOD_MS, "Esc",
+    tasks.emplace_back(new TaskEsc(TASK_ESC_WRITE_EXEC_PERIOD_MS, "Esc",
                                       I2C_ADDRESS_ESC_0, I2C_ADDRESS_ESC_1,
                                       I2C_ADDRESS_ESC_2, I2C_ADDRESS_ESC_3,
                                       data_log_queue));

@@ -4,6 +4,7 @@
 #include <string>
 
 enum class DataLogType {
+    BOOL,
     UINT8,
     UINT16,
     UINT32,
@@ -17,6 +18,7 @@ enum class DataLogType {
 typedef std::map<DataLogType, std::string> DataLogTypeMap;
 
 inline const DataLogTypeMap DATA_LOG_TYPE_MAP = {
+    {DataLogType::BOOL, "BOOL"},
     {DataLogType::UINT8, "UINT8"},
     {DataLogType::UINT16, "UINT16"},
     {DataLogType::UINT32, "UINT32"},

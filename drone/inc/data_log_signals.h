@@ -47,10 +47,10 @@ enum class DataLogSignal {
     EscIsAlive2,
     EscIsAlive3,
 
-    EscRpm0,
-    EscRpm1,
-    EscRpm2,
-    EscRpm3,
+    EscAngularRate0,
+    EscAngularRate1,
+    EscAngularRate2,
+    EscAngularRate3,
 
     EscVoltage0,
     EscVoltage1,
@@ -137,15 +137,15 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::ImuGyroStatus, {"GyroStatus", DataLogGroup::Imu, DataLogType::UINT8}},
     {DataLogSignal::ImuBarometerStatus, {"BarometerStatus", DataLogGroup::Imu, DataLogType::UINT8}},
 
-    {DataLogSignal::EscIsAlive0, {"IsAlive0", DataLogGroup::Esc, DataLogType::UINT8}},
-    {DataLogSignal::EscIsAlive1, {"IsAlive1", DataLogGroup::Esc, DataLogType::UINT8}},
-    {DataLogSignal::EscIsAlive2, {"IsAlive2", DataLogGroup::Esc, DataLogType::UINT8}},
-    {DataLogSignal::EscIsAlive3, {"IsAlive3", DataLogGroup::Esc, DataLogType::UINT8}},
+    {DataLogSignal::EscIsAlive0, {"IsAlive0", DataLogGroup::Esc, DataLogType::BOOL}},
+    {DataLogSignal::EscIsAlive1, {"IsAlive1", DataLogGroup::Esc, DataLogType::BOOL}},
+    {DataLogSignal::EscIsAlive2, {"IsAlive2", DataLogGroup::Esc, DataLogType::BOOL}},
+    {DataLogSignal::EscIsAlive3, {"IsAlive3", DataLogGroup::Esc, DataLogType::BOOL}},
 
-    {DataLogSignal::EscRpm0, {"Rpm0", DataLogGroup::Esc, DataLogType::DOUBLE}},
-    {DataLogSignal::EscRpm1, {"Rpm1", DataLogGroup::Esc, DataLogType::DOUBLE}},
-    {DataLogSignal::EscRpm2, {"Rpm2", DataLogGroup::Esc, DataLogType::DOUBLE}},
-    {DataLogSignal::EscRpm3, {"Rpm3", DataLogGroup::Esc, DataLogType::DOUBLE}},
+    {DataLogSignal::EscAngularRate0, {"AngularRate0", DataLogGroup::Esc, DataLogType::DOUBLE}},
+    {DataLogSignal::EscAngularRate1, {"AngularRate1", DataLogGroup::Esc, DataLogType::DOUBLE}},
+    {DataLogSignal::EscAngularRate2, {"AngularRate2", DataLogGroup::Esc, DataLogType::DOUBLE}},
+    {DataLogSignal::EscAngularRate3, {"AngularRate3", DataLogGroup::Esc, DataLogType::DOUBLE}},
 
     {DataLogSignal::EscVoltage0, {"Voltage0", DataLogGroup::Esc, DataLogType::DOUBLE}},
     {DataLogSignal::EscVoltage1, {"Voltage1", DataLogGroup::Esc, DataLogType::DOUBLE}},

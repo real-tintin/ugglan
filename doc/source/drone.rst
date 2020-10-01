@@ -37,8 +37,8 @@ the consumers, see :numref:`drone_sw_design`.
         ImuAccMag -- 50 Hz --> DataLogQueue
         ImuGyro -- 50 Hz --> DataLogQueue
         ImuPres -- 10 Hz --> DataLogQueue
-        EscRead_i -- 10 Hz --> DataLogQueue
-        RcReceiver -- 30 Hz --> DataLogQueue
+        EscRead_i -- 5 Hz --> DataLogQueue
+        RcReceiver -- 50 Hz --> DataLogQueue
 
         DataLogQueue -- last value 50 Hz--> StateControl
         DataLogQueue -- pop 100 Hz --> DataLogger
