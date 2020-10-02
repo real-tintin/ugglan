@@ -19,7 +19,8 @@ enum class DataLogSignal {
 enum class DataLogGroup {
     Imu,
     Esc,
-    Rc
+    Rc,
+    Task
 };
 
 enum class DataLogSignal {
@@ -83,7 +84,11 @@ enum class DataLogSignal {
     RcSwitchMiddle,
 
     RcKnob,
-    RcStatus
+    RcStatus,
+
+    TaskSetup,
+    TaskExecute,
+    TaskFinish
 };
 #endif
 
@@ -114,7 +119,8 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
 inline const DataLogGroupMap DATA_LOG_GROUP_MAP = {
     {DataLogGroup::Imu, {"Imu"}},
     {DataLogGroup::Esc, {"Esc"}},
-    {DataLogGroup::Rc, {"Rc"}}
+    {DataLogGroup::Rc, {"Rc"}},
+    {DataLogGroup::Task, {"Task"}}
     };
 
 inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
@@ -178,7 +184,11 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::RcSwitchMiddle, {"SwitchMiddle", DataLogGroup::Rc, DataLogType::UINT8}},
 
     {DataLogSignal::RcKnob, {"Knob", DataLogGroup::Rc, DataLogType::DOUBLE}},
-    {DataLogSignal::RcStatus, {"Status", DataLogGroup::Rc, DataLogType::UINT8}}
+    {DataLogSignal::RcStatus, {"Status", DataLogGroup::Rc, DataLogType::UINT8}},
+
+    {DataLogSignal::TaskSetup, {"Setup", DataLogGroup::Task, DataLogType::UINT8}},
+    {DataLogSignal::TaskExecute, {"Execute", DataLogGroup::Task, DataLogType::UINT8}},
+    {DataLogSignal::TaskFinish, {"Finish", DataLogGroup::Task, DataLogType::UINT8}}
     };
 #endif
 

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from read_data_log import read_data_log, Signals
+from task_ids import TaskId
 
 mpl.rcParams['lines.linewidth'] = 0.5
 
@@ -22,18 +23,23 @@ def _finish_subplots(fig):
             ax.legend()
 
 
-def _plot_sample_rate(axs, t_s, sensor):
+def _plot_task_sample_rate(axs, signal, task_id, task_name):
+    val = np.array(signal.val)
+    t_s = np.array(signal.t_s)
+    use_idx = val == task_id.value
+    t_s = t_s[use_idx]
+
     dt_s = np.diff(t_s)
     freq = np.divide(1, dt_s)
     mean_freq = np.mean(freq)
 
-    label = "{}: {} Hz".format(sensor, np.array2string(mean_freq, precision=2))
+    label = "{}: {} Hz".format(task_name, np.array2string(mean_freq, precision=2))
     axs.plot(t_s[1:], freq, label=label)
     axs.set(ylabel='Sample rate [Hz]')
 
 
 def _plot_imu(data):
-    fig, axs = plt.subplots(4, 2)
+    fig, axs = plt.subplots(3, 2)
 
     axs[0, 0].plot(data.Imu.AccelerationX.t_s, data.Imu.AccelerationX.val, label='X')
     axs[0, 0].plot(data.Imu.AccelerationY.t_s, data.Imu.AccelerationY.val, label='Y')
@@ -61,15 +67,11 @@ def _plot_imu(data):
     axs[2, 1].plot(data.Imu.BarometerStatus.t_s, data.Imu.BarometerStatus.val, label='Barometer')
     axs[2, 1].set(ylabel='Status [-]')
 
-    _plot_sample_rate(axs[3, 0], data.Imu.AccelerationX.t_s, 'AccMag')
-    _plot_sample_rate(axs[3, 0], data.Imu.MagneticFieldX.t_s, 'Gyro')
-    _plot_sample_rate(axs[3, 0], data.Imu.Pressure.t_s, 'Barometer')
-
     _finish_subplots(fig)
 
 
 def _plot_esc(data: Signals):
-    fig, axs = plt.subplots(4, 2)
+    fig, axs = plt.subplots(3, 2)
 
     _add_esc_features(axs[0, 0], data, 'AngularRate')
     axs[0, 0].set(ylabel='Angular rate [rpm]')
@@ -88,8 +90,6 @@ def _plot_esc(data: Signals):
 
     _add_esc_features(axs[2, 1], data, 'Status')
     axs[2, 1].set(ylabel='Status [-]')
-
-    _plot_sample_rate(axs[3, 0], data.Esc.Status0.t_s, 'Esc')
 
     _finish_subplots(fig)
 
@@ -124,7 +124,29 @@ def _plot_rc(data: Signals):
     axs[2, 0].plot(data.Rc.Status.t_s, data.Rc.Status.val)
     axs[2, 0].set(ylabel='Status [-]')
 
-    _plot_sample_rate(axs[2, 1], data.Rc.GimbalLeftX.t_s, 'rc')
+    _finish_subplots(fig)
+
+
+def _plot_tasks(data: Signals):
+    fig, axs = plt.subplots(3, 2)
+
+    _plot_task_sample_rate(axs[0, 0], data.Task.Execute, TaskId.AccMag, 'AccMag')
+    _plot_task_sample_rate(axs[0, 0], data.Task.Execute, TaskId.Gyro, 'Gyro')
+    _plot_task_sample_rate(axs[0, 0], data.Task.Execute, TaskId.Barometer, 'Barometer')
+
+    _plot_task_sample_rate(axs[0, 1], data.Task.Execute, TaskId.EscRead0, 'EscRead0')
+    _plot_task_sample_rate(axs[0, 1], data.Task.Execute, TaskId.EscRead1, 'EscRead1')
+    _plot_task_sample_rate(axs[0, 1], data.Task.Execute, TaskId.EscRead2, 'EscRead2')
+    _plot_task_sample_rate(axs[0, 1], data.Task.Execute, TaskId.EscRead3, 'EscRead3')
+
+    _plot_task_sample_rate(axs[1, 0], data.Task.Execute, TaskId.EscWrite0, 'EscWrite0')
+    _plot_task_sample_rate(axs[1, 0], data.Task.Execute, TaskId.EscWrite1, 'EscWrite1')
+    _plot_task_sample_rate(axs[1, 0], data.Task.Execute, TaskId.EscWrite2, 'EscWrite2')
+    _plot_task_sample_rate(axs[1, 0], data.Task.Execute, TaskId.EscWrite3, 'EscWrite3')
+
+    _plot_task_sample_rate(axs[1, 1], data.Task.Execute, TaskId.RcReceiver, 'RcReceiver')
+
+    _plot_task_sample_rate(axs[2, 0], data.Task.Execute, TaskId.DataLogger, 'DataLogger')
 
     _finish_subplots(fig)
 
@@ -139,6 +161,7 @@ def main():
     _plot_imu(data)
     _plot_esc(data)
     _plot_rc(data)
+    _plot_tasks(data)
 
     plt.show()
 

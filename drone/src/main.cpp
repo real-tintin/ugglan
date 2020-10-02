@@ -38,6 +38,22 @@ static const std::string SERIAL_DEVICE_RC_RECEIVER = "/dev/ttyAMA0";
 
 static const uint32_t MAIN_SLEEP_MS = 1000;
 
+enum class TaskId {
+    AccMag,
+    Gyro,
+    Barometer,
+    EscRead0,
+    EscRead1,
+    EscRead2,
+    EscRead3,
+    EscWrite0,
+    EscWrite1,
+    EscWrite2,
+    EscWrite3,
+    RcReceiver,
+    DataLogger
+};
+
 class TaskAccMag : public Task
 {
 public:
@@ -59,6 +75,7 @@ protected:
         _data_log_queue.push(_acc_mag.get_magnetic_field_z(), DataLogSignal::ImuMagneticFieldZ);
 
         _data_log_queue.push(_acc_mag.get_status(), DataLogSignal::ImuAccMagStatus);
+        _data_log_queue.push(uint8_t(TaskId::AccMag), DataLogSignal::TaskExecute);
     }
 private:
     I2cConn _i2c_conn;
@@ -83,6 +100,7 @@ protected:
         _data_log_queue.push(_gyro.get_angular_rate_z(), DataLogSignal::ImuAngularRateZ);
 
         _data_log_queue.push(_gyro.get_status(), DataLogSignal::ImuGyroStatus);
+        _data_log_queue.push(uint8_t(TaskId::Gyro), DataLogSignal::TaskExecute);
     }
 private:
     I2cConn _i2c_conn;
@@ -106,6 +124,7 @@ protected:
         _data_log_queue.push(_barometer.get_temperature(), DataLogSignal::ImuTemperature);
 
         _data_log_queue.push(_barometer.get_status(), DataLogSignal::ImuBarometerStatus);
+        _data_log_queue.push(uint8_t(TaskId::Barometer), DataLogSignal::TaskExecute);
     }
 private:
     I2cConn _i2c_conn;
@@ -132,6 +151,7 @@ protected:
         for (uint8_t i_esc = 0; i_esc < _n_esc; i_esc++)
         {
             _esc[i_esc].write(_get_motor_cmd(i_esc));
+            _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskExecute);
 
             if (_do_read)
             {
@@ -143,6 +163,7 @@ protected:
                 _data_log_queue.push(_esc[i_esc].get_current(), _sid_current[i_esc]);
                 _data_log_queue.push(_esc[i_esc].get_temperature(), _sid_temperature[i_esc]);
                 _data_log_queue.push(_esc[i_esc].get_status(), _sid_status[i_esc]);
+                _data_log_queue.push(uint8_t(_task_read_ids[i_esc]), DataLogSignal::TaskExecute);
             }
         }
 
@@ -175,6 +196,12 @@ private:
     static constexpr DataLogSignal _sid_status[_n_esc] = {
         DataLogSignal::EscStatus0, DataLogSignal::EscStatus1,
         DataLogSignal::EscStatus2, DataLogSignal::EscStatus3};
+
+    static constexpr TaskId _task_read_ids[_n_esc] = {
+        TaskId::EscRead0, TaskId::EscRead1, TaskId::EscRead2, TaskId::EscRead3};
+
+    static constexpr TaskId _task_write_ids[_n_esc] = {
+        TaskId::EscWrite0, TaskId::EscWrite1, TaskId::EscWrite2, TaskId::EscWrite3};
 
     static const uint8_t _read_counter_reset =
         (TASK_ESC_READ_EXEC_PERIOD_MS / TASK_ESC_WRITE_EXEC_PERIOD_MS) - 1;
@@ -223,6 +250,7 @@ protected:
 
         _data_log_queue.push(_rc.get_knob(), DataLogSignal::RcKnob);
         _data_log_queue.push(_rc.get_status(), DataLogSignal::RcStatus);
+        _data_log_queue.push(uint8_t(TaskId::RcReceiver), DataLogSignal::TaskExecute);
     }
 private:
     SerialConn _serial_conn;
@@ -236,13 +264,26 @@ public:
     TaskDataLogger(uint32_t exec_period_ms, std::string name,
                    std::filesystem::path root_path, DataLogQueue& data_log_queue) :
         Task(exec_period_ms, name),
-             _data_logger(data_log_queue, root_path) {}
+             _data_logger(data_log_queue, root_path), _data_log_queue(data_log_queue) {}
 protected:
-    void _setup() { _data_logger.start(); }
-    void _execute() { _data_logger.pack(); }
-    void _finish() { _data_logger.stop(); }
+    void _setup()
+    {
+        _data_logger.start();
+        _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskSetup);
+    }
+    void _execute()
+    {
+        _data_logger.pack();
+        _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskExecute);
+    }
+    void _finish()
+    {
+        _data_logger.stop();
+        _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskFinish);
+    }
 private:
     DataLogger _data_logger;
+    DataLogQueue& _data_log_queue;
 };
 
 void set_logger_level()
