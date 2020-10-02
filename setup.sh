@@ -7,7 +7,7 @@ PYENV_ROOT="./pyenv"
 PYENV_REQ="./requirements.txt"
 
 # Setup python virtual env.
-python3 -m venv "${PYENV_ROOT}"
+python -m venv "${PYENV_ROOT}"
 source "${PYENV_ROOT}/Scripts/activate"
 
 pip install --upgrade pip
