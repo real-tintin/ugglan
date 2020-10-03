@@ -153,7 +153,7 @@ protected:
             _esc[i_esc].write(_get_motor_cmd(i_esc));
             _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskExecute);
 
-            if (_do_read)
+            if (_read_counter == i_esc)
             {
                 _esc[i_esc].read();
 
@@ -167,8 +167,8 @@ protected:
             }
         }
 
-        if (_read_counter >= _read_counter_reset) { _read_counter = 0; _do_read = true; }
-        else { _read_counter++; _do_read = false; }
+        if (_read_counter >= _read_counter_reset) { _read_counter = 0; }
+        else { _read_counter++; }
     }
 private:
     static const uint8_t _n_esc = 4;
@@ -206,7 +206,6 @@ private:
     static const uint8_t _read_counter_reset =
         (TASK_ESC_READ_EXEC_PERIOD_MS / TASK_ESC_WRITE_EXEC_PERIOD_MS) - 1;
     uint8_t _read_counter = 0;
-    bool _do_read = false;
 
     I2cConn _i2c_conn_0, _i2c_conn_1, _i2c_conn_2, _i2c_conn_3;
     AfroEsc _esc[_n_esc];
@@ -313,7 +312,7 @@ void wait_for_shutdown(DataLogQueue& data_log_queue)
         switch(rc_switch_middle)
         {
             case SwitchM::Low:
-                logger.debug("Rc middle switch: low. Will shutdown.");
+                logger.info("Rc middle switch: low. Will shutdown.");
                 break;
             case SwitchM::High:
                 logger.debug("Rc middle switch: high. Keep running.");

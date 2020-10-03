@@ -13,7 +13,7 @@ void Task::launch()
     _run_thread = true;
     _thread = std::thread(&Task::_execute_thread, this);
 
-    logger.debug("Launching task " + _name + ".");
+    logger.info("Launching task " + _name + ".");
 }
 
 void Task::teardown()
@@ -22,7 +22,7 @@ void Task::teardown()
     _thread.join();
     _finish();
 
-    logger.debug("Tearing down task " + _name + ".");
+    logger.info("Tearing down task " + _name + ".");
 }
 
 void Task::_execute_thread()
