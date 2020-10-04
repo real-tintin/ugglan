@@ -2,7 +2,9 @@
 
 #if !defined(UNIT_TEST)
 
-I2cConn::I2cConn(uint8_t address) : _address{ address }
+I2cConn::I2cConn(std::string device, uint8_t address) :
+    _device(device),
+    _address(address)
 {
 }
 
@@ -13,7 +15,7 @@ I2cConn::~I2cConn()
 
 bool I2cConn::open()
 {
-    if (((_fd = ::open(I2C_DEVICE, O_RDWR)) >= 0) && (ioctl(_fd, I2C_SLAVE, _address) >= 0))
+    if (((_fd = ::open(_device.c_str(), O_RDWR)) >= 0) && (ioctl(_fd, I2C_SLAVE, _address) >= 0))
     {
         logger.debug("Successfully opened i2c connection at: " + std::to_string(_address));
         return true;

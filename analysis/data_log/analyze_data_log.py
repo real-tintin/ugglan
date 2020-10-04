@@ -30,8 +30,9 @@ def _plot_task_sample_rate(axs, signal, task_id, task_name):
     t_s = t_s[use_idx]
 
     dt_s = np.diff(t_s)
+    dt_s[dt_s == 0] = np.NaN
     freq = np.divide(1, dt_s)
-    mean_freq = np.mean(freq)
+    mean_freq = np.nanmean(freq)
 
     label = "{}: {} Hz".format(task_name, np.array2string(mean_freq, precision=2))
     axs.plot(t_s[1:], freq, label=label)

@@ -10,13 +10,11 @@
 #include <linux/i2c-dev.h>
 #include <logger.h>
 
-inline const char* const I2C_DEVICE = "/dev/i2c-1";
-
 #if !defined(UNIT_TEST)
 class I2cConn
 {
 public:
-    I2cConn(uint8_t address);
+    I2cConn(std::string device, uint8_t address);
 
     ~I2cConn();
 
@@ -30,6 +28,7 @@ public:
     bool write_block_data(uint8_t reg, uint8_t size, uint8_t* buf);
 private:
     int8_t _fd;
+    std::string _device;
     uint8_t _address;
 };
 #endif

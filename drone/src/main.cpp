@@ -20,7 +20,7 @@ static const std::string LOGGER_LEVEL = get_env_str("LOGGER_LEVEL");
 static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 20; // 50 Hz
 static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 20; // 50 Hz
 static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS   = 100; // 10 Hz
-static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 200; // 5 Hz
+static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 250; // 4 Hz
 static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 20; // 50 Hz
 static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 20; // 50 Hz
 static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 10; // 100 Hz
@@ -35,6 +35,9 @@ static const uint8_t I2C_ADDRESS_ESC_2 = 0x2c;
 static const uint8_t I2C_ADDRESS_ESC_3 = 0x2d;
 
 static const std::string SERIAL_DEVICE_RC_RECEIVER = "/dev/ttyAMA0";
+
+static const std::string I2C_DEVICE_IMU = "/dev/i2c-1"; // Using HW in fast mode (400 kHz)
+static const std::string I2C_DEVICE_ESC = "/dev/i2c-4"; // Using SW in normal mode (100 kHz)
 
 static const uint32_t MAIN_SLEEP_MS = 1000;
 
@@ -58,9 +61,9 @@ class TaskAccMag : public Task
 {
 public:
     TaskAccMag(uint32_t exec_period_ms, std::string name,
-               uint8_t i2c_address, DataLogQueue& data_log_queue) :
+               std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
         Task(exec_period_ms, name),
-             _i2c_conn(i2c_address), _acc_mag(_i2c_conn), _data_log_queue(data_log_queue) {}
+             _i2c_conn(i2c_device, i2c_address), _acc_mag(_i2c_conn), _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -87,9 +90,9 @@ class TaskGyro : public Task
 {
 public:
     TaskGyro(uint32_t exec_period_ms, std::string name,
-             uint8_t i2c_address, DataLogQueue& data_log_queue) :
+             std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
         Task(exec_period_ms, name),
-             _i2c_conn(i2c_address), _gyro(_i2c_conn), _data_log_queue(data_log_queue) {}
+             _i2c_conn(i2c_device, i2c_address), _gyro(_i2c_conn), _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -112,9 +115,9 @@ class TaskBarometer : public Task
 {
 public:
     TaskBarometer(uint32_t exec_period_ms, std::string name,
-                  uint8_t i2c_address, DataLogQueue& data_log_queue) :
+                  std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
         Task(exec_period_ms, name),
-             _i2c_conn(i2c_address), _barometer(_i2c_conn), _data_log_queue(data_log_queue) {}
+             _i2c_conn(i2c_device, i2c_address), _barometer(_i2c_conn), _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -136,12 +139,13 @@ class TaskEsc : public Task
 {
 public:
     TaskEsc(uint32_t exec_period_ms, std::string name,
+            std::string i2c_device,
             uint8_t i2c_address_0, uint8_t i2c_address_1,
             uint8_t i2c_address_2, uint8_t i2c_address_3,
             DataLogQueue& data_log_queue) :
         Task(exec_period_ms, name),
-             _i2c_conn_0(i2c_address_0), _i2c_conn_1(i2c_address_1),
-             _i2c_conn_2(i2c_address_2), _i2c_conn_3(i2c_address_3),
+             _i2c_conn_0(i2c_device, i2c_address_0), _i2c_conn_1(i2c_device, i2c_address_1),
+             _i2c_conn_2(i2c_device, i2c_address_2), _i2c_conn_3(i2c_device, i2c_address_3),
              _esc{AfroEsc(_i2c_conn_0), AfroEsc(_i2c_conn_1),
                   AfroEsc(_i2c_conn_2), AfroEsc(_i2c_conn_3)},
              _data_log_queue(data_log_queue) {}
@@ -217,8 +221,8 @@ private:
         double rc_gimbal_left_y;
         _data_log_queue.last_signal_data(&rc_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
 
-        int16_t motor_cmd = rc_gimbal_left_y * 10000;
-        if (motor_cmd > 10000) { motor_cmd = 10000; }
+        int16_t motor_cmd = rc_gimbal_left_y * 20000;
+        if (motor_cmd > 20000) { motor_cmd = 20000; }
         if (motor_cmd < 0) { motor_cmd = 0; }
 
         return motor_cmd;
@@ -334,18 +338,19 @@ int main()
     std::vector<std::unique_ptr<Task>> tasks;
 
     tasks.emplace_back(new TaskAccMag(TASK_ACC_MAG_EXEC_PERIOD_MS, "ImuAccMag",
-                                      I2C_ADDRESS_ACC_MAG, data_log_queue));
+                                      I2C_DEVICE_IMU, I2C_ADDRESS_ACC_MAG, data_log_queue));
 
     tasks.emplace_back(new TaskGyro(TASK_GYRO_EXEC_PERIOD_MS, "ImuGyro",
-                                    I2C_ADDRESS_GYRO, data_log_queue));
+                                    I2C_DEVICE_IMU, I2C_ADDRESS_GYRO, data_log_queue));
 
     tasks.emplace_back(new TaskBarometer(TASK_BAROMETER_EXEC_PERIOD_MS, "ImuBarometer",
-                                         I2C_ADDRESS_BAROMETER, data_log_queue));
+                                         I2C_DEVICE_IMU, I2C_ADDRESS_BAROMETER, data_log_queue));
 
     tasks.emplace_back(new TaskEsc(TASK_ESC_WRITE_EXEC_PERIOD_MS, "Esc",
-                                      I2C_ADDRESS_ESC_0, I2C_ADDRESS_ESC_1,
-                                      I2C_ADDRESS_ESC_2, I2C_ADDRESS_ESC_3,
-                                      data_log_queue));
+                                  I2C_DEVICE_ESC,
+                                  I2C_ADDRESS_ESC_0, I2C_ADDRESS_ESC_1,
+                                  I2C_ADDRESS_ESC_2, I2C_ADDRESS_ESC_3,
+                                  data_log_queue));
 
     tasks.emplace_back(new TaskRcReceiver(TASK_RC_RECEIVER_EXEC_PERIOD_MS, "RcReceiver",
                                           SERIAL_DEVICE_RC_RECEIVER, data_log_queue));

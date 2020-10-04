@@ -39,9 +39,32 @@ Setup Env on Target
 ====================
 Before deploying on target (Raspbian)
 
-* Enable i2c and explicitly set its baudrate to 100 kb/s.
-* Install GCC 9.1 (see ``./drone/Dockerfile_raspi``)
-* Setup wpa supplicant (for remote access) e.g., connect to a hotspot.
+External devices
+----------------
+The IMU and ESC's are communicating with the Pi over i2c. The IMU can run at 400 kHz (fast mode)
+and is using the buildin HW. But, the ESC's only run stable at 100 kHz (normal mode) and are
+therefore using a SW implementation (i2c-gpio overlay, bit-banging over GPIO 23-24). The RC receiver
+is communicating over UART, a serial connection. To enable all of these, add the following to the end
+of ``/boot/config.txt``::
+
+    # Enable HW i2c in fast mode (400 kHz)
+    dtparam=i2c=on
+    dtparam=i2c_baudrate=400000
+
+    # Enable SW i2c in normal mode (100 kHz)
+    dtoverlay=i2c-gpio,bus=4,i2c_gpio_delay_us=2,i2c_gpio_sda=23,i2c_gpio_scl=24
+
+    # Enable UART
+    enable_uart=1
+
+Install GCC 9.1
+----------------
+The C++ application is compiled using gcc 9.1 (for C++17) and needs to be installed on the Pi
+(dependent libs). See ``./drone/Dockerfile_raspi`` for details.
+
+Remote access
+--------------
+Setup wpa supplicant and interfaces for remote access e.g., connect to a hotspot.
 
 Build for & Deploy on Target
 =============================
@@ -49,14 +72,14 @@ To build for target. The source is cross compiled in a Raspbian Docker container
 
     cd ./drone && make -f Makefile_dpkg
 
-This will also create a Debian package (*ugglan.deb*) which can easily be deployed on target
+This will also create a Debian package (``ugglan.deb``) which can easily be deployed on target
 by using::
 
     dpkg --install path/to/ugglan.deb
 
 Python Modules
 ===============
-When new Python modules are needed and installed, the *requirements.txt* shall be
+When new Python modules are needed and installed, the ``requirements.txt`` shall be
 updated accordingly. Under python virtual env::
 
     py -m pip freeze > requirements.txt

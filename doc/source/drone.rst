@@ -150,6 +150,10 @@ Devices & Busses
         Imu_i -- i2c read --> Raspi
         RcReceiver -- uart read --> Raspi
 
+Wiring
+--------
+TODO: Wiring diagram.
+
 Modeling
 ===============
 TODO: Summary of master thesis work.
