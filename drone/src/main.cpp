@@ -20,7 +20,7 @@ static const std::string LOGGER_LEVEL = get_env_str("LOGGER_LEVEL");
 static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 20; // 50 Hz
 static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 20; // 50 Hz
 static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS   = 100; // 10 Hz
-static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 250; // 4 Hz
+static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 200; // 5 Hz
 static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 20; // 50 Hz
 static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 20; // 50 Hz
 static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 10; // 100 Hz
@@ -33,6 +33,8 @@ static const uint8_t I2C_ADDRESS_ESC_0 = 0x2a;
 static const uint8_t I2C_ADDRESS_ESC_1 = 0x2b;
 static const uint8_t I2C_ADDRESS_ESC_2 = 0x2c;
 static const uint8_t I2C_ADDRESS_ESC_3 = 0x2d;
+
+static const uint8_t N_ESC = 4;
 
 static const std::string SERIAL_DEVICE_RC_RECEIVER = "/dev/ttyAMA0";
 
@@ -62,8 +64,9 @@ class TaskAccMag : public Task
 public:
     TaskAccMag(uint32_t exec_period_ms, std::string name,
                std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-             _i2c_conn(i2c_device, i2c_address), _acc_mag(_i2c_conn), _data_log_queue(data_log_queue) {}
+         Task(exec_period_ms, name),
+              _i2c_conn(i2c_device, i2c_address), _acc_mag(_i2c_conn),
+              _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -92,7 +95,8 @@ public:
     TaskGyro(uint32_t exec_period_ms, std::string name,
              std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
         Task(exec_period_ms, name),
-             _i2c_conn(i2c_device, i2c_address), _gyro(_i2c_conn), _data_log_queue(data_log_queue) {}
+             _i2c_conn(i2c_device, i2c_address), _gyro(_i2c_conn),
+             _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -116,8 +120,9 @@ class TaskBarometer : public Task
 public:
     TaskBarometer(uint32_t exec_period_ms, std::string name,
                   std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-             _i2c_conn(i2c_device, i2c_address), _barometer(_i2c_conn), _data_log_queue(data_log_queue) {}
+             Task(exec_period_ms, name),
+                  _i2c_conn(i2c_device, i2c_address), _barometer(_i2c_conn),
+                  _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -135,89 +140,97 @@ private:
     DataLogQueue& _data_log_queue;
 };
 
-class TaskEsc : public Task
+class TaskEscRead : public Task
 {
 public:
-    TaskEsc(uint32_t exec_period_ms, std::string name,
-            std::string i2c_device,
-            uint8_t i2c_address_0, uint8_t i2c_address_1,
-            uint8_t i2c_address_2, uint8_t i2c_address_3,
-            DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-             _i2c_conn_0(i2c_device, i2c_address_0), _i2c_conn_1(i2c_device, i2c_address_1),
-             _i2c_conn_2(i2c_device, i2c_address_2), _i2c_conn_3(i2c_device, i2c_address_3),
-             _esc{AfroEsc(_i2c_conn_0), AfroEsc(_i2c_conn_1),
-                  AfroEsc(_i2c_conn_2), AfroEsc(_i2c_conn_3)},
-             _data_log_queue(data_log_queue) {}
+    TaskEscRead(uint32_t exec_period_ms, std::string name,
+                AfroEsc (&esc)[N_ESC], DataLogQueue& data_log_queue) :
+           Task(exec_period_ms / N_ESC, name),
+                _esc(esc), _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
-        for (uint8_t i_esc = 0; i_esc < _n_esc; i_esc++)
-        {
-            _esc[i_esc].write(_get_motor_cmd(i_esc));
-            _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskExecute);
+        uint8_t i_esc = _load_balance_step;
+        _esc[i_esc].read();
 
-            if (_read_counter == i_esc)
-            {
-                _esc[i_esc].read();
+        _data_log_queue.push(_esc[i_esc].get_is_alive(), _sid_is_alive[i_esc]);
+        _data_log_queue.push(_esc[i_esc].get_angular_rate(), _sid_ang_rate[i_esc]);
+        _data_log_queue.push(_esc[i_esc].get_voltage(), _sid_voltage[i_esc]);
+        _data_log_queue.push(_esc[i_esc].get_current(), _sid_current[i_esc]);
+        _data_log_queue.push(_esc[i_esc].get_temperature(), _sid_temperature[i_esc]);
+        _data_log_queue.push(_esc[i_esc].get_status(), _sid_status[i_esc]);
+        _data_log_queue.push(uint8_t(_task_read_ids[i_esc]), DataLogSignal::TaskExecute);
 
-                _data_log_queue.push(_esc[i_esc].get_is_alive(), _sid_is_alive[i_esc]);
-                _data_log_queue.push(_esc[i_esc].get_angular_rate(), _sid_ang_rate[i_esc]);
-                _data_log_queue.push(_esc[i_esc].get_voltage(), _sid_voltage[i_esc]);
-                _data_log_queue.push(_esc[i_esc].get_current(), _sid_current[i_esc]);
-                _data_log_queue.push(_esc[i_esc].get_temperature(), _sid_temperature[i_esc]);
-                _data_log_queue.push(_esc[i_esc].get_status(), _sid_status[i_esc]);
-                _data_log_queue.push(uint8_t(_task_read_ids[i_esc]), DataLogSignal::TaskExecute);
-            }
-        }
-
-        if (_read_counter >= _read_counter_reset) { _read_counter = 0; }
-        else { _read_counter++; }
+        _load_balance_step = (_load_balance_step + 1) % N_ESC;
     }
 private:
-    static const uint8_t _n_esc = 4;
+    AfroEsc (&_esc)[N_ESC];
+    DataLogQueue& _data_log_queue;
 
-    static constexpr DataLogSignal _sid_is_alive[_n_esc] = {
+    static constexpr DataLogSignal _sid_is_alive[N_ESC] = {
         DataLogSignal::EscIsAlive0, DataLogSignal::EscIsAlive1,
         DataLogSignal::EscIsAlive2, DataLogSignal::EscIsAlive3};
 
-    static constexpr DataLogSignal _sid_ang_rate[_n_esc] = {
+    static constexpr DataLogSignal _sid_ang_rate[N_ESC] = {
         DataLogSignal::EscAngularRate0, DataLogSignal::EscAngularRate1,
         DataLogSignal::EscAngularRate2, DataLogSignal::EscAngularRate3};
 
-    static constexpr DataLogSignal _sid_voltage[_n_esc] = {
+    static constexpr DataLogSignal _sid_voltage[N_ESC] = {
         DataLogSignal::EscVoltage0, DataLogSignal::EscVoltage1,
         DataLogSignal::EscVoltage2, DataLogSignal::EscVoltage3};
 
-    static constexpr DataLogSignal _sid_current[_n_esc] = {
+    static constexpr DataLogSignal _sid_current[N_ESC] = {
         DataLogSignal::EscCurrent0, DataLogSignal::EscCurrent1,
         DataLogSignal::EscCurrent2, DataLogSignal::EscCurrent3};
 
-    static constexpr DataLogSignal _sid_temperature[_n_esc] = {
+    static constexpr DataLogSignal _sid_temperature[N_ESC] = {
         DataLogSignal::EscTemperature0, DataLogSignal::EscTemperature1,
         DataLogSignal::EscTemperature2, DataLogSignal::EscTemperature3};
 
-    static constexpr DataLogSignal _sid_status[_n_esc] = {
+    static constexpr DataLogSignal _sid_status[N_ESC] = {
         DataLogSignal::EscStatus0, DataLogSignal::EscStatus1,
         DataLogSignal::EscStatus2, DataLogSignal::EscStatus3};
 
-    static constexpr TaskId _task_read_ids[_n_esc] = {
+    static constexpr TaskId _task_read_ids[N_ESC] = {
         TaskId::EscRead0, TaskId::EscRead1, TaskId::EscRead2, TaskId::EscRead3};
 
-    static constexpr TaskId _task_write_ids[_n_esc] = {
-        TaskId::EscWrite0, TaskId::EscWrite1, TaskId::EscWrite2, TaskId::EscWrite3};
+    uint8_t _load_balance_step = 0;
+};
 
-    static const uint8_t _read_counter_reset =
-        (TASK_ESC_READ_EXEC_PERIOD_MS / TASK_ESC_WRITE_EXEC_PERIOD_MS) - 1;
-    uint8_t _read_counter = 0;
+class TaskEscWrite : public Task
+{
+public:
+    TaskEscWrite(uint32_t exec_period_ms, std::string name,
+                 AfroEsc (&esc)[N_ESC], DataLogQueue& data_log_queue) :
+            Task(exec_period_ms, name),
+                 _esc(esc), _data_log_queue(data_log_queue) {}
+protected:
+    void _setup()
+    {
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            _esc[i_esc].arm();
+            _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskSetup);
+        }
+    }
 
-    I2cConn _i2c_conn_0, _i2c_conn_1, _i2c_conn_2, _i2c_conn_3;
-    AfroEsc _esc[_n_esc];
+    void _execute()
+    {
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            _esc[i_esc].write(_get_motor_cmd(i_esc)); // TODO: Should be given by the state controller.
+            _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskExecute);
+        }
+    }
+private:
+    AfroEsc (&_esc)[N_ESC];
     DataLogQueue& _data_log_queue;
+
+    static constexpr TaskId _task_write_ids[N_ESC] = {
+        TaskId::EscWrite0, TaskId::EscWrite1, TaskId::EscWrite2, TaskId::EscWrite3};
 
     int16_t _get_motor_cmd(uint8_t i_esc)
     {
-        // TODO: Should be given by the state controller.
         double rc_gimbal_left_y;
         _data_log_queue.last_signal_data(&rc_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
 
@@ -234,8 +247,9 @@ class TaskRcReceiver : public Task
 public:
     TaskRcReceiver(uint32_t exec_period_ms, std::string name,
                    std::string serial_device, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-             _serial_conn(serial_device), _rc(_serial_conn), _data_log_queue(data_log_queue) {}
+              Task(exec_period_ms, name),
+                   _serial_conn(serial_device), _rc(_serial_conn),
+                   _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -266,8 +280,9 @@ class TaskDataLogger : public Task
 public:
     TaskDataLogger(uint32_t exec_period_ms, std::string name,
                    std::filesystem::path root_path, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-             _data_logger(data_log_queue, root_path), _data_log_queue(data_log_queue) {}
+              Task(exec_period_ms, name),
+                   _data_logger(data_log_queue, root_path),
+                   _data_log_queue(data_log_queue) {}
 protected:
     void _setup()
     {
@@ -337,6 +352,10 @@ int main()
     DataLogQueue data_log_queue;
     std::vector<std::unique_ptr<Task>> tasks;
 
+    I2cConn esc_conn_0(I2C_DEVICE_ESC, I2C_ADDRESS_ESC_0), esc_conn_1(I2C_DEVICE_ESC, I2C_ADDRESS_ESC_1),
+            esc_conn_2(I2C_DEVICE_ESC, I2C_ADDRESS_ESC_2), esc_conn_3(I2C_DEVICE_ESC, I2C_ADDRESS_ESC_3);
+    AfroEsc esc[N_ESC] = {esc_conn_0, esc_conn_1, esc_conn_2, esc_conn_3};
+
     tasks.emplace_back(new TaskAccMag(TASK_ACC_MAG_EXEC_PERIOD_MS, "ImuAccMag",
                                       I2C_DEVICE_IMU, I2C_ADDRESS_ACC_MAG, data_log_queue));
 
@@ -346,11 +365,11 @@ int main()
     tasks.emplace_back(new TaskBarometer(TASK_BAROMETER_EXEC_PERIOD_MS, "ImuBarometer",
                                          I2C_DEVICE_IMU, I2C_ADDRESS_BAROMETER, data_log_queue));
 
-    tasks.emplace_back(new TaskEsc(TASK_ESC_WRITE_EXEC_PERIOD_MS, "Esc",
-                                  I2C_DEVICE_ESC,
-                                  I2C_ADDRESS_ESC_0, I2C_ADDRESS_ESC_1,
-                                  I2C_ADDRESS_ESC_2, I2C_ADDRESS_ESC_3,
-                                  data_log_queue));
+    tasks.emplace_back(new TaskEscWrite(TASK_ESC_WRITE_EXEC_PERIOD_MS, "EscWrite",
+                                        esc, data_log_queue));
+
+    tasks.emplace_back(new TaskEscRead(TASK_ESC_READ_EXEC_PERIOD_MS, "EscRead",
+                                       esc, data_log_queue));
 
     tasks.emplace_back(new TaskRcReceiver(TASK_RC_RECEIVER_EXEC_PERIOD_MS, "RcReceiver",
                                           SERIAL_DEVICE_RC_RECEIVER, data_log_queue));

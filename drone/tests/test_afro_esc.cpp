@@ -49,13 +49,22 @@ TEST_CASE("afro esc")
 
     AfroEsc esc(i2c_conn);
 
-    SECTION("initialized")
+    SECTION("arm")
     {
+        REQUIRE(esc.get_status() == AFRO_STATUS_NOT_ARMED);
+        esc.arm();
         REQUIRE(esc.get_status() == AFRO_STATUS_OK);
     }
 
     SECTION("read")
     {
+        /* First get_angular_rate should be zero. */
+        esc.arm();
+        esc.read();
+
+        REQUIRE(fabs(esc.get_angular_rate() - 0.0) <= ANG_RATE_TOL);
+
+        /* Now get_angular_rate shouldn't be zero. */
         std::this_thread::sleep_for(std::chrono::milliseconds(ONE_S_IN_MS));
         esc.read();
 
@@ -71,6 +80,7 @@ TEST_CASE("afro esc")
 
     SECTION("write")
     {
+        esc.arm();
         esc.write(1U);
         REQUIRE(esc.get_status() == AFRO_STATUS_OK);
     }

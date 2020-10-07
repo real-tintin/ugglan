@@ -8,6 +8,7 @@ Heavily inspired by https://github.com/bluerobotics/Arduino_I2C_ESC.
 #ifndef AFRO_ESC_H
 #define AFRO_ESC_H
 
+#include <atomic>
 #include <math.h>
 #include <wall_time.h>
 #include <logger.h>
@@ -69,8 +70,8 @@ inline const uint8_t AFRO_STATUS_ERR_ARM   = 0x04;
 inline const uint8_t AFRO_STATUS_ERR_WRITE = 0x08;
 inline const uint8_t AFRO_STATUS_ERR_READ  = 0x10;
 
-inline const uint16_t AFRO_ARM_TIME_MS  = 50;
-inline const uint16_t AFRO_TURN_TIME_MS = 100;
+inline const uint16_t AFRO_WAKE_UP_TIME_MS  = 50;
+inline const uint16_t AFRO_NUDGE_TIME_MS = 100;
 
 inline const double AFRO_MS_IN_MIN = 60000.0;
 
@@ -79,6 +80,7 @@ class AfroEsc
 public:
     AfroEsc(I2cConn& i2c_conn);
 
+    void arm();
     void read();
     void write(int16_t motor_cmd);
 
@@ -91,8 +93,9 @@ public:
 
     uint8_t get_status();
 private:
-    void _arm();
     void _open_i2c_conn();
+    void _arm_wake_up();
+    void _arm_nudge();
     void _update_rev_timer();
     void _reset_is_alive_byte();
 
@@ -101,10 +104,11 @@ private:
     uint8_t _buf_read[AFRO_READ_BUF_SIZE] = {0};
     uint8_t _buf_write[AFRO_WRITE_BUF_SIZE] = {0};
 
-    uint32_t _rev_t_ms = wall_time.millis();
+    uint32_t _rev_t_ms;
     uint32_t _rev_dt_ms = 0;
+    bool _rev_first_sample = true;
 
-    uint8_t _status = AFRO_STATUS_OK;
+    std::atomic<uint8_t> _status = AFRO_STATUS_OK;
 };
 
 #endif /* AFRO_ESC_H */

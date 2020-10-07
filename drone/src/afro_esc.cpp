@@ -4,7 +4,23 @@ AfroEsc::AfroEsc(I2cConn& i2c_conn) :
     _i2c_conn(i2c_conn)
 {
     _open_i2c_conn();
-    _arm();
+}
+
+void AfroEsc::arm()
+{
+    _arm_wake_up();
+    _arm_nudge();
+
+    if (get_is_alive())
+    {
+        logger.debug("Arming ESC successful.");
+        _status = AFRO_STATUS_OK;
+    }
+    else
+    {
+        logger.error("Arming ESC failed.");
+        _status = AFRO_STATUS_ERR_ARM;
+    }
 }
 
 void AfroEsc::read()
@@ -108,38 +124,36 @@ void AfroEsc::_open_i2c_conn()
     }
 }
 
-void AfroEsc::_arm()
+void AfroEsc::_arm_wake_up()
 {
-    // First arm for AFRO_ARM_TIME_MS.
-    uint32_t arm_t_ms = wall_time.millis();
-    while (AFRO_ARM_TIME_MS > (wall_time.millis() - arm_t_ms)) { write(0U); }
+    uint32_t wake_up_t_ms = wall_time.millis();
 
-    // Then try to turn motor and check if alive for AFRO_TURN_TIME_MS.
-    uint32_t turn_t_ms = wall_time.millis();
-    while ((AFRO_TURN_TIME_MS > (wall_time.millis() - turn_t_ms)) && !get_is_alive())
+    while (AFRO_WAKE_UP_TIME_MS > (wall_time.millis() - wake_up_t_ms))
+    {
+        write(0);
+    }
+}
+
+void AfroEsc::_arm_nudge()
+{
+    uint32_t nudge_t_ms = wall_time.millis();
+
+    while ((AFRO_NUDGE_TIME_MS > (wall_time.millis() - nudge_t_ms)) && !get_is_alive())
     {
         write(1U);
         read();
     }
-    write(0U);
 
-    if (get_is_alive())
-    {
-        logger.debug("Arming ESC successful.");
-        _status = AFRO_STATUS_OK;
-    }
-    else
-    {
-        logger.error("Arming ESC failed.");
-        _status = AFRO_STATUS_ERR_ARM;
-    }
+    write(0U);
 }
 
 void AfroEsc::_update_rev_timer()
 {
     uint32_t t_now_ms = wall_time.millis();
 
-    _rev_dt_ms = t_now_ms - _rev_t_ms;
+    if (!_rev_first_sample) { _rev_dt_ms = t_now_ms - _rev_t_ms; }
+    else { _rev_first_sample = false; }
+
     _rev_t_ms = t_now_ms;
 }
 
