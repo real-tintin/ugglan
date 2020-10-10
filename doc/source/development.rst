@@ -41,11 +41,8 @@ Before deploying on target (Raspbian)
 
 External devices
 ----------------
-The IMU and ESC's are communicating with the Pi over i2c. The IMU can run at 400 kHz (fast mode)
-and is using the buildin HW. But, the ESC's only run stable at 100 kHz (normal mode) and are
-therefore using a SW implementation (i2c-gpio overlay, bit-banging over GPIO 23-24). The RC receiver
-is communicating over UART, a serial connection. To enable all of these, add the following to the end
-of ``/boot/config.txt``::
+In :ref:`devices_and_busses` the external devices and busses are discussed. To enabled and
+configure the needed pins on the Pi, add the following to the end of ``/boot/config.txt``::
 
     # Enable HW i2c in fast mode (400 kHz)
     dtparam=i2c=on

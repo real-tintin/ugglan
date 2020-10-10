@@ -26,33 +26,36 @@ the consumers, see :numref:`drone_sw_design`.
         ImuGyro([ImuGyro])
         ImuPres([ImuPres])
 
-        EscRead_i([EscRead_i])
+        EscRead([EscRead])
         RcReceiver([RcReceiver])
 
         DataLogQueue[(DataLogQueue)]
 
         StateControl([StateControl])
+        EscWrite([EscWrite])
         DataLogger([DataLogger])
 
-        ImuAccMag -- 50 Hz --> DataLogQueue
-        ImuGyro -- 50 Hz --> DataLogQueue
-        ImuPres -- 10 Hz --> DataLogQueue
-        EscRead_i -- 5 Hz --> DataLogQueue
-        RcReceiver -- 50 Hz --> DataLogQueue
+        ImuAccMag -- push 50 Hz --> DataLogQueue
+        ImuGyro -- push 50 Hz --> DataLogQueue
+        ImuPres -- push 10 Hz --> DataLogQueue
+        EscRead -- push 5 Hz --> DataLogQueue
+        RcReceiver -- push 50 Hz --> DataLogQueue
 
-        DataLogQueue -- last value 50 Hz--> StateControl
+        DataLogQueue -- last value 50 Hz --> StateControl
+        DataLogQueue -- last value 50 Hz --> EscWrite
         DataLogQueue -- pop 100 Hz --> DataLogger
 
         subgraph Producers
         ImuAccMag
         ImuGyro
         ImuPres
-        EscRead_i
+        EscRead
         RcReceiver
         end
 
         subgraph Consumers
         StateControl
+        EscWrite
         DataLogger
         end
 
@@ -138,17 +141,24 @@ The drone hardware components are is listed below
 In addition, miscellaneous self manufactured components such as a cut plexiglas
 are used for mounting, see :numref:`ugglan_in_person`.
 
+.. _devices_and_busses:
+
 Devices & Busses
 -----------------
+The IMU's and ESC's are communicating with the Pi over i2c. The IMU can run at 400 kHz (fast mode)
+and is using the built-in HW. But, the ESC's only run stable at 100 kHz (normal mode) and are
+therefore using a SW implementation (i2c-gpio overlay, bit-banging over GPIO 23-24). The RC receiver
+is communicating over UART, a serial connection. See overview in :numref:`connected_busses`.
+
 .. _connected_busses:
 .. mermaid::
     :caption: Overview of the hardware devices connected to the Pi Zero and their respective protocols.
 
     graph TD
-        Esc_i -- i2c read --> Raspi
-        Raspi -- i2c write --> Esc_i
-        Imu_i -- i2c read --> Raspi
-        RcReceiver -- uart read --> Raspi
+        Esc_i -- i2c read 100 kHz --> Raspi
+        Raspi -- i2c write 100 kHz --> Esc_i
+        Imu_i -- i2c read 400 kHz --> Raspi
+        RcReceiver -- uart read 115200 bps --> Raspi
 
 Wiring
 --------
