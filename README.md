@@ -13,7 +13,6 @@ state space estimation and control.
 
 ### Prerequisites
 * python >=3.7
-* virtualenv
 
 Run the setup script in the root.
 

@@ -162,7 +162,11 @@ is communicating over UART, a serial connection. See overview in :numref:`connec
 
 Wiring
 --------
-TODO: Wiring diagram.
+.. _wiring_diagram:
+.. figure:: figures/wiring_diagram.svg
+    :width: 100%
+
+    Wiring diagram.
 
 Modeling
 ===============
