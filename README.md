@@ -12,7 +12,9 @@ state space estimation and control.
 ## Setup
 
 ### Prerequisites
-* python >=3.7
+* python >= 3.3
+* docker
+* make
 
 Run the setup script in the root.
 
