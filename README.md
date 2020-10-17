@@ -12,7 +12,7 @@ state space estimation and control.
 ## Setup
 
 ### Prerequisites
-* python >= 3.3
+* python 3.7
 * docker
 * make
 

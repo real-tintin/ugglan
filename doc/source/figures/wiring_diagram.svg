@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -14,7 +12,7 @@
    viewBox="0 0 297.31314 283.02077"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
    sodipodi:docname="wiring_diagram.svg">
   <defs
      id="defs2">
@@ -23,9 +21,41 @@
        orient="auto"
        refY="0"
        refX="0"
-       id="marker1790"
+       id="marker2845"
        style="overflow:visible"
        inkscape:isstock="true">
+      <path
+         id="path2843"
+         d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(0.2,0,0,0.2,1.48,0.2)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="DotS"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker2729"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path2727"
+         d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(0.2,0,0,0.2,1.48,0.2)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="DotS"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker1790"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
       <path
          id="path1788"
          d="m -2.5,-1 c 0,2.76 -2.24,5 -5,5 -2.76,0 -5,-2.24 -5,-5 0,-2.76 2.24,-5 5,-5 2.76,0 5,2.24 5,5 z"
@@ -251,9 +281,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="769.84264"
-     inkscape:cy="362.0893"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="687.31639"
+     inkscape:cy="502.31832"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -265,7 +295,8 @@
      fit-margin-top="5"
      fit-margin-left="5"
      fit-margin-right="5"
-     fit-margin-bottom="5">
+     fit-margin-bottom="5"
+     inkscape:document-rotation="0">
     <inkscape:grid
        type="xygrid"
        id="grid1079"
@@ -1686,5 +1717,40 @@
        d="M 224.89583,32.416601 H 205.05209"
        id="path1786"
        inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 205.05209,-66.802116 v -1.322917 l 1.32292,-1.322916 -2.64584,-1.322917 2.64584,-1.322917 -2.64584,-1.322916 2.64584,-1.322917 -2.64584,-1.322916 2.64584,-1.322917 -1.32292,-1.322917 v -1.322916"
+       id="path2708" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 212.98959,-66.802113 v -1.32292 l 1.32292,-1.32292 -2.64584,-1.32291 2.64584,-1.32292 -2.64584,-1.32292 2.64584,-1.32291 -2.64584,-1.32292 2.64584,-1.32292 -1.32292,-1.32291 v -1.32292"
+       id="path2708-8" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#marker2729)"
+       d="m 205.05209,-80.031284 v -1.322917"
+       id="path2725" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 205.05209,-57.541701 v -9.260416"
+       id="path2839" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker2845);stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 212.98959,-80.031284 v -1.322917"
+       id="path2841" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 212.98959,-65.479201 v -1.322916"
+       id="path2967" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:1.25;font-family:Arial;-inkscape-font-specification:'Arial, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="-76.218079"
+       y="-207.84532"
+       id="text6356-3-2-9-3-2-1-6-8-6-1-9"
+       transform="rotate(90)"><tspan
+         sodipodi:role="line"
+         id="tspan3017"
+         x="-76.218079"
+         y="-207.84532">4K7</tspan></text>
   </g>
 </svg>
