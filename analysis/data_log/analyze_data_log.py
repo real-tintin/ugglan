@@ -10,8 +10,6 @@ from task_ids import TaskId
 
 mpl.rcParams['lines.linewidth'] = 0.5
 
-ROOT_PATH = Path(__file__).parent.absolute()
-
 N_ESC = 4
 
 
