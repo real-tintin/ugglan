@@ -26,4 +26,5 @@ RUN ln -s /usr/lib/arm-linux-gnueabihf/crtn.o /usr/lib/crtn.o
 
 # Copy dependent files (instead of mount to support Windows)
 ENV ROOT /drone
+WORKDIR ${ROOT}
 COPY . ${ROOT}

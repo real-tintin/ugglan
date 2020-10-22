@@ -6,4 +6,4 @@
 
 run_tests_in_docker:
 	docker build -f Dockerfile_gcc . -t gcc
-	docker run gcc /drone/run_tests.sh
+	docker run gcc ./run_tests.sh

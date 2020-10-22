@@ -30,7 +30,7 @@ of the documentation.
 The documentation is build using `make`.
 
 ```bash
-cd ./doc/ && make
+make -C ./doc
 ```
 
 The generated html documentation is found under *./doc/build*.

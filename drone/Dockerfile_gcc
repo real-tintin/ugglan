@@ -6,4 +6,5 @@ RUN cd /bin && ln -s /usr/local/bin/g++ g++-9.1
 
 # Copy dependent files (instead of mount to support Windows)
 ENV ROOT /drone
+WORKDIR ${ROOT}
 COPY . ${ROOT}

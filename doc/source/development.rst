@@ -9,7 +9,7 @@ the test framework `Catch 2 <https://github.com/catchorg/Catch2>`_ is used.
 
 To run all unit tests in docker::
 
-    cd ./drone && make -f Makefile_tests
+    make -C ./drone -f Makefile_tests
 
 ESC Compile & Flash
 =====================
@@ -67,7 +67,7 @@ Build for & Deploy on Target
 =============================
 To build for target. The source is cross compiled in a Raspbian Docker container::
 
-    cd ./drone && make -f Makefile_dpkg
+    make -C ./drone -f Makefile_dpkg
 
 This will also create a Debian package (``ugglan.deb``) which can easily be deployed on target
 by using::
