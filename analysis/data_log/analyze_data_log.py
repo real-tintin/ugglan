@@ -4,10 +4,12 @@ from pathlib import Path
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+from cycler import cycler
 
 from read_data_log import read_data_log, Signals
 from task_ids import TaskId
 
+mpl.rcParams['axes.prop_cycle'] = cycler(color='bgrcmyk')
 mpl.rcParams['lines.linewidth'] = 0.5
 
 N_ESC = 4

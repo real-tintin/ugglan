@@ -231,6 +231,16 @@ where
 where :math:`\alpha = \tfrac{\tau}{\tau + \Delta t}` and :math:`\tau` is the cut-off frequency.
 Note that the estimates also need range limiting (module of angles) and offset compensation.
 
+In :numref:`attitude_estimation` the result of the attitude estimation is shown.
+
+.. _attitude_estimation:
+.. figure:: figures/attitude_estimation.svg
+    :width: 100%
+
+    Attitude estimation of roll (:math:`\phi`), pitch (:math:`\theta`) and
+    yaw (:math:`\psi`). Both unfiltered and complementary filter estimates.
+    Here :math:`\tau_{phi}=\tau_{theta}=0.08` and :math:`\tau_{psi}=0.04`.
+
 Motor Torque Estimation
 ------------------------
 TODO: Reduced observer. Summary of master thesis work.
