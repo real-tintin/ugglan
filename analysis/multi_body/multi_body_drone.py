@@ -85,7 +85,7 @@ mounting_surface = Body(
 mounting_spacers = Body(
     name='Plexiglas mounting spacers',
     shape_m=Cylinder(0.003, 0.02),
-    mass_kg=0.040,
+    mass_kg=0.004,
     translation_m=np.array([0.021, 0, 0.01]),
     color=[0.8, 0.8, 0.8]
 )

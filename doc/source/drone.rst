@@ -177,9 +177,31 @@ Nomenclature
 
 :math:`_{B}` Body reference frame
 
-Moment of Inertia
+Inertia
 ------------------
-TODO: Simulation & Empirical.
+Using multi body analysis of the drone and its components, the total drone
+(mass and moments) inertia is estimated, see :numref:`drone_multi_body`
+
+.. _drone_multi_body:
+.. figure:: figures/drone_multi_body.svg
+    :width: 100%
+
+    Multi body analysis of the drone.
+
+which results in the following inertia estimates
+
+.. math::
+
+    I_{est} =
+    \begin{bmatrix}
+        0.014 & 0 & 0 \\
+        0 & 0.014 & 0 \\
+        0 & 0 & 0.026
+    \end{bmatrix} \text{kgm}^2
+
+and :math:`m_{est}=1.038` kg. For comparison, the measured weight is :math:`m_{meas}=1058` kg.
+Also its center of mass w.r.t the top frame is located at :math:`CM_{est}=[0, -0.001, -0.006]` m,
+a rather good weight distribution.
 
 Motor Dynamics
 ------------------
@@ -213,25 +235,27 @@ where
 
 and :math:`a` is the acceleration and :math:`m` is the earths magnetic field supplied by the
 IMU. These estimates can be improved by using the gyro and a simple first order complementary
-filter
+filter (see `IMU Data Fusing <http://www.olliw.eu/2013/imu-data-fusing/>`_)
 
 .. math::
 
-    \tilde{\phi}^{k+1} &= \text{cf}(\phi_{acc}^k, \dot{\phi}_{gyro}^k, \tilde{\phi}^k, \tau_{\phi}) \\
-    \tilde{\theta}^{k+1} &= \text{cf}(\theta_{acc}^k, \dot{\theta}_{gyro}^k, \tilde{\theta}^k, \tau_{\theta}) \\
-    \tilde{\psi}^{k+1} &= \text{cf}(\psi_{mag}^k, \dot{\psi}_{gyro}^k, \tilde{\psi}^k, \tau_{\psi})
+    \tilde{\phi}^{k} &= \text{cf}(\phi_{acc}^k, \dot{\phi}_{gyro}^k, \tilde{\phi}^{k-1}, \tau_{\phi}) \\
+    \tilde{\theta}^{k} &= \text{cf}(\theta_{acc}^k, \dot{\theta}_{gyro}^k, \tilde{\theta}^{k-1}, \tau_{\theta}) \\
+    \tilde{\psi}^{k} &= \text{cf}(\psi_{mag}^k, \dot{\psi}_{gyro}^k, \tilde{\psi}^{k-1}, \tau_{\psi})
 
 where
 
 .. math::
 
-    y^{k+1} &= \text{cf}(u^k, \dot{u}^k, y^k, \tau) \\
-            &= \alpha(y^k + \dot{u}^k\Delta t) + (1-\alpha)u^k
+    y^{k} &= \text{cf}(u^k, \dot{u}^k, y^{k-1}, \tau) \\
+            &= \alpha(y^{k-1} + \dot{u}^k\Delta t) + (1-\alpha)u^k
 
-where :math:`\alpha = \tfrac{\tau}{\tau + \Delta t}` and :math:`\tau` is the cut-off frequency.
-Note that the estimates also need range limiting (module of angles) and offset compensation.
+where :math:`\alpha = \tfrac{\tau}{\tau + \Delta t}` and :math:`\tau` is the cut-off frequency
+(:math:`\tau = \tfrac{1}{2 \pi f_c}`). Note that the estimates also need range limiting
+(module of angles) and offset compensation.
 
-In :numref:`attitude_estimation` the result of the attitude estimation is shown.
+In :numref:`attitude_estimation` the result of the attitude estimation is shown. Note the large
+drift of the gyro.
 
 .. _attitude_estimation:
 .. figure:: figures/attitude_estimation.svg
@@ -239,7 +263,7 @@ In :numref:`attitude_estimation` the result of the attitude estimation is shown.
 
     Attitude estimation of roll (:math:`\phi`), pitch (:math:`\theta`) and
     yaw (:math:`\psi`). Both unfiltered and complementary filter estimates.
-    Here :math:`\tau_{phi}=\tau_{theta}=0.08` and :math:`\tau_{psi}=0.04`.
+    Here :math:`\tau_{\phi}=\tau_{\theta}=\tau_{\psi}` s.t. :math:`f_c=20` Hz.
 
 Motor Torque Estimation
 ------------------------

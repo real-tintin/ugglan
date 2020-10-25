@@ -15,11 +15,13 @@ mpl.rcParams['lines.linewidth'] = 0.5
 
 IMU_SAMPLE_RATE_S = 0.02  # 50 Hz
 
-N_SAMPLES_FOR_OFFSET_COMP = 20
+N_SAMPLES_FOR_OFFSET_COMP = 10
 
-TAU_PHI = 0.08
-TAU_THETA = 0.08
-TAU_PSI = 0.04
+CUT_OFF_FREQ = 20  # [Hz]
+
+TAU_PHI = 1 / (2 * np.pi * CUT_OFF_FREQ)
+TAU_THETA = 1 / (2 * np.pi * CUT_OFF_FREQ)
+TAU_PSI = 1 / (2 * np.pi * CUT_OFF_FREQ)
 
 
 @dataclass
@@ -99,8 +101,8 @@ def _complementary_filter(u, up, tau):
     y = np.zeros(len(u))
     alpha = tau / (tau + IMU_SAMPLE_RATE_S)
 
-    for k in range(len(u) - 1):
-        y[k + 1] = alpha * (y[k] + up[k] * IMU_SAMPLE_RATE_S) + (1 - alpha) * u[k]
+    for k in range(2, len(u)):
+        y[k] = alpha * (y[k - 1] + up[k] * IMU_SAMPLE_RATE_S) + (1 - alpha) * u[k]
 
     return y
 
