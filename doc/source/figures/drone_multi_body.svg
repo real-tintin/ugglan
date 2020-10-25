@@ -1,0 +1,5203 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with matplotlib (https://matplotlib.org/) -->
+<svg height="465.12pt" version="1.1" viewBox="0 0 557.28 465.12" width="557.28pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <style type="text/css">
+*{stroke-linecap:butt;stroke-linejoin:round;}
+  </style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 465.12 
+L 557.28 465.12 
+L 557.28 0 
+L 0 0 
+z
+" style="fill:#ffffff;"/>
+  </g>
+  <g id="patch_2">
+   <path d="M 69.66 413.9568 
+L 501.552 413.9568 
+L 501.552 55.8144 
+L 69.66 55.8144 
+z
+" style="fill:#ffffff;"/>
+  </g>
+  <g id="pane3d_1">
+   <g id="patch_3">
+    <path d="M 126.913958 334.819951 
+L 250.523709 247.01155 
+L 248.465737 79.224106 
+L 117.963934 158.118149 
+" style="fill:#f2f2f2;opacity:0.5;stroke:#f2f2f2;stroke-linejoin:miter;"/>
+   </g>
+  </g>
+  <g id="pane3d_2">
+   <g id="patch_4">
+    <path d="M 250.523709 247.01155 
+L 450.759882 296.102113 
+L 459.137524 123.255107 
+L 248.465737 79.224106 
+" style="fill:#e6e6e6;opacity:0.5;stroke:#e6e6e6;stroke-linejoin:miter;"/>
+   </g>
+  </g>
+  <g id="pane3d_3">
+   <g id="patch_5">
+    <path d="M 126.913958 334.819951 
+L 337.58947 391.993911 
+L 450.759882 296.102113 
+L 250.523709 247.01155 
+" style="fill:#ececec;opacity:0.5;stroke:#ececec;stroke-linejoin:miter;"/>
+   </g>
+  </g>
+  <g id="axis3d_1">
+   <g id="line2d_1">
+    <path d="M 126.913958 334.819951 
+L 337.58947 391.993911 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+   </g>
+   <g id="text_1">
+    <!-- x [m] -->
+    <defs>
+     <path d="M 54.890625 54.6875 
+L 35.109375 28.078125 
+L 55.90625 0 
+L 45.3125 0 
+L 29.390625 21.484375 
+L 13.484375 0 
+L 2.875 0 
+L 24.125 28.609375 
+L 4.6875 54.6875 
+L 15.28125 54.6875 
+L 29.78125 35.203125 
+L 44.28125 54.6875 
+z
+" id="DejaVuSans-120"/>
+     <path id="DejaVuSans-32"/>
+     <path d="M 8.59375 75.984375 
+L 29.296875 75.984375 
+L 29.296875 69 
+L 17.578125 69 
+L 17.578125 -6.203125 
+L 29.296875 -6.203125 
+L 29.296875 -13.1875 
+L 8.59375 -13.1875 
+z
+" id="DejaVuSans-91"/>
+     <path d="M 52 44.1875 
+Q 55.375 50.25 60.0625 53.125 
+Q 64.75 56 71.09375 56 
+Q 79.640625 56 84.28125 50.015625 
+Q 88.921875 44.046875 88.921875 33.015625 
+L 88.921875 0 
+L 79.890625 0 
+L 79.890625 32.71875 
+Q 79.890625 40.578125 77.09375 44.375 
+Q 74.3125 48.1875 68.609375 48.1875 
+Q 61.625 48.1875 57.5625 43.546875 
+Q 53.515625 38.921875 53.515625 30.90625 
+L 53.515625 0 
+L 44.484375 0 
+L 44.484375 32.71875 
+Q 44.484375 40.625 41.703125 44.40625 
+Q 38.921875 48.1875 33.109375 48.1875 
+Q 26.21875 48.1875 22.15625 43.53125 
+Q 18.109375 38.875 18.109375 30.90625 
+L 18.109375 0 
+L 9.078125 0 
+L 9.078125 54.6875 
+L 18.109375 54.6875 
+L 18.109375 46.1875 
+Q 21.1875 51.21875 25.484375 53.609375 
+Q 29.78125 56 35.6875 56 
+Q 41.65625 56 45.828125 52.96875 
+Q 50 49.953125 52 44.1875 
+z
+" id="DejaVuSans-109"/>
+     <path d="M 30.421875 75.984375 
+L 30.421875 -13.1875 
+L 9.71875 -13.1875 
+L 9.71875 -6.203125 
+L 21.390625 -6.203125 
+L 21.390625 69 
+L 9.71875 69 
+L 9.71875 75.984375 
+z
+" id="DejaVuSans-93"/>
+    </defs>
+    <g transform="translate(201.050482 394.710268)rotate(-344.816542)scale(0.1 -0.1)">
+     <use xlink:href="#DejaVuSans-120"/>
+     <use x="59.179688" xlink:href="#DejaVuSans-32"/>
+     <use x="90.966797" xlink:href="#DejaVuSans-91"/>
+     <use x="129.980469" xlink:href="#DejaVuSans-109"/>
+     <use x="227.392578" xlink:href="#DejaVuSans-93"/>
+    </g>
+   </g>
+   <g id="Line3DCollection_1">
+    <path d="M 130.942811 335.913317 
+L 254.365541 247.953426 
+L 252.499166 80.067104 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 163.434942 344.731161 
+L 285.331352 255.545107 
+L 285.021574 86.86438 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 196.398795 353.677023 
+L 316.713972 263.238974 
+L 318.004092 93.75782 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 229.844717 362.753711 
+L 348.521874 271.037104 
+L 351.456552 100.749479 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 263.783361 371.964115 
+L 380.76376 278.941632 
+L 385.38907 107.841471 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 298.225696 381.311213 
+L 413.448575 286.954749 
+L 419.812056 115.035973 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 333.183018 390.79807 
+L 446.585508 295.078709 
+L 454.736219 122.335222 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+   </g>
+   <g id="xtick_1">
+    <g id="line2d_2">
+     <path d="M 132.006013 335.155603 
+L 128.812449 337.431566 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_2">
+     <!-- −0.3 -->
+     <defs>
+      <path d="M 10.59375 35.5 
+L 73.1875 35.5 
+L 73.1875 27.203125 
+L 10.59375 27.203125 
+z
+" id="DejaVuSans-8722"/>
+      <path d="M 31.78125 66.40625 
+Q 24.171875 66.40625 20.328125 58.90625 
+Q 16.5 51.421875 16.5 36.375 
+Q 16.5 21.390625 20.328125 13.890625 
+Q 24.171875 6.390625 31.78125 6.390625 
+Q 39.453125 6.390625 43.28125 13.890625 
+Q 47.125 21.390625 47.125 36.375 
+Q 47.125 51.421875 43.28125 58.90625 
+Q 39.453125 66.40625 31.78125 66.40625 
+z
+M 31.78125 74.21875 
+Q 44.046875 74.21875 50.515625 64.515625 
+Q 56.984375 54.828125 56.984375 36.375 
+Q 56.984375 17.96875 50.515625 8.265625 
+Q 44.046875 -1.421875 31.78125 -1.421875 
+Q 19.53125 -1.421875 13.0625 8.265625 
+Q 6.59375 17.96875 6.59375 36.375 
+Q 6.59375 54.828125 13.0625 64.515625 
+Q 19.53125 74.21875 31.78125 74.21875 
+z
+" id="DejaVuSans-48"/>
+      <path d="M 10.6875 12.40625 
+L 21 12.40625 
+L 21 0 
+L 10.6875 0 
+z
+" id="DejaVuSans-46"/>
+      <path d="M 40.578125 39.3125 
+Q 47.65625 37.796875 51.625 33 
+Q 55.609375 28.21875 55.609375 21.1875 
+Q 55.609375 10.40625 48.1875 4.484375 
+Q 40.765625 -1.421875 27.09375 -1.421875 
+Q 22.515625 -1.421875 17.65625 -0.515625 
+Q 12.796875 0.390625 7.625 2.203125 
+L 7.625 11.71875 
+Q 11.71875 9.328125 16.59375 8.109375 
+Q 21.484375 6.890625 26.8125 6.890625 
+Q 36.078125 6.890625 40.9375 10.546875 
+Q 45.796875 14.203125 45.796875 21.1875 
+Q 45.796875 27.640625 41.28125 31.265625 
+Q 36.765625 34.90625 28.71875 34.90625 
+L 20.21875 34.90625 
+L 20.21875 43.015625 
+L 29.109375 43.015625 
+Q 36.375 43.015625 40.234375 45.921875 
+Q 44.09375 48.828125 44.09375 54.296875 
+Q 44.09375 59.90625 40.109375 62.90625 
+Q 36.140625 65.921875 28.71875 65.921875 
+Q 24.65625 65.921875 20.015625 65.03125 
+Q 15.375 64.15625 9.8125 62.3125 
+L 9.8125 71.09375 
+Q 15.4375 72.65625 20.34375 73.4375 
+Q 25.25 74.21875 29.59375 74.21875 
+Q 40.828125 74.21875 47.359375 69.109375 
+Q 53.90625 64.015625 53.90625 55.328125 
+Q 53.90625 49.265625 50.4375 45.09375 
+Q 46.96875 40.921875 40.578125 39.3125 
+z
+" id="DejaVuSans-51"/>
+     </defs>
+     <g transform="translate(111.821353 358.203045)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-8722"/>
+      <use x="83.789062" xlink:href="#DejaVuSans-48"/>
+      <use x="147.412109" xlink:href="#DejaVuSans-46"/>
+      <use x="179.199219" xlink:href="#DejaVuSans-51"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_2">
+    <g id="line2d_3">
+     <path d="M 164.485536 343.96249 
+L 161.329817 346.271386 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_3">
+     <!-- −0.2 -->
+     <defs>
+      <path d="M 19.1875 8.296875 
+L 53.609375 8.296875 
+L 53.609375 0 
+L 7.328125 0 
+L 7.328125 8.296875 
+Q 12.9375 14.109375 22.625 23.890625 
+Q 32.328125 33.6875 34.8125 36.53125 
+Q 39.546875 41.84375 41.421875 45.53125 
+Q 43.3125 49.21875 43.3125 52.78125 
+Q 43.3125 58.59375 39.234375 62.25 
+Q 35.15625 65.921875 28.609375 65.921875 
+Q 23.96875 65.921875 18.8125 64.3125 
+Q 13.671875 62.703125 7.8125 59.421875 
+L 7.8125 69.390625 
+Q 13.765625 71.78125 18.9375 73 
+Q 24.125 74.21875 28.421875 74.21875 
+Q 39.75 74.21875 46.484375 68.546875 
+Q 53.21875 62.890625 53.21875 53.421875 
+Q 53.21875 48.921875 51.53125 44.890625 
+Q 49.859375 40.875 45.40625 35.40625 
+Q 44.1875 33.984375 37.640625 27.21875 
+Q 31.109375 20.453125 19.1875 8.296875 
+z
+" id="DejaVuSans-50"/>
+     </defs>
+     <g transform="translate(144.310407 367.139755)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-8722"/>
+      <use x="83.789062" xlink:href="#DejaVuSans-48"/>
+      <use x="147.412109" xlink:href="#DejaVuSans-46"/>
+      <use x="179.199219" xlink:href="#DejaVuSans-50"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_3">
+    <g id="line2d_4">
+     <path d="M 197.4363 352.897155 
+L 194.319867 355.239704 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_4">
+     <!-- −0.1 -->
+     <defs>
+      <path d="M 12.40625 8.296875 
+L 28.515625 8.296875 
+L 28.515625 63.921875 
+L 10.984375 60.40625 
+L 10.984375 69.390625 
+L 28.421875 72.90625 
+L 38.28125 72.90625 
+L 38.28125 8.296875 
+L 54.390625 8.296875 
+L 54.390625 0 
+L 12.40625 0 
+z
+" id="DejaVuSans-49"/>
+     </defs>
+     <g transform="translate(177.271829 376.206399)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-8722"/>
+      <use x="83.789062" xlink:href="#DejaVuSans-48"/>
+      <use x="147.412109" xlink:href="#DejaVuSans-46"/>
+      <use x="179.199219" xlink:href="#DejaVuSans-49"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_4">
+    <g id="line2d_5">
+     <path d="M 230.868638 361.9624 
+L 227.792981 364.339343 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_5">
+     <!-- 0.0 -->
+     <g transform="translate(214.905841 385.40583)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-48"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_5">
+    <g id="line2d_6">
+     <path d="M 264.793183 371.161107 
+L 261.759847 373.573207 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_6">
+     <!-- 0.1 -->
+     <g transform="translate(248.843437 394.740989)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-49"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_6">
+    <g id="line2d_7">
+     <path d="M 299.220887 380.496247 
+L 296.231472 382.94429 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_7">
+     <!-- 0.2 -->
+     <g transform="translate(283.285464 404.2149)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-50"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_7">
+    <g id="line2d_8">
+     <path d="M 334.163026 389.970878 
+L 331.219191 392.455673 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_8">
+     <!-- 0.3 -->
+     <g transform="translate(318.243252 413.83068)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-51"/>
+     </g>
+    </g>
+   </g>
+  </g>
+  <g id="axis3d_2">
+   <g id="line2d_9">
+    <path d="M 450.759882 296.102113 
+L 337.58947 391.993911 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+   </g>
+   <g id="text_9">
+    <!-- y [m] -->
+    <defs>
+     <path d="M 32.171875 -5.078125 
+Q 28.375 -14.84375 24.75 -17.8125 
+Q 21.140625 -20.796875 15.09375 -20.796875 
+L 7.90625 -20.796875 
+L 7.90625 -13.28125 
+L 13.1875 -13.28125 
+Q 16.890625 -13.28125 18.9375 -11.515625 
+Q 21 -9.765625 23.484375 -3.21875 
+L 25.09375 0.875 
+L 2.984375 54.6875 
+L 12.5 54.6875 
+L 29.59375 11.921875 
+L 46.6875 54.6875 
+L 56.203125 54.6875 
+z
+" id="DejaVuSans-121"/>
+    </defs>
+    <g transform="translate(413.390446 380.032356)rotate(-40.275345)scale(0.1 -0.1)">
+     <use xlink:href="#DejaVuSans-121"/>
+     <use x="59.179688" xlink:href="#DejaVuSans-32"/>
+     <use x="90.966797" xlink:href="#DejaVuSans-91"/>
+     <use x="129.980469" xlink:href="#DejaVuSans-109"/>
+     <use x="227.392578" xlink:href="#DejaVuSans-93"/>
+    </g>
+   </g>
+   <g id="Line3DCollection_2">
+    <path d="M 120.782342 156.414299 
+L 129.573354 332.930802 
+L 340.032271 389.92407 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 143.003236 142.980797 
+L 150.556233 318.025238 
+L 359.293829 373.603326 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 164.659581 129.88859 
+L 171.032814 303.479332 
+L 378.069469 357.69431 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 185.772623 117.124834 
+L 191.021204 289.28022 
+L 396.377351 342.181637 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 206.362552 104.677322 
+L 210.538656 275.415649 
+L 414.234738 327.050677 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 226.448572 92.534445 
+L 229.60162 261.873931 
+L 431.658056 312.287513 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 246.048959 80.685154 
+L 248.225787 248.64392 
+L 448.662943 297.878896 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+   </g>
+   <g id="xtick_8">
+    <g id="line2d_10">
+     <path d="M 338.270641 389.447013 
+L 343.559483 390.879256 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_10">
+     <!-- −0.3 -->
+     <g transform="translate(340.052688 410.475326)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-8722"/>
+      <use x="83.789062" xlink:href="#DejaVuSans-48"/>
+      <use x="147.412109" xlink:href="#DejaVuSans-46"/>
+      <use x="179.199219" xlink:href="#DejaVuSans-51"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_9">
+    <g id="line2d_11">
+     <path d="M 357.547595 373.138377 
+L 362.790165 374.534254 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_11">
+     <!-- −0.2 -->
+     <g transform="translate(359.151268 393.995681)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-8722"/>
+      <use x="83.789062" xlink:href="#DejaVuSans-48"/>
+      <use x="147.412109" xlink:href="#DejaVuSans-46"/>
+      <use x="179.199219" xlink:href="#DejaVuSans-50"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_10">
+    <g id="line2d_12">
+     <path d="M 376.338419 357.241014 
+L 381.535354 358.601892 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_12">
+     <!-- −0.1 -->
+     <g transform="translate(377.768232 377.93161)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-8722"/>
+      <use x="83.789062" xlink:href="#DejaVuSans-48"/>
+      <use x="147.412109" xlink:href="#DejaVuSans-46"/>
+      <use x="179.199219" xlink:href="#DejaVuSans-49"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_11">
+    <g id="line2d_13">
+     <path d="M 394.661275 341.739561 
+L 399.813208 343.066741 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_13">
+     <!-- 0.0 -->
+     <g transform="translate(400.111413 362.267588)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-48"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_12">
+    <g id="line2d_14">
+     <path d="M 412.533427 326.619411 
+L 417.640986 327.914129 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_14">
+     <!-- 0.1 -->
+     <g transform="translate(417.818231 346.988856)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-49"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_13">
+    <g id="line2d_15">
+     <path d="M 429.971305 311.866664 
+L 435.035111 313.130097 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_15">
+     <!-- 0.2 -->
+     <g transform="translate(435.094804 332.081372)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-50"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_14">
+    <g id="line2d_16">
+     <path d="M 446.990547 297.468092 
+L 452.011216 298.701359 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_16">
+     <!-- 0.3 -->
+     <g transform="translate(451.956624 317.531766)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-51"/>
+     </g>
+    </g>
+   </g>
+  </g>
+  <g id="axis3d_3">
+   <g id="line2d_17">
+    <path d="M 450.759882 296.102113 
+L 459.137524 123.255107 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+   </g>
+   <g id="text_17">
+    <!-- z [m] -->
+    <defs>
+     <path d="M 5.515625 54.6875 
+L 48.1875 54.6875 
+L 48.1875 46.484375 
+L 14.40625 7.171875 
+L 48.1875 7.171875 
+L 48.1875 0 
+L 4.296875 0 
+L 4.296875 8.203125 
+L 38.09375 47.515625 
+L 5.515625 47.515625 
+z
+" id="DejaVuSans-122"/>
+    </defs>
+    <g transform="translate(495.88078 220.673185)rotate(-87.225129)scale(0.1 -0.1)">
+     <use xlink:href="#DejaVuSans-122"/>
+     <use x="52.490234" xlink:href="#DejaVuSans-32"/>
+     <use x="84.277344" xlink:href="#DejaVuSans-91"/>
+     <use x="123.291016" xlink:href="#DejaVuSans-109"/>
+     <use x="220.703125" xlink:href="#DejaVuSans-93"/>
+    </g>
+   </g>
+   <g id="Line3DCollection_3">
+    <path d="M 450.919224 292.814588 
+L 250.484483 243.813431 
+L 126.744018 331.46478 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 452.205523 266.275745 
+L 250.167946 218.006033 
+L 125.371747 304.371809 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 453.51274 239.30531 
+L 249.846478 191.796632 
+L 123.976416 276.823566 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 454.841391 211.892668 
+L 249.519964 165.17576 
+L 122.557439 248.808478 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 456.192006 184.026855 
+L 249.188283 138.133652 
+L 121.11421 220.314577 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 457.565135 155.696538 
+L 248.851312 110.660228 
+L 119.646102 191.329482 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+    <path d="M 458.961346 126.890006 
+L 248.508923 82.745088 
+L 118.152466 161.84038 
+" style="fill:none;stroke:#b0b0b0;stroke-width:0.8;"/>
+   </g>
+   <g id="xtick_15">
+    <g id="line2d_18">
+     <path d="M 449.246882 292.405743 
+L 454.267386 293.633128 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_18">
+     <!-- −0.3 -->
+     <g transform="translate(456.292501 298.324816)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-8722"/>
+      <use x="83.789062" xlink:href="#DejaVuSans-48"/>
+      <use x="147.412109" xlink:href="#DejaVuSans-46"/>
+      <use x="179.199219" xlink:href="#DejaVuSans-51"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_16">
+    <g id="line2d_19">
+     <path d="M 450.519248 265.872869 
+L 455.581608 267.082341 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_19">
+     <!-- −0.2 -->
+     <g transform="translate(457.717523 271.816484)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-8722"/>
+      <use x="83.789062" xlink:href="#DejaVuSans-48"/>
+      <use x="147.412109" xlink:href="#DejaVuSans-46"/>
+      <use x="179.199219" xlink:href="#DejaVuSans-50"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_17">
+    <g id="line2d_20">
+     <path d="M 451.812299 238.908652 
+L 456.917218 240.099463 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_20">
+     <!-- −0.1 -->
+     <g transform="translate(459.165678 244.877832)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-8722"/>
+      <use x="83.789062" xlink:href="#DejaVuSans-48"/>
+      <use x="147.412109" xlink:href="#DejaVuSans-46"/>
+      <use x="179.199219" xlink:href="#DejaVuSans-49"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_18">
+    <g id="line2d_21">
+     <path d="M 453.126543 211.502488 
+L 458.274743 212.673861 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_21">
+     <!-- 0.0 -->
+     <g transform="translate(464.827378 217.498295)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-48"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_19">
+    <g id="line2d_22">
+     <path d="M 454.462505 183.64342 
+L 459.654725 184.794547 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_22">
+     <!-- 0.1 -->
+     <g transform="translate(466.323521 189.66696)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-49"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_20">
+    <g id="line2d_23">
+     <path d="M 455.820729 155.32013 
+L 461.057727 156.45017 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_23">
+     <!-- 0.2 -->
+     <g transform="translate(467.844558 161.372551)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-50"/>
+     </g>
+    </g>
+   </g>
+   <g id="xtick_21">
+    <g id="line2d_24">
+     <path d="M 457.201776 126.520915 
+L 462.48433 127.628994 
+" style="fill:none;stroke:#000000;stroke-linecap:square;stroke-width:0.8;"/>
+    </g>
+    <g id="text_24">
+     <!-- 0.3 -->
+     <g transform="translate(469.391116 132.603415)scale(0.1 -0.1)">
+      <use xlink:href="#DejaVuSans-48"/>
+      <use x="63.623047" xlink:href="#DejaVuSans-46"/>
+      <use x="95.410156" xlink:href="#DejaVuSans-51"/>
+     </g>
+    </g>
+   </g>
+  </g>
+  <g id="axes_1">
+   <g id="Poly3DCollection_1">
+    <defs>
+     <path d="M 271.333675 -250.365117 
+L 269.449396 -253.323285 
+L 266.911461 -253.046536 
+L 268.789386 -250.086876 
+z
+" id="md47d69e84b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md47d69e84b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_2">
+    <defs>
+     <path d="M 272.573603 -273.03074 
+L 272.588776 -270.303942 
+L 261.67685 -269.132065 
+L 261.65287 -271.860874 
+z
+" id="m840c545216" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m840c545216" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_3">
+    <defs>
+     <path d="M 269.351961 -268.259203 
+L 269.449396 -253.323285 
+L 266.911461 -253.046536 
+L 266.802755 -267.985005 
+z
+" id="m30c0804eaa" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m30c0804eaa" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_4">
+    <defs>
+     <path d="M 311.483363 -281.146543 
+L 309.483736 -284.0331 
+L 309.482284 -283.759253 
+L 311.481746 -280.872189 
+z
+" id="mb0f711731d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb0f711731d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_5">
+    <defs>
+     <path d="M 271.244348 -265.328259 
+L 269.351961 -268.259203 
+L 269.449396 -253.323285 
+L 271.333675 -250.365117 
+z
+" id="me27cbfc834" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me27cbfc834" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_6">
+    <defs>
+     <path d="M 269.406399 -271.912353 
+L 267.678901 -271.84539 
+L 267.621307 -280.061087 
+L 269.352995 -280.127702 
+z
+" id="me1d0194e92" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me1d0194e92" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_7">
+    <defs>
+     <path d="M 271.244348 -265.328259 
+L 271.333675 -250.365117 
+L 268.789386 -250.086876 
+L 268.68873 -265.052576 
+z
+" id="m9dbf63e5db" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m9dbf63e5db" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_8">
+    <defs>
+     <path d="M 271.244348 -265.328259 
+L 269.351961 -268.259203 
+L 266.802755 -267.985005 
+L 268.68873 -265.052576 
+z
+" id="m78280724fc" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m78280724fc" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_9">
+    <defs>
+     <path d="M 268.68873 -265.052576 
+L 266.802755 -267.985005 
+L 266.911461 -253.046536 
+L 268.789386 -250.086876 
+z
+" id="m2d12c2d777" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2d12c2d777" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_10">
+    <defs>
+     <path d="M 271.090089 -271.750948 
+L 269.406399 -271.912353 
+L 269.352995 -280.127702 
+L 271.040759 -279.967136 
+z
+" id="m89e4a4e0c1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m89e4a4e0c1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_11">
+    <defs>
+     <path d="M 267.678901 -271.84539 
+L 266.093766 -271.557236 
+L 266.032314 -279.77443 
+L 267.621307 -280.061087 
+z
+" id="m06a2048d47" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m06a2048d47" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_12">
+    <defs>
+     <path d="M 272.548449 -271.378477 
+L 271.090089 -271.750948 
+L 271.040759 -279.967136 
+L 272.502638 -279.596599 
+z
+" id="ma692f4d46d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma692f4d46d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_13">
+    <defs>
+     <path d="M 266.093766 -271.557236 
+L 264.822073 -271.0788 
+L 264.75751 -279.298478 
+L 266.032314 -279.77443 
+z
+" id="m336c7a5996" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m336c7a5996" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_14">
+    <defs>
+     <path d="M 273.623884 -270.834922 
+L 272.548449 -271.378477 
+L 272.502638 -279.596599 
+L 273.580659 -279.055867 
+z
+" id="m5874eacbc5" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5874eacbc5" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_15">
+    <defs>
+     <path d="M 264.822073 -271.0788 
+L 264.00156 -270.461506 
+L 263.934968 -278.684389 
+L 264.75751 -279.298478 
+z
+" id="m7590b0615d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m7590b0615d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_16">
+    <defs>
+     <path d="M 267.678901 -271.84539 
+L 266.093766 -271.557236 
+L 264.822073 -271.0788 
+L 264.00156 -270.461506 
+L 263.72173 -269.771902 
+L 264.013907 -269.084588 
+L 264.847418 -268.474193 
+L 266.132502 -268.007222 
+L 267.729795 -267.7347 
+L 269.465476 -267.686464 
+L 271.150415 -267.867798 
+L 272.601104 -268.25884 
+L 273.659936 -268.816821 
+L 274.21245 -269.480869 
+L 274.199619 -270.178775 
+L 273.623884 -270.834922 
+L 272.548449 -271.378477 
+L 271.090089 -271.750948 
+L 269.406399 -271.912353 
+L 267.678901 -271.84539 
+z
+" id="m55453c2639" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m55453c2639" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_17">
+    <defs>
+     <path d="M 274.199619 -270.178775 
+L 273.623884 -270.834922 
+L 273.580659 -279.055867 
+L 274.157765 -278.403125 
+z
+" id="ma4fc4482cf" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma4fc4482cf" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_18">
+    <defs>
+     <path d="M 264.00156 -270.461506 
+L 263.72173 -269.771902 
+L 263.654417 -277.998362 
+L 263.934968 -278.684389 
+z
+" id="m2cf397767d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2cf397767d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_19">
+    <defs>
+     <path d="M 274.21245 -269.480869 
+L 274.199619 -270.178775 
+L 274.157765 -278.403125 
+L 274.1706 -277.708838 
+z
+" id="mffe262fb05" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mffe262fb05" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_20">
+    <defs>
+     <path d="M 263.72173 -269.771902 
+L 264.013907 -269.084588 
+L 263.947261 -277.314611 
+L 263.654417 -277.998362 
+z
+" id="m890ac64da9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m890ac64da9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_21">
+    <defs>
+     <path d="M 273.659936 -268.816821 
+L 274.21245 -269.480869 
+L 274.1706 -277.708838 
+L 273.616717 -277.048232 
+z
+" id="mf96d0eb4e9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf96d0eb4e9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_22">
+    <defs>
+     <path d="M 264.013907 -269.084588 
+L 264.847418 -268.474193 
+L 264.782761 -276.707379 
+L 263.947261 -277.314611 
+z
+" id="m190ca95273" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m190ca95273" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_23">
+    <defs>
+     <path d="M 272.601104 -268.25884 
+L 273.659936 -268.816821 
+L 273.616717 -277.048232 
+L 272.555289 -276.493141 
+z
+" id="m88e98ca97f" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m88e98ca97f" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_24">
+    <defs>
+     <path d="M 264.847418 -268.474193 
+L 266.132502 -268.007222 
+L 266.070942 -276.242827 
+L 264.782761 -276.707379 
+z
+" id="m78edb5a367" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m78edb5a367" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_25">
+    <defs>
+     <path d="M 271.150415 -267.867798 
+L 272.601104 -268.25884 
+L 272.555289 -276.493141 
+L 271.101054 -276.104125 
+z
+" id="m1222977a87" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1222977a87" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_26">
+    <defs>
+     <path d="M 266.132502 -268.007222 
+L 267.729795 -267.7347 
+L 267.672105 -275.971716 
+L 266.070942 -276.242827 
+z
+" id="m80881fcccc" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m80881fcccc" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_27">
+    <defs>
+     <path d="M 267.621307 -280.061087 
+L 266.032314 -279.77443 
+L 264.75751 -279.298478 
+L 263.934968 -278.684389 
+L 263.654417 -277.998362 
+L 263.947261 -277.314611 
+L 264.782761 -276.707379 
+L 266.070942 -276.242827 
+L 267.672105 -275.971716 
+L 269.412007 -275.92373 
+L 271.101054 -276.104125 
+L 272.555289 -276.493141 
+L 273.616717 -277.048232 
+L 274.1706 -277.708838 
+L 274.157765 -278.403125 
+L 273.580659 -279.055867 
+L 272.502638 -279.596599 
+L 271.040759 -279.967136 
+L 269.352995 -280.127702 
+L 267.621307 -280.061087 
+z
+" id="mf612708bf5" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf612708bf5" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_28">
+    <defs>
+     <path d="M 267.729795 -267.7347 
+L 269.465476 -267.686464 
+L 269.412007 -275.92373 
+L 267.672105 -275.971716 
+z
+" id="m2e8a7649bf" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2e8a7649bf" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_29">
+    <defs>
+     <path d="M 269.465476 -267.686464 
+L 271.150415 -267.867798 
+L 271.101054 -276.104125 
+L 269.412007 -275.92373 
+z
+" id="m1885dadc76" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1885dadc76" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_30">
+    <defs>
+     <path d="M 309.483736 -284.0331 
+L 309.482284 -283.759253 
+L 226.173775 -274.891159 
+L 226.168478 -275.166559 
+z
+" id="mb6c19d3be0" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb6c19d3be0" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_31">
+    <defs>
+     <path d="M 311.481746 -280.872189 
+L 309.482284 -283.759253 
+L 226.173775 -274.891159 
+L 227.963008 -271.955931 
+z
+" id="mea206eb5dc" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mea206eb5dc" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_32">
+    <defs>
+     <path d="M 311.483363 -281.146543 
+L 311.481746 -280.872189 
+L 227.963008 -271.955931 
+L 227.957841 -272.231842 
+z
+" id="m89a8fb1a52" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m89a8fb1a52" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_33">
+    <defs>
+     <path d="M 311.483363 -281.146543 
+L 309.483736 -284.0331 
+L 226.168478 -275.166559 
+L 227.957841 -272.231842 
+z
+" id="med2f6a0887" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#med2f6a0887" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_34">
+    <defs>
+     <path d="M 227.957841 -272.231842 
+L 226.168478 -275.166559 
+L 226.173775 -274.891159 
+L 227.963008 -271.955931 
+z
+" id="mc2f0d96df1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc2f0d96df1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_35">
+    <defs>
+     <path d="M 282.562257 -257.844895 
+L 282.565866 -256.472765 
+L 267.866619 -254.872397 
+L 267.857019 -256.245879 
+z
+" id="m6280a6e267" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6280a6e267" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_36">
+    <defs>
+     <path d="M 361.142063 -269.797905 
+L 368.443708 -270.589379 
+L 368.437431 -270.313183 
+L 361.136378 -269.521571 
+z
+" id="mae38def0d8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mae38def0d8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_37">
+    <defs>
+     <path d="M 287.448891 -250.345244 
+L 282.562257 -257.844895 
+L 282.565866 -256.472765 
+L 287.450525 -248.966789 
+z
+" id="mf562136ff7" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf562136ff7" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_38">
+    <defs>
+     <path d="M 287.450525 -248.966789 
+L 282.565866 -256.472765 
+L 267.866619 -254.872397 
+L 272.657669 -247.344415 
+z
+" id="m22e3c8a00b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m22e3c8a00b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_39">
+    <defs>
+     <path d="M 287.448891 -250.345244 
+L 287.450525 -248.966789 
+L 272.657669 -247.344415 
+L 272.649967 -248.724232 
+z
+" id="me3117376af" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me3117376af" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_40">
+    <defs>
+     <path d="M 287.448891 -250.345244 
+L 282.562257 -257.844895 
+L 267.857019 -256.245879 
+L 272.649967 -248.724232 
+z
+" id="m35a44f35de" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m35a44f35de" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_41">
+    <defs>
+     <path d="M 272.649967 -248.724232 
+L 267.857019 -256.245879 
+L 267.866619 -254.872397 
+L 272.657669 -247.344415 
+z
+" id="m5a37ecd73b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5a37ecd73b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_42">
+    <defs>
+     <path d="M 373.390661 -225.263194 
+L 380.743035 -226.093959 
+L 379.962655 -227.177277 
+L 372.61678 -226.348109 
+z
+" id="m2cb98f8dcc" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2cb98f8dcc" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_43">
+    <defs>
+     <path d="M 292.038194 -232.344596 
+L 291.042525 -233.887768 
+L 279.891264 -232.647628 
+L 280.872641 -231.101032 
+z
+" id="m261bce90ff" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m261bce90ff" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_44">
+    <defs>
+     <path d="M 372.985268 -241.529695 
+L 380.364192 -242.351398 
+L 379.962655 -227.177277 
+L 372.61678 -226.348109 
+z
+" id="me715fd9099" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me715fd9099" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_45">
+    <defs>
+     <path d="M 381.148504 -241.277832 
+L 380.743035 -226.093959 
+L 379.962655 -227.177277 
+L 380.364192 -242.351398 
+z
+" id="mbdde2e264d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbdde2e264d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_46">
+    <defs>
+     <path d="M 373.763021 -240.454538 
+L 381.148504 -241.277832 
+L 380.743035 -226.093959 
+L 373.390661 -225.263194 
+z
+" id="m098569d5f1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m098569d5f1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_47">
+    <defs>
+     <path d="M 373.763021 -240.454538 
+L 373.390661 -225.263194 
+L 372.61678 -226.348109 
+L 372.985268 -241.529695 
+z
+" id="m8912ff6586" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m8912ff6586" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_48">
+    <defs>
+     <path d="M 373.763021 -240.454538 
+L 381.148504 -241.277832 
+L 380.364192 -242.351398 
+L 372.985268 -241.529695 
+z
+" id="m9d3cd75f5e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m9d3cd75f5e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_49">
+    <defs>
+     <path d="M 332.320416 -239.741537 
+L 350.852095 -241.800122 
+L 350.827594 -240.41451 
+L 332.303526 -238.35421 
+z
+" id="m77d696c474" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m77d696c474" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_50">
+    <defs>
+     <path d="M 378.664845 -246.701456 
+L 376.902161 -246.81138 
+L 377.114091 -255.155741 
+L 378.881168 -255.046376 
+z
+" id="m3c2ccb9613" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3c2ccb9613" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_51">
+    <defs>
+     <path d="M 376.902161 -246.81138 
+L 375.166013 -246.681664 
+L 375.373662 -255.026685 
+L 377.114091 -255.155741 
+z
+" id="mf1de212eef" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf1de212eef" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_52">
+    <defs>
+     <path d="M 291.041204 -244.961923 
+L 291.042525 -233.887768 
+L 279.891264 -232.647628 
+L 279.853059 -243.729996 
+z
+" id="m90ae86e30a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m90ae86e30a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_53">
+    <defs>
+     <path d="M 380.264107 -246.363669 
+L 378.664845 -246.701456 
+L 378.881168 -255.046376 
+L 380.484463 -254.710306 
+z
+" id="m5254f574bc" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5254f574bc" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_54">
+    <defs>
+     <path d="M 375.166013 -246.681664 
+L 373.643523 -246.326208 
+L 373.847462 -254.673036 
+L 375.373662 -255.026685 
+z
+" id="m50147a5d8d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m50147a5d8d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_55">
+    <defs>
+     <path d="M 292.040116 -243.150966 
+L 272.573603 -273.03074 
+L 272.588776 -270.303942 
+L 292.039622 -240.373462 
+z
+" id="mde0d7ac7e2" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mde0d7ac7e2" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_56">
+    <defs>
+     <path d="M 292.040165 -243.428969 
+L 291.041204 -244.961923 
+L 291.042525 -233.887768 
+L 292.038194 -232.344596 
+z
+" id="m8957ada646" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m8957ada646" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_57">
+    <defs>
+     <path d="M 386.216596 -242.838908 
+L 386.138257 -240.060882 
+L 382.762731 -244.658112 
+L 382.837965 -247.428439 
+z
+" id="me30140bf85" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me30140bf85" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_58">
+    <defs>
+     <path d="M 292.039622 -240.373462 
+L 272.588776 -270.303942 
+L 261.67685 -269.132065 
+L 280.847283 -239.135847 
+z
+" id="m4da1a2be5e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4da1a2be5e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_59">
+    <defs>
+     <path d="M 381.527297 -245.834255 
+L 380.264107 -246.363669 
+L 380.484463 -254.710306 
+L 381.750895 -254.183582 
+z
+" id="mdf64ece06e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mdf64ece06e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_60">
+    <defs>
+     <path d="M 373.643523 -246.326208 
+L 372.49913 -245.783147 
+L 372.700328 -254.132733 
+L 373.847462 -254.673036 
+z
+" id="mc4c29e34f6" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc4c29e34f6" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_61">
+    <defs>
+     <path d="M 382.317508 -245.170133 
+L 381.527297 -245.834255 
+L 381.750895 -254.183582 
+L 382.543203 -253.522832 
+z
+" id="mc27fabfe3e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc27fabfe3e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_62">
+    <defs>
+     <path d="M 382.317508 -245.170133 
+L 381.527297 -245.834255 
+L 380.264107 -246.363669 
+L 378.664845 -246.701456 
+L 376.902161 -246.81138 
+L 375.166013 -246.681664 
+L 373.643523 -246.326208 
+L 372.49913 -245.783147 
+L 371.856999 -245.11088 
+L 371.787505 -244.381934 
+L 372.299271 -243.675237 
+L 373.337781 -243.067595 
+L 374.79088 -242.625277 
+L 376.500772 -242.396651 
+L 378.281252 -242.406761 
+L 379.938274 -242.6545 
+L 381.291445 -243.112732 
+L 382.193922 -243.731357 
+L 382.548415 -244.442928 
+L 382.317508 -245.170133 
+z
+" id="meceb31871a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#meceb31871a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_63">
+    <defs>
+     <path d="M 372.49913 -245.783147 
+L 371.856999 -245.11088 
+L 372.056725 -253.46388 
+L 372.700328 -254.132733 
+z
+" id="m4465042891" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4465042891" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_64">
+    <defs>
+     <path d="M 292.040116 -243.150966 
+L 292.039622 -240.373462 
+L 280.847283 -239.135847 
+L 280.838511 -241.915419 
+z
+" id="mf3d5747b4d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf3d5747b4d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_65">
+    <defs>
+     <path d="M 292.040116 -243.150966 
+L 272.573603 -273.03074 
+L 261.65287 -271.860874 
+L 280.838511 -241.915419 
+z
+" id="m821062be3f" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m821062be3f" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_66">
+    <defs>
+     <path d="M 280.838511 -241.915419 
+L 261.65287 -271.860874 
+L 261.67685 -269.132065 
+L 280.847283 -239.135847 
+z
+" id="mcbed8425cb" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mcbed8425cb" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_67">
+    <defs>
+     <path d="M 292.040165 -243.428969 
+L 292.038194 -232.344596 
+L 280.872641 -231.101032 
+L 280.837633 -242.19363 
+z
+" id="m8abebba461" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m8abebba461" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_68">
+    <defs>
+     <path d="M 292.040165 -243.428969 
+L 291.041204 -244.961923 
+L 279.853059 -243.729996 
+L 280.837633 -242.19363 
+z
+" id="m4b9209b95c" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4b9209b95c" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_69">
+    <defs>
+     <path d="M 280.837633 -242.19363 
+L 279.853059 -243.729996 
+L 279.891264 -232.647628 
+L 280.872641 -231.101032 
+z
+" id="mcf342db36b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mcf342db36b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_70">
+    <defs>
+     <path d="M 382.548415 -244.442928 
+L 382.317508 -245.170133 
+L 382.543203 -253.522832 
+L 382.774832 -252.799318 
+z
+" id="me8595dd1bd" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me8595dd1bd" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_71">
+    <defs>
+     <path d="M 371.856999 -245.11088 
+L 371.787505 -244.381934 
+L 371.98719 -252.738633 
+L 372.056725 -253.46388 
+z
+" id="md2455d1608" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md2455d1608" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_72">
+    <defs>
+     <path d="M 382.193922 -243.731357 
+L 382.548415 -244.442928 
+L 382.774832 -252.799318 
+L 382.419604 -252.091355 
+z
+" id="ma0a511cb07" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma0a511cb07" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_73">
+    <defs>
+     <path d="M 371.787505 -244.381934 
+L 372.299271 -243.675237 
+L 372.500357 -252.03552 
+L 371.98719 -252.738633 
+z
+" id="ma9bfe482f3" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma9bfe482f3" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_74">
+    <defs>
+     <path d="M 276.40712 -238.810755 
+L 329.879329 -226.012095 
+L 329.876142 -225.734841 
+L 276.408352 -238.535601 
+z
+" id="m48516aa770" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m48516aa770" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_75">
+    <defs>
+     <path d="M 381.291445 -243.112732 
+L 382.193922 -243.731357 
+L 382.419604 -252.091355 
+L 381.515007 -251.475866 
+z
+" id="ma91ba09ded" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma91ba09ded" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_76">
+    <defs>
+     <path d="M 372.299271 -243.675237 
+L 373.337781 -243.067595 
+L 373.541561 -251.430958 
+L 372.500357 -252.03552 
+z
+" id="m3f2de9624a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3f2de9624a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_77">
+    <defs>
+     <path d="M 197.759542 -252.087784 
+L 190.206002 -251.269005 
+L 190.214401 -250.989481 
+L 197.767309 -251.8084 
+z
+" id="maee6d9c046" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#maee6d9c046" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_78">
+    <defs>
+     <path d="M 355.192773 -235.631231 
+L 355.166336 -234.240487 
+L 350.827594 -240.41451 
+L 350.852095 -241.800122 
+z
+" id="mb36453b3bb" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb36453b3bb" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_79">
+    <defs>
+     <path d="M 379.938274 -242.6545 
+L 381.291445 -243.112732 
+L 381.515007 -251.475866 
+L 380.15856 -251.019955 
+z
+" id="m171441e605" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m171441e605" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_80">
+    <defs>
+     <path d="M 373.337781 -243.067595 
+L 374.79088 -242.625277 
+L 374.998359 -250.990881 
+L 373.541561 -251.430958 
+z
+" id="m473129537b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m473129537b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_81">
+    <defs>
+     <path d="M 378.281252 -242.406761 
+L 379.938274 -242.6545 
+L 380.15856 -251.019955 
+L 378.497462 -250.773471 
+z
+" id="m7be5f88a58" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m7be5f88a58" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_82">
+    <defs>
+     <path d="M 382.543203 -253.522832 
+L 381.750895 -254.183582 
+L 380.484463 -254.710306 
+L 378.881168 -255.046376 
+L 377.114091 -255.155741 
+L 375.373662 -255.026685 
+L 373.847462 -254.673036 
+L 372.700328 -254.132733 
+L 372.056725 -253.46388 
+L 371.98719 -252.738633 
+L 372.500357 -252.03552 
+L 373.541561 -251.430958 
+L 374.998359 -250.990881 
+L 376.712551 -250.763412 
+L 378.497462 -250.773471 
+L 380.15856 -251.019955 
+L 381.515007 -251.475866 
+L 382.419604 -252.091355 
+L 382.774832 -252.799318 
+L 382.543203 -253.522832 
+z
+" id="mbe6c16041d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbe6c16041d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_83">
+    <defs>
+     <path d="M 374.79088 -242.625277 
+L 376.500772 -242.396651 
+L 376.712551 -250.763412 
+L 374.998359 -250.990881 
+z
+" id="mbb00efcf76" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbb00efcf76" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_84">
+    <defs>
+     <path d="M 376.500772 -242.396651 
+L 378.281252 -242.406761 
+L 378.497462 -250.773471 
+L 376.712551 -250.763412 
+z
+" id="mdf71699613" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mdf71699613" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_85">
+    <defs>
+     <path d="M 308.65393 -239.203177 
+L 382.837965 -247.428439 
+L 382.762731 -244.658112 
+L 308.639657 -236.419073 
+z
+" id="mc617294773" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc617294773" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_86">
+    <defs>
+     <path d="M 308.655359 -239.481841 
+L 312.391082 -239.895942 
+L 312.321784 -228.788071 
+L 308.598398 -228.371221 
+z
+" id="m6695c0df6b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6695c0df6b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_87">
+    <defs>
+     <path d="M 268.835613 -232.873773 
+L 268.880585 -226.20772 
+L 275.527174 -230.950043 
+L 275.495584 -237.597392 
+z
+" id="mc2097252f1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffff00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc2097252f1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_88">
+    <defs>
+     <path d="M 282.996887 -248.280666 
+L 323.233494 -238.745342 
+L 323.230853 -238.466507 
+L 282.997582 -248.003433 
+z
+" id="md73afc13be" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md73afc13be" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_89">
+    <defs>
+     <path d="M 311.681697 -223.682915 
+L 315.419455 -224.103247 
+L 312.321784 -228.788071 
+L 308.598398 -228.371221 
+z
+" id="m2ce2ab8871" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2ce2ab8871" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_90">
+    <defs>
+     <path d="M 336.547341 -232.157231 
+L 355.166336 -234.240487 
+L 350.827594 -240.41451 
+L 332.303526 -238.35421 
+z
+" id="me1d5d16b3e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me1d5d16b3e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_91">
+    <defs>
+     <path d="M 289.033533 -238.801571 
+L 288.684807 -238.736004 
+L 288.406333 -238.627201 
+L 288.228283 -238.48693 
+L 288.169983 -238.330375 
+L 288.237798 -238.174495 
+L 288.424427 -238.036189 
+L 288.709673 -237.930462 
+L 289.06262 -237.868794 
+L 289.444985 -237.857881 
+L 289.815282 -237.898909 
+L 290.133339 -237.987422 
+L 290.364671 -238.113808 
+L 290.484222 -238.264352 
+L 290.47908 -238.422726 
+L 290.349852 -238.571769 
+L 290.110581 -238.695343 
+L 289.787209 -238.780079 
+L 289.414754 -238.816812 
+L 289.033533 -238.801571 
+z
+" id="m975a04c676" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m975a04c676" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_92">
+    <defs>
+     <path d="M 336.566089 -233.5497 
+L 355.192773 -235.631231 
+L 355.166336 -234.240487 
+L 336.547341 -232.157231 
+z
+" id="m04c9e63a4b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m04c9e63a4b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_93">
+    <defs>
+     <path d="M 336.566089 -233.5497 
+L 336.547341 -232.157231 
+L 332.303526 -238.35421 
+L 332.320416 -239.741537 
+z
+" id="m5c5e02a54b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5c5e02a54b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_94">
+    <defs>
+     <path d="M 336.566089 -233.5497 
+L 355.192773 -235.631231 
+L 350.852095 -241.800122 
+L 332.320416 -239.741537 
+z
+" id="m2face902fe" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2face902fe" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_95">
+    <defs>
+     <path d="M 282.286671 -255.003709 
+L 325.931977 -244.721978 
+L 325.9271 -244.246465 
+L 282.287954 -254.531167 
+z
+" id="mf438dd064c" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf438dd064c" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_96">
+    <defs>
+     <path d="M 289.414754 -238.816812 
+L 289.033533 -238.801571 
+L 289.029525 -244.386879 
+L 289.41138 -244.402069 
+z
+" id="mf1b8c47687" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf1b8c47687" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_97">
+    <defs>
+     <path d="M 289.787209 -238.780079 
+L 289.414754 -238.816812 
+L 289.41138 -244.402069 
+L 289.784455 -244.365459 
+z
+" id="mdf06814d57" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mdf06814d57" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_98">
+    <defs>
+     <path d="M 289.033533 -238.801571 
+L 288.684807 -238.736004 
+L 288.680219 -244.321533 
+L 289.029525 -244.386879 
+z
+" id="mf56161752b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf56161752b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_99">
+    <defs>
+     <path d="M 290.110581 -238.695343 
+L 289.787209 -238.780079 
+L 289.784455 -244.365459 
+L 290.108365 -244.281008 
+z
+" id="m5cdebc885f" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5cdebc885f" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_100">
+    <defs>
+     <path d="M 252.872912 -222.127488 
+L 252.876121 -221.849601 
+L 276.408352 -238.535601 
+L 276.40712 -238.810755 
+z
+" id="md888ad35fa" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md888ad35fa" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_101">
+    <defs>
+     <path d="M 288.684807 -238.736004 
+L 288.406333 -238.627201 
+L 288.40128 -244.213095 
+L 288.680219 -244.321533 
+z
+" id="m3b69f17fca" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3b69f17fca" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_102">
+    <defs>
+     <path d="M 290.349852 -238.571769 
+L 290.110581 -238.695343 
+L 290.108365 -244.281008 
+L 290.348034 -244.157849 
+z
+" id="mbc2a27832b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbc2a27832b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_103">
+    <defs>
+     <path d="M 288.406333 -238.627201 
+L 288.228283 -238.48693 
+L 288.222934 -244.073295 
+L 288.40128 -244.213095 
+z
+" id="me790836469" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me790836469" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_104">
+    <defs>
+     <path d="M 290.47908 -238.422726 
+L 290.349852 -238.571769 
+L 290.348034 -244.157849 
+L 290.477477 -244.009306 
+z
+" id="m1642bfadeb" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1642bfadeb" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_105">
+    <defs>
+     <path d="M 288.228283 -238.48693 
+L 288.169983 -238.330375 
+L 288.164536 -243.917266 
+L 288.222934 -244.073295 
+z
+" id="mbb4a24a3d7" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbb4a24a3d7" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_106">
+    <defs>
+     <path d="M 290.484222 -238.264352 
+L 290.47908 -238.422726 
+L 290.477477 -244.009306 
+L 290.482627 -243.851464 
+z
+" id="m2676366664" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2676366664" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_107">
+    <defs>
+     <path d="M 288.169983 -238.330375 
+L 288.237798 -238.174495 
+L 288.232462 -243.761909 
+L 288.164536 -243.917266 
+z
+" id="m4c87487570" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4c87487570" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_108">
+    <defs>
+     <path d="M 290.364671 -238.113808 
+L 290.484222 -238.264352 
+L 290.482627 -243.851464 
+L 290.362876 -243.701426 
+z
+" id="m048a279a4d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m048a279a4d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_109">
+    <defs>
+     <path d="M 288.237798 -238.174495 
+L 288.424427 -238.036189 
+L 288.419402 -243.624067 
+L 288.232462 -243.761909 
+z
+" id="m452703f617" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m452703f617" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_110">
+    <defs>
+     <path d="M 290.133339 -237.987422 
+L 290.364671 -238.113808 
+L 290.362876 -243.701426 
+L 290.13116 -243.575464 
+z
+" id="mfdafd67c4a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mfdafd67c4a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_111">
+    <defs>
+     <path d="M 288.424427 -238.036189 
+L 288.709673 -237.930462 
+L 288.705123 -243.518695 
+L 288.419402 -243.624067 
+z
+" id="m6acf62428a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6acf62428a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_112">
+    <defs>
+     <path d="M 289.815282 -237.898909 
+L 290.133339 -237.987422 
+L 290.13116 -243.575464 
+L 289.812573 -243.487248 
+z
+" id="m37050a5c90" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m37050a5c90" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_113">
+    <defs>
+     <path d="M 288.709673 -237.930462 
+L 289.06262 -237.868794 
+L 289.058657 -243.457233 
+L 288.705123 -243.518695 
+z
+" id="md5976d88d8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md5976d88d8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_114">
+    <defs>
+     <path d="M 289.029525 -244.386879 
+L 288.680219 -244.321533 
+L 288.40128 -244.213095 
+L 288.222934 -244.073295 
+L 288.164536 -243.917266 
+L 288.232462 -243.761909 
+L 288.419402 -243.624067 
+L 288.705123 -243.518695 
+L 289.058657 -243.457233 
+L 289.441659 -243.446357 
+L 289.812573 -243.487248 
+L 290.13116 -243.575464 
+L 290.362876 -243.701426 
+L 290.482627 -243.851464 
+L 290.477477 -244.009306 
+L 290.348034 -244.157849 
+L 290.108365 -244.281008 
+L 289.784455 -244.365459 
+L 289.41138 -244.402069 
+L 289.029525 -244.386879 
+z
+" id="md8a25232a7" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md8a25232a7" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_115">
+    <defs>
+     <path d="M 289.06262 -237.868794 
+L 289.444985 -237.857881 
+L 289.441659 -243.446357 
+L 289.058657 -243.457233 
+z
+" id="ma5e0eb2f4b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma5e0eb2f4b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_116">
+    <defs>
+     <path d="M 289.444985 -237.857881 
+L 289.815282 -237.898909 
+L 289.812573 -243.487248 
+L 289.441659 -243.446357 
+z
+" id="m5112f11f64" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5112f11f64" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_117">
+    <defs>
+     <path d="M 311.730575 -231.753081 
+L 386.138257 -240.060882 
+L 382.762731 -244.658112 
+L 308.639657 -236.419073 
+z
+" id="m394a61cc3a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m394a61cc3a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_118">
+    <defs>
+     <path d="M 300.454312 -236.075363 
+L 300.29412 -236.220089 
+L 300.029384 -236.335558 
+L 299.688794 -236.409276 
+L 299.309229 -236.433274 
+L 298.931773 -236.404956 
+L 298.597279 -236.327384 
+L 298.34197 -236.208947 
+L 298.193517 -236.062457 
+L 298.168044 -235.903773 
+L 298.268362 -235.75009 
+L 298.483644 -235.61807 
+L 298.79058 -235.522041 
+L 299.155896 -235.472428 
+L 299.539961 -235.474622 
+L 299.901105 -235.528383 
+L 300.200154 -235.627873 
+L 300.404688 -235.762288 
+L 300.492567 -235.917045 
+L 300.454312 -236.075363 
+z
+" id="m11058da80a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m11058da80a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_119">
+    <defs>
+     <path d="M 283.404414 -243.769543 
+L 301.902243 -239.368383 
+L 301.900501 -238.809012 
+L 283.405748 -243.211651 
+z
+" id="m8334a371e8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m8334a371e8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_120">
+    <defs>
+     <path d="M 315.499367 -235.241957 
+L 315.419455 -224.103247 
+L 312.321784 -228.788071 
+L 312.391082 -239.895942 
+z
+" id="m1ed4175ea5" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1ed4175ea5" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_121">
+    <defs>
+     <path d="M 311.747484 -234.544943 
+L 386.216596 -242.838908 
+L 386.138257 -240.060882 
+L 311.730575 -231.753081 
+z
+" id="m425263d4a4" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m425263d4a4" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_122">
+    <defs>
+     <path d="M 311.747484 -234.544943 
+L 311.730575 -231.753081 
+L 308.639657 -236.419073 
+L 308.65393 -239.203177 
+z
+" id="m902a5f137a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m902a5f137a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_123">
+    <defs>
+     <path d="M 311.747484 -234.544943 
+L 386.216596 -242.838908 
+L 382.837965 -247.428439 
+L 308.65393 -239.203177 
+z
+" id="mcbc96221d8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mcbc96221d8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_124">
+    <defs>
+     <path d="M 271.144652 -235.323828 
+L 267.378165 -234.906317 
+L 267.458124 -223.765389 
+L 271.212071 -224.185659 
+z
+" id="m4d495f20c6" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4d495f20c6" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_125">
+    <defs>
+     <path d="M 311.749177 -234.824385 
+L 315.499367 -235.241957 
+L 315.419455 -224.103247 
+L 311.681697 -223.682915 
+z
+" id="m9cfbf368bb" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m9cfbf368bb" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_126">
+    <defs>
+     <path d="M 311.749177 -234.824385 
+L 311.681697 -223.682915 
+L 308.598398 -228.371221 
+L 308.655359 -239.481841 
+z
+" id="mddbefeed55" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mddbefeed55" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_127">
+    <defs>
+     <path d="M 311.749177 -234.824385 
+L 315.499367 -235.241957 
+L 312.391082 -239.895942 
+L 308.655359 -239.481841 
+z
+" id="m3348538a69" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3348538a69" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_128">
+    <defs>
+     <path d="M 299.688794 -236.409276 
+L 299.309229 -236.433274 
+L 299.322347 -242.026527 
+L 299.702545 -242.00261 
+z
+" id="m021d0583a0" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m021d0583a0" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_129">
+    <defs>
+     <path d="M 299.309229 -236.433274 
+L 298.931773 -236.404956 
+L 298.944261 -241.998304 
+L 299.322347 -242.026527 
+z
+" id="m84d8fa815e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m84d8fa815e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_130">
+    <defs>
+     <path d="M 300.029384 -236.335558 
+L 299.688794 -236.409276 
+L 299.702545 -242.00261 
+L 300.043703 -241.929139 
+z
+" id="m6206a25974" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6206a25974" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_131">
+    <defs>
+     <path d="M 298.931773 -236.404956 
+L 298.597279 -236.327384 
+L 298.609211 -241.920993 
+L 298.944261 -241.998304 
+z
+" id="me1d8109808" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me1d8109808" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_132">
+    <defs>
+     <path d="M 300.29412 -236.220089 
+L 300.029384 -236.335558 
+L 300.043703 -241.929139 
+L 300.308883 -241.814057 
+z
+" id="m4fd6f3db08" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4fd6f3db08" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_133">
+    <defs>
+     <path d="M 298.597279 -236.327384 
+L 298.34197 -236.208947 
+L 298.353477 -241.802952 
+L 298.609211 -241.920993 
+z
+" id="m8b9734e8de" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m8b9734e8de" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_134">
+    <defs>
+     <path d="M 275.495584 -237.597392 
+L 314.140752 -228.335719 
+L 314.095414 -221.651772 
+L 275.527174 -230.950043 
+z
+" id="m3a3fc19088" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffff00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3a3fc19088" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_135">
+    <defs>
+     <path d="M 300.454312 -236.075363 
+L 300.29412 -236.220089 
+L 300.308883 -241.814057 
+L 300.469344 -241.669815 
+z
+" id="m4cd9061391" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4cd9061391" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_136">
+    <defs>
+     <path d="M 298.34197 -236.208947 
+L 298.193517 -236.062457 
+L 298.204778 -241.656953 
+L 298.353477 -241.802952 
+z
+" id="m0679b0e7a8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m0679b0e7a8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_137">
+    <defs>
+     <path d="M 275.575696 -238.2198 
+L 275.578342 -237.660043 
+L 283.405748 -243.211651 
+L 283.404414 -243.769543 
+z
+" id="mad25c1df1d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mad25c1df1d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_138">
+    <defs>
+     <path d="M 300.492567 -235.917045 
+L 300.454312 -236.075363 
+L 300.469344 -241.669815 
+L 300.507664 -241.512028 
+z
+" id="ma89a80d8f4" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma89a80d8f4" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_139">
+    <defs>
+     <path d="M 298.193517 -236.062457 
+L 298.168044 -235.903773 
+L 298.179264 -241.498801 
+L 298.204778 -241.656953 
+z
+" id="mc541c82a04" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc541c82a04" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_140">
+    <defs>
+     <path d="M 271.212071 -224.185659 
+L 267.458124 -223.765389 
+L 270.381862 -219.038513 
+L 274.150427 -219.46231 
+z
+" id="md4d0954a2e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md4d0954a2e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_141">
+    <defs>
+     <path d="M 300.404688 -235.762288 
+L 300.492567 -235.917045 
+L 300.507664 -241.512028 
+L 300.419641 -241.35779 
+z
+" id="m40189f4a73" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m40189f4a73" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_142">
+    <defs>
+     <path d="M 298.168044 -235.903773 
+L 298.268362 -235.75009 
+L 298.279751 -241.345632 
+L 298.179264 -241.498801 
+z
+" id="m0d217f195a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m0d217f195a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_143">
+    <defs>
+     <path d="M 300.200154 -235.627873 
+L 300.404688 -235.762288 
+L 300.419641 -241.35779 
+L 300.214767 -241.223824 
+z
+" id="m1620fd22f8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1620fd22f8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_144">
+    <defs>
+     <path d="M 298.268362 -235.75009 
+L 298.483644 -235.61807 
+L 298.495393 -241.214055 
+L 298.279751 -241.345632 
+z
+" id="mdbb58fd81a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mdbb58fd81a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_145">
+    <defs>
+     <path d="M 282.41427 -234.071165 
+L 282.572448 -233.92588 
+L 282.835947 -233.809913 
+L 283.176214 -233.735851 
+L 283.556349 -233.711737 
+L 283.935107 -233.740192 
+L 284.271396 -233.818123 
+L 284.528748 -233.937069 
+L 284.679279 -234.084117 
+L 284.706713 -234.243317 
+L 284.608129 -234.397416 
+L 284.394253 -234.529724 
+L 284.088282 -234.625924 
+L 283.72336 -234.675612 
+L 283.338989 -234.673415 
+L 282.976771 -234.619572 
+L 282.675917 -234.519903 
+L 282.469019 -234.385188 
+L 282.378519 -234.230006 
+L 282.41427 -234.071165 
+z
+" id="m71236cd7dc" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m71236cd7dc" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_146">
+    <defs>
+     <path d="M 299.901105 -235.528383 
+L 300.200154 -235.627873 
+L 300.214767 -241.223824 
+L 299.915221 -241.124668 
+z
+" id="mc70b3ca2b9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc70b3ca2b9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_147">
+    <defs>
+     <path d="M 298.483644 -235.61807 
+L 298.79058 -235.522041 
+L 298.802843 -241.118347 
+L 298.495393 -241.214055 
+z
+" id="mbb74d4aa77" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbb74d4aa77" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_148">
+    <defs>
+     <path d="M 299.539961 -235.474622 
+L 299.901105 -235.528383 
+L 299.915221 -241.124668 
+L 299.553475 -241.071087 
+z
+" id="m2705884c62" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2705884c62" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_149">
+    <defs>
+     <path d="M 300.469344 -241.669815 
+L 300.308883 -241.814057 
+L 300.043703 -241.929139 
+L 299.702545 -242.00261 
+L 299.322347 -242.026527 
+L 298.944261 -241.998304 
+L 298.609211 -241.920993 
+L 298.353477 -241.802952 
+L 298.204778 -241.656953 
+L 298.179264 -241.498801 
+L 298.279751 -241.345632 
+L 298.495393 -241.214055 
+L 298.802843 -241.118347 
+L 299.168769 -241.068901 
+L 299.553475 -241.071087 
+L 299.915221 -241.124668 
+L 300.214767 -241.223824 
+L 300.419641 -241.35779 
+L 300.507664 -241.512028 
+L 300.469344 -241.669815 
+z
+" id="m5037eefab2" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5037eefab2" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_150">
+    <defs>
+     <path d="M 298.79058 -235.522041 
+L 299.155896 -235.472428 
+L 299.168769 -241.068901 
+L 298.802843 -241.118347 
+z
+" id="med742eb6de" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#med742eb6de" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_151">
+    <defs>
+     <path d="M 299.155896 -235.472428 
+L 299.539961 -235.474622 
+L 299.553475 -241.071087 
+L 299.168769 -241.068901 
+z
+" id="me513e21987" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me513e21987" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_152">
+    <defs>
+     <path d="M 283.72336 -234.675612 
+L 283.338989 -234.673415 
+L 283.325456 -240.272562 
+L 283.710469 -240.274751 
+z
+" id="ma4cb175450" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma4cb175450" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_153">
+    <defs>
+     <path d="M 284.088282 -234.625924 
+L 283.72336 -234.675612 
+L 283.710469 -240.274751 
+L 284.076 -240.22523 
+z
+" id="m3044bd6ad4" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3044bd6ad4" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_154">
+    <defs>
+     <path d="M 283.338989 -234.673415 
+L 282.976771 -234.619572 
+L 282.962632 -240.218899 
+L 283.325456 -240.272562 
+z
+" id="md0c9652044" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md0c9652044" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_155">
+    <defs>
+     <path d="M 284.394253 -234.529724 
+L 284.088282 -234.625924 
+L 284.076 -240.22523 
+L 284.382481 -240.129352 
+z
+" id="mdd17a43f56" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mdd17a43f56" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_156">
+    <defs>
+     <path d="M 282.976771 -234.619572 
+L 282.675917 -234.519903 
+L 282.661275 -240.119563 
+L 282.962632 -240.218899 
+z
+" id="m97dbfff31f" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m97dbfff31f" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_157">
+    <defs>
+     <path d="M 284.608129 -234.397416 
+L 284.394253 -234.529724 
+L 284.382481 -240.129352 
+L 284.596712 -239.997486 
+z
+" id="m84c49bf81e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m84c49bf81e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_158">
+    <defs>
+     <path d="M 282.675917 -234.519903 
+L 282.469019 -234.385188 
+L 282.454029 -239.985299 
+L 282.661275 -240.119563 
+z
+" id="mb9cf0c5590" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb9cf0c5590" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_159">
+    <defs>
+     <path d="M 284.706713 -234.243317 
+L 284.608129 -234.397416 
+L 284.596712 -239.997486 
+L 284.69546 -239.843903 
+z
+" id="m3855d2d8e1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3855d2d8e1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_160">
+    <defs>
+     <path d="M 246.182527 -230.172943 
+L 227.260553 -228.071003 
+L 227.287349 -226.674007 
+L 246.201388 -228.777681 
+z
+" id="m9883ad92ce" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m9883ad92ce" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_161">
+    <defs>
+     <path d="M 282.469019 -234.385188 
+L 282.378519 -234.230006 
+L 282.363376 -239.830636 
+L 282.454029 -239.985299 
+z
+" id="ma00171026a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma00171026a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_162">
+    <defs>
+     <path d="M 284.679279 -234.084117 
+L 284.706713 -234.243317 
+L 284.69546 -239.843903 
+L 284.667978 -239.685235 
+z
+" id="m272be8a003" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m272be8a003" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_163">
+    <defs>
+     <path d="M 282.378519 -234.230006 
+L 282.41427 -234.071165 
+L 282.399185 -239.672326 
+L 282.363376 -239.830636 
+z
+" id="m868c017e8a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m868c017e8a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_164">
+    <defs>
+     <path d="M 284.528748 -233.937069 
+L 284.679279 -234.084117 
+L 284.667978 -239.685235 
+L 284.517194 -239.538678 
+z
+" id="mf0cad23c2f" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf0cad23c2f" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_165">
+    <defs>
+     <path d="M 282.41427 -234.071165 
+L 282.572448 -233.92588 
+L 282.557625 -239.527528 
+L 282.399185 -239.672326 
+z
+" id="mf4862f1b76" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf4862f1b76" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_166">
+    <defs>
+     <path d="M 284.271396 -233.818123 
+L 284.528748 -233.937069 
+L 284.517194 -239.538678 
+L 284.259411 -239.420131 
+z
+" id="m6689ab1157" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6689ab1157" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_167">
+    <defs>
+     <path d="M 282.572448 -233.92588 
+L 282.835947 -233.809913 
+L 282.821563 -239.411948 
+L 282.557625 -239.527528 
+z
+" id="md5f3ba1084" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md5f3ba1084" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_168">
+    <defs>
+     <path d="M 283.935107 -233.740192 
+L 284.271396 -233.818123 
+L 284.259411 -239.420131 
+L 283.922559 -239.34246 
+z
+" id="ma89dcffb9e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma89dcffb9e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_169">
+    <defs>
+     <path d="M 282.835947 -233.809913 
+L 283.176214 -233.735851 
+L 283.162398 -239.338134 
+L 282.821563 -239.411948 
+z
+" id="m485304d081" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m485304d081" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_170">
+    <defs>
+     <path d="M 282.399185 -239.672326 
+L 282.557625 -239.527528 
+L 282.821563 -239.411948 
+L 283.162398 -239.338134 
+L 283.543167 -239.314101 
+L 283.922559 -239.34246 
+L 284.259411 -239.420131 
+L 284.517194 -239.538678 
+L 284.667978 -239.685235 
+L 284.69546 -239.843903 
+L 284.596712 -239.997486 
+L 284.382481 -240.129352 
+L 284.076 -240.22523 
+L 283.710469 -240.274751 
+L 283.325456 -240.272562 
+L 282.962632 -240.218899 
+L 282.661275 -240.119563 
+L 282.454029 -239.985299 
+L 282.363376 -239.830636 
+L 282.399185 -239.672326 
+z
+" id="m617595a994" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m617595a994" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_171">
+    <defs>
+     <path d="M 283.176214 -233.735851 
+L 283.556349 -233.711737 
+L 283.543167 -239.314101 
+L 283.162398 -239.338134 
+z
+" id="m297c0ef0e1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m297c0ef0e1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_172">
+    <defs>
+     <path d="M 283.556349 -233.711737 
+L 283.935107 -233.740192 
+L 283.922559 -239.34246 
+L 283.543167 -239.314101 
+z
+" id="m3d40aeb767" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3d40aeb767" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_173">
+    <defs>
+     <path d="M 268.880585 -226.20772 
+L 307.557898 -216.830341 
+L 314.095414 -221.651772 
+L 275.527174 -230.950043 
+z
+" id="m6d5384c640" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffff00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6d5384c640" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_174">
+    <defs>
+     <path d="M 259.449066 -231.659957 
+L 259.451741 -231.379942 
+L 282.997582 -248.003433 
+L 282.996887 -248.280666 
+z
+" id="m1860f2f9cd" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1860f2f9cd" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_175">
+    <defs>
+     <path d="M 293.867398 -231.321725 
+L 294.218138 -231.388167 
+L 294.49785 -231.498389 
+L 294.676222 -231.640425 
+L 294.733953 -231.798865 
+L 294.664837 -231.956533 
+L 294.476411 -232.096352 
+L 294.189122 -232.203188 
+L 293.834097 -232.265485 
+L 293.449771 -232.276508 
+L 293.077741 -232.235065 
+L 292.758277 -232.145636 
+L 292.52598 -232.017893 
+L 292.406036 -231.865657 
+L 292.411484 -231.705414 
+L 292.541786 -231.554528 
+L 292.782861 -231.429364 
+L 293.108597 -231.343506 
+L 293.483674 -231.306279 
+L 293.867398 -231.321725 
+z
+" id="mdf6106c852" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mdf6106c852" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_176">
+    <defs>
+     <path d="M 271.146343 -235.044469 
+L 271.163237 -232.253438 
+L 274.108511 -227.552486 
+L 274.09401 -230.351303 
+z
+" id="m60178a04e7" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m60178a04e7" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_177">
+    <defs>
+     <path d="M 208.224291 -207.79226 
+L 200.623119 -206.934276 
+L 201.241836 -205.811623 
+L 208.849987 -206.671288 
+z
+" id="m6cc20879fc" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6cc20879fc" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_178">
+    <defs>
+     <path d="M 271.144652 -235.323828 
+L 271.212071 -224.185659 
+L 274.150427 -219.46231 
+L 274.092558 -230.631443 
+z
+" id="m0d44443e0e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m0d44443e0e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_179">
+    <defs>
+     <path d="M 293.834097 -232.265485 
+L 293.449771 -232.276508 
+L 293.45313 -237.883666 
+L 293.8381 -237.87268 
+z
+" id="md4d8f936bc" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md4d8f936bc" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_180">
+    <defs>
+     <path d="M 293.449771 -232.276508 
+L 293.077741 -232.235065 
+L 293.080478 -237.842361 
+L 293.45313 -237.883666 
+z
+" id="mfd9aff9c19" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mfd9aff9c19" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_181">
+    <defs>
+     <path d="M 294.189122 -232.203188 
+L 293.834097 -232.265485 
+L 293.8381 -237.87268 
+L 294.19372 -237.810591 
+z
+" id="m4136627e48" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4136627e48" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_182">
+    <defs>
+     <path d="M 293.077741 -232.235065 
+L 292.758277 -232.145636 
+L 292.76048 -237.753231 
+L 293.080478 -237.842361 
+z
+" id="mba6181e726" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mba6181e726" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_183">
+    <defs>
+     <path d="M 294.476411 -232.096352 
+L 294.189122 -232.203188 
+L 294.19372 -237.810591 
+L 294.48149 -237.704112 
+z
+" id="mce1dd0b0b0" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mce1dd0b0b0" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_184">
+    <defs>
+     <path d="M 271.144652 -235.323828 
+L 267.378165 -234.906317 
+L 270.311355 -230.210418 
+L 274.092558 -230.631443 
+z
+" id="m22d281289e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m22d281289e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_185">
+    <defs>
+     <path d="M 274.092558 -230.631443 
+L 270.311355 -230.210418 
+L 270.381862 -219.038513 
+L 274.150427 -219.46231 
+z
+" id="m12344523a6" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m12344523a6" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_186">
+    <defs>
+     <path d="M 267.378165 -234.906317 
+L 267.458124 -223.765389 
+L 270.381862 -219.038513 
+L 270.311355 -230.210418 
+z
+" id="m88590f2ceb" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m88590f2ceb" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_187">
+    <defs>
+     <path d="M 292.758277 -232.145636 
+L 292.52598 -232.017893 
+L 292.527794 -237.625914 
+L 292.76048 -237.753231 
+z
+" id="m85c5ffc902" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m85c5ffc902" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_188">
+    <defs>
+     <path d="M 294.664837 -231.956533 
+L 294.476411 -232.096352 
+L 294.48149 -237.704112 
+L 294.670231 -237.56476 
+z
+" id="mad99e259a6" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mad99e259a6" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_189">
+    <defs>
+     <path d="M 292.52598 -232.017893 
+L 292.406036 -231.865657 
+L 292.407649 -237.474187 
+L 292.527794 -237.625914 
+z
+" id="m920ebfd948" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m920ebfd948" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_190">
+    <defs>
+     <path d="M 294.733953 -231.798865 
+L 294.664837 -231.956533 
+L 294.670231 -237.56476 
+L 294.739464 -237.407618 
+z
+" id="md813c4f4b5" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md813c4f4b5" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_191">
+    <defs>
+     <path d="M 275.578342 -237.660043 
+L 294.134786 -233.213148 
+L 301.900501 -238.809012 
+L 283.405748 -243.211651 
+z
+" id="maa4aa83169" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#maa4aa83169" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_192">
+    <defs>
+     <path d="M 292.406036 -231.865657 
+L 292.411484 -231.705414 
+L 292.413106 -237.314478 
+L 292.407649 -237.474187 
+z
+" id="m0656152a8f" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m0656152a8f" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_193">
+    <defs>
+     <path d="M 294.676222 -231.640425 
+L 294.733953 -231.798865 
+L 294.739464 -237.407618 
+L 294.681637 -237.249707 
+z
+" id="m31ba331bcb" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m31ba331bcb" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_194">
+    <defs>
+     <path d="M 292.411484 -231.705414 
+L 292.541786 -231.554528 
+L 292.543627 -237.164096 
+L 292.413106 -237.314478 
+z
+" id="m02a3be1e11" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m02a3be1e11" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_195">
+    <defs>
+     <path d="M 275.575696 -238.2198 
+L 294.135237 -233.774393 
+L 294.134786 -233.213148 
+L 275.578342 -237.660043 
+z
+" id="m695d7effec" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m695d7effec" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_196">
+    <defs>
+     <path d="M 275.575696 -238.2198 
+L 294.135237 -233.774393 
+L 301.902243 -239.368383 
+L 283.404414 -243.769543 
+z
+" id="mfbad854cf6" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mfbad854cf6" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_197">
+    <defs>
+     <path d="M 294.135237 -233.774393 
+L 294.134786 -233.213148 
+L 301.900501 -238.809012 
+L 301.902243 -239.368383 
+z
+" id="m662aaa4cf8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m662aaa4cf8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_198">
+    <defs>
+     <path d="M 294.49785 -231.498389 
+L 294.676222 -231.640425 
+L 294.681637 -237.249707 
+L 294.502968 -237.108145 
+z
+" id="mcf693ae781" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mcf693ae781" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_199">
+    <defs>
+     <path d="M 292.541786 -231.554528 
+L 292.782861 -231.429364 
+L 292.785106 -237.03935 
+L 292.543627 -237.164096 
+z
+" id="mbb79671d31" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbb79671d31" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_200">
+    <defs>
+     <path d="M 268.835613 -232.873773 
+L 307.590289 -223.533145 
+L 307.557898 -216.830341 
+L 268.880585 -226.20772 
+z
+" id="m08eaa7e6fe" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffff00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m08eaa7e6fe" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_201">
+    <defs>
+     <path d="M 268.835613 -232.873773 
+L 307.590289 -223.533145 
+L 314.140752 -228.335719 
+L 275.495584 -237.597392 
+z
+" id="m7c39c9fe8b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffff00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m7c39c9fe8b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_202">
+    <defs>
+     <path d="M 307.590289 -223.533145 
+L 307.557898 -216.830341 
+L 314.095414 -221.651772 
+L 314.140752 -228.335719 
+z
+" id="mebdda0483b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffff00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mebdda0483b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_203">
+    <defs>
+     <path d="M 294.218138 -231.388167 
+L 294.49785 -231.498389 
+L 294.502968 -237.108145 
+L 294.222787 -236.998291 
+z
+" id="m3f9014c9f7" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3f9014c9f7" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_204">
+    <defs>
+     <path d="M 292.782861 -231.429364 
+L 293.108597 -231.343506 
+L 293.111388 -236.953779 
+L 292.785106 -237.03935 
+z
+" id="m40df1b807f" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m40df1b807f" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_205">
+    <defs>
+     <path d="M 293.867398 -231.321725 
+L 294.218138 -231.388167 
+L 294.222787 -236.998291 
+L 293.87146 -236.93207 
+z
+" id="m7280c85bbe" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m7280c85bbe" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_206">
+    <defs>
+     <path d="M 293.87146 -236.93207 
+L 294.222787 -236.998291 
+L 294.502968 -237.108145 
+L 294.681637 -237.249707 
+L 294.739464 -237.407618 
+L 294.670231 -237.56476 
+L 294.48149 -237.704112 
+L 294.19372 -237.810591 
+L 293.8381 -237.87268 
+L 293.45313 -237.883666 
+L 293.080478 -237.842361 
+L 292.76048 -237.753231 
+L 292.527794 -237.625914 
+L 292.407649 -237.474187 
+L 292.413106 -237.314478 
+L 292.543627 -237.164096 
+L 292.785106 -237.03935 
+L 293.111388 -236.953779 
+L 293.487093 -236.916675 
+L 293.87146 -236.93207 
+z
+" id="mbfc493ccbb" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbfc493ccbb" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_207">
+    <defs>
+     <path d="M 293.108597 -231.343506 
+L 293.483674 -231.306279 
+L 293.487093 -236.916675 
+L 293.111388 -236.953779 
+z
+" id="m4dc845c46c" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4dc845c46c" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_208">
+    <defs>
+     <path d="M 293.483674 -231.306279 
+L 293.867398 -231.321725 
+L 293.87146 -236.93207 
+L 293.487093 -236.916675 
+z
+" id="mc8c6988ba7" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc8c6988ba7" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_209">
+    <defs>
+     <path d="M 256.714671 -237.072284 
+L 256.719616 -236.594578 
+L 282.287954 -254.531167 
+L 282.286671 -255.003709 
+z
+" id="m6bda4966b0" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6bda4966b0" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_210">
+    <defs>
+     <path d="M 262.902091 -238.881845 
+L 262.914996 -237.363966 
+L 268.864566 -241.551109 
+L 268.854391 -243.065175 
+z
+" id="m96a1f04d4b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#00cc00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m96a1f04d4b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_211">
+    <defs>
+     <path d="M 290.83755 -215.396875 
+L 291.849409 -213.80224 
+L 303.174611 -215.084436 
+L 302.148051 -216.675485 
+z
+" id="m0f9df933a8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m0f9df933a8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_212">
+    <defs>
+     <path d="M 246.182527 -230.172943 
+L 246.201388 -228.777681 
+L 249.998947 -222.473438 
+L 249.981572 -223.873886 
+z
+" id="mbe13d937ab" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbe13d937ab" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_213">
+    <defs>
+     <path d="M 268.854391 -243.065175 
+L 290.786717 -237.827186 
+L 290.787014 -236.308347 
+L 268.864566 -241.551109 
+z
+" id="mc5e239a714" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#00cc00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc5e239a714" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_214">
+    <defs>
+     <path d="M 271.146343 -235.044469 
+L 195.284392 -226.633165 
+L 195.365034 -223.828202 
+L 271.163237 -232.253438 
+z
+" id="mb679deb617" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb679deb617" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_215">
+    <defs>
+     <path d="M 290.83557 -226.311746 
+L 290.836079 -223.506252 
+L 302.174066 -224.778831 
+L 302.183066 -227.582227 
+z
+" id="m82933e74a0" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m82933e74a0" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_216">
+    <defs>
+     <path d="M 207.840274 -223.139463 
+L 200.20371 -222.28907 
+L 200.623119 -206.934276 
+L 208.224291 -207.79226 
+z
+" id="ma0f4dfffa1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma0f4dfffa1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_217">
+    <defs>
+     <path d="M 290.835519 -226.592554 
+L 290.83755 -215.396875 
+L 302.148051 -216.675485 
+L 302.183967 -227.862826 
+z
+" id="m6d4a8cfbe4" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6d4a8cfbe4" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_218">
+    <defs>
+     <path d="M 246.201388 -228.777681 
+L 227.287349 -226.674007 
+L 230.985771 -220.346078 
+L 249.998947 -222.473438 
+z
+" id="m43f58e7629" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m43f58e7629" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_219">
+    <defs>
+     <path d="M 207.840274 -223.139463 
+L 208.224291 -207.79226 
+L 208.849987 -206.671288 
+L 208.468482 -222.028408 
+z
+" id="m7a06b50f62" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m7a06b50f62" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_220">
+    <defs>
+     <path d="M 302.183967 -227.862826 
+L 303.214026 -226.282151 
+L 303.174611 -215.084436 
+L 302.148051 -216.675485 
+z
+" id="m46d735b2ac" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m46d735b2ac" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_221">
+    <defs>
+     <path d="M 246.182527 -230.172943 
+L 227.260553 -228.071003 
+L 230.960378 -221.748269 
+L 249.981572 -223.873886 
+z
+" id="m01992cec4c" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m01992cec4c" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_222">
+    <defs>
+     <path d="M 249.981572 -223.873886 
+L 230.960378 -221.748269 
+L 230.985771 -220.346078 
+L 249.998947 -222.473438 
+z
+" id="m7260230e0a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m7260230e0a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_223">
+    <defs>
+     <path d="M 227.260553 -228.071003 
+L 227.287349 -226.674007 
+L 230.985771 -220.346078 
+L 230.960378 -221.748269 
+z
+" id="m93bf167f19" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m93bf167f19" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_224">
+    <defs>
+     <path d="M 207.840274 -223.139463 
+L 200.20371 -222.28907 
+L 200.824875 -221.176341 
+L 208.468482 -222.028408 
+z
+" id="m0cf52e7b93" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m0cf52e7b93" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_225">
+    <defs>
+     <path d="M 208.468482 -222.028408 
+L 200.824875 -221.176341 
+L 201.241836 -205.811623 
+L 208.849987 -206.671288 
+z
+" id="mcdf7cbc36b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mcdf7cbc36b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_226">
+    <defs>
+     <path d="M 200.20371 -222.28907 
+L 200.623119 -206.934276 
+L 201.241836 -205.811623 
+L 200.824875 -221.176341 
+z
+" id="mf3442e78a4" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf3442e78a4" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_227">
+    <defs>
+     <path d="M 290.835519 -226.592554 
+L 291.850778 -225.008305 
+L 291.849409 -213.80224 
+L 290.83755 -215.396875 
+z
+" id="m1d8624fe92" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1d8624fe92" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_228">
+    <defs>
+     <path d="M 290.835519 -226.592554 
+L 291.850778 -225.008305 
+L 303.214026 -226.282151 
+L 302.183967 -227.862826 
+z
+" id="m8eb6bed0ac" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m8eb6bed0ac" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_229">
+    <defs>
+     <path d="M 291.850778 -225.008305 
+L 291.849409 -213.80224 
+L 303.174611 -215.084436 
+L 303.214026 -226.282151 
+z
+" id="m25f2667ae5" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m25f2667ae5" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_230">
+    <defs>
+     <path d="M 205.254682 -227.654454 
+L 203.448949 -227.644074 
+L 203.226945 -236.085057 
+L 205.037235 -236.095386 
+z
+" id="mcc3adc8ae9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mcc3adc8ae9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_231">
+    <defs>
+     <path d="M 206.952251 -227.41962 
+L 205.254682 -227.654454 
+L 205.037235 -236.095386 
+L 206.739042 -235.861725 
+z
+" id="m4f2f8a7546" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4f2f8a7546" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_232">
+    <defs>
+     <path d="M 203.448949 -227.644074 
+L 201.729598 -227.389589 
+L 201.503204 -235.831845 
+L 203.226945 -236.085057 
+z
+" id="md4f86d7440" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md4f86d7440" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_233">
+    <defs>
+     <path d="M 394.094908 -235.860581 
+L 394.086272 -235.578444 
+L 368.437431 -270.313183 
+L 368.443708 -270.589379 
+z
+" id="maac10da70a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#maac10da70a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_234">
+    <defs>
+     <path d="M 262.914996 -237.363966 
+L 284.892264 -232.081525 
+L 290.787014 -236.308347 
+L 268.864566 -241.551109 
+z
+" id="m41a18b2112" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#00cc00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m41a18b2112" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_235">
+    <defs>
+     <path d="M 208.358593 -226.964736 
+L 206.952251 -227.41962 
+L 206.739042 -235.861725 
+L 208.148849 -235.409114 
+z
+" id="m2676496675" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2676496675" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_236">
+    <defs>
+     <path d="M 201.729598 -227.389589 
+L 200.282044 -226.918277 
+L 200.051901 -235.362887 
+L 201.503204 -235.831845 
+z
+" id="mb4006dc6a9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb4006dc6a9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_237">
+    <defs>
+     <path d="M 252.876121 -221.849601 
+L 306.879503 -208.660311 
+L 329.876142 -225.734841 
+L 276.408352 -238.535601 
+z
+" id="me4da397b84" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me4da397b84" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_238">
+    <defs>
+     <path d="M 262.902091 -238.881845 
+L 284.889287 -233.604196 
+L 284.892264 -232.081525 
+L 262.914996 -237.363966 
+z
+" id="mb1ec418c23" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#00cc00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb1ec418c23" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_239">
+    <defs>
+     <path d="M 262.902091 -238.881845 
+L 284.889287 -233.604196 
+L 290.786717 -237.827186 
+L 268.854391 -243.065175 
+z
+" id="m78374d7ab9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#00cc00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m78374d7ab9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_240">
+    <defs>
+     <path d="M 284.889287 -233.604196 
+L 284.892264 -232.081525 
+L 290.787014 -236.308347 
+L 290.786717 -237.827186 
+z
+" id="m40898b096a" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#00cc00;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m40898b096a" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_241">
+    <defs>
+     <path d="M 252.872912 -222.127488 
+L 306.880802 -208.940328 
+L 306.879503 -208.660311 
+L 252.876121 -221.849601 
+z
+" id="mae2ae12f89" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mae2ae12f89" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_242">
+    <defs>
+     <path d="M 252.872912 -222.127488 
+L 306.880802 -208.940328 
+L 329.879329 -226.012095 
+L 276.40712 -238.810755 
+z
+" id="m0503eb3363" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m0503eb3363" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_243">
+    <defs>
+     <path d="M 306.880802 -208.940328 
+L 306.879503 -208.660311 
+L 329.876142 -225.734841 
+L 329.879329 -226.012095 
+z
+" id="m2f60e0f727" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2f60e0f727" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_244">
+    <defs>
+     <path d="M 386.570119 -234.735194 
+L 394.086272 -235.578444 
+L 368.437431 -270.313183 
+L 361.136378 -269.521571 
+z
+" id="m24010ff482" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m24010ff482" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_245">
+    <defs>
+     <path d="M 386.578128 -235.017473 
+L 394.094908 -235.860581 
+L 394.086272 -235.578444 
+L 386.570119 -234.735194 
+z
+" id="m1d26e72b7b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1d26e72b7b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_246">
+    <defs>
+     <path d="M 386.578128 -235.017473 
+L 386.570119 -234.735194 
+L 361.136378 -269.521571 
+L 361.142063 -269.797905 
+z
+" id="m9ea66018b1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m9ea66018b1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_247">
+    <defs>
+     <path d="M 386.578128 -235.017473 
+L 394.094908 -235.860581 
+L 368.443708 -270.589379 
+L 361.142063 -269.797905 
+z
+" id="m87f54b9472" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m87f54b9472" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_248">
+    <defs>
+     <path d="M 209.321586 -226.338641 
+L 208.358593 -226.964736 
+L 208.148849 -235.409114 
+L 209.114157 -234.786146 
+z
+" id="m00d6e2df89" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m00d6e2df89" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_249">
+    <defs>
+     <path d="M 200.282044 -226.918277 
+L 199.262867 -226.280747 
+L 199.030019 -234.728541 
+L 200.051901 -235.362887 
+z
+" id="m52fa62bed1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m52fa62bed1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_250">
+    <defs>
+     <path d="M 271.163237 -232.253438 
+L 195.365034 -223.828202 
+L 198.012146 -219.05614 
+L 274.108511 -227.552486 
+z
+" id="m632410a633" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m632410a633" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_251">
+    <defs>
+     <path d="M 198.895322 -224.792445 
+L 199.588906 -224.102826 
+L 200.789331 -223.551889 
+L 202.366616 -223.199813 
+L 204.149218 -223.085145 
+L 205.942883 -223.220453 
+L 207.552157 -223.590908 
+L 208.802021 -224.155956 
+L 209.557126 -224.853891 
+L 209.736415 -225.608741 
+L 209.321586 -226.338641 
+L 208.358593 -226.964736 
+L 206.952251 -227.41962 
+L 205.254682 -227.654454 
+L 203.448949 -227.644074 
+L 201.729598 -227.389589 
+L 200.282044 -226.918277 
+L 199.262867 -226.280747 
+L 198.782959 -225.545656 
+L 198.895322 -224.792445 
+z
+" id="mb5b0e173c1" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb5b0e173c1" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_252">
+    <defs>
+     <path d="M 209.736415 -225.608741 
+L 209.321586 -226.338641 
+L 209.114157 -234.786146 
+L 209.5299 -234.059888 
+z
+" id="m02689530a6" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m02689530a6" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_253">
+    <defs>
+     <path d="M 199.262867 -226.280747 
+L 198.782959 -225.545656 
+L 198.548745 -233.997118 
+L 199.030019 -234.728541 
+z
+" id="m0839138d83" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m0839138d83" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_254">
+    <defs>
+     <path d="M 271.146343 -235.044469 
+L 195.284392 -226.633165 
+L 197.933394 -221.868948 
+L 274.09401 -230.351303 
+z
+" id="m169abd521b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m169abd521b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_255">
+    <defs>
+     <path d="M 274.09401 -230.351303 
+L 197.933394 -221.868948 
+L 198.012146 -219.05614 
+L 274.108511 -227.552486 
+z
+" id="md47276bfb5" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md47276bfb5" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_256">
+    <defs>
+     <path d="M 195.284392 -226.633165 
+L 195.365034 -223.828202 
+L 198.012146 -219.05614 
+L 197.933394 -221.868948 
+z
+" id="mcfdeb6b69c" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ff0000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mcfdeb6b69c" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_257">
+    <defs>
+     <path d="M 209.557126 -224.853891 
+L 209.736415 -225.608741 
+L 209.5299 -234.059888 
+L 209.350018 -233.308804 
+z
+" id="mb7b35db5e0" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb7b35db5e0" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_258">
+    <defs>
+     <path d="M 198.782959 -225.545656 
+L 198.895322 -224.792445 
+L 198.661235 -233.247664 
+L 198.548745 -233.997118 
+z
+" id="m82b59ba390" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m82b59ba390" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_259">
+    <defs>
+     <path d="M 259.451741 -231.379942 
+L 300.089364 -221.552575 
+L 323.230853 -238.466507 
+L 282.997582 -248.003433 
+z
+" id="m474d0bc6de" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m474d0bc6de" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_260">
+    <defs>
+     <path d="M 259.449066 -231.659957 
+L 300.090093 -221.834216 
+L 300.089364 -221.552575 
+L 259.451741 -231.379942 
+z
+" id="m9d94fb5a83" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m9d94fb5a83" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_261">
+    <defs>
+     <path d="M 259.449066 -231.659957 
+L 300.090093 -221.834216 
+L 323.233494 -238.745342 
+L 282.996887 -248.280666 
+z
+" id="mc206eebcee" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc206eebcee" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_262">
+    <defs>
+     <path d="M 300.090093 -221.834216 
+L 300.089364 -221.552575 
+L 323.230853 -238.466507 
+L 323.233494 -238.745342 
+z
+" id="mc57cc849f9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc57cc849f9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_263">
+    <defs>
+     <path d="M 208.802021 -224.155956 
+L 209.557126 -224.853891 
+L 209.350018 -233.308804 
+L 208.592874 -232.614347 
+z
+" id="mf2d53631c2" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf2d53631c2" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_264">
+    <defs>
+     <path d="M 198.895322 -224.792445 
+L 199.588906 -224.102826 
+L 199.356431 -232.561482 
+L 198.661235 -233.247664 
+z
+" id="mc10ead83e2" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc10ead83e2" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_265">
+    <defs>
+     <path d="M 207.552157 -223.590908 
+L 208.802021 -224.155956 
+L 208.592874 -232.614347 
+L 207.33974 -232.052113 
+z
+" id="m5207dbab85" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5207dbab85" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_266">
+    <defs>
+     <path d="M 199.588906 -224.102826 
+L 200.789331 -223.551889 
+L 200.559782 -232.013289 
+L 199.356431 -232.561482 
+z
+" id="mdb5714a6ed" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mdb5714a6ed" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_267">
+    <defs>
+     <path d="M 205.942883 -223.220453 
+L 207.552157 -223.590908 
+L 207.33974 -232.052113 
+L 205.72632 -231.683503 
+z
+" id="m67491e0636" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m67491e0636" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_268">
+    <defs>
+     <path d="M 200.789331 -223.551889 
+L 202.366616 -223.199813 
+L 202.140991 -231.662966 
+L 200.559782 -232.013289 
+z
+" id="ma97eecc423" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma97eecc423" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_269">
+    <defs>
+     <path d="M 198.661235 -233.247664 
+L 199.356431 -232.561482 
+L 200.559782 -232.013289 
+L 202.140991 -231.662966 
+L 203.928085 -231.548869 
+L 205.72632 -231.683503 
+L 207.33974 -232.052113 
+L 208.592874 -232.614347 
+L 209.350018 -233.308804 
+L 209.5299 -234.059888 
+L 209.114157 -234.786146 
+L 208.148849 -235.409114 
+L 206.739042 -235.861725 
+L 205.037235 -236.095386 
+L 203.226945 -236.085057 
+L 201.503204 -235.831845 
+L 200.051901 -235.362887 
+L 199.030019 -234.728541 
+L 198.548745 -233.997118 
+L 198.661235 -233.247664 
+z
+" id="mbdbde9529b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbdbde9529b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_270">
+    <defs>
+     <path d="M 202.366616 -223.199813 
+L 204.149218 -223.085145 
+L 203.928085 -231.548869 
+L 202.140991 -231.662966 
+z
+" id="me2b44eb2dd" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me2b44eb2dd" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_271">
+    <defs>
+     <path d="M 204.149218 -223.085145 
+L 205.942883 -223.220453 
+L 205.72632 -231.683503 
+L 203.928085 -231.548869 
+z
+" id="m6cff55d3bb" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6cff55d3bb" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_272">
+    <defs>
+     <path d="M 256.719616 -236.594578 
+L 300.83488 -225.969565 
+L 325.9271 -244.246465 
+L 282.287954 -254.531167 
+z
+" id="m1f5a7c26ab" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1f5a7c26ab" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_273">
+    <defs>
+     <path d="M 256.714671 -237.072284 
+L 300.83623 -226.450292 
+L 300.83488 -225.969565 
+L 256.719616 -236.594578 
+z
+" id="mae1989bf24" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mae1989bf24" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_274">
+    <defs>
+     <path d="M 256.714671 -237.072284 
+L 300.83623 -226.450292 
+L 325.931977 -244.721978 
+L 282.286671 -255.003709 
+z
+" id="med93678efe" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#med93678efe" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_275">
+    <defs>
+     <path d="M 300.83623 -226.450292 
+L 300.83488 -225.969565 
+L 325.9271 -244.246465 
+L 325.931977 -244.721978 
+z
+" id="m30c7b6a77b" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#cccccc;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m30c7b6a77b" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_276">
+    <defs>
+     <path d="M 295.572045 -212.752266 
+L 295.570297 -211.342733 
+L 310.809479 -213.07242 
+L 310.817666 -214.480547 
+z
+" id="m5196c4c4ad" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5196c4c4ad" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_277">
+    <defs>
+     <path d="M 310.817666 -214.480547 
+L 316.100467 -206.372888 
+L 316.089974 -204.958186 
+L 310.809479 -213.07242 
+z
+" id="m05d38d2fab" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m05d38d2fab" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_278">
+    <defs>
+     <path d="M 295.570297 -211.342733 
+L 300.7502 -203.203763 
+L 316.089974 -204.958186 
+L 310.809479 -213.07242 
+z
+" id="mdcca434aed" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mdcca434aed" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_279">
+    <defs>
+     <path d="M 295.572045 -212.752266 
+L 300.754169 -204.61988 
+L 300.7502 -203.203763 
+L 295.570297 -211.342733 
+z
+" id="ma77a578eee" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma77a578eee" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_280">
+    <defs>
+     <path d="M 295.572045 -212.752266 
+L 300.754169 -204.61988 
+L 316.100467 -206.372888 
+L 310.817666 -214.480547 
+z
+" id="md41ee20e48" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md41ee20e48" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_281">
+    <defs>
+     <path d="M 300.754169 -204.61988 
+L 300.7502 -203.203763 
+L 316.089974 -204.958186 
+L 316.100467 -206.372888 
+z
+" id="m74872ba6da" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#008000;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m74872ba6da" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_282">
+    <defs>
+     <path d="M 197.759542 -252.087784 
+L 197.767309 -251.8084 
+L 218.295656 -215.856194 
+L 218.289394 -216.141625 
+z
+" id="mac0d342e27" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mac0d342e27" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_283">
+    <defs>
+     <path d="M 197.767309 -251.8084 
+L 190.214401 -250.989481 
+L 210.511685 -214.982897 
+L 218.295656 -215.856194 
+z
+" id="mfdbe7df5d0" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mfdbe7df5d0" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_284">
+    <defs>
+     <path d="M 197.759542 -252.087784 
+L 190.206002 -251.269005 
+L 210.504751 -215.268472 
+L 218.289394 -216.141625 
+z
+" id="m49ea6b4dc0" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m49ea6b4dc0" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_285">
+    <defs>
+     <path d="M 218.289394 -216.141625 
+L 210.504751 -215.268472 
+L 210.511685 -214.982897 
+L 218.295656 -215.856194 
+z
+" id="mf59b97d622" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mf59b97d622" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_286">
+    <defs>
+     <path d="M 190.206002 -251.269005 
+L 190.214401 -250.989481 
+L 210.511685 -214.982897 
+L 210.504751 -215.268472 
+z
+" id="m9bdf34ab6d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m9bdf34ab6d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_287">
+    <defs>
+     <path d="M 312.822004 -180.690288 
+L 314.955552 -177.327759 
+L 317.655261 -177.643924 
+L 315.514564 -181.004647 
+z
+" id="m576223b7a8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m576223b7a8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_288">
+    <defs>
+     <path d="M 312.923008 -196.274441 
+L 312.822004 -180.690288 
+L 315.514564 -181.004647 
+L 315.628259 -196.586085 
+z
+" id="m2e01a8c65f" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m2e01a8c65f" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_289">
+    <defs>
+     <path d="M 358.38062 -213.448125 
+L 360.653507 -210.167105 
+L 360.647551 -209.880688 
+L 358.374876 -213.16225 
+z
+" id="m6c2191d6af" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6c2191d6af" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_290">
+    <defs>
+     <path d="M 315.628259 -196.586085 
+L 317.779423 -193.254345 
+L 317.655261 -177.643924 
+L 315.514564 -181.004647 
+z
+" id="m1a900063a5" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m1a900063a5" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_291">
+    <defs>
+     <path d="M 316.626807 -200.386378 
+L 314.781252 -200.440783 
+L 314.841562 -209.016084 
+L 316.69189 -208.961943 
+z
+" id="m4d5f6caaaf" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4d5f6caaaf" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_292">
+    <defs>
+     <path d="M 312.923008 -196.274441 
+L 315.066956 -192.940901 
+L 314.955552 -177.327759 
+L 312.822004 -180.690288 
+z
+" id="mbd98113b59" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mbd98113b59" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_293">
+    <defs>
+     <path d="M 312.923008 -196.274441 
+L 315.066956 -192.940901 
+L 317.779423 -193.254345 
+L 315.628259 -196.586085 
+z
+" id="m3430ab8c5f" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3430ab8c5f" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_294">
+    <defs>
+     <path d="M 315.066956 -192.940901 
+L 314.955552 -177.327759 
+L 317.655261 -177.643924 
+L 317.779423 -193.254345 
+z
+" id="md8ff0611b6" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md8ff0611b6" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_295">
+    <defs>
+     <path d="M 314.781252 -200.440783 
+L 312.99932 -200.236207 
+L 313.055036 -208.812505 
+L 314.841562 -209.016084 
+z
+" id="m22df79840e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m22df79840e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_296">
+    <defs>
+     <path d="M 318.337173 -200.078816 
+L 316.626807 -200.386378 
+L 316.69189 -208.961943 
+L 318.406695 -208.655881 
+z
+" id="m3cc9d7edb9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3cc9d7edb9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_297">
+    <defs>
+     <path d="M 312.99932 -200.236207 
+L 311.473087 -199.794563 
+L 311.524878 -208.373014 
+L 313.055036 -208.812505 
+z
+" id="m275863e13e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m275863e13e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_298">
+    <defs>
+     <path d="M 319.727845 -199.551061 
+L 318.337173 -200.078816 
+L 318.406695 -208.655881 
+L 319.800995 -208.130699 
+z
+" id="m7d79a5d807" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m7d79a5d807" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_299">
+    <defs>
+     <path d="M 311.473087 -199.794563 
+L 310.367501 -199.163238 
+L 310.41646 -207.744765 
+L 311.524878 -208.373014 
+z
+" id="m5d20f724c8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m5d20f724c8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_300">
+    <defs>
+     <path d="M 320.648266 -198.859798 
+L 319.727845 -199.551061 
+L 319.800995 -208.130699 
+L 320.723841 -207.442803 
+z
+" id="m0b3e6e35a2" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m0b3e6e35a2" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_301">
+    <defs>
+     <path d="M 316.879581 -195.713039 
+L 318.561393 -196.043031 
+L 319.895843 -196.59013 
+L 320.738271 -197.294537 
+L 320.998082 -198.079497 
+L 320.648266 -198.859798 
+L 319.727845 -199.551061 
+L 318.337173 -200.078816 
+L 316.626807 -200.386378 
+L 314.781252 -200.440783 
+L 312.99932 -200.236207 
+L 311.473087 -199.794563 
+L 310.367501 -199.163238 
+L 309.802701 -198.410153 
+L 309.840858 -197.616613 
+L 310.479031 -196.868622 
+L 311.648986 -196.247562 
+L 313.224193 -195.821233 
+L 315.033436 -195.636302 
+L 316.879581 -195.713039 
+z
+" id="m8cb197700d" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m8cb197700d" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_302">
+    <defs>
+     <path d="M 302.183066 -227.582227 
+L 323.347496 -195.096266 
+L 323.31999 -192.240007 
+L 302.174066 -224.778831 
+z
+" id="mdbeb0bdc09" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mdbeb0bdc09" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_303">
+    <defs>
+     <path d="M 310.367501 -199.163238 
+L 309.802701 -198.410153 
+L 309.85023 -206.995347 
+L 310.41646 -207.744765 
+z
+" id="m4d4c417710" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4d4c417710" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_304">
+    <defs>
+     <path d="M 290.836079 -223.506252 
+L 311.679105 -190.892906 
+L 323.31999 -192.240007 
+L 302.174066 -224.778831 
+z
+" id="ma7ae462816" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma7ae462816" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_305">
+    <defs>
+     <path d="M 320.998082 -198.079497 
+L 320.648266 -198.859798 
+L 320.723841 -207.442803 
+L 321.074614 -206.666301 
+z
+" id="m9034faebe5" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m9034faebe5" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_306">
+    <defs>
+     <path d="M 309.802701 -198.410153 
+L 309.840858 -197.616613 
+L 309.888519 -206.205669 
+L 309.85023 -206.995347 
+z
+" id="mc8ff2732d5" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mc8ff2732d5" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_307">
+    <defs>
+     <path d="M 320.738271 -197.294537 
+L 320.998082 -198.079497 
+L 321.074614 -206.666301 
+L 320.814183 -205.885159 
+z
+" id="m66c11fc4f0" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m66c11fc4f0" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_308">
+    <defs>
+     <path d="M 290.83557 -226.311746 
+L 311.696587 -193.75132 
+L 311.679105 -190.892906 
+L 290.836079 -223.506252 
+z
+" id="m8f26a5db99" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m8f26a5db99" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_309">
+    <defs>
+     <path d="M 290.83557 -226.311746 
+L 311.696587 -193.75132 
+L 323.347496 -195.096266 
+L 302.183066 -227.582227 
+z
+" id="m87b3dd03a9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m87b3dd03a9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_310">
+    <defs>
+     <path d="M 311.696587 -193.75132 
+L 311.679105 -190.892906 
+L 323.31999 -192.240007 
+L 323.347496 -195.096266 
+z
+" id="me4a762b120" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#ffffff;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#me4a762b120" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_311">
+    <defs>
+     <path d="M 309.840858 -197.616613 
+L 310.479031 -196.868622 
+L 310.528377 -205.461315 
+L 309.888519 -206.205669 
+z
+" id="m78cbc32ffb" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m78cbc32ffb" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_312">
+    <defs>
+     <path d="M 319.895843 -196.59013 
+L 320.738271 -197.294537 
+L 320.814183 -205.885159 
+L 319.969617 -205.184177 
+z
+" id="mb604f4ed53" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mb604f4ed53" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_313">
+    <defs>
+     <path d="M 310.479031 -196.868622 
+L 311.648986 -196.247562 
+L 311.701393 -204.843273 
+L 310.528377 -205.461315 
+z
+" id="m51b524a83e" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m51b524a83e" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_314">
+    <defs>
+     <path d="M 318.561393 -196.043031 
+L 319.895843 -196.59013 
+L 319.969617 -205.184177 
+L 318.63174 -204.639735 
+z
+" id="m3829d14348" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3829d14348" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_315">
+    <defs>
+     <path d="M 311.648986 -196.247562 
+L 313.224193 -195.821233 
+L 313.280706 -204.419015 
+L 311.701393 -204.843273 
+z
+" id="ma0d45624b9" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#ma0d45624b9" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_316">
+    <defs>
+     <path d="M 316.879581 -195.713039 
+L 318.561393 -196.043031 
+L 318.63174 -204.639735 
+L 316.945584 -204.311346 
+z
+" id="m15e99328b4" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m15e99328b4" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_317">
+    <defs>
+     <path d="M 316.945584 -204.311346 
+L 318.63174 -204.639735 
+L 319.969617 -205.184177 
+L 320.814183 -205.885159 
+L 321.074614 -206.666301 
+L 320.723841 -207.442803 
+L 319.800995 -208.130699 
+L 318.406695 -208.655881 
+L 316.69189 -208.961943 
+L 314.841562 -209.016084 
+L 313.055036 -208.812505 
+L 311.524878 -208.373014 
+L 310.41646 -207.744765 
+L 309.85023 -206.995347 
+L 309.888519 -206.205669 
+L 310.528377 -205.461315 
+L 311.701393 -204.843273 
+L 313.280706 -204.419015 
+L 315.094654 -204.234981 
+L 316.945584 -204.311346 
+z
+" id="m4859e62c00" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m4859e62c00" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_318">
+    <defs>
+     <path d="M 313.224193 -195.821233 
+L 315.033436 -195.636302 
+L 315.094654 -204.234981 
+L 313.280706 -204.419015 
+z
+" id="m93b7d32e53" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m93b7d32e53" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_319">
+    <defs>
+     <path d="M 315.033436 -195.636302 
+L 316.879581 -195.713039 
+L 316.945584 -204.311346 
+L 315.094654 -204.234981 
+z
+" id="m6b605c02cc" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill:#333333;fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m6b605c02cc" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_320">
+    <defs>
+     <path d="M 269.946782 -203.366198 
+L 269.948643 -203.078665 
+L 358.374876 -213.16225 
+L 358.38062 -213.448125 
+z
+" id="md5d3207d3c" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#md5d3207d3c" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_321">
+    <defs>
+     <path d="M 269.948643 -203.078665 
+L 271.984598 -199.738689 
+L 360.647551 -209.880688 
+L 358.374876 -213.16225 
+z
+" id="m3eca4bbc92" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3eca4bbc92" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_322">
+    <defs>
+     <path d="M 269.946782 -203.366198 
+L 271.982908 -200.026767 
+L 271.984598 -199.738689 
+L 269.948643 -203.078665 
+z
+" id="m3cf333c0a7" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3cf333c0a7" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_323">
+    <defs>
+     <path d="M 269.946782 -203.366198 
+L 271.982908 -200.026767 
+L 360.653507 -210.167105 
+L 358.38062 -213.448125 
+z
+" id="mea6dd0eee8" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#mea6dd0eee8" y="465.12"/>
+    </g>
+   </g>
+   <g id="Poly3DCollection_324">
+    <defs>
+     <path d="M 271.982908 -200.026767 
+L 271.984598 -199.738689 
+L 360.647551 -209.880688 
+L 360.653507 -210.167105 
+z
+" id="m3404717106" style="stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;"/>
+    </defs>
+    <g clip-path="url(#paaee343def)">
+     <use style="fill-opacity:0.5;stroke:#000000;stroke-opacity:0.5;stroke-width:0.5;" x="0" xlink:href="#m3404717106" y="465.12"/>
+    </g>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="paaee343def">
+   <rect height="358.1424" width="431.892" x="69.66" y="55.8144"/>
+  </clipPath>
+ </defs>
+</svg>
