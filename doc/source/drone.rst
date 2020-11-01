@@ -221,19 +221,22 @@ problem. Without going into detail - geometrical relationships yield
 
 .. math::
 
-    \phi_{acc} &= \text{atan2}(-a_y, -a_z) \\
-    \theta_{acc} &= \text{atan2}(a_x, \sqrt{a_y^2 + a_z^2}) \\
-    \psi_{mag} &= \text{atan2}(-B_{fy}, B_{fx})
+    \phi_{acc} &= \text{atan2}(-a_{By}, -a_{Bz}) \\
+    \theta_{acc} &= \text{atan2}(a_{Bx}, \sqrt{a_{By}^2 + a_{Bz}^2}) \\
+    \psi_{mag} &= \text{atan2}(m_{Iy}, m_{Ix})
 
 where
 
 .. math::
 
-    B_{fx} &= m_x\cos(\theta) + m_y\sin(\phi)\sin(\theta) + m_z\sin(\theta)\cos(\phi) \\
-    B_{fy} &= m_y\cos(\phi) - m_z\sin(\phi)
+    m_{Ix} &= m_{Bx}\cos(\theta) + m_{By}\sin(\phi)\sin(\theta) + m_{Bz}\sin(\theta)\cos(\phi) \\
+    m_{Iy} &= m_{By}\cos(\phi) - m_{Bz}\sin(\phi)
 
-and :math:`a` is the acceleration and :math:`m` is the earths magnetic field supplied by the
-IMU. These estimates can be improved by using the gyro and a simple first order complementary
+and :math:`a_B` is the acceleration and :math:`m_B` is the earths magnetic field supplied by the
+IMU in the body frame. Where :math:`m_{Ix}` and :math:`m_{Iy}` are the magnetic fields in the
+inertial frame.
+
+These estimates can be improved by using the gyro and a simple first order complementary
 filter (see `IMU Data Fusing <http://www.olliw.eu/2013/imu-data-fusing/>`_)
 
 .. math::

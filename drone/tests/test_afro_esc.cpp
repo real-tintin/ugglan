@@ -4,7 +4,7 @@
 #include <i2c_conn_stub.h>
 #include <afro_esc.h>
 
-static const double ANG_RATE_TOL = 1.0;
+static const double ANG_RATE_TOL = 10.0;
 static const double FLOAT_TOL = 1e-1;
 static const uint16_t ONE_S_IN_MS = 6000;
 

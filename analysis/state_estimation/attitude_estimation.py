@@ -75,9 +75,9 @@ def _estimate_attitude(data: Signals) -> Attitude:
     theta = _complementary_filter(theta_acc, ang_rate_y, TAU_THETA)
 
     """ Estimate psi using magnetometer and cf"""
-    b_fx = mag_x * np.cos(theta) + mag_y * np.sin(phi) * np.sin(theta) + mag_z * np.sin(theta) * np.cos(phi)
-    b_fy = mag_y * np.cos(phi) - mag_z * np.sin(phi)
-    psi_mag = np.arctan2(-b_fy, b_fx)
+    m_x = mag_x * np.cos(theta) + mag_y * np.sin(phi) * np.sin(theta) + mag_z * np.sin(theta) * np.cos(phi)
+    m_y = mag_y * np.cos(phi) - mag_z * np.sin(phi)
+    psi_mag = np.arctan2(m_y, m_x)
 
     psi = _complementary_filter(psi_mag, ang_rate_z, TAU_PSI)
 
