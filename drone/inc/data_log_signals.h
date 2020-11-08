@@ -20,6 +20,7 @@ enum class DataLogGroup {
     Imu,
     Esc,
     Rc,
+    AttEst,
     Task
 };
 
@@ -86,6 +87,16 @@ enum class DataLogSignal {
     RcKnob,
     RcStatus,
 
+    AttEstRoll,
+    AttEstPitch,
+    AttEstYaw,
+
+    AttEstRollRate,
+    AttEstPitchRate,
+    AttEstYawRate,
+
+    AttEstIsCalib,
+
     TaskSetup,
     TaskExecute,
     TaskFinish
@@ -120,6 +131,7 @@ inline const DataLogGroupMap DATA_LOG_GROUP_MAP = {
     {DataLogGroup::Imu, {"Imu"}},
     {DataLogGroup::Esc, {"Esc"}},
     {DataLogGroup::Rc, {"Rc"}},
+    {DataLogGroup::AttEst, {"AttEst"}},
     {DataLogGroup::Task, {"Task"}}
     };
 
@@ -185,6 +197,16 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
 
     {DataLogSignal::RcKnob, {"Knob", DataLogGroup::Rc, DataLogType::DOUBLE}},
     {DataLogSignal::RcStatus, {"Status", DataLogGroup::Rc, DataLogType::UINT8}},
+
+    {DataLogSignal::AttEstRoll, {"Roll", DataLogGroup::AttEst, DataLogType::DOUBLE}},
+    {DataLogSignal::AttEstPitch, {"Pitch", DataLogGroup::AttEst, DataLogType::DOUBLE}},
+    {DataLogSignal::AttEstYaw, {"Yaw", DataLogGroup::AttEst, DataLogType::DOUBLE}},
+
+    {DataLogSignal::AttEstRollRate, {"RollRate", DataLogGroup::AttEst, DataLogType::DOUBLE}},
+    {DataLogSignal::AttEstPitchRate, {"PitchRate", DataLogGroup::AttEst, DataLogType::DOUBLE}},
+    {DataLogSignal::AttEstYawRate, {"YawRate", DataLogGroup::AttEst, DataLogType::DOUBLE}},
+
+    {DataLogSignal::AttEstIsCalib, {"IsCalib", DataLogGroup::AttEst, DataLogType::BOOL}},
 
     {DataLogSignal::TaskSetup, {"Setup", DataLogGroup::Task, DataLogType::UINT8}},
     {DataLogSignal::TaskExecute, {"Execute", DataLogGroup::Task, DataLogType::UINT8}},

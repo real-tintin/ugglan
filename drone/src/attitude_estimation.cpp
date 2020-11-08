@@ -1,7 +1,7 @@
 #include <attitude_estimation.h>
 
-AttitudeEstimation::AttitudeEstimation(double input_sample_rate_ms) :
-    _sample_rate_s(input_sample_rate_ms)
+AttitudeEstimation::AttitudeEstimation(double input_sample_rate_s) :
+    _sample_rate_s(input_sample_rate_s)
 {}
 
 void AttitudeEstimation::update(AttEstInput input)
@@ -18,7 +18,7 @@ void AttitudeEstimation::update(AttEstInput input)
     }
 }
 
-AttEstimates AttitudeEstimation::get_estimates()
+AttEstimate AttitudeEstimation::get_estimate()
 {
     return _est;
 }
@@ -32,7 +32,7 @@ void AttitudeEstimation::_update_roll()
 {
     double roll_acc = atan2(-_in.acc_y, -_in.acc_z);
 
-    _est.roll = _complementary_filter(_est.roll, roll_acc, _est.ang_rate_x, ATT_EST_TAU_ROLL);
+    _est.roll = _complementary_filter(_est.roll, roll_acc, _est.roll_rate, ATT_EST_TAU_ROLL);
     _est.roll = _modulo_angle(_est.roll, ATT_EST_MODULO_ROLL);
 }
 
@@ -40,7 +40,7 @@ void AttitudeEstimation::_update_pitch()
 {
     double pitch_acc = atan2(_in.acc_x, sqrt(pow(_in.acc_y, 2) + pow(_in.acc_z, 2)));
 
-    _est.pitch = _complementary_filter(_est.pitch, pitch_acc, _est.ang_rate_y, ATT_EST_TAU_ROLL);
+    _est.pitch = _complementary_filter(_est.pitch, pitch_acc, _est.pitch_rate, ATT_EST_TAU_PITCH);
     _est.pitch = _modulo_angle(_est.pitch, ATT_EST_MODULO_PITCH);
 }
 
@@ -53,7 +53,7 @@ void AttitudeEstimation::_update_yaw()
 
     double yaw_mag = atan2(m_y, m_x);
 
-    _est.yaw = _complementary_filter(_est.yaw, yaw_mag, _est.ang_rate_z, ATT_EST_TAU_YAW);
+    _est.yaw = _complementary_filter(_est.yaw, yaw_mag, _est.yaw_rate, ATT_EST_TAU_YAW);
     _est.yaw = _modulo_angle(_est.yaw, ATT_EST_MODULO_YAW);
 }
 
@@ -94,8 +94,8 @@ void AttitudeEstimation::_gyro_offset_comp()
 
     if (_is_gyro_offset_comp)
     {
-        _est.ang_rate_x = _in.ang_rate_x - _gyro_offset_x;
-        _est.ang_rate_y = _in.ang_rate_y - _gyro_offset_y;
-        _est.ang_rate_z = _in.ang_rate_z - _gyro_offset_z;
+        _est.roll_rate = _in.ang_rate_x - _gyro_offset_x;
+        _est.pitch_rate = _in.ang_rate_y - _gyro_offset_y;
+        _est.yaw_rate = _in.ang_rate_z - _gyro_offset_z;
     }
 }

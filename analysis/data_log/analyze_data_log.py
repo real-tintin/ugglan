@@ -128,6 +128,25 @@ def _plot_rc(data: Signals):
     _finish_subplots(fig)
 
 
+def _plot_state_est(data: Signals):
+    fig, axs = plt.subplots(2, 2)
+
+    axs[0, 0].plot(data.AttEst.Roll.t_s, data.AttEst.Roll.val, label=r'$\phi$')
+    axs[0, 0].plot(data.AttEst.Pitch.t_s, data.AttEst.Pitch.val, label=r'$\theta$')
+    axs[0, 0].plot(data.AttEst.Yaw.t_s, data.AttEst.Yaw.val, label=r'$\psi$')
+    axs[0, 0].set(ylabel='Attitude [rad]')
+
+    axs[0, 1].plot(data.AttEst.RollRate.t_s, data.AttEst.RollRate.val, label=r'$\dot{\phi}$')
+    axs[0, 1].plot(data.AttEst.PitchRate.t_s, data.AttEst.PitchRate.val, label=r'$\dot{\theta}$')
+    axs[0, 1].plot(data.AttEst.YawRate.t_s, data.AttEst.YawRate.val, label=r'$\dot{\psi}$')
+    axs[0, 1].set(ylabel='Attitude rate [rad/s]')
+
+    axs[1, 0].plot(data.AttEst.IsCalib.t_s, data.AttEst.IsCalib.val, label='AttIsCalibrated')
+    axs[1, 0].set(ylabel='Status [-]')
+
+    _finish_subplots(fig)
+
+
 def _plot_tasks(data: Signals):
     fig, axs = plt.subplots(3, 2)
 
@@ -147,7 +166,9 @@ def _plot_tasks(data: Signals):
 
     _plot_task_sample_rate(axs[1, 1], data.Task.Execute, TaskId.RcReceiver, 'RcReceiver')
 
-    _plot_task_sample_rate(axs[2, 0], data.Task.Execute, TaskId.DataLogger, 'DataLogger')
+    _plot_task_sample_rate(axs[2, 0], data.Task.Execute, TaskId.StateEstAndCtrl, 'StateEstAndCtrl')
+
+    _plot_task_sample_rate(axs[2, 1], data.Task.Execute, TaskId.DataLogger, 'DataLogger')
 
     _finish_subplots(fig)
 
@@ -162,6 +183,7 @@ def main():
     _plot_imu(data)
     _plot_esc(data)
     _plot_rc(data)
+    _plot_state_est(data)
     _plot_tasks(data)
 
     plt.show()

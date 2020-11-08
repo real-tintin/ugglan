@@ -26,30 +26,30 @@ struct AttEstInput {
     double mag_field_z; // [gauss]
 };
 
-struct AttEstimates {
+struct AttEstimate {
     double roll;       // [rad]
     double pitch;      // [rad]
     double yaw;        // [rad]
-    double ang_rate_x; // [rad/s]
-    double ang_rate_y; // [rad/s]
-    double ang_rate_z; // [rad/s]
+    double roll_rate;  // [rad/s]
+    double pitch_rate; // [rad/s]
+    double yaw_rate;   // [rad/s]
 };
 
 class AttitudeEstimation
 {
 public:
-    AttitudeEstimation(double input_sample_rate_ms);
+    AttitudeEstimation(double input_sample_rate_s);
 
     void update(AttEstInput input);
 
-    AttEstimates get_estimates();
+    AttEstimate get_estimate();
 
     bool is_calibrated();
 private:
     const double _sample_rate_s;
 
     AttEstInput _in = {0};
-    AttEstimates _est = {0};
+    AttEstimate _est = {0};
 
     double _gyro_offset_x = 0;
     double _gyro_offset_y = 0;

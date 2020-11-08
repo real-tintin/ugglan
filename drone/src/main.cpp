@@ -11,19 +11,21 @@
 #include <lps25h.h>
 #include <afro_esc.h>
 #include <tgyia6c.h>
+#include <attitude_estimation.h>
 
 #if !defined(UNIT_TEST)
 
 static const std::filesystem::path DATA_LOG_ROOT = get_env_str("DATA_LOG_ROOT");
 static const std::string LOGGER_LEVEL = get_env_str("LOGGER_LEVEL");
 
-static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 20; // 50 Hz
-static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 20; // 50 Hz
-static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS   = 100; // 10 Hz
-static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 200; // 5 Hz
-static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 20; // 50 Hz
-static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 20; // 50 Hz
-static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 10; // 100 Hz
+static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS            = 20;  // 50 Hz
+static const uint32_t TASK_GYRO_EXEC_PERIOD_MS               = 20;  // 50 Hz
+static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS          = 100; // 10 Hz
+static const uint32_t TASK_STATE_EST_AND_CTRL_EXEC_PERIOD_MS = 20;  // 50 Hz
+static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS           = 200; // 5 Hz
+static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS          = 20;  // 50 Hz
+static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS        = 20;  // 50 Hz
+static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS        = 10;  // 100 Hz
 
 static const uint8_t I2C_ADDRESS_ACC_MAG   = 0x1d;
 static const uint8_t I2C_ADDRESS_GYRO      = 0x6b;
@@ -43,6 +45,8 @@ static const std::string I2C_DEVICE_ESC = "/dev/i2c-4"; // Using SW in normal mo
 
 static const uint32_t MAIN_SLEEP_MS = 1000;
 
+static const double ATT_EST_INPUT_SAMPLE_RATE_S = 20 / 1e3; // Acc, Mag & Gyro run at 50 Hz
+
 enum class TaskId {
     AccMag,
     Gyro,
@@ -56,6 +60,7 @@ enum class TaskId {
     EscWrite2,
     EscWrite3,
     RcReceiver,
+    StateEstAndCtrl,
     DataLogger
 };
 
@@ -138,6 +143,61 @@ private:
     I2cConn _i2c_conn;
     Lps25h _barometer;
     DataLogQueue& _data_log_queue;
+};
+
+class TaskStateEstAndCtrl : public Task
+{
+public:
+    TaskStateEstAndCtrl(uint32_t exec_period_ms, std::string name,
+                        double att_est_input_sample_rate_s,
+                        DataLogQueue& data_log_queue) :
+                   Task(exec_period_ms, name),
+                        _att(att_est_input_sample_rate_s),
+                        _data_log_queue(data_log_queue) {}
+protected:
+    void _execute()
+    {
+        _exec_att_est();
+        // TODO: exec_motor_est()
+        // TODO: exec_att_ctrl()
+        // TODO: exec_motor_ctrl()
+
+        _data_log_queue.push(uint8_t(TaskId::StateEstAndCtrl), DataLogSignal::TaskExecute);
+    }
+private:
+    AttEstInput _att_in;
+    AttEstimate _att_est;
+
+    AttitudeEstimation _att;
+    DataLogQueue& _data_log_queue;
+
+    void _exec_att_est()
+    {
+        _data_log_queue.last_signal_data(&_att_in.acc_x, DataLogSignal::ImuAccelerationX);
+        _data_log_queue.last_signal_data(&_att_in.acc_y, DataLogSignal::ImuAccelerationY);
+        _data_log_queue.last_signal_data(&_att_in.acc_z, DataLogSignal::ImuAccelerationZ);
+
+        _data_log_queue.last_signal_data(&_att_in.ang_rate_x, DataLogSignal::ImuAngularRateX);
+        _data_log_queue.last_signal_data(&_att_in.ang_rate_y, DataLogSignal::ImuAngularRateY);
+        _data_log_queue.last_signal_data(&_att_in.ang_rate_z, DataLogSignal::ImuAngularRateZ);
+
+        _data_log_queue.last_signal_data(&_att_in.mag_field_x, DataLogSignal::ImuMagneticFieldX);
+        _data_log_queue.last_signal_data(&_att_in.mag_field_y, DataLogSignal::ImuMagneticFieldY);
+        _data_log_queue.last_signal_data(&_att_in.mag_field_z, DataLogSignal::ImuMagneticFieldZ);
+
+        _att.update(_att_in);
+        _att_est = _att.get_estimate();
+
+        _data_log_queue.push(_att_est.roll, DataLogSignal::AttEstRoll);
+        _data_log_queue.push(_att_est.pitch, DataLogSignal::AttEstPitch);
+        _data_log_queue.push(_att_est.yaw, DataLogSignal::AttEstYaw);
+
+        _data_log_queue.push(_att_est.roll_rate, DataLogSignal::AttEstRollRate);
+        _data_log_queue.push(_att_est.pitch_rate, DataLogSignal::AttEstPitchRate);
+        _data_log_queue.push(_att_est.yaw_rate, DataLogSignal::AttEstYawRate);
+
+        _data_log_queue.push(_att.is_calibrated(), DataLogSignal::AttEstIsCalib);
+    }
 };
 
 class TaskEscRead : public Task
@@ -373,6 +433,9 @@ int main()
 
     tasks.emplace_back(new TaskRcReceiver(TASK_RC_RECEIVER_EXEC_PERIOD_MS, "RcReceiver",
                                           SERIAL_DEVICE_RC_RECEIVER, data_log_queue));
+
+    tasks.emplace_back(new TaskStateEstAndCtrl(TASK_STATE_EST_AND_CTRL_EXEC_PERIOD_MS, "StateEstAndCtrl",
+                                               ATT_EST_INPUT_SAMPLE_RATE_S, data_log_queue));
 
     tasks.emplace_back(new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, "DataLogger",
                                           DATA_LOG_ROOT, data_log_queue));
