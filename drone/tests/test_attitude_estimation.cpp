@@ -89,8 +89,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("yaw: 45 deg")
     {
-        input.mag_field_x = 1.0;
-        input.mag_field_y = -1.0;
+        input.mag_field_x = 1.0 + ATT_EST_HARD_IRON_OFFSET_X;
+        input.mag_field_y = 1.0 + ATT_EST_HARD_IRON_OFFSET_Y;
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();
@@ -100,8 +100,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("yaw: +/-180 deg")
     {
-        input.mag_field_x = -1.0;
-        input.mag_field_y = 0.0;
+        input.mag_field_x = -1.0 + ATT_EST_HARD_IRON_OFFSET_X;
+        input.mag_field_y = 0.0 + ATT_EST_HARD_IRON_OFFSET_Y;
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();

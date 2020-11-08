@@ -14,6 +14,10 @@ inline const double ATT_EST_MODULO_ROLL = M_PI;
 inline const double ATT_EST_MODULO_PITCH = M_PI / 2;
 inline const double ATT_EST_MODULO_YAW = M_PI;
 
+inline const double ATT_EST_HARD_IRON_OFFSET_X = 0.131;
+inline const double ATT_EST_HARD_IRON_OFFSET_Y = 0.143;
+inline const double ATT_EST_HARD_IRON_OFFSET_Z = -0.144;
+
 struct AttEstInput {
     double acc_x;       // [m/s^2]
     double acc_y;       // [m/s^2]
@@ -59,6 +63,7 @@ private:
     uint8_t _samples_gyro_offset_comp = 0;
 
     void _gyro_offset_comp();
+    void _hard_iron_offset_comp();
 
     void _update_roll();
     void _update_pitch();

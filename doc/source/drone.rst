@@ -223,17 +223,17 @@ problem. Without going into detail - geometrical relationships yield
 
     \phi_{acc} &= \text{atan2}(-a_{By}, -a_{Bz}) \\
     \theta_{acc} &= \text{atan2}(a_{Bx}, \sqrt{a_{By}^2 + a_{Bz}^2}) \\
-    \psi_{mag} &= \text{atan2}(m_{Iy}, m_{Ix})
+    \psi_{mag} &= \text{atan2}(-B_{Iy}, B_{Ix})
 
 where
 
 .. math::
 
-    m_{Ix} &= m_{Bx}\cos(\theta) + m_{By}\sin(\phi)\sin(\theta) + m_{Bz}\sin(\theta)\cos(\phi) \\
-    m_{Iy} &= m_{By}\cos(\phi) - m_{Bz}\sin(\phi)
+    B_{Ix} &= B_{Bx}\cos(\theta) + B_{By}\sin(\phi)\sin(\theta) + B_{Bz}\sin(\theta)\cos(\phi) \\
+    B_{Iy} &= B_{By}\cos(\phi) - B_{Bz}\sin(\phi)
 
-and :math:`a_B` is the acceleration and :math:`m_B` is the earths magnetic field supplied by the
-IMU in the body frame. Where :math:`m_{Ix}` and :math:`m_{Iy}` are the magnetic fields in the
+and :math:`a_B` is the acceleration and :math:`B_B` is the earths magnetic field supplied by the
+IMU in the body frame. Where :math:`B_{Ix}` and :math:`B_{Iy}` are the magnetic fields in the
 inertial frame.
 
 These estimates can be improved by using the gyro and a simple first order complementary
@@ -254,7 +254,7 @@ where
 
 where :math:`\alpha = \tfrac{\tau}{\tau + \Delta t}` and :math:`\tau` is the cut-off frequency
 (:math:`\tau = \tfrac{1}{2 \pi f_c}`). Note that the estimates also need range limiting
-(module of angles) and offset compensation.
+(module of angles) and offset compensation (gyro and hard iron).
 
 In :numref:`attitude_estimation` the result of the attitude estimation is shown. Note the large
 drift of the gyro.
@@ -266,6 +266,27 @@ drift of the gyro.
     Attitude estimation of roll (:math:`\phi`), pitch (:math:`\theta`) and
     yaw (:math:`\psi`). Both unfiltered and complementary filter estimates.
     Here :math:`\tau_{\phi}=\tau_{\theta}=\tau_{\psi}` s.t. :math:`f_c=20` Hz.
+
+Hard Iron Offset
+^^^^^^^^^^^^^^^^^
+Magnetic fields affecting the magnetometer other than earth's need to be compensated
+for. One of those is hard iron (the other being soft iron) effects. These are static
+magnetic fields e.g., components on the PCB.
+
+These offsets can easily be estimated using least squares (offset of a sphere)
+
+.. math::
+
+    \underset{V}{\text{minimize}} (B-V)^T (B-V) = B^2.
+
+To get a good estimate, the magnetometer should be rotated in space to excite all
+directions, see :numref:`hard_iron_offset`.
+
+.. _hard_iron_offset:
+.. figure:: figures/hard_iron_offset.svg
+    :width: 100%
+
+    Hard iron offset estimation and correction.
 
 Motor Torque Estimation
 ------------------------

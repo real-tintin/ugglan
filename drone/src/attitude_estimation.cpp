@@ -9,6 +9,7 @@ void AttitudeEstimation::update(AttEstInput input)
     _in = input;
 
     _gyro_offset_comp();
+    _hard_iron_offset_comp();
 
     if (is_calibrated())
     {
@@ -46,12 +47,12 @@ void AttitudeEstimation::_update_pitch()
 
 void AttitudeEstimation::_update_yaw()
 {
-    double m_x = _in.mag_field_x * cos(_est.pitch) +
+    double b_x = _in.mag_field_x * cos(_est.pitch) +
                   _in.mag_field_y * sin(_est.roll) * sin(_est.pitch) +
                   _in.mag_field_z * sin(_est.pitch) * cos(_est.roll);
-    double m_y = _in.mag_field_y * cos(_est.roll) - _in.mag_field_z * sin(_est.roll);
+    double b_y = _in.mag_field_y * cos(_est.roll) - _in.mag_field_z * sin(_est.roll);
 
-    double yaw_mag = atan2(m_y, m_x);
+    double yaw_mag = atan2(-b_y, b_x);
 
     _est.yaw = _complementary_filter(_est.yaw, yaw_mag, _est.yaw_rate, ATT_EST_TAU_YAW);
     _est.yaw = _modulo_angle(_est.yaw, ATT_EST_MODULO_YAW);
@@ -98,4 +99,11 @@ void AttitudeEstimation::_gyro_offset_comp()
         _est.pitch_rate = _in.ang_rate_y - _gyro_offset_y;
         _est.yaw_rate = _in.ang_rate_z - _gyro_offset_z;
     }
+}
+
+void AttitudeEstimation::_hard_iron_offset_comp()
+{
+    _in.mag_field_x -= ATT_EST_HARD_IRON_OFFSET_X;
+    _in.mag_field_y -= ATT_EST_HARD_IRON_OFFSET_Y;
+    _in.mag_field_z -= ATT_EST_HARD_IRON_OFFSET_Z;
 }

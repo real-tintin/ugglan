@@ -23,6 +23,10 @@ TAU_PHI = 1 / (2 * np.pi * CUT_OFF_FREQ)
 TAU_THETA = 1 / (2 * np.pi * CUT_OFF_FREQ)
 TAU_PSI = 1 / (2 * np.pi * CUT_OFF_FREQ)
 
+HARD_IRON_OFFSET_X = 0.131
+HARD_IRON_OFFSET_Y = 0.143
+HARD_IRON_OFFSET_Z = -0.144
+
 
 @dataclass
 class Attitude:
@@ -53,9 +57,9 @@ def _estimate_attitude(data: Signals) -> Attitude:
     ang_rate_y = _sync_signal_in_time(data.Imu.AngularRateY, t_s)
     ang_rate_z = _sync_signal_in_time(data.Imu.AngularRateZ, t_s)
 
-    mag_x = _sync_signal_in_time(data.Imu.MagneticFieldX, t_s)
-    mag_y = _sync_signal_in_time(data.Imu.MagneticFieldY, t_s)
-    mag_z = _sync_signal_in_time(data.Imu.MagneticFieldZ, t_s)
+    mag_x = _sync_signal_in_time(data.Imu.MagneticFieldX, t_s) - HARD_IRON_OFFSET_X
+    mag_y = _sync_signal_in_time(data.Imu.MagneticFieldY, t_s) - HARD_IRON_OFFSET_Y
+    mag_z = _sync_signal_in_time(data.Imu.MagneticFieldZ, t_s) - HARD_IRON_OFFSET_Z
 
     """ Offset compensate angular rates (gyro) """
     ang_rate_x -= np.mean(ang_rate_x[0:N_SAMPLES_FOR_OFFSET_COMP])
@@ -75,9 +79,9 @@ def _estimate_attitude(data: Signals) -> Attitude:
     theta = _complementary_filter(theta_acc, ang_rate_y, TAU_THETA)
 
     """ Estimate psi using magnetometer and cf"""
-    m_x = mag_x * np.cos(theta) + mag_y * np.sin(phi) * np.sin(theta) + mag_z * np.sin(theta) * np.cos(phi)
-    m_y = mag_y * np.cos(phi) - mag_z * np.sin(phi)
-    psi_mag = np.arctan2(m_y, m_x)
+    b_x = mag_x * np.cos(theta) + mag_y * np.sin(phi) * np.sin(theta) + mag_z * np.sin(theta) * np.cos(phi)
+    b_y = mag_y * np.cos(phi) - mag_z * np.sin(phi)
+    psi_mag = np.arctan2(-b_y, b_x)
 
     psi = _complementary_filter(psi_mag, ang_rate_z, TAU_PSI)
 
