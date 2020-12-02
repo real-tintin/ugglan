@@ -204,7 +204,22 @@ Hence, a rather good weight distribution.
 
 Motor Dynamics
 ------------------
-TODO: Empirical Studies.
+The motor dynamics, :math:`u_{M_i}\rightarrow\omega_{M_iz}` are modelled as a simple first order
+LTL system (low-pass filter)
+
+.. math::
+
+    \Omega_{M_iz}(s) = \frac{1}{\tau s + 1}U_{M_i}(s)
+
+where :math:`\tau` is the time constant. The time constant can be estimated by analysing the
+systems step response. By assuming :math:`\omega_{M_i}(t_0) = \omega_0` and
+:math:`\omega_{M_i}(t_1) = \omega_1`, before and after the step response, one gets
+
+.. math::
+
+    \omega_{M_i}(t) = \omega_1 + (\omega_0 - \omega_1) e^{\frac{-t}{\tau}}.
+
+TODO: Estimation of time constant using an empirical study.
 
 State Estimation
 =================
