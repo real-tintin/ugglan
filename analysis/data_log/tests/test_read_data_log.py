@@ -1,6 +1,8 @@
 from pathlib import Path
 from typing import List, Union
 
+import numpy as np
+
 from read_data_log import read_data_log
 
 ROOT_PATH = Path(__file__).parent.absolute()
@@ -27,3 +29,10 @@ def test_read_data_log():
     assert len(data.ESC.Status0.val) == EXP_LEN_ESC_STATUS_0
     assert len(data.ESC.Status0.t_s) == EXP_LEN_ESC_STATUS_0
     assert all_equal_to(data.ESC.Status0.val, EXP_VAL_ESC_STATUS_0)
+
+
+def test_read_data_log_resample():
+    sample_rate = 0.01
+    data = read_data_log(DATA_LOG_PATH, resample_to_fixed_rate_s=sample_rate)
+
+    assert np.all(np.isclose(np.diff(data.IMU.AccelerationX.t_s), sample_rate))

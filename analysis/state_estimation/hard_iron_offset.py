@@ -7,7 +7,7 @@ import numpy as np
 from cycler import cycler
 from mpl_toolkits.mplot3d import Axes3D
 
-from read_data_log import read_data_log, Signals, Signal
+from read_data_log import read_data_log, Signals
 
 mpl.rcParams['axes.prop_cycle'] = cycler(color='bgrcmyk')
 mpl.rcParams['lines.linewidth'] = 0.5
@@ -18,12 +18,12 @@ TITLE_STR = r'Hard iron offset: $V_x$ = {:.3f}, $V_y$ = {:.3f}, $V_z$ = {:.3f}'
 
 
 def _hard_iron_offset(data: Signals):
-    """ Sync signals """
-    t_s = np.arange(0, data.Imu.AccelerationX.t_s[-1], IMU_SAMPLE_RATE_S)
+    """ Get signals """
+    t_s = np.array(data.Imu.MagneticFieldX.t_s)
 
-    mag_x = _sync_signal_in_time(data.Imu.MagneticFieldX, t_s)
-    mag_y = _sync_signal_in_time(data.Imu.MagneticFieldY, t_s)
-    mag_z = _sync_signal_in_time(data.Imu.MagneticFieldZ, t_s)
+    mag_x = np.array(data.Imu.MagneticFieldX.val)
+    mag_y = np.array(data.Imu.MagneticFieldY.val)
+    mag_z = np.array(data.Imu.MagneticFieldZ.val)
 
     """ Estimate offset using MLSE (Bp-V)'*(Bp-V) = B^2 """
     x = np.array([mag_x, mag_y, mag_z, np.ones(len(t_s))])
@@ -56,10 +56,6 @@ def _hard_iron_offset(data: Signals):
     ax.grid()
 
 
-def _sync_signal_in_time(s: Signal, t_s):
-    return np.interp(t_s, s.t_s, s.val)
-
-
 def _create_3d_fig() -> Axes3D:
     fig = plt.figure()
     ax = fig.gca(projection='3d')
@@ -82,7 +78,7 @@ def main():
     parser.add_argument('path', type=Path, help='Path to data log file')
     args = parser.parse_args()
 
-    data = read_data_log(args.path)
+    data = read_data_log(args.path, resample_to_fixed_rate_s=IMU_SAMPLE_RATE_S)
     _hard_iron_offset(data)
     plt.show()
 

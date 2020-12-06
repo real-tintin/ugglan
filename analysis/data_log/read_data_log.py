@@ -5,6 +5,7 @@ import struct
 from pathlib import Path
 from typing import Dict, Union, List
 
+import numpy as np
 from dataclasses import dataclass
 
 S_IN_MS = 0.001
@@ -26,13 +27,16 @@ class Signal:
     t_s: List[float]
 
 
-def read_data_log(path: Path) -> Signals:
+def read_data_log(path: Path, resample_to_fixed_rate_s=False) -> Signals:
     with open(path, mode='rb') as f:
         header_bytes = f.readline()
         packages_bytes = f.read()
 
     header = _unpack_header(header_bytes)
-    data = _unpack_packages(header, packages_bytes)
+    data, last_timestamp_s = _unpack_packages(header, packages_bytes)
+
+    if resample_to_fixed_rate_s:
+        _resample_to_fixed_rate(data, resample_to_fixed_rate_s, last_timestamp_s)
 
     return data
 
@@ -81,7 +85,7 @@ def _unpack_packages(header: Dict, packages: bytes) -> Signals:
         signal.val.append(value)
         signal.t_s.append(abs_timestamp_s)
 
-    return data
+    return data, abs_timestamp_s
 
 
 def _get_signal_id(packages, offset):
@@ -130,3 +134,13 @@ def _get_rel_timestamp_ms(packages, offset):
     offset += 1  # uint8
 
     return offset, rel_timestamp_ms
+
+
+def _resample_to_fixed_rate(data, sample_rate_s, last_timestamp_s):
+    t_s = np.arange(0, last_timestamp_s, sample_rate_s)
+
+    for group in data.__dict__:
+        for signal in getattr(data, group).__dict__:
+            s = getattr(getattr(data, group), signal)
+            s.val = list(np.interp(t_s, s.t_s, s.val))
+            s.t_s = list(t_s)

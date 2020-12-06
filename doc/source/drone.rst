@@ -212,22 +212,26 @@ LTL system (low-pass filter)
     \Omega_{M_iz}(s) = \frac{1}{\tau s + 1}U_{M_i}(s)
 
 where :math:`\tau` is the time constant. The time constant can be estimated by analyzing the
-systems step response. By assuming :math:`\omega_{M_i}(0) = \omega_0` and
-:math:`\omega_{M_i}(\infty) = \omega_1`, before and after the step response as settled, one gets
+systems step response. By assuming :math:`\omega_{M_i}(0) = u_0` and
+:math:`\omega_{M_i}(\infty) = u_\infty`, before and after the step response as settled, one gets
 
 .. math::
+    :label: motor_dynamics_eq
 
-    \omega_{M_i}(t) = \omega_1 + (\omega_0 - \omega_1) e^{\frac{-t}{\tau}}
+    \omega_{M_i}(t) = u_\infty + (u_0 - u_\infty) e^{\frac{-t}{\tau}}
 
 which can be re-written as
 
 .. math::
 
-    \ln(\omega_{M_i}(t) - \omega_1) = \ln(\omega_0 - \omega_1) - \tau^{-1} t.
+    \ln\left(\frac{u_\infty - u_0}{u_\infty - \omega_{M_i}(t)}\right) = \tau^{-1} t
 
-By then measuring :math:`\omega_{M_i}` and :math:`t` one can estimate :math:`\tau` by using least
-squares regression. Note, the time constant should be estimated separately for positive and negative
-steps.
+assuming :math:`u_\infty > u_0`. By then measuring :math:`\omega_{M_i}` and :math:`t` one can
+estimate :math:`\tau` by using least squares regression.
+
+Note, the time constant should be estimated separately for positive and negative steps. Also,
+the data points for the regression should be selected such that the problem is well conditioned
+i.e. :math:`\omega_{M_i} \lesssim u_\infty`.
 
 TODO: Estimation of time constant using an empirical study.
 

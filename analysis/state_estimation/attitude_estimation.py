@@ -8,7 +8,7 @@ import numpy as np
 from cycler import cycler
 from dataclasses import dataclass
 
-from read_data_log import read_data_log, Signals, Signal
+from read_data_log import read_data_log, Signals
 
 mpl.rcParams['axes.prop_cycle'] = cycler(color='bgrcmyk')
 mpl.rcParams['lines.linewidth'] = 0.5
@@ -46,20 +46,20 @@ class Attitude:
 
 
 def _estimate_attitude(data: Signals) -> Attitude:
-    """ Sync signals """
-    t_s = np.arange(0, data.Imu.AccelerationX.t_s[-1], IMU_SAMPLE_RATE_S)
+    """ Get signals """
+    t_s = np.array(data.Imu.AccelerationX.t_s)
 
-    acc_x = _sync_signal_in_time(data.Imu.AccelerationX, t_s)
-    acc_y = _sync_signal_in_time(data.Imu.AccelerationY, t_s)
-    acc_z = _sync_signal_in_time(data.Imu.AccelerationZ, t_s)
+    acc_x = np.array(data.Imu.AccelerationX.val)
+    acc_y = np.array(data.Imu.AccelerationY.val)
+    acc_z = np.array(data.Imu.AccelerationZ.val)
 
-    ang_rate_x = _sync_signal_in_time(data.Imu.AngularRateX, t_s)
-    ang_rate_y = _sync_signal_in_time(data.Imu.AngularRateY, t_s)
-    ang_rate_z = _sync_signal_in_time(data.Imu.AngularRateZ, t_s)
+    ang_rate_x = np.array(data.Imu.AngularRateX.val)
+    ang_rate_y = np.array(data.Imu.AngularRateY.val)
+    ang_rate_z = np.array(data.Imu.AngularRateZ.val)
 
-    mag_x = _sync_signal_in_time(data.Imu.MagneticFieldX, t_s) - HARD_IRON_OFFSET_X
-    mag_y = _sync_signal_in_time(data.Imu.MagneticFieldY, t_s) - HARD_IRON_OFFSET_Y
-    mag_z = _sync_signal_in_time(data.Imu.MagneticFieldZ, t_s) - HARD_IRON_OFFSET_Z
+    mag_x = np.array(data.Imu.MagneticFieldX.val) - HARD_IRON_OFFSET_X
+    mag_y = np.array(data.Imu.MagneticFieldY.val) - HARD_IRON_OFFSET_Y
+    mag_z = np.array(data.Imu.MagneticFieldZ.val) - HARD_IRON_OFFSET_Z
 
     """ Offset compensate angular rates (gyro) """
     ang_rate_x -= np.mean(ang_rate_x[0:N_SAMPLES_FOR_OFFSET_COMP])
@@ -95,10 +95,6 @@ def _estimate_attitude(data: Signals) -> Attitude:
                     theta_gyro=_modulo_theta(theta_gyro),
                     psi_gyro=_modulo_psi(psi_gyro),
                     t_s=t_s)
-
-
-def _sync_signal_in_time(s: Signal, t_s):
-    return np.interp(t_s, s.t_s, s.val)
 
 
 def _complementary_filter(u, up, tau):
@@ -151,7 +147,7 @@ def main():
     parser.add_argument('path', type=Path, help='Path to data log file')
     args = parser.parse_args()
 
-    data = read_data_log(args.path)
+    data = read_data_log(args.path, resample_to_fixed_rate_s=IMU_SAMPLE_RATE_S)
     att = _estimate_attitude(data)
     _plot_attitude(att)
 
