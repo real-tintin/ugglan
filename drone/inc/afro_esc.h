@@ -73,7 +73,7 @@ inline const uint8_t AFRO_STATUS_ERR_READ  = 0x10;
 inline const uint16_t AFRO_WAKE_UP_TIME_MS  = 50;
 inline const uint16_t AFRO_NUDGE_TIME_MS = 100;
 
-inline const double AFRO_MS_IN_MIN = 60000.0;
+inline const double AFRO_MS_IN_S = 1000.0;
 
 class AfroEsc
 {

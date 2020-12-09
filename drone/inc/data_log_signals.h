@@ -69,6 +69,11 @@ enum class DataLogSignal {
     EscTemperature2,
     EscTemperature3,
 
+    EscMotorCmd0,
+    EscMotorCmd1,
+    EscMotorCmd2,
+    EscMotorCmd3,
+
     EscStatus0,
     EscStatus1,
     EscStatus2,
@@ -179,6 +184,11 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::EscTemperature1, {"Temperature1", DataLogGroup::Esc, DataLogType::DOUBLE}},
     {DataLogSignal::EscTemperature2, {"Temperature2", DataLogGroup::Esc, DataLogType::DOUBLE}},
     {DataLogSignal::EscTemperature3, {"Temperature3", DataLogGroup::Esc, DataLogType::DOUBLE}},
+
+    {DataLogSignal::EscMotorCmd0, {"MotorCmd0", DataLogGroup::Esc, DataLogType::SINT16}},
+    {DataLogSignal::EscMotorCmd1, {"MotorCmd1", DataLogGroup::Esc, DataLogType::SINT16}},
+    {DataLogSignal::EscMotorCmd2, {"MotorCmd2", DataLogGroup::Esc, DataLogType::SINT16}},
+    {DataLogSignal::EscMotorCmd3, {"MotorCmd3", DataLogGroup::Esc, DataLogType::SINT16}},
 
     {DataLogSignal::EscStatus0, {"Status0", DataLogGroup::Esc, DataLogType::UINT8}},
     {DataLogSignal::EscStatus1, {"Status1", DataLogGroup::Esc, DataLogType::UINT8}},

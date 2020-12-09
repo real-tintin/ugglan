@@ -9,6 +9,11 @@ from read_data_log import read_data_log, Signals
 
 RC_SAMPLE_RATE_S = 0.02  # 50 Hz
 
+MOTOR_CMD_TO_ANG_RATE_SCALE = 1 / 57  # From the thrust estimation.
+MOTOR_CMD_TO_ANG_RATE_OFFSET = 9675 / 57  # From the thrust estimation.
+
+RPM_TO_RAD = 2 * np.pi / 60
+
 
 def find_step_indices(t_s: List, x: List,
                       min_step_size: float,
@@ -41,12 +46,13 @@ def time_const_from_steps(t: List, u: List, y: List,
                           min_step_length_s=1,
                           yr_lim_upper=0.9) -> (float, float):
     """
-    Estimates the (positive and negative ) time constant of
+    Estimates the positive and negative time constants of
     the systems Y(s) = G(s) * U(s) step response(s). Where
     G(s) = 1 / (tau * s + 1).
 
-    Use yr_lim_upper to set which upper lim is used for the
-    MLSE calculation e.g., 0.9 => 90 % of step the response.
+    Use yr_lim_upper to set a relative upper limit for the
+    inclusion of data in the MLSE calculation e.g.,
+    0.9 => y reached 90 % of step the response.
     """
     a_pos, b_pos, a_neg, b_neg = [], [], [], []
 
@@ -88,20 +94,35 @@ def time_const_from_steps(t: List, u: List, y: List,
     return pos_tau, neg_tau
 
 
+def _motor_cmd_to_ang_rate(motor_cmd):
+    ang_rate = []
+
+    for cmd in motor_cmd:
+        if cmd == 0:
+            ang_rate.append(0)
+        else:
+            ang_rate.append(MOTOR_CMD_TO_ANG_RATE_SCALE * cmd + MOTOR_CMD_TO_ANG_RATE_OFFSET)
+
+    return ang_rate
+
+
 def _plot_motor_dynamics(data: Signals, motor_i: int):
     """ Compute time constant """
     ang_rate = getattr(data.Esc, 'AngularRate' + str(motor_i))
-    req_ang_rate = data.Rc.GimbalLeftY
-    req_ang_rate.val = [v * np.max(ang_rate.val) for v in req_ang_rate.val]
+    motor_cmd = getattr(data.Esc, 'MotorCmd' + str(motor_i))
 
-    pos_tau, neg_tau = time_const_from_steps(ang_rate.t_s, req_ang_rate.val, ang_rate.val,
+    t_s = ang_rate.t_s
+    meas_ang_rate = ang_rate.val
+    req_ang_rate = _motor_cmd_to_ang_rate(motor_cmd.val)
+
+    pos_tau, neg_tau = time_const_from_steps(t_s, req_ang_rate, meas_ang_rate,
                                              min_step_size=1e3,
                                              min_step_length_s=3,
                                              )
 
     """ Plot """
-    plt.plot(ang_rate.t_s, ang_rate.val, label=r'$\omega_M$')
-    plt.plot(req_ang_rate.t_s, req_ang_rate.val, label=r'$u_M$')
+    plt.plot(t_s, meas_ang_rate, label=r'$\omega_{measured}$')
+    plt.plot(t_s, req_ang_rate, label=r'$\omega_{requested}$')
 
     plt.title(r'Step response motor {}: $\tau_+ = {}$, $\tau_- = {}$'.format(motor_i, pos_tau, neg_tau))
     plt.xlabel('Time [s]')

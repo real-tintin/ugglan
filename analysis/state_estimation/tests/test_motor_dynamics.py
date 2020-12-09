@@ -23,12 +23,12 @@ def test_time_const_from_steps():
     step_length_s = 3
     dt_s = 0.1
 
-    steps = [0, 1, -1, 20, 12, 0, 100]
+    steps = [0, 10, -10, 20, 15, 0, 10]
     min_step_size = 0.5
     min_step_length_s = step_length_s / 2
 
     noise_mu = 0
-    noise_sigma = 0.01
+    noise_sigma = 0.1
 
     u, y = [], []
     for i_step in range(0, len(steps) - 1):

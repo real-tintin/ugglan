@@ -75,7 +75,7 @@ def _plot_esc(data: Signals):
     fig, axs = plt.subplots(3, 2)
 
     _add_esc_features(axs[0, 0], data, 'AngularRate')
-    axs[0, 0].set(ylabel='Angular rate [rpm]')
+    axs[0, 0].set(ylabel='Angular rate [rad/s]')
 
     _add_esc_features(axs[0, 1], data, 'Voltage')
     axs[0, 1].set(ylabel='Voltage [V]')

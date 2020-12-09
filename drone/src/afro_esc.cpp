@@ -93,7 +93,7 @@ double AfroEsc::get_temperature()
     return steinhart;
 }
 
-// Returns angular rate [rpm]
+// Returns angular rate [rad/s]
 double AfroEsc::get_angular_rate()
 {
     int16_t raw_rev = (_buf_read[AFRO_READ_BUF_REV_H] << 8) | _buf_read[AFRO_READ_BUF_REV_L];
@@ -101,7 +101,7 @@ double AfroEsc::get_angular_rate()
 
     if (_rev_dt_ms > 0)
     {
-        angular_rate = (double(raw_rev) * AFRO_MS_IN_MIN) / (double(_rev_dt_ms) * double(AFRO_MOTOR_POLES));
+        angular_rate = (double(raw_rev) * AFRO_MS_IN_S * 2.0 * M_PI) / (double(_rev_dt_ms) * double(AFRO_MOTOR_POLES));
     }
 
     return angular_rate;

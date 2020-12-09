@@ -12,6 +12,7 @@
 #include <afro_esc.h>
 #include <tgyia6c.h>
 #include <attitude_estimation.h>
+#include <motor_control.h>
 
 #if !defined(UNIT_TEST)
 
@@ -158,9 +159,9 @@ protected:
     void _execute()
     {
         _exec_att_est();
-        // TODO: exec_motor_est()
-        // TODO: exec_att_ctrl()
-        // TODO: exec_motor_ctrl()
+        // TODO: exec_motor_est();
+        exec_att_ctrl();
+        exec_motor_ctrl();
 
         _data_log_queue.push(uint8_t(TaskId::StateEstAndCtrl), DataLogSignal::TaskExecute);
     }
@@ -170,6 +171,13 @@ private:
 
     AttitudeEstimation _att;
     DataLogQueue& _data_log_queue;
+
+    BodyControl _body_ctrl;
+    MotorControl _motor_ctrl;
+
+    static constexpr DataLogSignal _sid_motor_cmd[N_ESC] = {
+        DataLogSignal::EscMotorCmd0, DataLogSignal::EscMotorCmd1,
+        DataLogSignal::EscMotorCmd2, DataLogSignal::EscMotorCmd3};
 
     void _exec_att_est()
     {
@@ -197,6 +205,25 @@ private:
         _data_log_queue.push(_att_est.yaw_rate, DataLogSignal::AttEstYawRate);
 
         _data_log_queue.push(_att.is_calibrated(), DataLogSignal::AttEstIsCalib);
+    }
+
+    void exec_att_ctrl()
+    {
+        // TODO: Use attitude control to set _body_ctrl instead of using rc_gimbal_left_y.
+        double rc_gimbal_left_y;
+
+        _data_log_queue.last_signal_data(&rc_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
+        _body_ctrl.f_z = rc_gimbal_left_y * (-12.0); // [N]
+    }
+
+    void exec_motor_ctrl()
+    {
+        _motor_ctrl = body_to_motor_controls(_body_ctrl);
+
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            _data_log_queue.push(_motor_ctrl[i_esc], _sid_motor_cmd[i_esc]);
+        }
     }
 };
 
@@ -278,7 +305,10 @@ protected:
     {
         for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
         {
-            _esc[i_esc].write(_get_motor_cmd(i_esc)); // TODO: Should be given by the state controller.
+            int16_t motor_cmd;
+            _data_log_queue.last_signal_data(&motor_cmd, _sid_motor_cmd[i_esc]);
+
+            _esc[i_esc].write(motor_cmd);
             _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskExecute);
         }
     }
@@ -286,20 +316,12 @@ private:
     AfroEsc (&_esc)[N_ESC];
     DataLogQueue& _data_log_queue;
 
+    static constexpr DataLogSignal _sid_motor_cmd[N_ESC] = {
+        DataLogSignal::EscMotorCmd0, DataLogSignal::EscMotorCmd1,
+        DataLogSignal::EscMotorCmd2, DataLogSignal::EscMotorCmd3};
+
     static constexpr TaskId _task_write_ids[N_ESC] = {
         TaskId::EscWrite0, TaskId::EscWrite1, TaskId::EscWrite2, TaskId::EscWrite3};
-
-    int16_t _get_motor_cmd(uint8_t i_esc)
-    {
-        double rc_gimbal_left_y;
-        _data_log_queue.last_signal_data(&rc_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
-
-        int16_t motor_cmd = rc_gimbal_left_y * 20000;
-        if (motor_cmd > 20000) { motor_cmd = 20000; }
-        if (motor_cmd < 0) { motor_cmd = 0; }
-
-        return motor_cmd;
-    }
 };
 
 class TaskRcReceiver : public Task
