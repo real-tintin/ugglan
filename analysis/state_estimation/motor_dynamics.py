@@ -7,17 +7,15 @@ import numpy as np
 
 from read_data_log import read_data_log, Signals
 
-RC_SAMPLE_RATE_S = 0.02  # 50 Hz
+MIN_STEP_SIZE_RADPS = 50
+MIN_STEP_LEN_S = 3
 
-MOTOR_CMD_TO_ANG_RATE_SCALE = 1 / 57  # From the thrust estimation.
-MOTOR_CMD_TO_ANG_RATE_OFFSET = 9675 / 57  # From the thrust estimation.
-
-RPM_TO_RAD = 2 * np.pi / 60
+YR_LIM_UPPER_MLSE = 0.8
 
 
-def find_step_indices(t_s: List, x: List,
-                      min_step_size: float,
-                      min_step_length_s: float) -> List[Tuple[int, int]]:
+def _find_step_indices(t_s: np.array, x: np.array,
+                       min_step_size: float,
+                       min_step_length_s: float) -> List[Tuple[int, int]]:
     indices = []
     start = None
 
@@ -41,94 +39,90 @@ def find_step_indices(t_s: List, x: List,
     return indices
 
 
-def time_const_from_steps(t: List, u: List, y: List,
-                          min_step_size=100,
-                          min_step_length_s=1,
-                          yr_lim_upper=0.9) -> (float, float):
-    """
-    Estimates the positive and negative time constants of
-    the systems Y(s) = G(s) * U(s) step response(s). Where
-    G(s) = 1 / (tau * s + 1).
+def _compute_tau_using_mlse(u_0, u_1, t, y):
+    tau = None
 
-    Use yr_lim_upper to set a relative upper limit for the
-    inclusion of data in the MLSE calculation e.g.,
-    0.9 => y reached 90 % of step the response.
-    """
-    a_pos, b_pos, a_neg, b_neg = [], [], [], []
+    yr = (np.array(y) - u_0) / (u_1 - u_0)
+    yr_valid = np.argwhere(yr < YR_LIM_UPPER_MLSE)
 
-    for start, end in find_step_indices(t, u, min_step_size, min_step_length_s):
+    if yr_valid.size is not 0:
+        end = yr_valid[-1][0]
 
-        yr = (np.array(y[start:end]) - u[start]) / (u[end] - u[start])
-        end_lim = start + np.argwhere(yr < yr_lim_upper)[-1][0]
+        a = np.array(t[:end]) - t[0]
+        b = np.array(np.log((u_1 - u_0) / (u_1 - y[:end])))
 
-        a_step = np.array(t[start:end_lim]) - t[start]
-        b_step = np.array(np.log((u[end_lim] - u[start]) / (u[end_lim] - y[start:end_lim])))
+        valid_idx = np.isfinite(a) & np.isfinite(b)
 
-        if (u[end] - u[start]) > 0:
-            a_pos += a_step.tolist()
-            b_pos += b_step.tolist()
-        else:
-            a_neg += a_step.tolist()
-            b_neg += b_step.tolist()
+        if len(valid_idx) > 0:
+            res = np.linalg.lstsq(np.array([a[valid_idx]]).T, np.array([b[valid_idx]]).T, rcond=None)
+            tau = 1 / float(res[0])
 
-    a_pos = np.array([a_pos]).T
-    b_pos = np.array([b_pos]).T
-    a_neg = np.array([a_neg]).T
-    b_neg = np.array([b_neg]).T
-
-    use_pos = np.isfinite(a_pos) & np.isfinite(b_pos)
-    use_neg = np.isfinite(a_neg) & np.isfinite(b_neg)
-
-    if len(a_pos) > 0:
-        mlse_pos = np.linalg.lstsq(a_pos[use_pos[:, 0], :], b_pos[use_pos[:, 0], :])
-        pos_tau = 1 / float(mlse_pos[0])
-    else:
-        pos_tau = None
-
-    if len(a_neg) > 0:
-        mlse_neg = np.linalg.lstsq(a_neg[use_neg[:, 0], :], b_neg[use_neg[:, 0], :])
-        neg_tau = 1 / float(mlse_neg[0])
-    else:
-        neg_tau = None
-
-    return pos_tau, neg_tau
+    return tau
 
 
-def _motor_cmd_to_ang_rate(motor_cmd):
-    ang_rate = []
-
-    for cmd in motor_cmd:
-        if cmd == 0:
-            ang_rate.append(0)
-        else:
-            ang_rate.append(MOTOR_CMD_TO_ANG_RATE_SCALE * cmd + MOTOR_CMD_TO_ANG_RATE_OFFSET)
-
-    return ang_rate
-
-
-def _plot_motor_dynamics(data: Signals, motor_i: int):
-    """ Compute time constant """
+def _extract_signals(data, motor_i):
     ang_rate = getattr(data.Esc, 'AngularRate' + str(motor_i))
     motor_cmd = getattr(data.Esc, 'MotorCmd' + str(motor_i))
 
-    t_s = ang_rate.t_s
-    meas_ang_rate = ang_rate.val
-    req_ang_rate = _motor_cmd_to_ang_rate(motor_cmd.val)
+    ang_rate = np.interp(motor_cmd.t_s, ang_rate.t_s, ang_rate.val)
 
-    pos_tau, neg_tau = time_const_from_steps(t_s, req_ang_rate, meas_ang_rate,
-                                             min_step_size=1e3,
-                                             min_step_length_s=3,
-                                             )
+    return motor_cmd.t_s, motor_cmd.val, ang_rate
 
-    """ Plot """
-    plt.plot(t_s, meas_ang_rate, label=r'$\omega_{measured}$')
-    plt.plot(t_s, req_ang_rate, label=r'$\omega_{requested}$')
 
-    plt.title(r'Step response motor {}: $\tau_+ = {}$, $\tau_- = {}$'.format(motor_i, pos_tau, neg_tau))
-    plt.xlabel('Time [s]')
-    plt.ylabel('Angular-rate [rpm]')
-    plt.legend(loc='upper right')
-    plt.grid()
+def _est_y(t, u_0, u_1, tau):
+    dt = np.array(t) - t[0]
+    y = u_1 + (u_0 - u_1) * np.exp(-dt / tau)
+
+    return y
+
+
+def _plot_motor_dynamics(data: Signals, motor_i: int):
+    """
+    Plots the motor dynamics i.e., step response(s)
+    for a given motor_i.
+
+    Estimates the time constant of the systems
+    Y(s) = G(s) * U(s), where
+
+                G(s) = 1 / (tau * s + 1)
+
+    for each step response by using MLSE.
+    """
+    u_0 = None
+    fig, ax = plt.subplots()
+    t, u_cmd, y = _extract_signals(data, motor_i)
+
+    for start, end in _find_step_indices(t, u_cmd,
+                                         min_step_size=MIN_STEP_SIZE_RADPS,
+                                         min_step_length_s=MIN_STEP_LEN_S):
+        # Estimate u from y (instead of using u
+        # directly due to potential discrepancies).
+        if u_0 is None:
+            u_0 = np.median(y[:(start + 1)])
+            u_1 = np.median(y[(start + 1):end])
+        else:
+            u_0 = u_1
+            u_1 = np.median(y[(start + 1):end])
+
+        tau = _compute_tau_using_mlse(u_0, u_1, t[start:end], y[start:end])
+
+        t_step = t[start:end]
+        u_step = [u_0] + (u_1 * np.ones((end - start - 1))).tolist()
+        y_step = y[start:end]
+        y_est_step = _est_y(t_step, u_0, u_1, tau)
+
+        ax.plot(t_step, y_step, color='C0')
+        ax.plot(t_step, y_est_step, color='C1')
+        ax.plot(t_step, u_step, color='C3')
+
+        ax.text(t_step[len(t_step) // 2], u_step[-1] + 25,
+                r'$\tau = {:.2f}$'.format(tau), horizontalalignment='center')
+
+    ax.set_title(r'Step response motor: {}'.format(motor_i))
+    ax.set_xlabel('Time [s]')
+    ax.set_ylabel('Angular-rate [rad/s]')
+    ax.legend((r'$\omega_M$', r'$\widetilde{\omega}_M$', r'$\omega_{M_r}$'))
+    ax.grid()
 
 
 def main():
@@ -137,7 +131,7 @@ def main():
     parser.add_argument('--motor_i', type=int, help='Select which motor (0,1,2,3)', default=0)
     args = parser.parse_args()
 
-    data = read_data_log(args.path, resample_to_fixed_rate_s=0.02)
+    data = read_data_log(args.path)
     _plot_motor_dynamics(data, args.motor_i)
     plt.show()
 

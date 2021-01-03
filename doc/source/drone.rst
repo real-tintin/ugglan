@@ -62,7 +62,7 @@ the consumers, see :numref:`drone_sw_design`.
 As one can see, the ``DataLogQueue`` maintains a thread safe queue for the producers to
 push to and the ``DataLogger`` to pop from. But it also stores the last (pushed) sample
 for consumers to use e.g., the ``StateControl`` which runs at a constant execution/sample
-rate i.e. to simplify the signal processing. Note, other tasks than producers may populate
+rate i.e., to simplify the signal processing. Note, other tasks than producers may populate
 the queue e.g., estimated states which are useful for offline tuning of control laws.
 
 Note, some signals such as the ones from the pressure sensor will only be sampled
@@ -198,7 +198,7 @@ This results in the following inertia estimates
         0 & 0 & 0.026
     \end{bmatrix} \text{kgm}^2
 
-and :math:`m_{est}=1.038` kg. For comparison, the measured weight is :math:`m_{meas}=1058` kg.
+and :math:`m_{est}=1.038` kg. For comparison, the measured weight is :math:`m_{meas}=1.058` kg.
 Also its center of mass w.r.t the top frame is located at :math:`CM_{est}=[0, -0.001, -0.006]` m.
 Hence, a rather good weight distribution.
 
@@ -227,13 +227,28 @@ which can be re-written as
     \ln\left(\frac{u_\infty - u_0}{u_\infty - \omega_{M_i}(t)}\right) = \tau^{-1} t
 
 assuming :math:`u_\infty > u_0`. By then measuring :math:`\omega_{M_i}` and :math:`t` one can
-estimate :math:`\tau` by using least squares regression.
+estimate :math:`\tau` by using least squares regression. Note the data points for the regression
+should be selected such that the problem is well conditioned i.e.,
+:math:`\omega_{M_i} \lesssim u_\infty`.
 
-Note, the time constant should be estimated separately for positive and negative steps. Also,
-the data points for the regression should be selected such that the problem is well conditioned
-i.e. :math:`\omega_{M_i} \lesssim u_\infty`.
+In :numref:`tau_motor_dynamics` the time constant is estimated. One can see that it does vary
+and decrease with an increasing :math:`u_0`, introducing a non-linearity. Moreover,
+:math:`\tau` varies for positive and negative steps.
 
-TODO: Estimation of time constant using an empirical study.
+The seen effects have to be neglected to keep linearity. Therefore, the resulting time constant
+is given by the mean of the steps responses where :math:`\omega_M \in [400, 800]` i.e., within
+normal operating conditions. This gives :math:`\tau = 0.15` (not including outliers).
+
+.. _tau_motor_dynamics:
+.. figure:: figures/tau_motor_dynamics.svg
+    :width: 100%
+
+    Positive and negative motor step responses (with mounted propeller). The time constant
+    is estimated for each step using MLSE.
+
+A further note. The approximation of using a first order low pass filter is fine. But from the
+figure it becomes clear that better approximations of higher order exist. An improvement would
+be to empirical derive (by system identification) such a system.
 
 State Estimation
 =================

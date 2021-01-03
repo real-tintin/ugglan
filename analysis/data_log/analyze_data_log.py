@@ -86,11 +86,12 @@ def _plot_esc(data: Signals):
     _add_esc_features(axs[1, 1], data, 'Temperature')
     axs[1, 1].set(ylabel='Temperature [C]')
 
-    _add_esc_features(axs[2, 0], data, 'IsAlive')
-    axs[2, 0].set(ylabel='IsAlive [-]')
+    _add_esc_features(axs[2, 0], data, 'MotorCmd')
+    axs[2, 0].set(ylabel='MotorCmd [-]')
 
+    _add_esc_features(axs[2, 1], data, 'IsAlive')
     _add_esc_features(axs[2, 1], data, 'Status')
-    axs[2, 1].set(ylabel='Status [-]')
+    axs[2, 1].set(ylabel='Flags [-]')
 
     _finish_subplots(fig)
 
