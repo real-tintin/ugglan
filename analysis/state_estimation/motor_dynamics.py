@@ -10,7 +10,8 @@ from read_data_log import read_data_log, Signals
 MIN_STEP_SIZE_RADPS = 50
 MIN_STEP_LEN_S = 3
 
-YR_LIM_UPPER_MLSE = 0.8
+YR_LIM_UPPER_MLSE = 0.95
+YR_LIM_LOWER_MLSE = 0.15
 
 
 def _find_step_indices(t_s: np.array, x: np.array,
@@ -39,23 +40,25 @@ def _find_step_indices(t_s: np.array, x: np.array,
     return indices
 
 
-def _compute_tau_using_mlse(u_0, u_1, t, y):
+def _compute_tau_using_mlse(u_0: float, u_1: float, t: np.array, y: np.array):
     tau = None
 
-    yr = (np.array(y) - u_0) / (u_1 - u_0)
-    yr_valid = np.argwhere(yr < YR_LIM_UPPER_MLSE)
+    yr = (y - u_0) / (u_1 - u_0)
+    mlse_ind = np.arange(np.argwhere(yr >= YR_LIM_LOWER_MLSE)[0][0],
+                         np.argwhere(yr >= YR_LIM_UPPER_MLSE)[0][0])
 
-    if yr_valid.size is not 0:
-        end = yr_valid[-1][0]
+    if mlse_ind.size is not 0:
+        t_mlse = t[mlse_ind]
+        y_mlse = y[mlse_ind]
 
-        a = np.array(t[:end]) - t[0]
-        b = np.array(np.log((u_1 - u_0) / (u_1 - y[:end])))
+        a = np.array(t_mlse) - t[0]
+        b = np.array(np.log((u_1 - u_0) / (u_1 - y_mlse)))
 
-        valid_idx = np.isfinite(a) & np.isfinite(b)
+        valid_ind = np.isfinite(a) & np.isfinite(b)
 
-        if len(valid_idx) > 0:
-            res = np.linalg.lstsq(np.array([a[valid_idx]]).T, np.array([b[valid_idx]]).T, rcond=None)
-            tau = 1 / float(res[0])
+        if len(valid_ind) > 0:
+            res = np.linalg.lstsq(np.array([a[valid_ind]]).T, np.array([b[valid_ind]]).T, rcond=None)
+        tau = 1 / float(res[0])
 
     return tau
 
@@ -92,6 +95,8 @@ def _plot_motor_dynamics(data: Signals, motor_i: int):
     fig, ax = plt.subplots()
     t, u_cmd, y = _extract_signals(data, motor_i)
 
+    # debug_i = np.argwhere((yr >= YR_LIM_LOWER_MLSE) & (yr <= YR_LIM_UPPER_MLSE))
+
     for start, end in _find_step_indices(t, u_cmd,
                                          min_step_size=MIN_STEP_SIZE_RADPS,
                                          min_step_length_s=MIN_STEP_LEN_S):
@@ -104,7 +109,7 @@ def _plot_motor_dynamics(data: Signals, motor_i: int):
             u_0 = u_1
             u_1 = np.median(y[(start + 1):end])
 
-        tau = _compute_tau_using_mlse(u_0, u_1, t[start:end], y[start:end])
+        tau = _compute_tau_using_mlse(u_0, u_1, np.array(t[start:end]), np.array(y[start:end]))
 
         t_step = t[start:end]
         u_step = [u_0] + (u_1 * np.ones((end - start - 1))).tolist()

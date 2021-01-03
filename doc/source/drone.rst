@@ -237,7 +237,7 @@ and decrease with an increasing :math:`u_0`, introducing a non-linearity. Moreov
 
 The seen effects have to be neglected to keep linearity. Therefore, the resulting time constant
 is given by the mean of the steps responses where :math:`\omega_M \in [400, 800]` i.e., within
-normal operating conditions. This gives :math:`\tau = 0.15` (not including outliers).
+normal operating conditions. This gives :math:`\tau = 0.08`.
 
 .. _tau_motor_dynamics:
 .. figure:: figures/tau_motor_dynamics.svg
@@ -246,9 +246,9 @@ normal operating conditions. This gives :math:`\tau = 0.15` (not including outli
     Positive and negative motor step responses (with mounted propeller). The time constant
     is estimated for each step using MLSE.
 
-A further note. The approximation of using a first order low pass filter is fine. But from the
+On a further note. The approximation of using a first order low pass filter is fine. But from the
 figure it becomes clear that better approximations of higher order exist. An improvement would
-be to empirical derive (by system identification) such a system.
+be to empirical derive such a system - by using system identification.
 
 State Estimation
 =================
