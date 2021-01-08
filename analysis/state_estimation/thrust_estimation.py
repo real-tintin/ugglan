@@ -17,8 +17,8 @@ UNITS = {
 }
 
 MATH_SYMBOLS = {
-    'command': 'u', 'ang_rate': '\\omega', 'thrust': 'f',
-    'command_sq': 'u^2', 'ang_rate_sq': '\\omega^2', 'thrust_sq': 'f^2'
+    'command': 'u', 'ang_rate': '\\omega', 'thrust': 'F',
+    'command_sq': 'u^2', 'ang_rate_sq': '\\omega^2', 'thrust_sq': 'F^2'
 }
 
 LABEL_STRING = '${}$ [{}]'

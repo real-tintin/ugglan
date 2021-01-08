@@ -5,7 +5,9 @@ quadcopter, using the Raspberry Pi Zero.
 
 Some in-depth parts of the Modeling, State Estimation and Control
 are not covered in this document, for details see the arthur's master thesis
-`Design, Modeling and Control of an Octocopter <http://www.diva-portal.org/smash/get/diva2:857660/FULLTEXT01.pdf>`_.
+`Design-Modeling-and-Control-of-an-Octocopter`_.
+
+.. _Design-Modeling-and-Control-of-an-Octocopter: http://www.diva-portal.org/smash/get/diva2:857660/FULLTEXT01.pdf
 
 Software
 =================
@@ -183,6 +185,12 @@ Nomenclature
 
 :math:`_{B}` Body reference frame
 
+:math:`\tau` Time-constant
+
+:math:`M` Torque
+
+:math:`F` Force
+
 Inertia
 ------------------
 Using multi body analysis of the drone and its components, the total drone
@@ -209,35 +217,34 @@ LTL system (low-pass filter)
 
 .. math::
 
-    \Omega_{M_iz}(s) = \frac{1}{\tau s + 1}U_{M_i}(s)
+    \Omega_{M_iz}(s) = \frac{1}{\tau_M s + 1}U_{M_i}(s)
 
-where :math:`\tau` is the time constant. The time constant can be estimated by analyzing the
-systems step response. By assuming :math:`\omega_{M_i}(0) = u_0` and
+where :math:`\tau_M` is the motor time constant. The time constant can be estimated by analyzing
+the systems step response. By assuming :math:`\omega_{M_i}(0) = u_0` and
 :math:`\omega_{M_i}(\infty) = u_\infty`, before and after the step response as settled, one gets
 
 .. math::
-    :label: motor_dynamics_eq
 
-    \omega_{M_i}(t) = u_\infty + (u_0 - u_\infty) e^{\frac{-t}{\tau}}
+    \omega_{M_i}(t) = u_\infty + (u_0 - u_\infty) e^{\frac{-t}{\tau_M}}
 
 which can be re-written as
 
 .. math::
 
-    \ln\left(\frac{u_\infty - u_0}{u_\infty - \omega_{M_i}(t)}\right) = \tau^{-1} t
+    \ln\left(\frac{u_\infty - u_0}{u_\infty - \omega_{M_i}(t)}\right) = \tau_M^{-1} t
 
 assuming :math:`u_\infty > u_0`. By then measuring :math:`\omega_{M_i}` and :math:`t` one can
-estimate :math:`\tau` by using least squares regression. Note the data points for the regression
+estimate :math:`\tau_M` by using least squares regression. Note the data points for the regression
 should be selected such that the problem is well conditioned i.e.,
 :math:`\omega_{M_i} \lesssim u_\infty`.
 
 In :numref:`tau_motor_dynamics` the time constant is estimated. One can see that it does vary
 and decrease with an increasing :math:`u_0`, introducing a non-linearity. Moreover,
-:math:`\tau` varies for positive and negative steps.
+:math:`\tau_M` varies for positive and negative steps.
 
 The seen effects have to be neglected to keep linearity. Therefore, the resulting time constant
 is given by the mean of the steps responses where :math:`\omega_M \in [400, 800]` i.e., within
-normal operating conditions. This gives :math:`\tau = 0.08`.
+normal operating conditions. This gives :math:`\tau_M = 0.08`.
 
 .. _tau_motor_dynamics:
 .. figure:: figures/tau_motor_dynamics.svg
@@ -249,6 +256,58 @@ normal operating conditions. This gives :math:`\tau = 0.08`.
 On a further note. The approximation of using a first order low pass filter is fine. But from the
 figure it becomes clear that better approximations of higher order exist. An improvement would
 be to empirical derive such a system - by using system identification.
+
+Linearized State Space
+-----------------------
+The same linearized (SIMO) state-space representation as derived in
+`Design-Modeling-and-Control-of-an-Octocopter`_ (Section 3.7) is used i.e.,
+
+.. math::
+
+    \mathbf{\dot{x}_i} &= \mathbf{A_i x_i} + \mathbf{B_i} u_i \\
+    \mathbf{y_i} &= \mathbf{C_i x_i} + \mathbf{D_i} u_i, i = 1,2,...,6
+
+where :math:`\mathbf{x_i}\in\mathbb{R}^3`, :math:`\mathbf{y_i}\in\mathbb{R}^2` and
+
+.. math::
+    :label: state_space_matrices
+
+    \mathbf{A_i}=
+    \begin{bmatrix}
+        0 & 1 & 0 \\
+        0 & 0 & c_i \\
+        0 & 0 & -\tfrac{1}{\tau_M}
+    \end{bmatrix},
+    \mathbf{B_i}=
+    \begin{bmatrix}
+        0 \\
+        0 \\
+        \tfrac{1}{\tau_M}
+    \end{bmatrix},
+    \mathbf{C_i}=
+    \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & 1 & 0
+    \end{bmatrix},
+    \mathbf{D_i}= 0.
+
+Here :math:`\mathbf{c} = [\tfrac{1}{m}, \tfrac{1}{m}, \tfrac{1}{m}, \tfrac{1}{I_{xx}},
+\tfrac{1}{I_{yy}}, \tfrac{1}{I_{zz}}]`. For instance :math:`i = 4` corresponds to the
+state-space representation in roll
+
+.. math::
+
+    \mathbf{x_4}=
+    \begin{bmatrix}
+        \phi \\
+        \dot\phi \\
+        M_{\phi}
+    \end{bmatrix},
+    u_4=u_\phi,
+    c_4=\tfrac{1}{I_{xx}}.
+
+Note that the final state e.g., :math:`M_{\phi}` is observed using a reduced observer,
+see :ref:`force-torque-estimation`.
 
 State Estimation
 =================
@@ -332,17 +391,63 @@ directions, see :numref:`hard_iron_offset`.
 
     Hard iron offset estimation and correction.
 
-Motor Torque Estimation
-------------------------
-TODO: Reduced observer. Summary of master thesis work.
+.. _force-torque-estimation:
+
+Force and Torque Estimation
+----------------------------
+The final state of :eq:`state_space_matrices` (force/torque), here denoted
+:math:`\tilde{x}` is not measured. It is instead estimated using a reduced
+observer, see `Design-Modeling-and-Control-of-an-Octocopter`_ Section (4.2.3)
+for details.
+
+A first order backwards time-difference of the observer gives
+
+.. math::
+
+    z^k &= \frac{(u^k - \alpha(1 + \alpha \tau_M c x_v^k))\Delta t - z^{k-1} \tau_M}
+    {\tau_M + \Delta t(1 + \alpha \tau_M c)}, z_0 = \tfrac{u_0}{2} - \alpha x_{v0} \\
+    \tilde{x}^k &= z^k + \alpha x_v^k
+
+where :math:`x_v` is the (translational/rotational) velocity state of each
+state-space, :math:`\alpha` a tuning parameter. Note that
+:math:`\text{Re}(\alpha) > -\tfrac{1}{\tau_M c_i}` for stability.
 
 Control
 =================
-TODO: Summary of master thesis work. With flow chart.
 
 State Control
 -----------------
-TODO: Summary of master thesis work.
+The drone's dynamics are stabilized using a full state feedback controller
+
+.. math::
+
+    u = -\mathbf{Lx}.
+
+Which allows for arbitrary pole placement, see `Design-Modeling-and-Control-of-an-Octocopter`_
+for in depth details.
+
+Pilot Control
+^^^^^^^^^^^^^^^
+Typically, the pilot controller (using the handheld controller), seeks for stability
+of roll, pitch and yaw-rate.
+
+To tune :math:`\mathbf{L}` and :math:`\alpha` (reduced observer), the step response of
+the closed loop is analyzed, see :numref:`tune_ctrl_roll_pitch`-:numref:`tune_ctrl_yaw_rate`.
+
+Note, an integrated state has been added for roll and pitch control (already in place
+for yaw-rate) i.e., :math:`\mathbf{x}\in\mathbb{R}^4`.
+
+.. _tune_ctrl_roll_pitch:
+.. figure:: figures/tune_ctrl_roll_pitch.svg
+    :width: 100%
+
+    Tuning and parameter selection for roll and pitch control.
+
+.. _tune_ctrl_yaw_rate:
+.. figure:: figures/tune_ctrl_yaw_rate.svg
+    :width: 100%
+
+    Tuning and parameter selection for yaw-rate control.
 
 Motor Control
 ------------------
@@ -361,18 +466,18 @@ torques generated by the motors
 
 .. math::
 
-    f_{Bx} &= 0 \\
-    f_{By} &= 0 \\
-    f_{Bz} &= - f_{M_1z} - f_{M_2} - f_{M_3} - f_{M_4z} \\
-    m_{Bx} &= - l_xf_{M_1z} - l_xf_{M_2z} + l_xf_{M_3z} + l_xf_{M_4z} \\
-    m_{By} &=   l_xf_{M_1z} - l_xf_{M_2z} - l_xf_{M_3z} + l_xf_{M_4z} \\
-    m_{Bz} &= - m_{M_1z} + m_{M_2z} - m_{M_3z} + m_{M_4z}
+    F_{Bx} &= 0 \\
+    F_{By} &= 0 \\
+    F_{Bz} &= - F_{M_1z} - F_{M_2} - F_{M_3} - F_{M_4z} \\
+    M_{Bx} &= - l_xF_{M_1z} - l_xF_{M_2z} + l_xF_{M_3z} + l_xF_{M_4z} \\
+    M_{By} &=   l_xF_{M_1z} - l_xF_{M_2z} - l_xF_{M_3z} + l_xF_{M_4z} \\
+    M_{Bz} &= - M_{M_1z} + M_{M_2z} - M_{M_3z} + M_{M_4z}
 
-where :math:`f_{M_ix} = f_{M_iy} = m_{M_ix} = m_{M_iy} = 0` and
-:math:`l_x = 0.23` [m] (distance between body center of mass and motor).
+where :math:`F_{M_ix} = F_{M_iy} = M_{M_ix} = M_{M_iy} = 0` and
+:math:`l_x = 0.23` m (distance between body center of mass and motor).
 
 In order to solve for the motor inputs one can use the fact that
-:math:`f, m \propto \omega^2`, where :math:`\omega` is the angular rate of a
+:math:`F, M \propto \omega^2`, where :math:`\omega` is the angular rate of a
 motor/propeller, see :numref:`ang_rate_sq_vs_thrust`.
 
 .. _ang_rate_sq_vs_thrust:
@@ -388,17 +493,17 @@ Hence, the generated body forces and torques can be described as following
 .. math::
 
     \begin{bmatrix}
-        f_{Bz} \\
-        m_{Bx} \\
-        m_{By} \\
-        m_{Bz}
+        F_{Bz} \\
+        M_{Bx} \\
+        M_{By} \\
+        M_{Bz}
     \end{bmatrix} =
     \underbrace{
         \begin{bmatrix}
-            -c_{fz} & -c_{fz} & -c_{fz} & -c_{fz} \\
-            -l_xc_{fz} & -l_xc_{fz} & l_xc_{fz} & l_xc_{fz} \\
-            l_xc_{fz} & -l_xc_{fz} & -l_xc_{fz} & l_xc_{fz} \\
-            -c_{mz} & c_{mz} & -c_{mz} & c_{mz}
+            -c_{Fz} & -c_{Fz} & -c_{Fz} & -c_{Fz} \\
+            -l_xc_{Fz} & -l_xc_{Fz} & l_xc_{Fz} & l_xc_{Fz} \\
+            l_xc_{Fz} & -l_xc_{Fz} & -l_xc_{Fz} & l_xc_{Fz} \\
+            -c_{Mz} & c_{Mz} & -c_{Mz} & c_{Mz}
         \end{bmatrix}
     }_H
     \begin{bmatrix}
@@ -414,26 +519,26 @@ By computing :math:`H^{-1}` one gets
 .. math::
 
     [\omega_{M_1z}^2, \omega_{M_2z}^2, \omega_{M_3z}^2, \omega_{M_4z}^2]^\intercal
-    = H^{-1} [f_{Bz}, m_{Bx}, m_{By}, m_{Bz}]^\intercal
+    = H^{-1} [F_{Bz}, M_{Bx}, M_{By}, M_{Bz}]^\intercal
 
 where
 
 .. math::
     H^{-1} = \frac{1}{4}
         \begin{bmatrix}
-            -\tfrac{1}{c_{fz}} & -\tfrac{1}{l_xc_{fz}} & \tfrac{1}{l_xc_{fz}} & -\tfrac{1}{c_{mz}} \\
-            -\tfrac{1}{c_{fz}} & -\tfrac{1}{l_xc_{fz}} & -\tfrac{1}{l_xc_{fz}} & \tfrac{1}{c_{mz}} \\
-            -\tfrac{1}{c_{fz}} & \tfrac{1}{l_xc_{fz}} & -\tfrac{1}{l_xc_{fz}} & -\tfrac{1}{c_{mz}} \\
-            -\tfrac{1}{c_{fz}} & \tfrac{1}{l_xc_{fz}} & \tfrac{1}{l_xc_{fz}} & \tfrac{1}{c_{mz}}
+            -\tfrac{1}{c_{Fz}} & -\tfrac{1}{l_xc_{Fz}} & \tfrac{1}{l_xc_{Fz}} & -\tfrac{1}{c_{Mz}} \\
+            -\tfrac{1}{c_{Fz}} & -\tfrac{1}{l_xc_{Fz}} & -\tfrac{1}{l_xc_{Fz}} & \tfrac{1}{c_{Mz}} \\
+            -\tfrac{1}{c_{Fz}} & \tfrac{1}{l_xc_{Fz}} & -\tfrac{1}{l_xc_{Fz}} & -\tfrac{1}{c_{Mz}} \\
+            -\tfrac{1}{c_{Fz}} & \tfrac{1}{l_xc_{Fz}} & \tfrac{1}{l_xc_{Fz}} & \tfrac{1}{c_{Mz}}
         \end{bmatrix}.
 
-From :numref:`ang_rate_sq_vs_thrust` it can be seen that :math:`c_{fz}` is smaller (about half)
+From :numref:`ang_rate_sq_vs_thrust` it can be seen that :math:`c_{Fz}` is smaller (about half)
 when the motor is reversing (negative rotation). This is probably due to the non-symmetrical
 shape of the propeller. Hence, a non-linearity arises and :math:`H^{-1}` can't solely be used.
 Therefore reversing will for now not be used, maybe in the future.
 
-Anyhow, :numref:`ang_rate_sq_vs_thrust` also gives :math:`c_{fz} = -8.37\times 10^{-6}` (positive rotation
-from now on only). The torque constant is given by :math:`c_{mz} = \tfrac{1}{50} c_{fz}` - empirical
+Anyhow, :numref:`ang_rate_sq_vs_thrust` also gives :math:`c_{Fz} = -8.37\times 10^{-6}` (positive rotation
+from now on only). The torque constant is given by :math:`c_{Mz} = \tfrac{1}{50} c_{Fz}` - empirical
 relation from the master thesis.
 
 In :numref:`ang_rate_vs_command` the empirical relation between the raw motor
