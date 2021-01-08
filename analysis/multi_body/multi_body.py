@@ -3,7 +3,7 @@ from typing import Union, List
 
 import numpy as np
 
-from plot_3d_shape import Cuboid, Cylinder
+from plot_shape import Cuboid, Cylinder
 
 
 @dataclass()

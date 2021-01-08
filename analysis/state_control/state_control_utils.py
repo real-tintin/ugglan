@@ -12,15 +12,22 @@ class StepInfo:
     overshoot: float
 
 
-def step_info(t: np.array, y: np.array) -> StepInfo:
-    yn = y / y[-1]
+def step_info(t: np.array, y: np.array, upsample_dt: float = 0.01) -> StepInfo:
+    """
+    Returns step info, see StepInfo. Upsamples y
+    to increase it's resolution.
+    """
+    ts = np.arange(t[0], t[-1], upsample_dt)
+    ys = np.interp(ts, t, y)
 
-    ind_10p = np.argwhere(yn >= 0.1)[0, 0]
+    yn = ys / ys[-1]
+
+    ind_10p = np.argwhere(yn <= 0.1)[-1, 0]
     ind_90p = np.argwhere(yn >= 0.9)[0, 0]
-    rise_time = t[ind_90p] - t[ind_10p]
+    rise_time = ts[ind_90p] - ts[ind_10p]
 
-    peak = np.max(y)
-    overshoot = (peak / y[-1] - 1) * 1e2
+    peak = np.max(ys)
+    overshoot = (peak / ys[-1] - 1) * 1e2
 
     return StepInfo(rise_time, peak, overshoot)
 

@@ -1,17 +1,18 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-import multi_body_utils
 from multi_body import MultiBody
 from multi_body_drone import drone
+from multi_body_utils import update_inertia
+from plot_multi_body import plot_multi_body
 
 
 def main():
     """
     Analyze the drone.
     """
-    multi_body_utils.inertia(drone)
-    multi_body_utils.plot(drone, ax_lim=[-0.3, 0.3])
+    update_inertia(drone)
+    plot_multi_body(drone, ax_lim=[-0.3, 0.3])
 
     _print_mb_inertia(drone)
     plt.show()

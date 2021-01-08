@@ -3,7 +3,7 @@ import pytest
 
 import multi_body_utils
 from multi_body import Body, MultiBody
-from plot_3d_shape import Cuboid, Cylinder
+from plot_shape import Cuboid, Cylinder
 
 UNIT_MB_CYLINDER = MultiBody(
     name='one_unit_cylinder',
@@ -40,7 +40,7 @@ def test_duplicate_body(n_bodies, overwrite):
 
 @pytest.mark.parametrize("unit_mb", [UNIT_MB_CYLINDER, UNIT_MB_CUBOID])
 def test_inertia(unit_mb):
-    multi_body_utils.inertia(unit_mb)
+    multi_body_utils.update_inertia(unit_mb)
 
     assert unit_mb.mass_kg == 1
     np.testing.assert_array_almost_equal(unit_mb.center_of_mass, np.zeros(3))

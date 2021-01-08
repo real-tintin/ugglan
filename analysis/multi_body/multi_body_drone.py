@@ -2,7 +2,7 @@ import numpy as np
 
 from multi_body import Body, MultiBody
 from multi_body_utils import duplicate_body
-from plot_3d_shape import Cuboid, Cylinder
+from shapes import *
 
 ROTATE_FOUR_EQUAL_SPACE = np.array([[0, 0, np.pi / 4],
                                     [0, 0, 3 * np.pi / 4],

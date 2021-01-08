@@ -3,10 +3,10 @@ from typing import Union, List
 
 import matplotlib.pyplot as plt
 import numpy as np
-from dataclasses import dataclass
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 import euclidean_transform
+from shapes import *
 
 DEFAULT_ROTATION = np.array([0, 0, 0])
 DEFAULT_POSITION = np.array([0, 0, 0])
@@ -24,19 +24,6 @@ class TransformType(Enum):
     TRANSLATE = 0
     SCALE = 1
     ROTATE = 2
-
-
-@dataclass
-class Cuboid:
-    length_x: float
-    width_y: float
-    height_z: float
-
-
-@dataclass
-class Cylinder:
-    radius_xy: float
-    height_z: float
 
 
 @dataclass
@@ -64,11 +51,11 @@ class Face:
         self.x, self.y, self.z = v_rot
 
 
-def plot_3d_shape(axes: plt.axes,
-                  shape: Union[Cuboid, Cylinder],
-                  rotation: np.array = DEFAULT_ROTATION,
-                  translation: np.array = DEFAULT_POSITION,
-                  color: Union[str, List[float]] = None):
+def plot_shape(axes: plt.axes,
+               shape: Union[Cuboid, Cylinder],
+               rotation: np.array = DEFAULT_ROTATION,
+               translation: np.array = DEFAULT_POSITION,
+               color: Union[str, List[float]] = None):
     """
     Plots a 3d shape on the provided axis.
 

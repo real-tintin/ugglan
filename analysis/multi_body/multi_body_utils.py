@@ -1,15 +1,12 @@
 import copy
-from typing import List
 
-import matplotlib.pyplot as plt
 import numpy as np
 # noinspection PyUnresolvedReferences
 from mpl_toolkits.mplot3d import Axes3D
 
 import euclidean_transform as et
-from multi_body import Cylinder, Cuboid
 from multi_body import MultiBody, Body
-from plot_3d_shape import plot_3d_shape
+from shapes import *
 
 
 def duplicate_body(body, n_bodies, rotations=None, translations=None, colors=None):
@@ -33,36 +30,10 @@ def duplicate_body(body, n_bodies, rotations=None, translations=None, colors=Non
     return bodies
 
 
-def plot(m_body: MultiBody, ax_lim: List[float]) -> Axes3D:
+def update_inertia(m_body: MultiBody) -> None:
     """
-    Creates a 3d plot of a multi body
-    object.
-    """
-    fig = plt.figure()
-    plot3_ax = fig.gca(projection='3d')
-
-    for body in m_body.bodies:
-        plot_3d_shape(plot3_ax,
-                      body.shape_m,
-                      body.rotation_rad,
-                      body.translation_m,
-                      body.color)
-
-    plot3_ax.set_xlim(ax_lim)
-    plot3_ax.set_ylim(ax_lim)
-    plot3_ax.set_zlim(ax_lim)
-
-    plot3_ax.set_xlabel("x [m]")
-    plot3_ax.set_ylabel("y [m]")
-    plot3_ax.set_zlabel("z [m]")
-
-    return plot3_ax
-
-
-def inertia(m_body: MultiBody) -> None:
-    """
-    Computes the mass and moments of inertia,
-    of a multi body object.
+    Computes and updates the mass and moments of
+    inertia, of a multi body object.
     """
     for body in m_body.bodies:
         _compute_b_r_matrix(body)

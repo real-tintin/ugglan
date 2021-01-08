@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.widgets import Slider
 
-import utils
-from red_observer import red_observer
-from state_space import get_state_space, State, StateSpace
+import state_control_utils
+from observers import reduced_observer
+from state_space import get_state_space, State, StateSpace, get_c
 
 STEP_INFO_STR = 'rise time: {:.2f} s\n' \
                 'peak: {:.2f}\n' \
@@ -34,7 +34,7 @@ def analyze_step(state_space: StateSpace,
     Note, uses matplotlibs interactive sliders and will launch
     blocking figures.
     """
-    ref_state_idx = utils.find_ref_state_idx(x_r)
+    ref_state_idx = state_control_utils.find_ref_state_idx(x_r)
     ref_state_val = x_r[ref_state_idx]
 
     # Setup plot
@@ -78,10 +78,11 @@ def analyze_step(state_space: StateSpace,
         L = np.array([[sl.val for sl in sliders_L]])
 
         # Step response of closed loop and observer
-        t, x, u, y = utils.closed_loop_step_response(state_space, L, x_0, x_r, t_end)
-        si = utils.step_info(t, x[ref_state_idx])
-        x_est = red_observer(state_space.state, x[VEL_STATE_IDX], u,
-                             alpha, z_0=u[0] / 2 - alpha * x[VEL_STATE_IDX, 0])
+        t, x, u, y = state_control_utils.closed_loop_step_response(state_space, L, x_0, x_r, t_end)
+        si = state_control_utils.step_info(t, x[ref_state_idx])
+        x_est = reduced_observer(x_v=x[VEL_STATE_IDX], u=u,
+                                 c=get_c(state_space.state), alpha=alpha,
+                                 z_0=u[0] / 2 - alpha * x[VEL_STATE_IDX, 0])
 
         # Update and re-draw plot
         tb_step_info.set_text(STEP_INFO_STR.format(si.rise_time, si.peak, si.overshoot))

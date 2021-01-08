@@ -3,15 +3,7 @@ from enum import Enum
 import numpy as np
 from dataclasses import dataclass
 
-MASS = 1.038  # [kg]
-
-I_XX = 0.014  # [kgm^2]
-I_YY = 0.014  # [kgm^2]
-I_ZZ = 0.026  # [kgm^2]
-
-TAU = 0.08
-
-DT = 0.02  # [s]
+from physical_const import *
 
 
 class State(Enum):

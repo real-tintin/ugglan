@@ -2,6 +2,13 @@ Development
 *****************
 Test driven development is emphasized in this project.
 
+Python Unit Testing
+====================
+The unit test framework ``pytest`` is used for unit testing of the Python
+code (mainly used for analysis). To execute all tests simply run::
+
+    py -m pytest ./analysis
+
 C++ Unit Testing
 =================
 The drone core is written in C++. To test and verify its functionality,

@@ -19,8 +19,10 @@ pip install -r "${PY_VENV_REQ}"
 DATA_LOG_SRC="${REPO_ROOT}/analysis/data_log"
 MULTI_BODY_SRC="${REPO_ROOT}/analysis/multi_body"
 STATE_ESTIMATION_SRC="${REPO_ROOT}/analysis/state_estimation"
+STATE_CONTROL_SRC="${REPO_ROOT}/analysis/state_control"
 
-PYTHONPATH="${DATA_LOG_SRC}:${MULTI_BODY_SRC}:${STATE_ESTIMATION_SRC}"
+PYTHONPATH="${DATA_LOG_SRC}:${MULTI_BODY_SRC}:\
+${STATE_ESTIMATION_SRC}:${STATE_CONTROL_SRC}"
 
 # Update python aliases to include PYTHONPATH.
 alias py="PYTHONPATH=${PYTHONPATH} py"
