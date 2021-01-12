@@ -132,18 +132,39 @@ def _plot_rc(data: Signals):
 def _plot_state_est(data: Signals):
     fig, axs = plt.subplots(2, 2)
 
-    axs[0, 0].plot(data.AttEst.Roll.t_s, data.AttEst.Roll.val, label=r'$\phi$')
-    axs[0, 0].plot(data.AttEst.Pitch.t_s, data.AttEst.Pitch.val, label=r'$\theta$')
-    axs[0, 0].plot(data.AttEst.Yaw.t_s, data.AttEst.Yaw.val, label=r'$\psi$')
-    axs[0, 0].set(ylabel='Attitude [rad]')
+    axs[0, 0].plot(data.StateEst.Roll.t_s, data.StateEst.Roll.val, label=r'$\phi$')
+    axs[0, 0].plot(data.StateEst.Pitch.t_s, data.StateEst.Pitch.val, label=r'$\theta$')
+    axs[0, 0].plot(data.StateEst.Yaw.t_s, data.StateEst.Yaw.val, label=r'$\psi$')
+    axs[0, 0].set(ylabel='Angle [rad]')
 
-    axs[0, 1].plot(data.AttEst.RollRate.t_s, data.AttEst.RollRate.val, label=r'$\dot{\phi}$')
-    axs[0, 1].plot(data.AttEst.PitchRate.t_s, data.AttEst.PitchRate.val, label=r'$\dot{\theta}$')
-    axs[0, 1].plot(data.AttEst.YawRate.t_s, data.AttEst.YawRate.val, label=r'$\dot{\psi}$')
-    axs[0, 1].set(ylabel='Attitude rate [rad/s]')
+    axs[0, 1].plot(data.StateEst.RollRate.t_s, data.StateEst.RollRate.val, label=r'$\dot{\phi}$')
+    axs[0, 1].plot(data.StateEst.PitchRate.t_s, data.StateEst.PitchRate.val, label=r'$\dot{\theta}$')
+    axs[0, 1].plot(data.StateEst.YawRate.t_s, data.StateEst.YawRate.val, label=r'$\dot{\psi}$')
+    axs[0, 1].set(ylabel='Angular-rate [rad/s]')
 
-    axs[1, 0].plot(data.AttEst.IsCalib.t_s, data.AttEst.IsCalib.val, label='AttIsCalibrated')
+    axs[1, 0].plot(data.StateEst.AttIsCalib.t_s, data.StateEst.AttIsCalib.val, label='AttIsCalibrated')
     axs[1, 0].set(ylabel='Status [-]')
+
+    _finish_subplots(fig)
+
+
+def _plot_state_ctrl(data: Signals):
+    fig, axs = plt.subplots(2, 2)
+
+    axs[0, 0].plot(data.StateEst.Roll.t_s, data.StateEst.Roll.val, label=r'$\phi$ [rad]')
+    axs[0, 0].plot(data.StateCtrl.RollRef.t_s, data.StateCtrl.RollRef.val, label=r'$\phi_r$ [rad]')
+    axs[0, 0].plot(data.StateCtrl.Mx.t_s, data.StateCtrl.Mx.val, label=r'$u_{Mx}$ [Nm]')
+
+    axs[0, 1].plot(data.StateEst.Pitch.t_s, data.StateEst.Pitch.val, label=r'$\theta$ [rad]')
+    axs[0, 1].plot(data.StateCtrl.PitchRef.t_s, data.StateCtrl.PitchRef.val, label=r'$\theta_r$ [rad]')
+    axs[0, 1].plot(data.StateCtrl.My.t_s, data.StateCtrl.My.val, label=r'$u_{My}$ [Nm]')
+
+    axs[1, 0].plot(data.StateEst.YawRate.t_s, data.StateEst.YawRate.val, label=r'$\dot{\psi}$ [rad/s]')
+    axs[1, 0].plot(data.StateCtrl.YawRateRef.t_s, data.StateCtrl.YawRateRef.val, label=r'$\dot{\psi}_r$ [rad/s]')
+    axs[1, 0].plot(data.StateCtrl.Mz.t_s, data.StateCtrl.Mz.val, label=r'$u_{Mz}$ [Nm]')
+
+    axs[1, 1].plot(data.StateCtrl.FzRef.t_s, data.StateCtrl.FzRef.val, label=r'$F_{zr}$ [N]')
+    axs[1, 1].plot(data.StateCtrl.Fz.t_s, data.StateCtrl.Fz.val, label=r'$u_{Fz}$ [N]')
 
     _finish_subplots(fig)
 
@@ -185,6 +206,7 @@ def main():
     _plot_esc(data)
     _plot_rc(data)
     _plot_state_est(data)
+    _plot_state_ctrl(data)
     _plot_tasks(data)
 
     plt.show()

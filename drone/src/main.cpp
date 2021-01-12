@@ -13,6 +13,7 @@
 #include <tgyia6c.h>
 #include <attitude_estimation.h>
 #include <motor_control.h>
+#include <pilot_control.h>
 
 #if !defined(UNIT_TEST)
 
@@ -150,26 +151,29 @@ class TaskStateEstAndCtrl : public Task
 {
 public:
     TaskStateEstAndCtrl(uint32_t exec_period_ms, std::string name,
-                        double att_est_input_sample_rate_s,
-                        DataLogQueue& data_log_queue) :
+                        double input_sample_rate_s, DataLogQueue& data_log_queue) :
                    Task(exec_period_ms, name),
-                        _att(att_est_input_sample_rate_s),
+                        _att(input_sample_rate_s), _pilot_ctrl(input_sample_rate_s),
                         _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
         _exec_att_est();
-        // TODO: exec_motor_est();
-        exec_att_ctrl();
-        exec_motor_ctrl();
+        _exec_pilot_ctrl();
+        _exec_motor_ctrl();
 
         _data_log_queue.push(uint8_t(TaskId::StateEstAndCtrl), DataLogSignal::TaskExecute);
     }
 private:
     AttEstInput _att_in;
     AttEstimate _att_est;
-
     AttitudeEstimation _att;
+
+    double _gimbal_left_x, _gimbal_left_y, _gimbal_right_x, _gimbal_right_y;
+
+    PilotControl _pilot_ctrl;
+    PilotCtrlRef _ctrl_ref;
+
     DataLogQueue& _data_log_queue;
 
     BodyControl _body_ctrl;
@@ -196,27 +200,42 @@ private:
         _att.update(_att_in);
         _att_est = _att.get_estimate();
 
-        _data_log_queue.push(_att_est.roll, DataLogSignal::AttEstRoll);
-        _data_log_queue.push(_att_est.pitch, DataLogSignal::AttEstPitch);
-        _data_log_queue.push(_att_est.yaw, DataLogSignal::AttEstYaw);
+        _data_log_queue.push(_att_est.roll, DataLogSignal::StateEstRoll);
+        _data_log_queue.push(_att_est.pitch, DataLogSignal::StateEstPitch);
+        _data_log_queue.push(_att_est.yaw, DataLogSignal::StateEstYaw);
 
-        _data_log_queue.push(_att_est.roll_rate, DataLogSignal::AttEstRollRate);
-        _data_log_queue.push(_att_est.pitch_rate, DataLogSignal::AttEstPitchRate);
-        _data_log_queue.push(_att_est.yaw_rate, DataLogSignal::AttEstYawRate);
+        _data_log_queue.push(_att_est.roll_rate, DataLogSignal::StateEstRollRate);
+        _data_log_queue.push(_att_est.pitch_rate, DataLogSignal::StateEstPitchRate);
+        _data_log_queue.push(_att_est.yaw_rate, DataLogSignal::StateEstYawRate);
 
-        _data_log_queue.push(_att.is_calibrated(), DataLogSignal::AttEstIsCalib);
+        _data_log_queue.push(_att.is_calibrated(), DataLogSignal::StateEstAttIsCalib);
     }
 
-    void exec_att_ctrl()
+    void _exec_pilot_ctrl()
     {
-        // TODO: Use attitude control to set _body_ctrl instead of using rc_gimbal_left_y.
-        double rc_gimbal_left_y;
+        _data_log_queue.last_signal_data(&_gimbal_left_x, DataLogSignal::RcGimbalLeftX);
+        _data_log_queue.last_signal_data(&_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
+        _data_log_queue.last_signal_data(&_gimbal_right_x, DataLogSignal::RcGimbalRightX);
+        _data_log_queue.last_signal_data(&_gimbal_right_y, DataLogSignal::RcGimbalRightY);
 
-        _data_log_queue.last_signal_data(&rc_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
-        _body_ctrl.f_z = rc_gimbal_left_y * (-12.0); // [N]
+        _ctrl_ref = tgyia6c_to_pilot_ctrl_ref(_gimbal_left_x, _gimbal_left_y,
+                                              _gimbal_right_x, _gimbal_right_y);
+
+        _pilot_ctrl.update(_att_est, _ctrl_ref);
+        _body_ctrl = _pilot_ctrl.get_ctrl();
+
+        _data_log_queue.push(_ctrl_ref.roll, DataLogSignal::StateCtrlRollRef);
+        _data_log_queue.push(_ctrl_ref.pitch, DataLogSignal::StateCtrlPitchRef);
+        _data_log_queue.push(_ctrl_ref.yaw_rate, DataLogSignal::StateCtrlYawRateRef);
+        _data_log_queue.push(_ctrl_ref.f_z, DataLogSignal::StateCtrlFzRef);
+
+        _data_log_queue.push(_body_ctrl.m_x, DataLogSignal::StateCtrlMx);
+        _data_log_queue.push(_body_ctrl.m_y, DataLogSignal::StateCtrlMy);
+        _data_log_queue.push(_body_ctrl.m_z, DataLogSignal::StateCtrlMz);
+        _data_log_queue.push(_body_ctrl.f_z, DataLogSignal::StateCtrlFz);
     }
 
-    void exec_motor_ctrl()
+    void _exec_motor_ctrl()
     {
         _motor_ctrl = body_to_motor_controls(_body_ctrl);
 
@@ -312,6 +331,16 @@ protected:
             _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskExecute);
         }
     }
+
+    void _finish()
+    {
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            _esc[i_esc].write(0); // To make sure esc's halt.
+            _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskFinish);
+        }
+    }
+
 private:
     AfroEsc (&_esc)[N_ESC];
     DataLogQueue& _data_log_queue;

@@ -17,7 +17,7 @@ IMU_SAMPLE_RATE_S = 0.02  # 50 Hz
 
 N_SAMPLES_FOR_OFFSET_COMP = 10
 
-CUT_OFF_FREQ = 20  # [Hz]
+CUT_OFF_FREQ = 0.2  # [Hz]
 
 TAU_PHI = 1 / (2 * np.pi * CUT_OFF_FREQ)
 TAU_THETA = 1 / (2 * np.pi * CUT_OFF_FREQ)

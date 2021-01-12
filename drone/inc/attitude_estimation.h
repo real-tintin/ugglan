@@ -6,9 +6,11 @@
 
 inline const uint8_t ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP = 20;
 
-inline const double ATT_EST_TAU_ROLL = 1 / (2 * M_PI * 20); // 20 Hz cut-off freq.
-inline const double ATT_EST_TAU_PITCH = 1 / (2 * M_PI * 20); // 20 Hz cut-off freq.
-inline const double ATT_EST_TAU_YAW = 1 / (2 * M_PI * 20); // 20 Hz cut-off freq.
+inline const double ATT_EST_CUT_OFF_FREQ = 0.2; // [Hz]
+
+inline const double ATT_EST_TAU_ROLL = 1 / (2 * M_PI * ATT_EST_CUT_OFF_FREQ);
+inline const double ATT_EST_TAU_PITCH = 1 / (2 * M_PI * ATT_EST_CUT_OFF_FREQ);
+inline const double ATT_EST_TAU_YAW = 1 / (2 * M_PI * ATT_EST_CUT_OFF_FREQ);
 
 inline const double ATT_EST_MODULO_ROLL = M_PI;
 inline const double ATT_EST_MODULO_PITCH = M_PI / 2;

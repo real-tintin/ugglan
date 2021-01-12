@@ -404,7 +404,8 @@ A first order backwards time-difference of the observer gives
 
 .. math::
 
-    \tilde{x}^k_a = \beta_1 (\tilde{x}^{k-1}_a -\alpha x^{k-1}_v) + \beta_2 x^{k}_v + \beta_3 u^k
+    \tilde{x}^k_a = \beta_1 (\tilde{x}^{k-1}_a -\alpha x^{k-1}_v) +
+    \beta_2 x^{k}_v + \beta_3 u^k, \tilde{x}^0_a = 0
 
 where
 
@@ -448,7 +449,7 @@ final time-discretized feedback controller
     :label: disc_state_feedback
 
     u^k = -\frac{l_1 x_1^k + (l_2 + l_3(\beta_2 + \alpha)) x_2^k + l_3\beta_1(u^{k-1}
-    - \alpha x_2^{k-1})}{1 + l_3\beta_3}.
+    - \alpha x_2^{k-1})}{1 + l_3\beta_3}, u^0 = 0.
 
 Pilot Control
 ^^^^^^^^^^^^^^^

@@ -20,7 +20,8 @@ enum class DataLogGroup {
     Imu,
     Esc,
     Rc,
-    AttEst,
+    StateEst,
+    StateCtrl,
     Task
 };
 
@@ -92,15 +93,25 @@ enum class DataLogSignal {
     RcKnob,
     RcStatus,
 
-    AttEstRoll,
-    AttEstPitch,
-    AttEstYaw,
+    StateEstRoll,
+    StateEstPitch,
+    StateEstYaw,
 
-    AttEstRollRate,
-    AttEstPitchRate,
-    AttEstYawRate,
+    StateEstRollRate,
+    StateEstPitchRate,
+    StateEstYawRate,
 
-    AttEstIsCalib,
+    StateEstAttIsCalib,
+
+    StateCtrlRollRef,
+    StateCtrlPitchRef,
+    StateCtrlYawRateRef,
+    StateCtrlFzRef,
+
+    StateCtrlMx,
+    StateCtrlMy,
+    StateCtrlMz,
+    StateCtrlFz,
 
     TaskSetup,
     TaskExecute,
@@ -136,7 +147,8 @@ inline const DataLogGroupMap DATA_LOG_GROUP_MAP = {
     {DataLogGroup::Imu, {"Imu"}},
     {DataLogGroup::Esc, {"Esc"}},
     {DataLogGroup::Rc, {"Rc"}},
-    {DataLogGroup::AttEst, {"AttEst"}},
+    {DataLogGroup::StateEst, {"StateEst"}},
+    {DataLogGroup::StateCtrl, {"StateCtrl"}},
     {DataLogGroup::Task, {"Task"}}
     };
 
@@ -208,15 +220,25 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::RcKnob, {"Knob", DataLogGroup::Rc, DataLogType::DOUBLE}},
     {DataLogSignal::RcStatus, {"Status", DataLogGroup::Rc, DataLogType::UINT8}},
 
-    {DataLogSignal::AttEstRoll, {"Roll", DataLogGroup::AttEst, DataLogType::DOUBLE}},
-    {DataLogSignal::AttEstPitch, {"Pitch", DataLogGroup::AttEst, DataLogType::DOUBLE}},
-    {DataLogSignal::AttEstYaw, {"Yaw", DataLogGroup::AttEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstRoll, {"Roll", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstPitch, {"Pitch", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstYaw, {"Yaw", DataLogGroup::StateEst, DataLogType::DOUBLE}},
 
-    {DataLogSignal::AttEstRollRate, {"RollRate", DataLogGroup::AttEst, DataLogType::DOUBLE}},
-    {DataLogSignal::AttEstPitchRate, {"PitchRate", DataLogGroup::AttEst, DataLogType::DOUBLE}},
-    {DataLogSignal::AttEstYawRate, {"YawRate", DataLogGroup::AttEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstRollRate, {"RollRate", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstPitchRate, {"PitchRate", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstYawRate, {"YawRate", DataLogGroup::StateEst, DataLogType::DOUBLE}},
 
-    {DataLogSignal::AttEstIsCalib, {"IsCalib", DataLogGroup::AttEst, DataLogType::BOOL}},
+    {DataLogSignal::StateEstAttIsCalib, {"AttIsCalib", DataLogGroup::StateEst, DataLogType::BOOL}},
+
+    {DataLogSignal::StateCtrlRollRef, {"RollRef", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlPitchRef, {"PitchRef", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlYawRateRef, {"YawRateRef", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlFzRef, {"FzRef", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+
+    {DataLogSignal::StateCtrlMx, {"Mx", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlMy, {"My", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlMz, {"Mz", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlFz, {"Fz", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
 
     {DataLogSignal::TaskSetup, {"Setup", DataLogGroup::Task, DataLogType::UINT8}},
     {DataLogSignal::TaskExecute, {"Execute", DataLogGroup::Task, DataLogType::UINT8}},
