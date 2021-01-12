@@ -2,9 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.widgets import Slider
 
-import state_control_utils
-from observers import reduced_observer
-from state_space import get_state_space, State, StateSpace, get_c
+import step_response
+from state_space import State
 
 STEP_INFO_STR = 'rise time: {:.2f} s\n' \
                 'peak: {:.2f}\n' \
@@ -19,7 +18,24 @@ VEL_STATE_IDX = -2
 TRQ_STATE_IDX = -1
 
 
-def analyze_step(state_space: StateSpace,
+def _get_u_y_label(state: State):
+    if state == State.PHI or state == State.THETA or state == State.PSI:
+        return 'Ctrl input [Nm]'
+    else:
+        return 'Ctrl input [N]'
+
+
+def _find_ref_state_idx(x_r):
+    idx = np.argwhere(x_r != 0)
+
+    if len(idx) != 1:
+        raise ValueError('Expected to find only one reference state.')
+
+    return idx[0, 0]
+
+
+def analyze_step(state: State,
+                 add_intg_state: bool,
                  x_0: np.array,
                  x_r: np.array,
                  L_0: np.array,
@@ -34,7 +50,7 @@ def analyze_step(state_space: StateSpace,
     Note, uses matplotlibs interactive sliders and will launch
     blocking figures.
     """
-    ref_state_idx = state_control_utils.find_ref_state_idx(x_r)
+    ref_state_idx = _find_ref_state_idx(x_r)
     ref_state_val = x_r[ref_state_idx]
 
     # Setup plot
@@ -45,17 +61,16 @@ def analyze_step(state_space: StateSpace,
     axs[0].set_ylabel(ref_state_ylabel)
 
     axs[1].set_xlabel('Time [s]')
-    axs[1].set_ylabel('Torque [Nm]')
+    axs[1].set_ylabel(_get_u_y_label(state))
 
     tb_step_info = axs[0].text(1.01, 0.95, STEP_INFO_STR, transform=axs[0].transAxes,
                                fontsize=8, verticalalignment='top')
 
     axs[0].plot([0, t_end], [ref_state_val, ref_state_val], label='$x_r$', color='tab:red', linestyle='--')
 
-    line_state, = axs[0].plot([], [], label='$x$', color='tab:blue')
-    line_trq, = axs[1].plot([], [], label=r'$M$', color='tab:blue')
-    line_trq_est, = axs[1].plot([], [], label=r'$\tilde{M}$', color='tab:red', linestyle='--')
-    line_u, = axs[1].plot([], [], label='u', color='tab:green')
+    line_x, = axs[0].plot([], [], label='$x$', color='tab:blue')
+    line_u, = axs[1].plot([], [], label=r'$u$', color='tab:green')
+    line_u_est, = axs[1].plot([], [], label=r'$\tilde{u}$', color='tab:red', linestyle='--')
 
     for ax in axs:
         ax.legend()
@@ -63,13 +78,13 @@ def analyze_step(state_space: StateSpace,
 
     # Add sliders to interactively tune L and alpha
     sliders_L = []
-    for i_slider in range(len(L_0)):
+    for i_slider in range(L_0.size):
         sliders_L.append(Slider(
             plt.axes(SLIDER_INIT_POS + SLIDER_DELTA_POS * i_slider),
-            'L_' + str(i_slider + 1), 0, 10, valinit=L_0[i_slider], valstep=SLIDER_STEP_SIZE
+            'L_' + str(i_slider + 1), 0, 10, valinit=L_0[0, i_slider], valstep=SLIDER_STEP_SIZE
         ))
 
-    slider_alpha = Slider(plt.axes(SLIDER_INIT_POS + SLIDER_DELTA_POS * len(L_0)),
+    slider_alpha = Slider(plt.axes(SLIDER_INIT_POS + SLIDER_DELTA_POS * L_0.size),
                           r'$\alpha$', 0, 10, valinit=alpha_0, valstep=SLIDER_STEP_SIZE)
 
     def _update_plot(val=None):
@@ -77,20 +92,16 @@ def analyze_step(state_space: StateSpace,
         alpha = slider_alpha.val
         L = np.array([[sl.val for sl in sliders_L]])
 
-        # Step response of closed loop and observer
-        t, x, u, y = state_control_utils.closed_loop_step_response(state_space, L, x_0, x_r, t_end)
-        si = state_control_utils.step_info(t, x[ref_state_idx])
-        x_est = reduced_observer(x_v=x[VEL_STATE_IDX], u=u,
-                                 c=get_c(state_space.state), alpha=alpha,
-                                 z_0=u[0] / 2 - alpha * x[VEL_STATE_IDX, 0])
+        # Step response of closed loop
+        t, x, y, u, u_est = step_response.closed_loop(state, L, alpha, x_0, x_r, t_end, add_intg_state)
+        si = step_response.step_info(t, x[ref_state_idx])
 
         # Update and re-draw plot
         tb_step_info.set_text(STEP_INFO_STR.format(si.rise_time, si.peak, si.overshoot))
 
-        line_state.set_data(t, x[ref_state_idx])
-        line_trq.set_data(t, x[TRQ_STATE_IDX])
-        line_trq_est.set_data(t, x_est)
+        line_x.set_data(t, x[ref_state_idx])
         line_u.set_data(t, u)
+        line_u_est.set_data(t, u_est)
 
         for ax in axs:
             ax.relim()
@@ -110,21 +121,22 @@ def main():
     Launches interactive plot's for the analysis and
     tuning of the state feedback controller.
     """
-
-    analyze_step(state_space=get_state_space(State.PHI, add_intg_state=True),  # Same as for THETA (pitch)
+    analyze_step(state=State.PHI,  # Same as for THETA (pitch)
+                 add_intg_state=True,
                  x_0=np.zeros((4, 1)),
                  x_r=np.array([[0, np.pi / 8, 0, 0]]).transpose(),
-                 L_0=np.array([0.5, 4.0, 0.6, 1.5]),
-                 alpha_0=2.0,
+                 L_0=np.array([[0.5, 4.0, 0.6, 1.5]]),
+                 alpha_0=5.0,
                  t_end=1,
                  title=r'Step in roll ($\phi$) & pitch ($\theta$)',
                  ref_state_ylabel='Angle [rad]')
 
-    analyze_step(state_space=get_state_space(State.PSI, add_intg_state=False),
+    analyze_step(state=State.PSI,
+                 add_intg_state=False,
                  x_0=np.zeros((3, 1)),
                  x_r=np.array([[0, np.pi, 0]]).transpose(),
-                 L_0=np.array([0.1, 0.2, 0.3]),
-                 alpha_0=2.0,
+                 L_0=np.array([[0.1, 0.2, 0.3]]),
+                 alpha_0=5.0,
                  t_end=2,
                  title=r'Step in yaw-rate ($\dot\psi$)',
                  ref_state_ylabel='Angular-rate [rad/s]')
