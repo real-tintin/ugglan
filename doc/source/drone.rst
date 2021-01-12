@@ -306,7 +306,7 @@ state-space representation in roll
     u_4=u_\phi,
     c_4=\tfrac{1}{I_{xx}}.
 
-Note that the final state e.g., :math:`M_{\phi} (= I_{xx}\ddot\phi)` is observed using a reduced observer,
+Note that the final state e.g., :math:`M_{\phi}` is observed using a reduced observer,
 see :ref:`force-torque-estimation`.
 
 State Estimation
@@ -396,7 +396,7 @@ directions, see :numref:`hard_iron_offset`.
 Force and Torque Estimation
 ----------------------------
 The final state of :eq:`state_space_matrices` (force/torque), here denoted
-:math:`\tilde{x}_a` is not measured. It is instead estimated using a reduced
+:math:`\tilde{x}` is not measured. It is instead estimated using a reduced
 observer, see `Design-Modeling-and-Control-of-an-Octocopter`_ Section (4.2.3)
 for details.
 
@@ -404,24 +404,13 @@ A first order backwards time-difference of the observer gives
 
 .. math::
 
-    \tilde{x}^k_a = \beta_1 (\tilde{x}^{k-1}_a -\alpha x^{k-1}_v) + \beta_2 x^{k}_v + \beta_3 u^k
+    z^k &= \frac{(u^k - \alpha(1 + \alpha \tau_M c x_v^k))\Delta t - z^{k-1} \tau_M}
+    {\tau_M + \Delta t(1 + \alpha \tau_M c)}, z_0 = \tfrac{u_0}{2} - \alpha x_{v0} \\
+    \tilde{x}^k &= z^k + \alpha x_v^k
 
-where
-
-.. math::
-
-    \beta_1 &= \frac{\tau_M}{\beta_4} \\
-    \beta_2 &= -\frac{\alpha\Delta t (1+ \alpha \tau_M c_i)}{\beta_4} \\
-    \beta_3 &= \frac{\Delta t}{\beta_4} \\
-    \beta_4 &= \tau_M + \Delta t (1 + \alpha \tau_M c_i)
-
-and :math:`x_v` is the (translational/rotational) velocity state of each
+where :math:`x_v` is the (translational/rotational) velocity state of each
 state-space, :math:`\alpha` a tuning parameter. Note that
 :math:`\text{Re}(\alpha) > -\tfrac{1}{\tau_M c_i}` for stability.
-
-Also note that when :math:`\alpha\rightarrow\infty` the observer will result
-in a backwards time-difference of :math:`x_v` i.e., its derivative
-(:math:`\dot{x}_v = x_a`).
 
 Control
 =================
@@ -431,24 +420,11 @@ State Control
 The drone's dynamics are stabilized using a full state feedback controller
 
 .. math::
-    :label: cont_state_feedback
 
     u = -\mathbf{Lx}.
 
 Which allows for arbitrary pole placement, see `Design-Modeling-and-Control-of-an-Octocopter`_
 for in depth details.
-
-Discretized Feedback
-^^^^^^^^^^^^^^^^^^^^
-In :ref:`force-torque-estimation` the reduced observer is presented, including the control
-input. Hence, by using :eq:`cont_state_feedback` and solving for :math:`u_k` one derives at the
-final time-discretized feedback controller
-
-.. math::
-    :label: disc_state_feedback
-
-    u^k = -\frac{l_1 x_1^k + (l_2 + l_3(\beta_2 + \alpha)) x_2^k + l_3\beta_1(u^{k-1}
-    - \alpha x_2^{k-1})}{1 + l_3\beta_3}.
 
 Pilot Control
 ^^^^^^^^^^^^^^^
@@ -472,9 +448,6 @@ for yaw-rate) i.e., :math:`\mathbf{x}\in\mathbb{R}^4`.
     :width: 100%
 
     Tuning and parameter selection for yaw-rate control.
-
-In the above figures :math:`u` corresponds to :eq:`cont_state_feedback` and
-:math:`\tilde{u}` to :eq:`disc_state_feedback`.
 
 Motor Control
 ------------------

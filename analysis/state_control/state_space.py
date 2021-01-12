@@ -1,6 +1,7 @@
 from enum import Enum
 
 import numpy as np
+from dataclasses import dataclass
 
 from physical_const import *
 
@@ -13,6 +14,16 @@ class State(Enum):
     PHI = 4  # rotation about x
     THETA = 5  # rotation about y
     PSI = 6  # rotation about z
+
+
+@dataclass
+class StateSpace:
+    A: np.array
+    B: np.array
+    C: np.array
+    D: np.array
+
+    state: State
 
 
 _A = lambda c: np.array([[0, 1, 0],
@@ -56,8 +67,7 @@ def get_c(state: State) -> float:
     return c
 
 
-def get_state_space(state: State, add_intg_state: bool = False) -> \
-        (np.array, np.array, np.array, np.array):
+def get_state_space(state: State, add_intg_state: bool = False) -> StateSpace:
     """
     Returns a StateSpace (A, B, C, D) of the open-loop
     drone's dynamics given a State.
@@ -67,6 +77,6 @@ def get_state_space(state: State, add_intg_state: bool = False) -> \
     c = get_c(state)
 
     if add_intg_state:
-        return _A_INTG(c), _B_INTG, _C_INTG, _D
+        return StateSpace(_A_INTG(c), _B_INTG, _C_INTG, _D, state)
     else:
-        return _A(c), _B, _C, _D
+        return StateSpace(_A(c), _B, _C, _D, state)
