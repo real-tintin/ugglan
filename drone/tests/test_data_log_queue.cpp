@@ -100,7 +100,7 @@ TEST_CASE("last_signal_data")
 {
     DataLogQueue data_log_queue;
 
-    SECTION("empty queue - unset default data")
+    SECTION("empty queue - implicit (zero) default data")
     {
         double act_data;
         double exp_data = 0;
@@ -108,7 +108,7 @@ TEST_CASE("last_signal_data")
 
         REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
     }
-    SECTION("empty queue - set default data")
+    SECTION("empty queue - explicit default data")
     {
         double act_data;
         double exp_data = -3.14;

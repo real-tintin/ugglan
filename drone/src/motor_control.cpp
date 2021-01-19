@@ -1,5 +1,14 @@
 #include <motor_control.h>
 
+static const double INV_THRUST_CONST_FZ = 29869; // 1 / (4 * c_fz) [rad/Ns]
+static const double INV_THRUST_CONST_MZ = 129864; // 1 / (4 * l_x * c_fz) [rad/Nms]
+static const double INV_TORQUE_CONST_MZ = 1493429; // 1 / (4 * c_mz) [rad/Nms]
+
+static const double RAW_MOTOR_POLY_0 = 57.0;
+static const double RAW_MOTOR_POLY_1 = -9675.0;
+
+static const double MIN_SQ_ANG_RATE = pow(200, 2); // [rad^2/s^2]
+
 typedef std::array<double, N_MOTORS> AngularRate;
 
 static AngularRate _body_to_ang_rates(BodyControl& body);
@@ -30,7 +39,7 @@ static AngularRate _body_to_ang_rates(BodyControl& body_controls)
 
     for (uint8_t motor_i = 0; motor_i < N_MOTORS; motor_i++)
     {
-        if (sq_ang_rates[motor_i] > 0.0)
+        if (sq_ang_rates[motor_i] >= MIN_SQ_ANG_RATE)
         {
             ang_rates[motor_i] = sqrt(sq_ang_rates[motor_i]);
         }

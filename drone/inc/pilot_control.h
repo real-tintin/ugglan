@@ -19,11 +19,11 @@ inline const double PILOT_CTRL_SCALE_REF_F_Z = -20.0; // [N]
 
 inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PHI = 0.2; // [rads]
 inline const double PILOT_CTRL_ANTI_WINDUP_SAT_THETA = 0.2; // [rads]
-inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PSI = 1.0; // [rad]
+inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PSI = 2.0; // [rad]
 
-inline const double PILOT_CTRL_L_ROLL[PILOT_CTRL_L_SIZE] = {0.5, 4.0, 0.6, 1.5};     // Feedback matrice for roll.
-inline const double PILOT_CTRL_L_PITCH[PILOT_CTRL_L_SIZE] = {0.5, 4.0, 0.6, 1.5};    // Feedback matrice for pitch.
-inline const double PILOT_CTRL_L_YAW_RATE[PILOT_CTRL_L_SIZE] = {0.0, 0.1, 0.2, 0.3}; // Feedback matrice for yaw-rate. Note, first state not used.
+inline const double PILOT_CTRL_L_ROLL[PILOT_CTRL_L_SIZE] = {1.5, 4.0, 0.6, 1.5};        // Feedback matrice for roll.
+inline const double PILOT_CTRL_L_PITCH[PILOT_CTRL_L_SIZE] = {1.5, 4.0, 0.6, 1.5};       // Feedback matrice for pitch.
+inline const double PILOT_CTRL_L_YAW_RATE[PILOT_CTRL_L_SIZE] = {0.0, 0.02, 0.04, 0.01}; // Feedback matrice for yaw-rate. Note, first state not used.
 
 inline const double PILOT_CTRL_ALPHA_PHI = 5.0;   // Reduced observer parameter for phi.
 inline const double PILOT_CTRL_ALPHA_THETA = 5.0; // Reduced observer parameter for theta.

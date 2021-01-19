@@ -111,8 +111,8 @@ def _plot_rc(data: Signals):
     axs[0, 0].plot(data.Rc.GimbalLeftY.t_s, data.Rc.GimbalLeftY.val, label='Y')
     axs[0, 0].set(ylabel='Gimbal left [-]')
 
-    axs[0, 1].plot(data.Rc.GimbalRightX.t_s, data.Rc.GimbalRightX.val, label='Z')
-    axs[0, 1].plot(data.Rc.GimbalRightY.t_s, data.Rc.GimbalRightY.val, label='Z')
+    axs[0, 1].plot(data.Rc.GimbalRightX.t_s, data.Rc.GimbalRightX.val, label='X')
+    axs[0, 1].plot(data.Rc.GimbalRightY.t_s, data.Rc.GimbalRightY.val, label='Y')
     axs[0, 1].set(ylabel='Gimbal right [-]')
 
     axs[1, 0].plot(data.Rc.SwitchLeft.t_s, data.Rc.SwitchLeft.val, label='Left')

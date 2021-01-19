@@ -322,22 +322,30 @@ protected:
 
     void _execute()
     {
+        int16_t motor_cmd;
+        SwitchLr switch_left;
+
+        _data_log_queue.last_signal_data(&switch_left, DataLogSignal::RcSwitchLeft, SwitchLr::High);
+
         for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
         {
-            int16_t motor_cmd;
-            _data_log_queue.last_signal_data(&motor_cmd, _sid_motor_cmd[i_esc]);
-
-            _esc[i_esc].write(motor_cmd);
+            switch(switch_left)
+            {
+                case SwitchLr::Low:
+                    _data_log_queue.last_signal_data(&motor_cmd, _sid_motor_cmd[i_esc]);
+                    _esc[i_esc].write(motor_cmd);
+                    break;
+                case SwitchLr::Middle:
+                    _esc[i_esc].arm_fast();
+                    break;
+                case SwitchLr::High:
+                    // Do nothing (disarm).
+                    break;
+                default:
+                    // Do nothing (disarm).
+                    break;
+            }
             _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskExecute);
-        }
-    }
-
-    void _finish()
-    {
-        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
-        {
-            _esc[i_esc].write(0); // To make sure esc's halt.
-            _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskFinish);
         }
     }
 
@@ -431,28 +439,25 @@ void print_env_vars()
     logger.debug("LOGGER_LEVEL: " + LOGGER_LEVEL);
 }
 
+bool is_shutdown_ready(DataLogQueue& data_log_queue)
+{
+    SwitchLr switch_left = SwitchLr::Low;
+    SwitchM switch_middle = SwitchM::High;
+
+    data_log_queue.last_signal_data(&switch_left, DataLogSignal::RcSwitchLeft, SwitchLr::Low);
+    data_log_queue.last_signal_data(&switch_middle, DataLogSignal::RcSwitchMiddle, SwitchM::High);
+
+    return ((switch_left == SwitchLr::High) && (switch_middle == SwitchM::Low));
+}
+
 void wait_for_shutdown(DataLogQueue& data_log_queue)
 {
-    SwitchM rc_switch_middle = SwitchM::High;
-
-    while (rc_switch_middle == SwitchM::High)
+    while (!is_shutdown_ready(data_log_queue))
     {
-        data_log_queue.last_signal_data(&rc_switch_middle, DataLogSignal::RcSwitchMiddle, SwitchM::High);
-
-        switch(rc_switch_middle)
-        {
-            case SwitchM::Low:
-                logger.info("Rc middle switch: low. Will shutdown.");
-                break;
-            case SwitchM::High:
-                logger.debug("Rc middle switch: high. Keep running.");
-                break;
-            default:
-                break;
-        }
-
+        logger.debug("Shutdown not ready. Keep running.");
         std::this_thread::sleep_for(std::chrono::milliseconds(MAIN_SLEEP_MS));
     }
+    logger.info("Shutdown is ready. Will shutdown.");
 }
 
 int main()

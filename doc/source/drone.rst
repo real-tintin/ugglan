@@ -120,6 +120,25 @@ header below.
         }
     }
 
+State Machine
+---------------
+
+User Operator
+^^^^^^^^^^^^^
+
+.. mermaid::
+    :caption: User operation of ESC's. LS: Left Switch. MS: Middle Switch.
+
+    stateDiagram
+
+        [*] --> SoundEsc
+        SoundEsc --> Disarmed
+        Disarmed --> Armed: LS Mid
+        Armed --> Disarmed: LS Hi
+        Armed --> Alive: LS Lo
+        Alive --> Armed: LS Mid
+        Disarmed --> [*]: MS Lo
+
 Hardware
 =================
 .. _ugglan_in_person:
@@ -475,7 +494,9 @@ for yaw-rate) i.e., :math:`\mathbf{x}\in\mathbb{R}^4`.
     Tuning and parameter selection for yaw-rate control.
 
 In the above figures :math:`u` corresponds to :eq:`cont_state_feedback` and
-:math:`\tilde{u}` to :eq:`disc_state_feedback`.
+:math:`\tilde{u}` to :eq:`disc_state_feedback`. The abs-max value of the integrated
+state (reference error) is also shown to determine a suitable value for anti-windup
+i.e., to handle a large overshoot/instability caused by the integration.
 
 Motor Control
 ------------------
@@ -586,7 +607,7 @@ Hence, the final conversion is given by
 .. math::
     u_{M_i} =
     \begin{cases}
-        57\omega_{M_iz} - 9675 & \text{if } \omega_{M_iz} > 0 \\
+        57\omega_{M_iz} - 9675 & \text{if } \omega_{M_iz} \geq 200 \\
         0 & \text{otherwise}
     \end{cases}.
 

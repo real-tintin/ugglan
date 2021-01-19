@@ -81,6 +81,8 @@ public:
     AfroEsc(I2cConn& i2c_conn);
 
     void arm();
+    void arm_fast();
+    
     void read();
     void write(int16_t motor_cmd);
 

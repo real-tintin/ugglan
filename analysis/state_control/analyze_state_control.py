@@ -7,9 +7,11 @@ from state_space import State
 
 STEP_INFO_STR = 'rise time: {:.2f} s\n' \
                 'peak: {:.2f}\n' \
-                'overshoot: {:.1f} %'
+                'overshoot: {:.1f} %\n\n\n' \
+                '$\max(|\int x|)$: {:.3f}'
 
-SLIDER_STEP_SIZE = 0.1
+SLIDER_STEP_ALPHA = 0.1
+SLIDER_MAX_ALPHA = 10
 
 SLIDER_INIT_POS = np.array([0.20, 0.18, 0.60, 0.01])
 SLIDER_DELTA_POS = np.array([0, -0.03, 0, 0])
@@ -42,7 +44,9 @@ def analyze_step(state: State,
                  alpha_0: float,
                  t_end: float,
                  title: str,
-                 ref_state_ylabel: str):
+                 ref_state_ylabel: str,
+                 slider_step_L: float = 0.1,
+                 slider_max_L: float = 10):
     """
     Analysis tool for tuning and selecting the state feedback
     controller u = -Lx.
@@ -81,11 +85,11 @@ def analyze_step(state: State,
     for i_slider in range(L_0.size):
         sliders_L.append(Slider(
             plt.axes(SLIDER_INIT_POS + SLIDER_DELTA_POS * i_slider),
-            'L_' + str(i_slider + 1), 0, 10, valinit=L_0[0, i_slider], valstep=SLIDER_STEP_SIZE
+            'L_' + str(i_slider + 1), 0, slider_max_L, valinit=L_0[0, i_slider], valstep=slider_step_L
         ))
 
     slider_alpha = Slider(plt.axes(SLIDER_INIT_POS + SLIDER_DELTA_POS * L_0.size),
-                          r'$\alpha$', 0, 10, valinit=alpha_0, valstep=SLIDER_STEP_SIZE)
+                          r'$\alpha$', 0, SLIDER_MAX_ALPHA, valinit=alpha_0, valstep=SLIDER_STEP_ALPHA)
 
     def _update_plot(val=None):
         # Get parameters to tune controller & observer
@@ -97,7 +101,8 @@ def analyze_step(state: State,
         si = step_response.step_info(t, x[ref_state_idx])
 
         # Update and re-draw plot
-        tb_step_info.set_text(STEP_INFO_STR.format(si.rise_time, si.peak, si.overshoot))
+        x_intg_abs_max = np.max(np.abs(x[0]))
+        tb_step_info.set_text(STEP_INFO_STR.format(si.rise_time, si.peak, si.overshoot, x_intg_abs_max))
 
         line_x.set_data(t, x[ref_state_idx])
         line_u.set_data(t, u)
@@ -125,7 +130,7 @@ def main():
                  add_intg_state=True,
                  x_0=np.zeros((4, 1)),
                  x_r=np.array([[0, np.pi / 8, 0, 0]]).transpose(),
-                 L_0=np.array([[0.5, 4.0, 0.6, 1.5]]),
+                 L_0=np.array([[1.5, 4.0, 0.6, 1.5]]),
                  alpha_0=5.0,
                  t_end=1,
                  title=r'Step in roll ($\phi$) & pitch ($\theta$)',
@@ -135,11 +140,13 @@ def main():
                  add_intg_state=False,
                  x_0=np.zeros((3, 1)),
                  x_r=np.array([[0, np.pi, 0]]).transpose(),
-                 L_0=np.array([[0.1, 0.2, 0.3]]),
+                 L_0=np.array([[0.02, 0.04, 0.01]]),
                  alpha_0=5.0,
-                 t_end=2,
+                 t_end=10,
                  title=r'Step in yaw-rate ($\dot\psi$)',
-                 ref_state_ylabel='Angular-rate [rad/s]')
+                 ref_state_ylabel='Angular-rate [rad/s]',
+                 slider_step_L=0.01,
+                 slider_max_L=0.1)
 
 
 if __name__ == '__main__':
