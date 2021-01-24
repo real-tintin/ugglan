@@ -39,7 +39,7 @@ the consumers, see :numref:`drone_sw_design`.
 
         ImuAccMag -- push 50 Hz --> DataLogQueue
         ImuGyro -- push 50 Hz --> DataLogQueue
-        ImuPres -- push 10 Hz --> DataLogQueue
+        ImuPres -- push 12.5 Hz --> DataLogQueue
         EscRead -- push 5 Hz --> DataLogQueue
         RcReceiver -- push 50 Hz --> DataLogQueue
 
@@ -68,7 +68,7 @@ rate i.e., to simplify the signal processing. Note, other tasks than producers m
 the queue e.g., estimated states which are useful for offline tuning of control laws.
 
 Note, some signals such as the ones from the pressure sensor will only be sampled
-at 10 Hz. This has to be handled by the state controller.
+at 12.5 Hz. This has to be handled by the state controller.
 
 Data Logging
 -----------------
@@ -131,8 +131,8 @@ User Operator
 
     stateDiagram
 
-        [*] --> SoundEsc
-        SoundEsc --> Disarmed
+        [*] --> Sound
+        Sound --> Disarmed
         Disarmed --> Armed: LS Mid
         Armed --> Disarmed: LS Hi
         Armed --> Alive: LS Lo
@@ -497,6 +497,16 @@ In the above figures :math:`u` corresponds to :eq:`cont_state_feedback` and
 :math:`\tilde{u}` to :eq:`disc_state_feedback`. The abs-max value of the integrated
 state (reference error) is also shown to determine a suitable value for anti-windup
 i.e., to handle a large overshoot/instability caused by the integration.
+
+In :numref:`rc_gimbal_def_pilot` the RC-gimbal definitions for the pilot controller
+are given.
+
+.. _rc_gimbal_def_pilot:
+.. figure:: figures/rc_gimbal_def_pilot.svg
+    :width: 75%
+
+    RC-gimbal definitions for the pilot controller. The arrow indicates
+    positive direction. Note that thrust implies negative :math:`F_z` i.e., lift.
 
 Motor Control
 ------------------

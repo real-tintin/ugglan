@@ -36,7 +36,7 @@ inline const double L3GD20H_GYRO_RESOLUTION = 32767; // 2^15-1 (16-bit signed in
 
 // Config and read map
 inline const ConfigMap L3GD20H_CONFIG_MAP = {
-    {L3GD20H_CTRL1, 0b01011111}, // Enable XYZ gyro axis at 200 Hz, normal mode
+    {L3GD20H_CTRL1, 0b00011111}, // Enable XYZ gyro axis at 100 Hz, normal mode
     {L3GD20H_CTRL4, 0b00010000}  // Continues data with scaling 500 deg/s
     };
 

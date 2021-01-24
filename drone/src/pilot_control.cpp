@@ -23,10 +23,10 @@ PilotCtrlRef tgyia6c_to_pilot_ctrl_ref(double gimbal_left_x,  /* [0.0-1.0] */
 {
     PilotCtrlRef ref;
 
-    ref.roll = (_ROTATION_SCALE * _range_ref(gimbal_right_x) + _ROTATION_OFFSET) * PILOT_CTRL_SCALE_REF_ROLL;
-    ref.pitch = (_ROTATION_SCALE * _range_ref(gimbal_right_y) + _ROTATION_OFFSET) * PILOT_CTRL_SCALE_REF_PITCH;
-    ref.yaw_rate = (_ROTATION_SCALE * _range_ref(gimbal_left_x) + _ROTATION_OFFSET) * PILOT_CTRL_SCALE_REF_YAW_RATE;
-    ref.f_z = _range_ref(gimbal_left_y) * PILOT_CTRL_SCALE_REF_F_Z;
+    ref.roll = (_ROTATION_SCALE * _range_ref(gimbal_right_x) + _ROTATION_OFFSET) * PILOT_CTRL_ABS_MAX_REF_ROLL;
+    ref.pitch = - (_ROTATION_SCALE * _range_ref(gimbal_right_y) + _ROTATION_OFFSET) * PILOT_CTRL_ABS_MAX_REF_PITCH;
+    ref.yaw_rate = (_ROTATION_SCALE * _range_ref(gimbal_left_x) + _ROTATION_OFFSET) * PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
+    ref.f_z = - _range_ref(gimbal_left_y) * PILOT_CTRL_ABS_MAX_REF_F_Z;
 
     return ref;
 }

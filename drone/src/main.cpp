@@ -22,7 +22,7 @@ static const std::string LOGGER_LEVEL = get_env_str("LOGGER_LEVEL");
 
 static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS            = 20;  // 50 Hz
 static const uint32_t TASK_GYRO_EXEC_PERIOD_MS               = 20;  // 50 Hz
-static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS          = 100; // 10 Hz
+static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS          = 80; // 12.5 Hz
 static const uint32_t TASK_STATE_EST_AND_CTRL_EXEC_PERIOD_MS = 20;  // 50 Hz
 static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS           = 200; // 5 Hz
 static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS          = 20;  // 50 Hz

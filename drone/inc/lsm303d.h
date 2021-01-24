@@ -57,9 +57,9 @@ inline const double LSM303D_MAG_RESOLUTION = 32767; // 2^15-1 (16-bit signed int
 
 // Config and read map
 inline const ConfigMap LSM303D_CONFIG_MAP = {
-    {LSM303D_CTRL1, 0b01110111}, // Enable XYZ accelerometer axis for continues output at 200 Hz
+    {LSM303D_CTRL1, 0b01100111}, // Enable XYZ accelerometer axis for continues output at 100 Hz
     {LSM303D_CTRL2, 0b00001000}, // Accelerometer scale selection, ± 4 g
-    {LSM303D_CTRL5, 0b01110000}, // Enable magnetometer at 50 Hz in high resolution mode
+    {LSM303D_CTRL5, 0b01110100}, // Enable magnetometer at 100 Hz in high resolution mode
     {LSM303D_CTRL6, 0b00100000}, // Magnetometer scale selection, ± 4 gauss
     {LSM303D_CTRL7, 0b00000000}  // Magnetometer normal, continuous-conversion mode
     };

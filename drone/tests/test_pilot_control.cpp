@@ -26,7 +26,7 @@ TEST_CASE("pilot control")
     }
     SECTION("ctrl in fz")
     {
-        ref.f_z = PILOT_CTRL_SCALE_REF_F_Z;
+        ref.f_z = -PILOT_CTRL_ABS_MAX_REF_F_Z;
 
         pilot_ctrl.update(est, ref);
         ctrl = pilot_ctrl.get_ctrl();
@@ -38,7 +38,7 @@ TEST_CASE("pilot control")
     }
     SECTION("positive ctrl in mx")
     {
-        ref.roll = PILOT_CTRL_SCALE_REF_ROLL;
+        ref.roll = PILOT_CTRL_ABS_MAX_REF_ROLL;
 
         pilot_ctrl.update(est, ref);
         ctrl = pilot_ctrl.get_ctrl();
@@ -50,7 +50,7 @@ TEST_CASE("pilot control")
     }
     SECTION("negative ctrl in mx")
     {
-        ref.roll = -PILOT_CTRL_SCALE_REF_ROLL;
+        ref.roll = -PILOT_CTRL_ABS_MAX_REF_ROLL;
 
         pilot_ctrl.update(est, ref);
         ctrl = pilot_ctrl.get_ctrl();
@@ -62,7 +62,7 @@ TEST_CASE("pilot control")
     }
     SECTION("positive ctrl in my")
     {
-        ref.pitch = PILOT_CTRL_SCALE_REF_PITCH;
+        ref.pitch = PILOT_CTRL_ABS_MAX_REF_PITCH;
 
         pilot_ctrl.update(est, ref);
         ctrl = pilot_ctrl.get_ctrl();
@@ -74,7 +74,7 @@ TEST_CASE("pilot control")
     }
     SECTION("negative ctrl in my")
     {
-        ref.pitch = -PILOT_CTRL_SCALE_REF_PITCH;
+        ref.pitch = -PILOT_CTRL_ABS_MAX_REF_PITCH;
 
         pilot_ctrl.update(est, ref);
         ctrl = pilot_ctrl.get_ctrl();
@@ -86,7 +86,7 @@ TEST_CASE("pilot control")
     }
     SECTION("positive ctrl in mz")
     {
-        ref.yaw_rate = PILOT_CTRL_SCALE_REF_YAW_RATE;
+        ref.yaw_rate = PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
 
         pilot_ctrl.update(est, ref);
         ctrl = pilot_ctrl.get_ctrl();
@@ -98,7 +98,7 @@ TEST_CASE("pilot control")
     }
     SECTION("negative ctrl in mz")
     {
-        ref.yaw_rate = -PILOT_CTRL_SCALE_REF_YAW_RATE;
+        ref.yaw_rate = -PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
 
         pilot_ctrl.update(est, ref);
         ctrl = pilot_ctrl.get_ctrl();
@@ -112,9 +112,9 @@ TEST_CASE("pilot control")
     {
         uint16_t n_updates_to_sat = 1000;
 
-        ref.roll = PILOT_CTRL_SCALE_REF_ROLL;
-        ref.pitch = PILOT_CTRL_SCALE_REF_PITCH;
-        ref.yaw_rate = PILOT_CTRL_SCALE_REF_YAW_RATE;
+        ref.roll = PILOT_CTRL_ABS_MAX_REF_ROLL;
+        ref.pitch = PILOT_CTRL_ABS_MAX_REF_PITCH;
+        ref.yaw_rate = PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
 
         for (uint16_t x = 0; x < n_updates_to_sat; x++) { pilot_ctrl.update(est, ref); }
         BodyControl saturated_ctrl = pilot_ctrl.get_ctrl();
@@ -143,18 +143,18 @@ TEST_CASE("tgyia6c_to_pilot_ctrl_ref")
     {
         PilotCtrlRef ref = tgyia6c_to_pilot_ctrl_ref(0.0, 1.0, 0.0, 1.0);
 
-        REQUIRE(fabs(ref.roll + PILOT_CTRL_SCALE_REF_ROLL) <= FLOAT_TOL);
-        REQUIRE(fabs(ref.pitch - PILOT_CTRL_SCALE_REF_PITCH) <= FLOAT_TOL);
-        REQUIRE(fabs(ref.yaw_rate + PILOT_CTRL_SCALE_REF_YAW_RATE) <= FLOAT_TOL);
-        REQUIRE(fabs(ref.f_z - PILOT_CTRL_SCALE_REF_F_Z) <= FLOAT_TOL);
+        REQUIRE(fabs(ref.roll + PILOT_CTRL_ABS_MAX_REF_ROLL) <= FLOAT_TOL);
+        REQUIRE(fabs(ref.pitch + PILOT_CTRL_ABS_MAX_REF_PITCH) <= FLOAT_TOL);
+        REQUIRE(fabs(ref.yaw_rate + PILOT_CTRL_ABS_MAX_REF_YAW_RATE) <= FLOAT_TOL);
+        REQUIRE(fabs(ref.f_z + PILOT_CTRL_ABS_MAX_REF_F_Z) <= FLOAT_TOL);
     }
     SECTION("range limit")
     {
         PilotCtrlRef ref = tgyia6c_to_pilot_ctrl_ref(1.1, -1.1, 1.1, -1.1);
 
-        REQUIRE(fabs(ref.roll - PILOT_CTRL_SCALE_REF_ROLL) <= FLOAT_TOL);
-        REQUIRE(fabs(ref.pitch + PILOT_CTRL_SCALE_REF_PITCH) <= FLOAT_TOL);
-        REQUIRE(fabs(ref.yaw_rate - PILOT_CTRL_SCALE_REF_YAW_RATE) <= FLOAT_TOL);
+        REQUIRE(fabs(ref.roll - PILOT_CTRL_ABS_MAX_REF_ROLL) <= FLOAT_TOL);
+        REQUIRE(fabs(ref.pitch - PILOT_CTRL_ABS_MAX_REF_PITCH) <= FLOAT_TOL);
+        REQUIRE(fabs(ref.yaw_rate - PILOT_CTRL_ABS_MAX_REF_YAW_RATE) <= FLOAT_TOL);
         REQUIRE(fabs(ref.f_z - 0.0) <= FLOAT_TOL);
     }
 }
