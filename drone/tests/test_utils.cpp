@@ -3,6 +3,8 @@
 #include <string>
 #include <utils.h>
 
+using namespace utils;
+
 static const std::string VALID_ENV = "CATCH_TEST_GETENV";
 static const std::string VALID_ENV_EXP = "test_getenv";
 

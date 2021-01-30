@@ -38,8 +38,8 @@ uint8_t READ_BUF[AFRO_READ_BUF_SIZE] =
     AFRO_IF_ALIVE_BYTE
 };
 
-static I2cWriteMap WRITE_MAP = {AFRO_WRITE_THROTTLE_H};
-static I2cReadBlockMap READ_MAP = { {AFRO_READ_REV_H, READ_BUF} };
+static I2cWriteMap WRITE_MAP = {AFRO_REG_WRITE_THROTTLE_H};
+static I2cReadBlockMap READ_MAP = { {AFRO_REG_READ_REV_H, READ_BUF} };
 
 TEST_CASE("afro esc")
 {

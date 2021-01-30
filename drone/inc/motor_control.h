@@ -1,11 +1,10 @@
 #include <cstdint>
 #include <math.h>
 #include <array>
+#include <drone_props.h>
 
 #ifndef MOTOR_CONTROL_H
 #define MOTOR_CONTROL_H
-
-inline const uint8_t N_MOTORS = 4;
 
 struct BodyControl
 {
@@ -15,7 +14,7 @@ struct BodyControl
     double m_z; // [Nm]
 };
 
-typedef std::array<int16_t, N_MOTORS> MotorControl;
+typedef std::array<int16_t, droneprops::N_MOTORS> MotorControl;
 
 MotorControl body_to_motor_controls(BodyControl& body_controls);
 

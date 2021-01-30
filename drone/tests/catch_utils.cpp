@@ -1,6 +1,6 @@
 #include <catch_utils.h>
 
-namespace catch_utils
+namespace catchutils
 {
     std::string read_file(std::filesystem::path path)
     {

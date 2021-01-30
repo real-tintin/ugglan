@@ -16,10 +16,10 @@ enum class LogLevel {
     off
 };
 
-inline const std::string OUT_LEVEL_DEBUG = "DEBUG";
-inline const std::string OUT_LEVEL_INFO  = "INFO ";
-inline const std::string OUT_LEVEL_WARN  = "WARN ";
-inline const std::string OUT_LEVEL_ERROR = "ERROR";
+inline const std::string LOGGER_LEVEL_STR_DEBUG = "DEBUG";
+inline const std::string LOGGER_LEVEL_STR_INFO  = "INFO ";
+inline const std::string LOGGER_LEVEL_STR_WARN  = "WARN ";
+inline const std::string LOGGER_LEVEL_STR_ERROR = "ERROR";
 
 class Logger
 {

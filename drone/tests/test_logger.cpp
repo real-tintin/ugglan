@@ -17,7 +17,7 @@ void write_at_all_levels()
 TEST_CASE("logger levels")
 {
     LogLevel org_level = logger.get_level();
-    catch_utils::PatchStdCout patched_cout;
+    catchutils::PatchStdCout patched_cout;
 
     SECTION("off")
     {
@@ -29,67 +29,67 @@ TEST_CASE("logger levels")
     SECTION("debug")
     {
         std::vector<std::string> should_contain = {
-            OUT_LEVEL_DEBUG,
-            OUT_LEVEL_INFO,
-            OUT_LEVEL_WARN,
-            OUT_LEVEL_ERROR
+            LOGGER_LEVEL_STR_DEBUG,
+            LOGGER_LEVEL_STR_INFO,
+            LOGGER_LEVEL_STR_WARN,
+            LOGGER_LEVEL_STR_ERROR
         };
 
         logger.set_level(LogLevel::debug);
         write_at_all_levels();
 
-        REQUIRE(catch_utils::str_contains_all(patched_cout.get(), should_contain));
+        REQUIRE(catchutils::str_contains_all(patched_cout.get(), should_contain));
     }
     SECTION("info")
     {
         std::vector<std::string> should_contain = {
-            OUT_LEVEL_INFO,
-            OUT_LEVEL_WARN,
-            OUT_LEVEL_ERROR
+            LOGGER_LEVEL_STR_INFO,
+            LOGGER_LEVEL_STR_WARN,
+            LOGGER_LEVEL_STR_ERROR
         };
         std::vector<std::string> should_not_contain = {
-            OUT_LEVEL_DEBUG
+            LOGGER_LEVEL_STR_DEBUG
         };
 
         logger.set_level(LogLevel::info);
         write_at_all_levels();
 
-        REQUIRE(catch_utils::str_contains_all(patched_cout.get(), should_contain));
-        REQUIRE(catch_utils::str_contains_non(patched_cout.get(), should_not_contain));
+        REQUIRE(catchutils::str_contains_all(patched_cout.get(), should_contain));
+        REQUIRE(catchutils::str_contains_non(patched_cout.get(), should_not_contain));
     }
     SECTION("warn")
     {
         std::vector<std::string> should_contain = {
-            OUT_LEVEL_WARN,
-            OUT_LEVEL_ERROR
+            LOGGER_LEVEL_STR_WARN,
+            LOGGER_LEVEL_STR_ERROR
         };
         std::vector<std::string> should_not_contain = {
-            OUT_LEVEL_DEBUG,
-            OUT_LEVEL_INFO
+            LOGGER_LEVEL_STR_DEBUG,
+            LOGGER_LEVEL_STR_INFO
         };
 
         logger.set_level(LogLevel::warn);
         write_at_all_levels();
 
-        REQUIRE(catch_utils::str_contains_all(patched_cout.get(), should_contain));
-        REQUIRE(catch_utils::str_contains_non(patched_cout.get(), should_not_contain));
+        REQUIRE(catchutils::str_contains_all(patched_cout.get(), should_contain));
+        REQUIRE(catchutils::str_contains_non(patched_cout.get(), should_not_contain));
     }
     SECTION("error")
     {
         std::vector<std::string> should_contain = {
-            OUT_LEVEL_ERROR
+            LOGGER_LEVEL_STR_ERROR
         };
         std::vector<std::string> should_not_contain = {
-            OUT_LEVEL_WARN,
-            OUT_LEVEL_DEBUG,
-            OUT_LEVEL_INFO
+            LOGGER_LEVEL_STR_WARN,
+            LOGGER_LEVEL_STR_DEBUG,
+            LOGGER_LEVEL_STR_INFO
         };
 
         logger.set_level(LogLevel::error);
         write_at_all_levels();
 
-        REQUIRE(catch_utils::str_contains_all(patched_cout.get(), should_contain));
-        REQUIRE(catch_utils::str_contains_non(patched_cout.get(), should_not_contain));
+        REQUIRE(catchutils::str_contains_all(patched_cout.get(), should_contain));
+        REQUIRE(catchutils::str_contains_non(patched_cout.get(), should_not_contain));
     }
 
     logger.set_level(org_level);

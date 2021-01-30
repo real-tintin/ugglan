@@ -5,6 +5,9 @@
 #include <cstdlib>
 #include "logger.h"
 
-std::string get_env_str(std::string env);
+namespace utils
+{
+    std::string get_env_str(std::string env);
+}
 
 #endif /* UTILS_H */

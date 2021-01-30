@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 
-namespace catch_utils
+namespace catchutils
 {
     inline const std::filesystem::path TEST_ROOT = "./tests";
     inline const std::filesystem::path RESOURCES_ROOT = "./tests/resources";

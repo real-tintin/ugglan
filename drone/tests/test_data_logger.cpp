@@ -6,7 +6,7 @@
 #include <data_log_queue.h>
 #include <data_logger.h>
 
-catch_utils::TmpDir tmpdir;
+catchutils::TmpDir tmpdir;
 
 static const uint32_t EXEC_PERIOD_IMU_MS = 20; // 50 Hz
 static const uint32_t EXEC_PERIOD_ESC_MS = 10; // 100 Hz
@@ -96,7 +96,7 @@ TEST_CASE("data_logger")
     task_logger.teardown();
 
     std::string header, data;
-    std::string raw = catch_utils::read_file(data_logger.get_file_path());
+    std::string raw = catchutils::read_file(data_logger.get_file_path());
     split_raw_into_header_and_data(raw, header, data);
 
     REQUIRE(header.size() > 0);

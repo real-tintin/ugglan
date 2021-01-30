@@ -19,17 +19,17 @@ Heavily inspired by https://github.com/bluerobotics/Arduino_I2C_ESC.
 #include <i2c_conn.h>
 #endif
 
-inline const uint8_t AFRO_WRITE_THROTTLE_H = 0x00;
-inline const uint8_t AFRO_WRITE_THROTTLE_L = 0x01;
-inline const uint8_t AFRO_READ_REV_H       = 0x02;
-inline const uint8_t AFRO_READ_REV_L       = 0x03;
-inline const uint8_t AFRO_READ_VBAT_H      = 0x04;
-inline const uint8_t AFRO_READ_VBAT_L      = 0x05;
-inline const uint8_t AFRO_READ_TEMP_H      = 0x06;
-inline const uint8_t AFRO_READ_TEMP_L      = 0x07;
-inline const uint8_t AFRO_READ_CURRENT_H   = 0x08;
-inline const uint8_t AFRO_READ_CURRENT_L   = 0x09;
-inline const uint8_t AFRO_READ_ID          = 0x0A;
+inline const uint8_t AFRO_REG_WRITE_THROTTLE_H = 0x00;
+inline const uint8_t AFRO_REG_WRITE_THROTTLE_L = 0x01;
+inline const uint8_t AFRO_REG_READ_REV_H       = 0x02;
+inline const uint8_t AFRO_REG_READ_REV_L       = 0x03;
+inline const uint8_t AFRO_REG_READ_VBAT_H      = 0x04;
+inline const uint8_t AFRO_REG_READ_VBAT_L      = 0x05;
+inline const uint8_t AFRO_REG_READ_TEMP_H      = 0x06;
+inline const uint8_t AFRO_REG_READ_TEMP_L      = 0x07;
+inline const uint8_t AFRO_REG_READ_CURRENT_H   = 0x08;
+inline const uint8_t AFRO_REG_READ_CURRENT_L   = 0x09;
+inline const uint8_t AFRO_REG_READ_ID          = 0x0A;
 
 inline const uint8_t AFRO_IF_ALIVE_BYTE = 0xAB;
 
@@ -42,11 +42,6 @@ inline const double AFRO_VOLTAGE_SCALE = 32.25; // Derived from (5 * 6.45)
 inline const double AFRO_CURRENT_SCALE = 73.53; // Derived from (5 * 14.706)
 
 inline const double AFRO_CURRENT_OFFSET = -32767;
-
-inline const double AFRO_THERMISTORNOMINAL  = 10000; // Resistance at 25 degrees [C]
-inline const double AFRO_TEMPERATURENOMINAL = 25;    // Temperature for nominal resistance [C]
-inline const double AFRO_BCOEFFICIENT       = 3900;  // The beta coefficient of the thermistor (usually 3000-4000)
-inline const double AFRO_SERIESRESISTOR     = 3300;  // The value of the 'other' resistor
 
 inline const uint8_t AFRO_READ_BUF_SIZE      = 9;
 inline const uint8_t AFRO_READ_BUF_REV_H     = 0x00;
@@ -70,11 +65,6 @@ inline const uint8_t AFRO_STATUS_ERR_ARM   = 0x04;
 inline const uint8_t AFRO_STATUS_ERR_WRITE = 0x08;
 inline const uint8_t AFRO_STATUS_ERR_READ  = 0x10;
 
-inline const uint16_t AFRO_WAKE_UP_TIME_MS  = 50;
-inline const uint16_t AFRO_NUDGE_TIME_MS = 100;
-
-inline const double AFRO_MS_IN_S = 1000.0;
-
 class AfroEsc
 {
 public:
@@ -82,7 +72,7 @@ public:
 
     void arm();
     void arm_fast();
-    
+
     void read();
     void write(int16_t motor_cmd);
 

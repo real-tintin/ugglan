@@ -7,7 +7,7 @@
 #include <math.h>
 #include <attitude_estimation.h>
 #include <motor_control.h>
-#include <physical_const.h>
+#include <drone_props.h>
 
 inline const uint8_t PILOT_CTRL_X_SIZE = 3;
 inline const uint8_t PILOT_CTRL_L_SIZE = 4;

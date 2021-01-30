@@ -64,16 +64,16 @@ void Logger::_disp_msg(std::string msg, LogLevel level)
     switch(level)
     {
         case LogLevel::debug:
-            level_str = OUT_LEVEL_DEBUG;
+            level_str = LOGGER_LEVEL_STR_DEBUG;
             break;
         case LogLevel::info:
-            level_str = OUT_LEVEL_INFO;
+            level_str = LOGGER_LEVEL_STR_INFO;
             break;
         case LogLevel::warn:
-            level_str = OUT_LEVEL_WARN;
+            level_str = LOGGER_LEVEL_STR_WARN;
             break;
         case LogLevel::error:
-            level_str = OUT_LEVEL_ERROR;
+            level_str = LOGGER_LEVEL_STR_ERROR;
             break;
         default:
             throw std::runtime_error("Invalid logger level");

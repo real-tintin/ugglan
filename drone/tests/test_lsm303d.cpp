@@ -6,15 +6,15 @@
 
 static const double FLOAT_TOL = 1e-4;
 
-static I2cWriteMap WRITE_MAP = {LSM303D_CTRL1, LSM303D_CTRL2,
-    LSM303D_CTRL5, LSM303D_CTRL6, LSM303D_CTRL7};
+static I2cWriteMap WRITE_MAP = {LSM303D_REG_CTRL1, LSM303D_REG_CTRL2,
+    LSM303D_REG_CTRL5, LSM303D_REG_CTRL6, LSM303D_REG_CTRL7};
 
 void set_lsm303d_stub_data(I2cConn& i2c_conn, uint8_t acc[LSM303D_BUF_ACC_SIZE],
                            uint8_t mag[LSM303D_BUF_MAG_SIZE])
 {
     I2cReadBlockMap read_map = {
-        {LSM303D_OUT_X_L_A | POLOLU_AUTO_INCREMENT, acc},
-        {LSM303D_OUT_X_L_M | POLOLU_AUTO_INCREMENT, mag}
+        {LSM303D_REG_OUT_X_L_A | POLOLU_AUTO_INCREMENT, acc},
+        {LSM303D_REG_OUT_X_L_M | POLOLU_AUTO_INCREMENT, mag}
     };
 
     i2c_conn.set_read_block_map(read_map);

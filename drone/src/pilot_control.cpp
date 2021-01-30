@@ -1,11 +1,11 @@
 #include <pilot_control.h>
 
-static const double _C_PHI = 1 / DRONE_I_XX;
-static const double _C_THETA = 1 / DRONE_I_YY;
-static const double _C_PSI = 1 / DRONE_I_ZZ;
+static const double C_PHI = 1 / droneprops::I_XX;
+static const double C_THETA = 1 / droneprops::I_YY;
+static const double C_PSI = 1 / droneprops::I_ZZ;
 
-static const double _ROTATION_SCALE = 2.0;
-static const double _ROTATION_OFFSET = -1.0;
+static const double ROTATION_SCALE = 2.0;
+static const double ROTATION_OFFSET = -1.0;
 
 static double _range_lim(double x, double x_min, double x_max)
 {
@@ -23,9 +23,9 @@ PilotCtrlRef tgyia6c_to_pilot_ctrl_ref(double gimbal_left_x,  /* [0.0-1.0] */
 {
     PilotCtrlRef ref;
 
-    ref.roll = (_ROTATION_SCALE * _range_ref(gimbal_right_x) + _ROTATION_OFFSET) * PILOT_CTRL_ABS_MAX_REF_ROLL;
-    ref.pitch = - (_ROTATION_SCALE * _range_ref(gimbal_right_y) + _ROTATION_OFFSET) * PILOT_CTRL_ABS_MAX_REF_PITCH;
-    ref.yaw_rate = (_ROTATION_SCALE * _range_ref(gimbal_left_x) + _ROTATION_OFFSET) * PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
+    ref.roll = (ROTATION_SCALE * _range_ref(gimbal_right_x) + ROTATION_OFFSET) * PILOT_CTRL_ABS_MAX_REF_ROLL;
+    ref.pitch = - (ROTATION_SCALE * _range_ref(gimbal_right_y) + ROTATION_OFFSET) * PILOT_CTRL_ABS_MAX_REF_PITCH;
+    ref.yaw_rate = (ROTATION_SCALE * _range_ref(gimbal_left_x) + ROTATION_OFFSET) * PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
     ref.f_z = - _range_ref(gimbal_left_y) * PILOT_CTRL_ABS_MAX_REF_F_Z;
 
     return ref;
@@ -93,19 +93,19 @@ void PilotControl::_integrate_states()
 void PilotControl::_update_ctrl_mx()
 {
     _ctrl.m_x = _feedback_ctrl(_x_phi, _x_phi_prev, _ctrl.m_x,
-                          _C_PHI, PILOT_CTRL_ALPHA_PHI, PILOT_CTRL_L_ROLL);
+                          C_PHI, PILOT_CTRL_ALPHA_PHI, PILOT_CTRL_L_ROLL);
 }
 
 void PilotControl::_update_ctrl_my()
 {
     _ctrl.m_y = _feedback_ctrl(_x_theta, _x_theta_prev, _ctrl.m_y,
-                          _C_THETA, PILOT_CTRL_ALPHA_THETA, PILOT_CTRL_L_PITCH);
+                          C_THETA, PILOT_CTRL_ALPHA_THETA, PILOT_CTRL_L_PITCH);
 }
 
 void PilotControl::_update_ctrl_mz()
 {
     _ctrl.m_z = _feedback_ctrl(_x_psi, _x_psi_prev, _ctrl.m_z,
-                          _C_PSI, PILOT_CTRL_ALPHA_PSI, PILOT_CTRL_L_YAW_RATE);
+                          C_PSI, PILOT_CTRL_ALPHA_PSI, PILOT_CTRL_L_YAW_RATE);
 }
 
 void PilotControl::_update_ctrl_fz(PilotCtrlRef& ref)
@@ -121,9 +121,9 @@ double PilotControl::_feedback_ctrl(double x[PILOT_CTRL_X_SIZE],
                                     const double L[PILOT_CTRL_L_SIZE])
 {
     /* See doc for details. */
-    double beta_4 = MOTOR_TAU + _sample_rate_s * (1 + MOTOR_TAU * alpha * c);
-    double beta_1 = MOTOR_TAU / beta_4;
-    double beta_2 = -alpha * _sample_rate_s * (1 + alpha * MOTOR_TAU * c) / beta_4;
+    double beta_4 = droneprops::TAU_MOTOR + _sample_rate_s * (1 + droneprops::TAU_MOTOR * alpha * c);
+    double beta_1 = droneprops::TAU_MOTOR / beta_4;
+    double beta_2 = -alpha * _sample_rate_s * (1 + alpha * droneprops::TAU_MOTOR * c) / beta_4;
     double beta_3 = _sample_rate_s / beta_4;
 
     return (-(L[0] * x[0] +

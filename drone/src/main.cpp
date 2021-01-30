@@ -14,31 +14,32 @@
 #include <attitude_estimation.h>
 #include <motor_control.h>
 #include <pilot_control.h>
+#include <drone_props.h>
 
 #if !defined(UNIT_TEST)
 
-static const std::filesystem::path DATA_LOG_ROOT = get_env_str("DATA_LOG_ROOT");
-static const std::string LOGGER_LEVEL = get_env_str("LOGGER_LEVEL");
+static const std::filesystem::path DATA_LOG_ROOT = utils::get_env_str("DATA_LOG_ROOT");
+static const std::string LOGGER_LEVEL = utils::get_env_str("LOGGER_LEVEL");
 
 static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS            = 20;  // 50 Hz
 static const uint32_t TASK_GYRO_EXEC_PERIOD_MS               = 20;  // 50 Hz
-static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS          = 80; // 12.5 Hz
+static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS          = 80;  // 12.5 Hz
 static const uint32_t TASK_STATE_EST_AND_CTRL_EXEC_PERIOD_MS = 20;  // 50 Hz
 static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS           = 200; // 5 Hz
 static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS          = 20;  // 50 Hz
 static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS        = 20;  // 50 Hz
 static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS        = 10;  // 100 Hz
 
-static const uint8_t I2C_ADDRESS_ACC_MAG   = 0x1d;
-static const uint8_t I2C_ADDRESS_GYRO      = 0x6b;
-static const uint8_t I2C_ADDRESS_BAROMETER = 0x5d;
+static const uint8_t I2C_ADDRESS_ACC_MAG   = LSM303D_I2C_ADDRESS;
+static const uint8_t I2C_ADDRESS_GYRO      = L3GD20H_I2C_ADDRESS;
+static const uint8_t I2C_ADDRESS_BAROMETER = LPS25H_I2C_ADDRESS;
 
 static const uint8_t I2C_ADDRESS_ESC_0 = 0x2a;
 static const uint8_t I2C_ADDRESS_ESC_1 = 0x2b;
 static const uint8_t I2C_ADDRESS_ESC_2 = 0x2c;
 static const uint8_t I2C_ADDRESS_ESC_3 = 0x2d;
 
-static const uint8_t N_ESC = 4;
+static const uint8_t N_ESC = droneprops::N_MOTORS;
 
 static const std::string SERIAL_DEVICE_RC_RECEIVER = "/dev/ttyAMA0";
 

@@ -6,14 +6,14 @@
 
 static const double FLOAT_TOL = 1e-4;
 
-static I2cWriteMap WRITE_MAP = {LPS25H_CTRL_REG1, LPS25H_RES_CONF};
+static I2cWriteMap WRITE_MAP = {LPS25H_REG_CTRL_REG1, LPS25H_REG_RES_CONF};
 
 void set_lps25h_stub_data(I2cConn& i2c_conn, uint8_t pres[LPS25H_BUF_PRES_SIZE],
                           uint8_t temp[LPS25H_BUF_TEMP_SIZE])
 {
     I2cReadBlockMap read_map = {
-        {LPS25H_PRESS_OUT_XL | POLOLU_AUTO_INCREMENT, pres},
-        {LPS25H_TEMP_OUT_P_L | POLOLU_AUTO_INCREMENT, temp}
+        {LPS25H_REG_PRESS_OUT_XL | POLOLU_AUTO_INCREMENT, pres},
+        {LPS25H_REG_TEMP_OUT_P_L | POLOLU_AUTO_INCREMENT, temp}
     };
 
     i2c_conn.set_read_block_map(read_map);
