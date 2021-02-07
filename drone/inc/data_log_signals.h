@@ -108,6 +108,17 @@ enum class DataLogSignal {
     StateCtrlYawRateRef,
     StateCtrlFzRef,
 
+    StateCtrlPhi0,
+    StateCtrlPhi1,
+    StateCtrlPhi2,
+
+    StateCtrlTheta0,
+    StateCtrlTheta1,
+    StateCtrlTheta2,
+
+    StateCtrlPsi0,
+    StateCtrlPsi1,
+
     StateCtrlMx,
     StateCtrlMy,
     StateCtrlMz,
@@ -234,6 +245,17 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::StateCtrlPitchRef, {"PitchRef", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlYawRateRef, {"YawRateRef", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlFzRef, {"FzRef", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+
+    {DataLogSignal::StateCtrlPhi0, {"Phi0", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlPhi1, {"Phi1", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlPhi2, {"Phi2", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+
+    {DataLogSignal::StateCtrlTheta0, {"Theta0", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlTheta1, {"Theta1", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlTheta2, {"Theta2", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+
+    {DataLogSignal::StateCtrlPsi0, {"Psi0", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlPsi1, {"Psi1", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
 
     {DataLogSignal::StateCtrlMx, {"Mx", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlMy, {"My", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},

@@ -230,6 +230,17 @@ private:
         _data_log_queue.push(_ctrl_ref.yaw_rate, DataLogSignal::StateCtrlYawRateRef);
         _data_log_queue.push(_ctrl_ref.f_z, DataLogSignal::StateCtrlFzRef);
 
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Phi0), DataLogSignal::StateCtrlPhi0);
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Phi1), DataLogSignal::StateCtrlPhi1);
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Phi2), DataLogSignal::StateCtrlPhi2);
+
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Theta0), DataLogSignal::StateCtrlTheta0);
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Theta1), DataLogSignal::StateCtrlTheta1);
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Theta2), DataLogSignal::StateCtrlTheta2);
+
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Psi0), DataLogSignal::StateCtrlPsi0);
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Psi1), DataLogSignal::StateCtrlPsi1);
+
         _data_log_queue.push(_body_ctrl.m_x, DataLogSignal::StateCtrlMx);
         _data_log_queue.push(_body_ctrl.m_y, DataLogSignal::StateCtrlMy);
         _data_log_queue.push(_body_ctrl.m_z, DataLogSignal::StateCtrlMz);

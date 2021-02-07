@@ -41,6 +41,7 @@ def _plot_task_sample_rate(axs, signal, task_id, task_name):
 
 def _plot_imu(data):
     fig, axs = plt.subplots(3, 2)
+    fig.suptitle('IMU')
 
     axs[0, 0].plot(data.Imu.AccelerationX.t_s, data.Imu.AccelerationX.val, label='X')
     axs[0, 0].plot(data.Imu.AccelerationY.t_s, data.Imu.AccelerationY.val, label='Y')
@@ -73,6 +74,7 @@ def _plot_imu(data):
 
 def _plot_esc(data: Signals):
     fig, axs = plt.subplots(3, 2)
+    fig.suptitle('ESC')
 
     _add_esc_features(axs[0, 0], data, 'AngularRate')
     axs[0, 0].set(ylabel='Angular rate [rad/s]')
@@ -106,6 +108,7 @@ def _add_esc_features(ax, data, feature):
 
 def _plot_rc(data: Signals):
     fig, axs = plt.subplots(3, 2)
+    fig.suptitle('RC')
 
     axs[0, 0].plot(data.Rc.GimbalLeftX.t_s, data.Rc.GimbalLeftX.val, label='X')
     axs[0, 0].plot(data.Rc.GimbalLeftY.t_s, data.Rc.GimbalLeftY.val, label='Y')
@@ -131,6 +134,7 @@ def _plot_rc(data: Signals):
 
 def _plot_state_est(data: Signals):
     fig, axs = plt.subplots(2, 2)
+    fig.suptitle('State Est')
 
     axs[0, 0].plot(data.StateEst.Roll.t_s, data.StateEst.Roll.val, label=r'$\phi$')
     axs[0, 0].plot(data.StateEst.Pitch.t_s, data.StateEst.Pitch.val, label=r'$\theta$')
@@ -149,28 +153,72 @@ def _plot_state_est(data: Signals):
 
 
 def _plot_state_ctrl(data: Signals):
+    _plot_state_ctrl_phi(data)
+    _plot_state_ctrl_theta(data)
+    _plot_state_ctrl_psi(data)
+    _plot_state_ctrl_fz(data)
+
+
+def _plot_state_ctrl_phi(data: Signals):
     fig, axs = plt.subplots(2, 2)
+    fig.suptitle(r'State Ctrl: $\phi$')
 
     axs[0, 0].plot(data.StateEst.Roll.t_s, data.StateEst.Roll.val, label=r'$\phi$ [rad]')
     axs[0, 0].plot(data.StateCtrl.RollRef.t_s, data.StateCtrl.RollRef.val, label=r'$\phi_r$ [rad]')
-    axs[0, 0].plot(data.StateCtrl.Mx.t_s, data.StateCtrl.Mx.val, label=r'$u_{Mx}$ [Nm]')
 
-    axs[0, 1].plot(data.StateEst.Pitch.t_s, data.StateEst.Pitch.val, label=r'$\theta$ [rad]')
-    axs[0, 1].plot(data.StateCtrl.PitchRef.t_s, data.StateCtrl.PitchRef.val, label=r'$\theta_r$ [rad]')
-    axs[0, 1].plot(data.StateCtrl.My.t_s, data.StateCtrl.My.val, label=r'$u_{My}$ [Nm]')
+    axs[0, 1].plot(data.StateCtrl.Phi0.t_s, data.StateCtrl.Phi0.val, label=r'$\int\tilde{\phi}$ [rads]')
+    axs[0, 1].plot(data.StateCtrl.Phi1.t_s, data.StateCtrl.Phi1.val, label=r'$\tilde{\phi}$ [rad]')
+    axs[0, 1].plot(data.StateCtrl.Phi2.t_s, data.StateCtrl.Phi2.val, label=r'$\tilde{\dot{\phi}}$ [rad/s]')
 
-    axs[1, 0].plot(data.StateEst.YawRate.t_s, data.StateEst.YawRate.val, label=r'$\dot{\psi}$ [rad/s]')
-    axs[1, 0].plot(data.StateCtrl.YawRateRef.t_s, data.StateCtrl.YawRateRef.val, label=r'$\dot{\psi}_r$ [rad/s]')
+    axs[1, 0].plot(data.StateCtrl.Mx.t_s, data.StateCtrl.Mx.val, label=r'$u_{Mx}$ [Nm]')
+
+    _finish_subplots(fig)
+
+
+def _plot_state_ctrl_theta(data: Signals):
+    fig, axs = plt.subplots(2, 2)
+    fig.suptitle(r'State Ctrl: $\theta$')
+
+    axs[0, 0].plot(data.StateEst.Pitch.t_s, data.StateEst.Pitch.val, label=r'$\theta$ [rad]')
+    axs[0, 0].plot(data.StateCtrl.PitchRef.t_s, data.StateCtrl.PitchRef.val, label=r'$\theta_r$ [rad]')
+
+    axs[0, 1].plot(data.StateCtrl.Theta0.t_s, data.StateCtrl.Theta0.val, label=r'$\int\tilde{\theta}$ [rads]')
+    axs[0, 1].plot(data.StateCtrl.Theta1.t_s, data.StateCtrl.Theta1.val, label=r'$\tilde{\theta}$ [rad]')
+    axs[0, 1].plot(data.StateCtrl.Theta2.t_s, data.StateCtrl.Theta2.val, label=r'$\tilde{\dot{\theta}}$ [rad/s]')
+
+    axs[1, 0].plot(data.StateCtrl.My.t_s, data.StateCtrl.My.val, label=r'$u_{My}$ [Nm]')
+
+    _finish_subplots(fig)
+
+
+def _plot_state_ctrl_psi(data: Signals):
+    fig, axs = plt.subplots(2, 2)
+    fig.suptitle(r'State Ctrl: $\psi$')
+
+    axs[0, 0].plot(data.StateEst.YawRate.t_s, data.StateEst.YawRate.val, label=r'$\dot{\psi}$ [rad/s]')
+    axs[0, 0].plot(data.StateCtrl.YawRateRef.t_s, data.StateCtrl.YawRateRef.val, label=r'$\dot{\psi}_r$ [rad/s]')
+
+    axs[0, 1].plot(data.StateCtrl.Psi0.t_s, data.StateCtrl.Psi0.val, label=r'$\int\tilde{\dot{\psi}}$ [rad]')
+    axs[0, 1].plot(data.StateCtrl.Psi1.t_s, data.StateCtrl.Psi1.val, label=r'$\tilde{\dot{\psi}}$ [rad/s]')
+
     axs[1, 0].plot(data.StateCtrl.Mz.t_s, data.StateCtrl.Mz.val, label=r'$u_{Mz}$ [Nm]')
 
-    axs[1, 1].plot(data.StateCtrl.FzRef.t_s, data.StateCtrl.FzRef.val, label=r'$F_{zr}$ [N]')
-    axs[1, 1].plot(data.StateCtrl.Fz.t_s, data.StateCtrl.Fz.val, label=r'$u_{Fz}$ [N]')
+    _finish_subplots(fig)
+
+
+def _plot_state_ctrl_fz(data: Signals):
+    fig, axs = plt.subplots(1, 1)
+    fig.suptitle(r'State Ctrl: $F_z$')
+
+    axs.plot(data.StateCtrl.FzRef.t_s, data.StateCtrl.FzRef.val, label=r'$F_{zr}$ [N]')
+    axs.plot(data.StateCtrl.Fz.t_s, data.StateCtrl.Fz.val, label=r'$u_{Fz}$ [N]')
 
     _finish_subplots(fig)
 
 
 def _plot_tasks(data: Signals):
     fig, axs = plt.subplots(3, 2)
+    fig.suptitle('Task State')
 
     _plot_task_sample_rate(axs[0, 0], data.Task.Execute, TaskId.AccMag, 'AccMag')
     _plot_task_sample_rate(axs[0, 0], data.Task.Execute, TaskId.Gyro, 'Gyro')

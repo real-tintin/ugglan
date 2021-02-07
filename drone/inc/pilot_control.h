@@ -29,6 +29,17 @@ inline const double PILOT_CTRL_ALPHA_PHI = 5.0;   // Reduced observer parameter 
 inline const double PILOT_CTRL_ALPHA_THETA = 5.0; // Reduced observer parameter for theta.
 inline const double PILOT_CTRL_ALPHA_PSI = 5.0;   // Reduced observer parameter for psi.
 
+enum class PilotCtrlState {
+    Phi0,   // [rads]
+    Phi1,   // [rad]
+    Phi2,   // [rad/s]
+    Theta0, // [rads]
+    Theta1, // [rad]
+    Theta2, // [rad/s]
+    Psi0,   // [rad]
+    Psi1    // [rad/s]
+};
+
 struct PilotCtrlRef
 {
     double roll;     // [rad]
@@ -48,6 +59,8 @@ public:
     void update(AttEstimate est, PilotCtrlRef ref);
 
     BodyControl get_ctrl();
+
+    double get_state(PilotCtrlState state);
 private:
     const double _sample_rate_s;
 

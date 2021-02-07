@@ -53,6 +53,31 @@ BodyControl PilotControl::get_ctrl()
     return _ctrl;
 }
 
+double PilotControl::get_state(PilotCtrlState state)
+{
+    switch (state)
+    {
+        case PilotCtrlState::Phi0:
+            return _x_phi[0];
+        case PilotCtrlState::Phi1:
+            return _x_phi[1];
+        case PilotCtrlState::Phi2:
+            return _x_phi[2];
+        case PilotCtrlState::Theta0:
+            return _x_theta[0];
+        case PilotCtrlState::Theta1:
+            return _x_theta[1];
+        case PilotCtrlState::Theta2:
+            return _x_theta[2];
+        case PilotCtrlState::Psi0:
+            return _x_psi[1]; // Re-map Psi0 : x[1], since _x_psi[0] is not used.
+        case PilotCtrlState::Psi1:
+            return _x_psi[2]; // Re-map Psi1 : x[2], since _x_psi[0] is not used.
+        default:
+            return 0; // Should never be reached.
+    }
+}
+
 void PilotControl::_store_old_states()
 {
     std::memcpy(_x_phi_prev, _x_phi, sizeof(double) * PILOT_CTRL_X_SIZE);
