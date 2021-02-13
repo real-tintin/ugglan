@@ -1,0 +1,14 @@
+# Makefile for cross compiling of Ugglan for target
+# (Raspberry Pi Zero) and creating a Debian package.
+#
+
+RASPI_ROOT = /$(shell pwd)/
+RASPI_ROOT_MOUNTED = /raspi_mount
+
+.PHONY: build_dpkg_in_docker
+
+build_dpkg_in_docker:
+	docker build -f Dockerfile_raspi . -t raspi
+	docker run -v $(RASPI_ROOT):${RASPI_ROOT_MOUNTED} \
+	           -e ROOT_MOUNTED=${RASPI_ROOT_MOUNTED} \
+			    raspi /raspi/build_dpkg.sh

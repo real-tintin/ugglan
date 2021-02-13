@@ -2,12 +2,14 @@ Development
 *****************
 Test driven development is emphasized in this project.
 
+.. _py_unit_testing:
+
 Python Unit Testing
 ====================
 The unit test framework ``pytest`` is used for unit testing of the Python
-code (mainly used for analysis). To execute all tests simply run::
+code (mainly used for tools). To execute all tests (and build pkg)::
 
-    py -m pytest ./analysis
+    make -C ./tools -f Makefile
 
 C++ Unit Testing
 =================
@@ -16,7 +18,7 @@ the test framework `Catch 2 <https://github.com/catchorg/Catch2>`_ is used.
 
 To run all unit tests in docker::
 
-    make -C ./drone -f Makefile_tests
+    make -C ./raspi -f Makefile_tests
 
 ESC Compile & Flash
 =====================
@@ -44,7 +46,7 @@ Note, to change the default rotation direction, modify ``MOTOR_REVERSE`` in *tgy
 
 Setup Env on Target
 ====================
-Before deploying on target (Raspbian)
+Todo's before deploying on target (Raspbian).
 
 External devices
 ----------------
@@ -64,7 +66,7 @@ configure the needed pins on the Pi, add the following to the end of ``/boot/con
 Install GCC 9.1
 ----------------
 The C++ application is compiled using gcc 9.1 (for C++17) and needs to be installed on the Pi
-(dependent libs). See ``./drone/Dockerfile_raspi`` for details.
+(dependent libs). See ``./raspi/Dockerfile_raspi`` for details.
 
 Remote access
 --------------
@@ -72,18 +74,30 @@ Setup wpa supplicant and interfaces for remote access e.g., connect to a hotspot
 
 Build for & Deploy on Target
 =============================
-To build for target. The source is cross compiled in a Raspbian Docker container::
+To build for target, the source is cross compiled in a Raspbian Docker container::
 
-    make -C ./drone -f Makefile_dpkg
+    make -C ./raspi -f Makefile_dpkg
 
-This will also create a Debian package (``ugglan.deb``) which can easily be deployed on target
-by using::
+This will also build a Debian package (``ugglan.deb``) which can easily be deployed on
+target by using::
 
     dpkg --install path/to/ugglan.deb
 
-Python Modules
-===============
-When new Python modules are needed and installed, the ``requirements.txt`` shall be
+Tools
+======
+For development various tools are made available e.g., tuning of the state
+controller. These are written in Python and bundled in a package. To install
+see :ref:`py_unit_testing`.
+
+Beside the possibility to importing and use the modules, some useful cli's
+(console scripts) are made available e.g., plotting and analysis of a data
+log file::
+
+    plot-data-log path/to/file.dat
+
+Python Requirements
+====================
+When new Python packages are needed and installed, the ``requirements.txt`` shall be
 updated accordingly. Under python virtual env::
 
     py -m pip freeze > requirements.txt
