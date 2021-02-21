@@ -1,0 +1,17 @@
+name: learn-github-actions
+on: [push]
+jobs:
+  ci-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build doc
+        run: make -C ./doc
+
+      - name: Build & unit test tools
+        run: make -C ./tools
+
+      - name: Build & unit test raspi
+        run: make -C ./raspi -f Makefile_tests

@@ -87,7 +87,9 @@ Tools
 ======
 For development various tools are made available e.g., tuning of the state
 controller. These are written in Python and bundled in a package. To install
-see :ref:`py_unit_testing`.
+locally::
+
+    pip install -e ./tools/
 
 Beside the possibility to importing and use the modules, some useful cli's
 (console scripts) are made available e.g., plotting and analysis of a data

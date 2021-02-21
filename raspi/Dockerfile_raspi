@@ -28,3 +28,6 @@ RUN ln -s /usr/lib/arm-linux-gnueabihf/crtn.o /usr/lib/crtn.o
 ENV ROOT /raspi
 WORKDIR ${ROOT}
 COPY . ${ROOT}
+
+# Make entry shell script executable
+RUN chmod +x ./build_dpkg.sh

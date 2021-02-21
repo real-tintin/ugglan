@@ -1,18 +1,21 @@
-# Minimal makefile for Sphinx documentation
+# Makefile for building the Sphinx documentation in
+# a docker container.
 #
 
-# You can set these variables from the command line, and also
-# from the environment for the first two.
-SPHINXOPTS    ?=
-SPHINXBUILD   = python -m sphinx
-SOURCEDIR     = source/
-BUILDDIR      = build/
+DOC_ROOT = /$(shell pwd)/
+DOC_ROOT_MNT = /doc
 
-# Build sphinx doc with optional arguments.
+SPHINXOPTS  ?=
+SPHINXBUILD = python -m sphinx
+SOURCEDIR   = source/
+BUILDDIR    = build/
+
 .PHONY: build
 build:
-	$(SPHINXBUILD) "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	docker build . -t sphinx
+	docker run -v $(DOC_ROOT):$(DOC_ROOT_MNT) \
+			sphinx \
+			$(SPHINXBUILD) "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-# Clean the build dir.
 clean:
 	rm -r $(BUILDDIR)

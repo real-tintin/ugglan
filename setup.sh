@@ -6,7 +6,7 @@
 REPO_ROOT="$(pwd)"
 
 PY_VENV_ROOT="./venv"
-PY_VENV_REQ="./requirements.txt"
+PY_VENV_REQ="./tools/requirements.txt"
 
 # Setup python using venv.
 python -m venv "${PY_VENV_ROOT}"
