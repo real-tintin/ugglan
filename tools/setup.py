@@ -10,6 +10,11 @@ setup(
             'gui-state-ctrl=state_ctrl.gui:main',
         ]
     },
-    # TODO: install_requires=[]. Use venv for now.
+    install_requires=[
+        'dataclasses',
+        'matplotlib',
+        'numpy',
+        'scipy',
+    ],
     python_requires='>=3.7'
 )

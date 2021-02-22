@@ -97,6 +97,9 @@ log file::
 
     plot-data-log path/to/file.dat
 
+To explicitly add new minimally required dependencies, update ``install_requires``
+in the ``setup.py``.
+
 Python Requirements
 ====================
 When new Python packages are needed and installed, the ``requirements.txt`` shall be

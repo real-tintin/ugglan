@@ -1,9 +1,10 @@
 FROM python:3.7.9
 
-# Setup python env
+# Setup env for testing
 ENV ROOT /tools
 WORKDIR ${ROOT}
-COPY ./requirements.txt ${ROOT}
+COPY . ${ROOT}
 
 RUN pip install --upgrade pip
-RUN pip install -r "requirements.txt" # TODO: Install tools package instead.
+RUN pip install pytest
+RUN pip install .
