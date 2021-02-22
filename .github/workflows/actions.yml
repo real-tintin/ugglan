@@ -1,4 +1,4 @@
-name: learn-github-actions
+name: ci
 on: [push]
 jobs:
   ci-pipeline:
@@ -6,6 +6,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
 
       - name: Build doc
         run: make -C ./doc
