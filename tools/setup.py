@@ -6,7 +6,7 @@ setup(
     entry_points={
         'console_scripts': [
             'plot-data-log=data_log.plot:main',
-            'plot-multi-body=multi_body.plot_drone:main'
+            'plot-multi-body=multi_body.plot_drone:main',
             'gui-state-ctrl=state_ctrl.gui:main',
         ]
     },
