@@ -3,24 +3,27 @@ from typing import Union, List
 
 import numpy as np
 
-from .plot_shape import Cuboid, Cylinder
+from .shapes import Shapes
 
 
 @dataclass()
 class Body:
     name: str
 
-    shape_m: Union[Cuboid, Cylinder]
+    shape_m: Shapes
     mass_kg: float
-    rotation_rad: np.array = np.array([0, 0, 0])
-    translation_m: np.array = np.array([0, 0, 0])
-
     color: Union[str, List[float]] = None
 
-    center_of_mass: np.array = None
-    mom_of_inertia: np.array = None
+    # Order of transformation: R_i * T_i * R_b
+    rot_b_frame_rad: np.array = np.array([.0, .0, .0])
+    trans_i_frame_m: np.array = np.array([.0, .0, .0])
+    rot_i_frame_rad: np.array = np.array([.0, .0, .0])
 
-    rotation_matrix: np.array = None
+    com_b_frame_m: np.array = None
+    com_i_frame_m: np.array = None
+
+    moi_b_frame_kg2: np.array = None
+    moi_i_frame_kg2: np.array = None
 
 
 @dataclass()
@@ -29,6 +32,5 @@ class MultiBody:
     bodies: List[Body]
 
     mass_kg: float = None
-    center_of_mass: np.array = None
-    mom_of_inertia: np.array = None
-
+    com_m: np.array = None
+    moi_kg2: np.array = None

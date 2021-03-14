@@ -18,8 +18,9 @@ def plot_multi_body(m_body: MultiBody, ax_lim: List[float]) -> Axes3D:
     for body in m_body.bodies:
         plot_shape(plot3_ax,
                    body.shape_m,
-                   body.rotation_rad,
-                   body.translation_m,
+                   body.rot_b_frame_rad,
+                   body.trans_i_frame_m,
+                   body.rot_i_frame_rad,
                    body.color)
 
     plot3_ax.set_xlim(ax_lim)

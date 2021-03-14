@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .multi_body import MultiBody
 from .mb_drone import drone
-from .utils import update_inertia
+from .multi_body import MultiBody
 from .plot_multi_body import plot_multi_body
+from .utils import update_inertia
 
 
 def main():
@@ -18,8 +18,8 @@ def main():
 def _print_mb_inertia(mb: MultiBody):
     print("*** Drone multi body inertia ***")
     print("    m  = %.3f [kg]" % mb.mass_kg)
-    print("    CM = %s [m]" % np.array2string(mb.center_of_mass, precision=3, suppress_small=True))
-    print("    I  = \n %s [kgm^2]" % np.array2string(mb.mom_of_inertia, precision=3, suppress_small=True))
+    print("    CM = %s [m]" % np.array2string(mb.com_m, precision=3, suppress_small=True))
+    print("    I  = \n %s [kgm^2]" % np.array2string(mb.moi_kg2, precision=3, suppress_small=True))
 
 
 if __name__ == "__main__":

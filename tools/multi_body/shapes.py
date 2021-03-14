@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Union
 
 
 @dataclass
@@ -12,3 +13,11 @@ class Cuboid:
 class Cylinder:
     radius_xy: float
     height_z: float
+
+
+@dataclass
+class Sphere:
+    radius: float
+
+
+Shapes = Union[Cuboid, Cylinder, Sphere]

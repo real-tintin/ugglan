@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Union, List
+from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,14 +8,14 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from . import euclidean_transform as et
 from .shapes import *
 
-DEFAULT_ROTATION = np.array([0, 0, 0])
-DEFAULT_POSITION = np.array([0, 0, 0])
-
 EDGE_COLOR = 'black'
 FACE_ALPHA = 0.5
 LINE_WIDTH = 0.5
 
-CYLINDER_N_SIDES = 20
+CYLINDER_N_SIDES = 15
+
+SPHERE_LAT_N = 12
+SPHERE_LON_N = 6
 
 AXES_MARGIN = 1.1
 
@@ -52,15 +52,13 @@ class Face:
 
 
 def plot_shape(axes: plt.axes,
-               shape: Union[Cuboid, Cylinder],
-               rotation: np.array = DEFAULT_ROTATION,
-               translation: np.array = DEFAULT_POSITION,
+               shape: Shapes,
+               rot_b_rad: np.array = np.array([0, 0, 0]),
+               trans_i_m: np.array = np.array([0, 0, 0]),
+               rot_i_rad: np.array = np.array([0, 0, 0]),
                color: Union[str, List[float]] = None):
     """
     Plots a 3d shape on the provided axis.
-
-    Note, the rotation is performed after the
-    translation.
 
     Also, due to issues with mplot3d some objects
     might not be shown correctly at certain angles,
@@ -70,14 +68,19 @@ def plot_shape(axes: plt.axes,
         faces = _cuboid_faces(shape)
     elif isinstance(shape, Cylinder):
         faces = _cylinder_faces(shape)
+    elif isinstance(shape, Sphere):
+        faces = _sphere_faces(shape)
+    else:
+        raise ValueError("Invalid body shape")
 
-    _transform_faces_to_axes(axes, faces, color, rotation, translation)
+    _transform_faces_to_axes(axes, faces, color, rot_b_rad, trans_i_m, rot_i_rad)
 
 
-def _transform_faces_to_axes(axes, faces, color, rotation, translation):
+def _transform_faces_to_axes(axes, faces, color, rot_b_rad, trans_i_m, rot_i_rad):
     for face in faces:
-        face.transform(TransformType.TRANSLATE, *translation)
-        face.transform(TransformType.ROTATE, *rotation)
+        face.transform(TransformType.ROTATE, *rot_b_rad)
+        face.transform(TransformType.TRANSLATE, *trans_i_m)
+        face.transform(TransformType.ROTATE, *rot_i_rad)
 
         axes.add_collection3d(Poly3DCollection(face.to_vertices(),
                                                alpha=FACE_ALPHA,
@@ -140,5 +143,25 @@ def _cylinder_faces(shape: Cylinder):
         yield face_top()
         yield face_bottom()
         yield from iter_face_sides()
+
+    return list(iter_faces())
+
+
+def _sphere_faces(shape: Sphere):
+    u, v = np.meshgrid(np.linspace(0, 2 * np.pi, SPHERE_LAT_N),
+                       np.linspace(0, np.pi, SPHERE_LON_N))
+
+    x = np.cos(u) * np.sin(v) * shape.radius
+    y = np.sin(u) * np.sin(v) * shape.radius
+    z = np.cos(v) * shape.radius
+
+    def iter_faces():
+        for i in range(SPHERE_LON_N - 1):
+            for j in range(SPHERE_LAT_N - 1):
+                x_side = np.array([x[i, j], x[i + 1, j], x[i + 1, j + 1], x[i, j + 1]])
+                y_side = np.array([y[i, j], y[i + 1, j], y[i + 1, j + 1], y[i, j + 1]])
+                z_side = np.array([z[i, j], z[i + 1, j], z[i + 1, j + 1], z[i, j + 1]])
+
+                yield Face(x_side, y_side, z_side)
 
     return list(iter_faces())

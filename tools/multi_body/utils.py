@@ -8,21 +8,26 @@ from . import euclidean_transform as et
 from .multi_body import MultiBody, Body
 from .shapes import *
 
+ROTATE_FOUR_EQUAL_DIST = np.array([[0, 0, np.pi / 4],
+                                   [0, 0, 3 * np.pi / 4],
+                                   [0, 0, -np.pi / 4],
+                                   [0, 0, -3 * np.pi / 4]])
 
-def duplicate_body(body, n_bodies, rotations=None, translations=None, colors=None):
+
+def duplicate_body(body, n_bodies, rot_i=None, trans_i=None, colors=None):
     bodies = []
 
-    if rotations is None:
-        rotations = np.tile(body.rotation_rad, (n_bodies, 1))
-    if translations is None:
-        translations = np.tile(body.translation_m, (n_bodies, 1))
+    if rot_i is None:
+        rot_i = np.tile(body.rot_i_frame_rad, (n_bodies, 1))
+    if trans_i is None:
+        trans_i = np.tile(body.trans_i_frame_m, (n_bodies, 1))
     if colors is None:
         colors = [body.color] * n_bodies
 
-    for r, t, c in zip(rotations, translations, colors):
+    for r_i, t_i, c in zip(rot_i, trans_i, colors):
         new_body = copy.deepcopy(body)
-        new_body.rotation_rad = r
-        new_body.translation_m = t
+        new_body.rot_i_frame_rad = r_i
+        new_body.trans_i_frame_m = t_i
         new_body.color = c
 
         bodies.append(new_body)
@@ -36,40 +41,46 @@ def update_inertia(m_body: MultiBody) -> None:
     inertia, of a multi body object.
     """
     for body in m_body.bodies:
-        _compute_b_r_matrix(body)
-        _compute_b_center_of_mass(body)
-        _compute_b_mom_of_inertia(body)
+        _compute_com(body)
+        _compute_b_moi(body)
 
     _compute_mb_mass(m_body)
-    _compute_mb_center_of_mass(m_body)
-    _compute_mb_mom_of_inertia(m_body)
+    _compute_mb_com(m_body)
+    _compute_mb_moi(m_body)
 
 
-def _compute_b_r_matrix(b: Body):
-    b.rotation_matrix = et.rotation_matrix(*b.rotation_rad)
+def _compute_com(b: Body):
+    b.com_b_frame_m = np.array([.0, .0, .0])
+    b.com_i_frame_m = et.rotate(et.translate(b.com_b_frame_m, *b.trans_i_frame_m), *b.rot_i_frame_rad)
 
 
-def _compute_b_center_of_mass(b: Body):
-    b.center_of_mass = np.array([0, 0, 0])  # Note, currently only inertial translations.
-
-
-def _compute_b_mom_of_inertia(b: Body):
+def _compute_b_moi(b: Body):
     shape = b.shape_m
 
     if isinstance(shape, Cuboid):
-        inertia_xx = b.mass_kg * (np.square(shape.width_y) + np.square(shape.height_z)) / 12
-        inertia_yy = b.mass_kg * (np.square(shape.length_x) + np.square(shape.height_z)) / 12
-        inertia_zz = b.mass_kg * (np.square(shape.length_x) + np.square(shape.width_y)) / 12
+        moi_xx = b.mass_kg * (np.square(shape.width_y) + np.square(shape.height_z)) / 12
+        moi_yy = b.mass_kg * (np.square(shape.length_x) + np.square(shape.height_z)) / 12
+        moi_zz = b.mass_kg * (np.square(shape.length_x) + np.square(shape.width_y)) / 12
 
-        b.mom_of_inertia = np.diag([inertia_xx, inertia_yy, inertia_zz])
     elif isinstance(shape, Cylinder):
-        inertia_xx = b.mass_kg * (3 * np.square(shape.radius_xy) + np.square(shape.height_z)) / 12
-        inertia_yy = inertia_xx
-        inertia_zz = b.mass_kg * np.square(shape.radius_xy) / 2
+        moi_xx = b.mass_kg * (3 * np.square(shape.radius_xy) + np.square(shape.height_z)) / 12
+        moi_yy = moi_xx
+        moi_zz = b.mass_kg * np.square(shape.radius_xy) / 2
 
-        b.mom_of_inertia = np.diag([inertia_xx, inertia_yy, inertia_zz])
+    elif isinstance(shape, Sphere):
+        moi_xx = 2 / 5 * b.mass_kg * shape.radius ** 2
+        moi_yy = moi_xx
+        moi_zz = moi_xx
+
     else:
         raise ValueError("Invalid body shape")
+
+    b.moi_b_frame_kg2 = _tf_moi(
+        mass=b.mass_kg,
+        moi_b=np.diag([moi_xx, moi_yy, moi_zz]),
+        com_b=b.com_b_frame_m,
+        rot=b.rot_b_frame_rad
+    )
 
 
 def _compute_mb_mass(mb: MultiBody):
@@ -79,28 +90,41 @@ def _compute_mb_mass(mb: MultiBody):
         mb.mass_kg += b.mass_kg
 
 
-def _compute_mb_center_of_mass(mb: MultiBody):
-    mb.center_of_mass = np.zeros(3)
+def _compute_mb_com(mb: MultiBody):
+    mb.com_m = np.array([.0, .0, .0])
 
     for b in mb.bodies:
-        b_cm_i_frame = b.mass_kg * (b.center_of_mass + b.translation_m)
-        mb.center_of_mass += b.rotation_matrix @ np.transpose(b_cm_i_frame)
+        mb.com_m += b.mass_kg * b.com_i_frame_m
 
 
-def _compute_mb_mom_of_inertia(mb: MultiBody):
+def _compute_mb_moi(mb: MultiBody):
+    mb.moi_kg2 = np.zeros((3, 3))
+
+    for b in mb.bodies:
+        b.moi_i_frame_kg2 = _tf_moi(
+            mass=b.mass_kg,
+            moi_b=b.moi_b_frame_kg2,
+            com_b=b.com_i_frame_m,
+            com_i=mb.com_m,
+            rot=b.rot_i_frame_rad
+        )
+
+        mb.moi_kg2 += b.moi_i_frame_kg2
+
+
+def _tf_moi(mass, moi_b, rot, com_b, com_i=np.array([.0, .0, .0])):
     """
+    First rotate:
         I_{body}^{inertial} = R * I_{body}^{body} * R'
-        d = R * (CM_{body}^{body} - p_{body}^{body}) - CM_{tot}^{inertial}
 
-    Finally, using the parallel axis theorem:
-        I_{origin}^{inertial} = I_{body}^{inertial} + m * (|r|^2 * E3 - r' * r)
+    then use the parallel axis theorem:
+        d = CM_{inertial} - CM_{body}
+        I_{o}^{inertial} = I_{body}^{inertial} + m * (d * d' * E3 - d' * d)
     """
-    mb.mom_of_inertia = np.zeros((3, 3))
+    r = et.rotation_matrix(*rot)
+    moi_b_rot = r @ moi_b @ np.transpose(r)
 
-    for b in mb.bodies:
-        r = b.rotation_matrix
+    d = com_i - com_b
+    moi_i = moi_b_rot + mass * ((d @ d) * np.eye(3) - np.outer(d, d))
 
-        b_moi_i_frame = r @ b.mom_of_inertia @ np.transpose(r)
-        d = r @ (b.center_of_mass - b.translation_m) - mb.center_of_mass
-
-        mb.mom_of_inertia += b_moi_i_frame + b.mass_kg * ((d @ d) * np.eye(3) - np.outer(d, d))
+    return moi_i
