@@ -2,7 +2,7 @@
 Ugglan (owl in Swedish) is a hobby drone project. Making use of the
 Raspberry Pi Zero (amongst other things).
 
-<img src="./doc/source/figures/drone_multi_body.svg" width="200" height="200" />
+<img src="./doc/source/figures/drone_multi_body.svg" width="500" height="500" />
 
 The project serves as a learning platform for the author himself and
 is quite broad, containing everything from assembler to docker. It
