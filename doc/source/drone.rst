@@ -225,8 +225,8 @@ This results in the following inertia estimates
         0 & 0 & 0.026
     \end{bmatrix} \text{kgm}^2
 
-and :math:`m_{est}=1.038` kg. For comparison, the measured weight is :math:`m_{meas}=1.058` kg.
-Also its center of mass w.r.t the top frame is located at :math:`CM_{est}=[0, -0.001, -0.006]` m.
+and :math:`m_{est}=1.071` kg. For comparison, the measured weight is :math:`m_{meas}=1.096` kg.
+Also its center of mass w.r.t the top frame is located at :math:`CM_{est}=[0, -0.001, -0.009]` m.
 Hence, a rather good weight distribution.
 
 Motor Dynamics
