@@ -143,7 +143,7 @@ Hardware
 =================
 .. _ugglan_in_person:
 .. figure:: figures/ugglan_in_person.jpg
-    :width: 50%
+    :width: 75%
 
     Ugglan in person.
 
@@ -212,6 +212,9 @@ Nomenclature
 
 Inertia
 ------------------
+
+Multi Body Modeling
+^^^^^^^^^^^^^^^^^^^^
 Using multi body analysis of the drone and its components, the total drone
 (mass and moments) inertia is estimated, see :numref:`drone_multi_body`.
 This results in the following inertia estimates
@@ -228,6 +231,47 @@ This results in the following inertia estimates
 and :math:`m_{est}=1.071` kg. For comparison, the measured weight is :math:`m_{meas}=1.096` kg.
 Also its center of mass w.r.t the top frame is located at :math:`CM_{est}=[0, -0.001, -0.009]` m.
 Hence, a rather good weight distribution.
+
+The Pendulum Experiment
+^^^^^^^^^^^^^^^^^^^^^^^^
+In `Design-Modeling-and-Control-of-an-Octocopter`_ (Section 2.2) an experiment is proposed for
+estimation the rotational moment of inertia. This by measuring the period time of a rigid body
+rotating about an axis suspended by two strings i.e., bifilar pendulum.
+
+Without going into the details, :math:`I_{zz}` was estimated by suspending the drone by two
+strings apart :math:`D=0.46` m with length :math:`L=2.16` m, see :numref:`pendulum_experiment`.
+
+.. _pendulum_experiment:
+.. figure:: figures/pendulum_experiment.jpg
+    :width: 75%
+
+    Ugglan suspended by two strings - help?!
+
+In total 10 measurements where made of the number of periods and the total time, listed in
+:numref:`table_pendulum`.
+
+.. _table_pendulum:
+
+.. table:: :math:`N` number of periods and :math:`t` total time.
+
+    =======  =======
+    N        t [s]
+    =======  =======
+    10       19.3
+    10       19.4
+    15       29.2
+    15       29.1
+    20       39.0
+    20       38.8
+    25       48.2
+    25       48.2
+    30       58.1
+    30       57.8
+    =======  =======
+
+Computing the mean period yields :math:`T=1.94` s. This in terms results in
+:math:`I_{zz}=0.025 \text{ kgm}^2`. This can be seen as an validation of the estimation
+from the multi body modeling.
 
 Motor Dynamics
 ------------------
