@@ -6,9 +6,6 @@
 export BUILD_FOR_TEST="TRUE"
 export TARGET_NAME="catch"
 
-# Setup env for catch.
-export CATCH_TEST_GETENV="test_getenv"
-
 # Compile and run tests.
 TARGET_PATH="./build/${TARGET_NAME}"
 

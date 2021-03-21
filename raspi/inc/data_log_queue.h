@@ -97,39 +97,39 @@ DataLogType DataLogQueue::_get_data_type(T data)
 {
     DataLogType type;
 
-    if (std::is_same<T, bool>::value)
+    if constexpr (std::is_same<T, bool>::value)
     {
         type = DataLogType::BOOL;
     }
-    else if (std::is_same<T, uint8_t>::value)
+    else if constexpr (std::is_same<T, uint8_t>::value)
     {
         type = DataLogType::UINT8;
     }
-    else if (std::is_same<T, uint16_t>::value)
+    else if constexpr (std::is_same<T, uint16_t>::value)
     {
         type = DataLogType::UINT16;
     }
-    else if (std::is_same<T, uint32_t>::value)
+    else if constexpr (std::is_same<T, uint32_t>::value)
     {
         type = DataLogType::UINT32;
     }
-    else if (std::is_same<T, int8_t>::value)
+    else if constexpr (std::is_same<T, int8_t>::value)
     {
         type = DataLogType::SINT8;
     }
-    else if (std::is_same<T, int16_t>::value)
+    else if constexpr (std::is_same<T, int16_t>::value)
     {
         type = DataLogType::SINT16;
     }
-    else if (std::is_same<T, int32_t>::value)
+    else if constexpr (std::is_same<T, int32_t>::value)
     {
         type = DataLogType::SINT32;
     }
-    else if (std::is_same<T, float>::value)
+    else if constexpr (std::is_same<T, float>::value)
     {
         type = DataLogType::FLOAT;
     }
-    else if (std::is_same<T, double>::value)
+    else if constexpr (std::is_same<T, double>::value)
     {
         type = DataLogType::DOUBLE;
     }

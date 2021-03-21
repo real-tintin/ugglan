@@ -14,7 +14,7 @@ void write_at_all_levels()
     logger.error("");
 }
 
-TEST_CASE("logger levels")
+TEST_CASE("logger: levels")
 {
     LogLevel org_level = logger.get_level();
     catchutils::PatchStdCout patched_cout;

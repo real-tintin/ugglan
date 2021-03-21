@@ -6,40 +6,28 @@ void Logger::debug(std::string msg)
 {
     const std::lock_guard<std::mutex> lock(_mutex);
 
-    if (_level <= LogLevel::debug)
-    {
-        _disp_msg(msg, LogLevel::debug);
-    }
+    _disp_msg(msg, LogLevel::debug);
 }
 
 void Logger::info(std::string msg)
 {
     const std::lock_guard<std::mutex> lock(_mutex);
 
-    if (_level <= LogLevel::info)
-    {
-        _disp_msg(msg, LogLevel::info);
-    }
+    _disp_msg(msg, LogLevel::info);
 }
 
 void Logger::warn(std::string msg)
 {
     const std::lock_guard<std::mutex> lock(_mutex);
 
-    if (_level <= LogLevel::warn)
-    {
-        _disp_msg(msg, LogLevel::warn);
-    }
+    _disp_msg(msg, LogLevel::warn);
 }
 
 void Logger::error(std::string msg)
 {
     const std::lock_guard<std::mutex> lock(_mutex);
 
-    if (_level <= LogLevel::error)
-    {
-        _disp_msg(msg, LogLevel::error);
-    }
+    _disp_msg(msg, LogLevel::error);
 }
 
 void Logger::set_level(LogLevel level)
@@ -58,6 +46,8 @@ LogLevel Logger::get_level()
 
 void Logger::_disp_msg(std::string msg, LogLevel level)
 {
+    if (level < _level) { return; }
+
     std::time_t t_now = std::time(nullptr);
     std::string level_str;
 

@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <stdexcept>
 #include <mutex>
+#include <cstdlib>
 
 enum class LogLevel {
     debug,

@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <vector>
 #include <iostream>
+#include <stdlib.h>
 
 namespace catchutils
 {
@@ -15,6 +16,8 @@ namespace catchutils
 
     bool str_contains_all(std::string str, std::vector<std::string> contains);
     bool str_contains_non(std::string str, std::vector<std::string> contains);
+
+    void set_env(std::string env, std::string val);
 
     class TmpDir
     {

@@ -1,23 +1,35 @@
 #include <catch.h>
 
 #include <string>
+#include <math.h>
+#include <catch_utils.h>
 #include <utils.h>
 
 using namespace utils;
 
-static const std::string VALID_ENV = "CATCH_TEST_GETENV";
-static const std::string VALID_ENV_EXP = "test_getenv";
+static const double FLOAT_TOL = 1e-3;
 
-TEST_CASE("get_env_str")
+TEST_CASE("get_env")
 {
-    SECTION("invalid env")
+    SECTION("non existing env")
     {
-        std::string env = get_env_str("INVALID_ENV");
-        REQUIRE(env.size() == 0);
+        std::string default_val = "not_so_fancy";
+
+        std::string env = get_env("NON_EXISTING_CATCH_ENV", default_val);
+        REQUIRE(env.compare(default_val) == 0);
     }
-    SECTION("valid env")
+    SECTION("string")
     {
-        std::string env = get_env_str(VALID_ENV);
-        REQUIRE(env.compare(VALID_ENV_EXP) == 0);
+        catchutils::set_env("CATCH_TEST_GETENV", "whats_up");
+
+        std::string env = get_env("CATCH_TEST_GETENV", std::string(""));
+        REQUIRE(env.compare("whats_up") == 0);
+    }
+    SECTION("double")
+    {
+        catchutils::set_env("CATCH_TEST_GETENV", "3.14");
+
+        double env = get_env("CATCH_TEST_GETENV", double(0.0));
+        REQUIRE(fabs(env - 3.14) <= FLOAT_TOL);
     }
 }

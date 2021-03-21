@@ -8,6 +8,7 @@
 #include <attitude_estimation.h>
 #include <motor_control.h>
 #include <drone_props.h>
+#include <utils.h>
 
 inline const uint8_t PILOT_CTRL_X_SIZE = 3;
 inline const uint8_t PILOT_CTRL_L_SIZE = 4;
@@ -17,17 +18,37 @@ inline const double PILOT_CTRL_ABS_MAX_REF_PITCH = M_PI / 8; // [rad]
 inline const double PILOT_CTRL_ABS_MAX_REF_YAW_RATE = M_PI; // [rad/s]
 inline const double PILOT_CTRL_ABS_MAX_REF_F_Z = 20.0; // [N]
 
-inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PHI = 0.3; // About 75 % of max step size [rads]
-inline const double PILOT_CTRL_ANTI_WINDUP_SAT_THETA = 0.3; // About 75 % of max step size [rads]
-inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PSI = 2.4; // About 75 % of max step size [rad]
+inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PHI = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_PHI", 0.3);
+inline const double PILOT_CTRL_ANTI_WINDUP_SAT_THETA = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_THETA", 0.3);
+inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PSI = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_PSI", 2.4);
 
-inline const double PILOT_CTRL_L_ROLL[PILOT_CTRL_L_SIZE] = {1.5, 4.0, 0.6, 1.5};        // Feedback matrice for roll.
-inline const double PILOT_CTRL_L_PITCH[PILOT_CTRL_L_SIZE] = {1.5, 4.0, 0.6, 1.5};       // Feedback matrice for pitch.
-inline const double PILOT_CTRL_L_YAW_RATE[PILOT_CTRL_L_SIZE] = {0.0, 0.02, 0.04, 0.01}; // Feedback matrice for yaw-rate. Note, first state not used.
+inline const double PILOT_CTRL_L_ROLL[PILOT_CTRL_L_SIZE] =
+    {
+    utils::get_env("PILOT_CTRL_L_ROLL_0", 1.5),
+    utils::get_env("PILOT_CTRL_L_ROLL_1", 4.0),
+    utils::get_env("PILOT_CTRL_L_ROLL_2", 0.6),
+    utils::get_env("PILOT_CTRL_L_ROLL_3", 1.5)
+    }; // Feedback matrice for roll.
 
-inline const double PILOT_CTRL_ALPHA_PHI = 5.0;   // Reduced observer parameter for phi.
-inline const double PILOT_CTRL_ALPHA_THETA = 5.0; // Reduced observer parameter for theta.
-inline const double PILOT_CTRL_ALPHA_PSI = 5.0;   // Reduced observer parameter for psi.
+inline const double PILOT_CTRL_L_PITCH[PILOT_CTRL_L_SIZE] =
+    {
+    utils::get_env("PILOT_CTRL_L_PITCH_0", 1.5),
+    utils::get_env("PILOT_CTRL_L_PITCH_1", 4.0),
+    utils::get_env("PILOT_CTRL_L_PITCH_2", 0.6),
+    utils::get_env("PILOT_CTRL_L_PITCH_3", 1.5)
+    }; // Feedback matrice for pitch.
+
+inline const double PILOT_CTRL_L_YAW_RATE[PILOT_CTRL_L_SIZE] =
+    {
+    0.0, // First state not used for yaw-rate ctrl.
+    utils::get_env("PILOT_CTRL_L_YAW_RATE_0", 0.02),
+    utils::get_env("PILOT_CTRL_L_YAW_RATE_1", 0.04),
+    utils::get_env("PILOT_CTRL_L_YAW_RATE_2", 0.01)
+    }; // Feedback matrice for yaw-rate.
+
+inline const double PILOT_CTRL_ALPHA_PHI = utils::get_env("PILOT_CTRL_ALPHA_PHI", 5.0);     // Reduced observer parameter for phi.
+inline const double PILOT_CTRL_ALPHA_THETA = utils::get_env("PILOT_CTRL_ALPHA_THETA", 5.0); // Reduced observer parameter for theta.
+inline const double PILOT_CTRL_ALPHA_PSI = utils::get_env("PILOT_CTRL_ALPHA_PSI", 5.0);     // Reduced observer parameter for psi.
 
 enum class PilotCtrlState {
     Phi0,   // [rads]

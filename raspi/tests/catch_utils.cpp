@@ -25,6 +25,11 @@ namespace catchutils
         return true;
     }
 
+    void set_env(std::string env, std::string val)
+    {
+        setenv(env.c_str(), val.c_str(), true);
+    }
+
     TmpDir::TmpDir(bool remove_when_done) :
         _remove_when_done(remove_when_done)
     {
