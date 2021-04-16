@@ -16,11 +16,15 @@ N_ESC = 4
 
 
 def _finish_subplots(fig):
+    if not hasattr(_finish_subplots, "sax"):
+        _finish_subplots.sax = fig.get_axes()[0]
+
     for ax in fig.get_axes():
+        ax.get_shared_x_axes().join(ax, _finish_subplots.sax)
         ax.set(xlabel='Time [s]')
         ax.grid()
         if all(ax.get_legend_handles_labels()):
-            ax.legend()
+            ax.legend(loc='upper right', fontsize=7)
 
 
 def _plot_task_sample_rate(axs, signal, task_id, task_name):
