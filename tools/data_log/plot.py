@@ -1,4 +1,5 @@
 import argparse
+from enum import Enum
 from pathlib import Path
 
 import matplotlib as mpl
@@ -13,6 +14,18 @@ mpl.rcParams['axes.prop_cycle'] = cycler(color='bgrcmyk')
 mpl.rcParams['lines.linewidth'] = 0.5
 
 N_ESC = 4
+
+
+class PlotSel(Enum):
+    IMU = 'imu'
+    ESC = 'esc'
+    RC = 'rc'
+    STATE_EST = 'state_est'
+    STATE_CTRL = 'state_ctrl'
+    TASKS = 'tasks'
+
+    def __str__(self):
+        return self.value
 
 
 def _finish_subplots(fig):
@@ -250,16 +263,23 @@ def _plot_tasks(data):
 def main():
     parser = argparse.ArgumentParser(description='Plot and analyze data log file.')
     parser.add_argument('path', type=Path, help='Path to data log file')
+    parser.add_argument('plots', type=PlotSel, choices=list(PlotSel), nargs='+', help='Selected plots')
     args = parser.parse_args()
 
     data = data_log_io.read(args.path)
 
-    _plot_imu(data)
-    _plot_esc(data)
-    _plot_rc(data)
-    _plot_state_est(data)
-    _plot_state_ctrl(data)
-    _plot_tasks(data)
+    if PlotSel.IMU in args.plots:
+        _plot_imu(data)
+    if PlotSel.ESC in args.plots:
+        _plot_esc(data)
+    if PlotSel.RC in args.plots:
+        _plot_rc(data)
+    if PlotSel.STATE_EST in args.plots:
+        _plot_state_est(data)
+    if PlotSel.STATE_CTRL in args.plots:
+        _plot_state_ctrl(data)
+    if PlotSel.TASKS in args.plots:
+        _plot_tasks(data)
 
     plt.show()
 
