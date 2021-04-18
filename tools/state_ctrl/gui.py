@@ -5,10 +5,12 @@ from matplotlib.widgets import Slider
 from . import step_response
 from .state_space import State
 
-STEP_INFO_STR = r'rise time: {:.2f} s\n' \
-                r'peak: {:.2f}\n' \
-                r'overshoot: {:.1f} %\n\n\n' \
-                r'$\max(|\int x|)$: {:.3f}'
+STEP_INFO_STR = r"""
+rise time: {:.2f} s
+peak: {:.2f}
+overshoot: {:.1f}
+$\max(|\int x|)$: {:.3f}
+"""
 
 SLIDER_STEP_ALPHA = 0.1
 SLIDER_MAX_ALPHA = 10
@@ -67,7 +69,7 @@ def analyze_step(state: State,
     axs[1].set_xlabel('Time [s]')
     axs[1].set_ylabel(_get_u_y_label(state))
 
-    tb_step_info = axs[0].text(1.01, 0.95, STEP_INFO_STR, transform=axs[0].transAxes,
+    tb_step_info = axs[0].text(1.01, 1.02, STEP_INFO_STR, transform=axs[0].transAxes,
                                fontsize=8, verticalalignment='top')
 
     axs[0].plot([0, t_end], [ref_state_val, ref_state_val], label='$x_r$', color='tab:red', linestyle='--')
