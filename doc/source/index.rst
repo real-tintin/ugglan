@@ -5,15 +5,17 @@
 
 Welcome to Ugglan's documentation!
 ==================================
-Hobby project, which serves as a learning platform for the author himself. The
-project is quite broad and contains everything from assembler to docker.
+The drone a.k.a "Ugglan" (Swedish for owl) is a DIY build quadcopter,
+using the Raspberry Pi Zero.
 
 .. toctree::
    :maxdepth: 2
    :caption: Content
 
    development
-   drone
+   software_design
+   hardware_design
+   modeling_control
 
 Indices and tables
 ==================

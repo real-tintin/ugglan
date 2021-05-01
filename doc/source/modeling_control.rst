@@ -1,205 +1,19 @@
-Drone
-*****************
-The drone a.k.a "Ugglan" (Swedish for owl) is a DIY build
-quadcopter, using the Raspberry Pi Zero.
-
-Some in-depth parts of the Modeling, State Estimation and Control
-are not covered in this document, for details see the arthur's master thesis
-`Design-Modeling-and-Control-of-an-Octocopter`_.
-
-.. _Design-Modeling-and-Control-of-an-Octocopter: http://www.diva-portal.org/smash/get/diva2:857660/FULLTEXT01.pdf
-
-Software
-=================
-
-Tasks
----------------
-The drone's top level software design can be seen as a task manager, (asynchronous
-and synchronous) solving the producer and consumer problem. Where the producers are
-the sensors (IMU, ESC etc.). And where the control loop, data logging etc. are
-the consumers, see :numref:`drone_sw_design`.
-
-.. _drone_sw_design:
-.. mermaid::
-    :caption: Overview of the drone software design. Tasks are stadium-shaped nodes.
-
-    graph LR
-        ImuAccMag([ImuAccMag])
-        ImuGyro([ImuGyro])
-        ImuPres([ImuPres])
-
-        EscRead([EscRead])
-        RcReceiver([RcReceiver])
-
-        DataLogQueue[(DataLogQueue)]
-
-        StateControl([StateControl])
-        EscWrite([EscWrite])
-        DataLogger([DataLogger])
-
-        ImuAccMag -- push 50 Hz --> DataLogQueue
-        ImuGyro -- push 50 Hz --> DataLogQueue
-        ImuPres -- push 12.5 Hz --> DataLogQueue
-        EscRead -- push 5 Hz --> DataLogQueue
-        RcReceiver -- push 50 Hz --> DataLogQueue
-
-        DataLogQueue -- last value 50 Hz --> StateControl
-        DataLogQueue -- last value 50 Hz --> EscWrite
-        DataLogQueue -- pop 100 Hz --> DataLogger
-
-        subgraph Producers
-        ImuAccMag
-        ImuGyro
-        ImuPres
-        EscRead
-        RcReceiver
-        end
-
-        subgraph Consumers
-        StateControl
-        EscWrite
-        DataLogger
-        end
-
-As one can see, the ``DataLogQueue`` maintains a thread safe queue for the producers to
-push to and the ``DataLogger`` to pop from. But it also stores the last (pushed) sample
-for consumers to use e.g., the ``StateControl`` which runs at a constant execution/sample
-rate i.e., to simplify the signal processing. Note, other tasks than producers may populate
-the queue e.g., estimated states which are useful for offline tuning of control laws.
-
-Note, some signals such as the ones from the pressure sensor will only be sampled
-at 12.5 Hz. This has to be handled by the state controller.
-
-Data Logging
------------------
-The ``DataLogger`` handles the data serialization of signals e.g., the IMU acceleration
-which is continuously written to disk. It consists of a **HEADER** section - a json string,
-describing the content of the second **DATA PACKAGES** section. See :numref:`data_log_protocol`
-for an illustration of the data-log protocol.
-
-.. _data_log_protocol:
-.. figure:: figures/data_log_protocol.svg
-    :width: 100%
-
-    The data logging protocol. The **SIGNAL ID** is an unique identifer for each signal/package
-    and of type ``uint16``. The **REL TIMESTAMP** is the relative timestamp in ms
-    between each **PACKAGE** and of type ``uint8``.
-
-The json-file is compressed using gzip (and base64 encoded) to save space. See example
-header below.
-
-.. code-block:: json
-
-    {
-        "start_time": "1990-08-30T22:52:50Z",
-        "types": {
-            "0": "UINT8",
-            "1": "UINT16",
-            "2": "UINT32",
-            "3": "SINT8",
-            "4": "SINT16",
-            "5": "SINT32",
-            "6": "FLOAT",
-            "7": "DOUBLE"
-        },
-        "groups": {
-            "0": "IMU",
-            "1": "ESC"
-        },
-        "signals": {
-            "0": {
-                "name": "AccelerationX",
-                "group": 0,
-                "type": 7
-            },
-            "1": {
-                "name": "Status0",
-                "group": 1,
-                "type": 0
-            }
-        }
-    }
-
-State Machine
----------------
-
-User Operator
-^^^^^^^^^^^^^
-
-.. mermaid::
-    :caption: User operation of ESC's. LS: Left Switch. MS: Middle Switch.
-
-    stateDiagram
-
-        [*] --> Sound
-        Sound --> Disarmed
-        Disarmed --> Armed: LS Mid
-        Armed --> Disarmed: LS Hi
-        Armed --> Alive: LS Lo
-        Alive --> Armed: LS Mid
-        Disarmed --> [*]: MS Lo
-
-Hardware
-=================
-.. _ugglan_in_person:
-.. figure:: figures/ugglan_in_person.jpg
-    :width: 75%
-
-    Ugglan in person.
-
-The drone hardware components are is listed below
-
-* Raspberry Pi Zero
-* Diatone Q450 with PCB
-* Pololu AltIMU-10 v4
-* Afro ESC 20 A
-* Turnigy Evolution Digital AFHDS 2A RC transmitter & controller
-* TGY-iA6C RC receiver
-* ZIPPY Compact 3300mAh 3S (or similar)
-* DC-DC step down voltage regulator 5V
-* Turnigy 2830 900KV L2215J-900 Brushless Motor
-
-In addition, miscellaneous self manufactured components such as a cut plexiglas
-are used for mounting, see :numref:`ugglan_in_person`.
-
-.. _devices_and_busses:
-
-Devices & Busses
------------------
-The IMU's and ESC's are communicating with the Pi over i2c. The IMU can run at 400 kHz (fast mode)
-and is using the built-in HW. But, the ESC's only run stable at 100 kHz (normal mode) and are
-therefore using a SW implementation (i2c-gpio overlay, bit-banging over GPIO 23-24). The RC receiver
-is communicating over UART, a serial connection. See overview in :numref:`connected_busses`.
-
-.. _connected_busses:
-.. mermaid::
-    :caption: Overview of the hardware devices connected to the Pi Zero and their respective protocols.
-
-    graph TD
-        Esc_i -- i2c read 100 kHz --> Raspi
-        Raspi -- i2c write 100 kHz --> Esc_i
-        Imu_i -- i2c read 400 kHz --> Raspi
-        RcReceiver -- uart read 115200 bps --> Raspi
-
-Wiring
---------
-.. _wiring_diagram:
-.. figure:: figures/wiring_diagram.svg
-    :width: 100%
-
-    Wiring diagram.
-
-Modeling
-===============
-
+Modeling & Control
+*******************
 .. _drone_multi_body:
 .. figure:: figures/drone_multi_body.svg
     :width: 100%
 
     Multi body analysis of the drone.
 
+Before moving on, note that some in-depth parts of the modeling, state estimation
+and Control are not covered in this document, for details see the arthur's master
+thesis `Design-Modeling-and-Control-of-an-Octocopter`_.
+
+.. _Design-Modeling-and-Control-of-an-Octocopter: http://www.diva-portal.org/smash/get/diva2:857660/FULLTEXT01.pdf
+
 Nomenclature
-------------------
+===================
 :math:`_{I}` Inertial reference frame
 
 :math:`_{B}` Body reference frame
@@ -211,10 +25,10 @@ Nomenclature
 :math:`F` Force
 
 Inertia
-------------------
+===================
 
 Multi Body Modeling
-^^^^^^^^^^^^^^^^^^^^
+---------------------
 Using multi body analysis of the drone and its components, the total drone
 (mass and moments) inertia is estimated, see :numref:`drone_multi_body`.
 This results in the following inertia estimates
@@ -233,7 +47,7 @@ Also its center of mass w.r.t the top frame is located at :math:`CM_{est}=[0, -0
 Hence, a rather good weight distribution.
 
 The Pendulum Experiment
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 In `Design-Modeling-and-Control-of-an-Octocopter`_ (Section 2.2) an experiment is proposed for
 estimation the rotational moment of inertia. This by measuring the period time of a rigid body
 rotating about an axis suspended by two strings i.e., bifilar pendulum.
@@ -274,7 +88,7 @@ Computing the mean period yields :math:`T=1.94` s. This in terms results in
 from the multi body modeling.
 
 Motor Dynamics
-------------------
+================
 The motor dynamics, :math:`u_{M_i}\rightarrow\omega_{M_iz}` are modelled as a simple first order
 LTL system (low-pass filter)
 
@@ -321,7 +135,7 @@ figure it becomes clear that better approximations of higher order exist. An imp
 be to empirical derive such a system - by using system identification.
 
 Linearized State Space
------------------------
+=======================
 The same linearized (SIMO) state-space representation as derived in
 `Design-Modeling-and-Control-of-an-Octocopter`_ (Section 3.7) is used i.e.,
 
@@ -487,11 +301,8 @@ Also note that when :math:`\alpha\rightarrow\infty` the observer will result
 in a backwards time-difference of :math:`x_v` i.e., its derivative
 (:math:`\dot{x}_v = x_a`).
 
-Control
-=================
-
 State Control
------------------
+=================
 The drone's dynamics are stabilized using a full state feedback controller
 
 .. math::
@@ -503,7 +314,7 @@ Which allows for arbitrary pole placement, see `Design-Modeling-and-Control-of-a
 for in depth details.
 
 Discretized Feedback
-^^^^^^^^^^^^^^^^^^^^
+---------------------
 In :ref:`force-torque-estimation` the reduced observer is presented, including the control
 input. Hence, by using :eq:`cont_state_feedback` and solving for :math:`u_k` one derives at the
 final time-discretized feedback controller
@@ -515,7 +326,7 @@ final time-discretized feedback controller
     - \alpha x_2^{k-1})}{1 + l_3\beta_3}, u^0 = 0.
 
 Pilot Control
-^^^^^^^^^^^^^^^
+---------------------
 Typically, the pilot controller (using the handheld controller), seeks for stability
 of roll, pitch and yaw-rate.
 
@@ -553,7 +364,7 @@ are given.
     positive direction. Note that thrust implies negative :math:`F_z` i.e., lift.
 
 Motor Control
-------------------
+=================
 The body force and torque control inputs :math:`u_{Bz}`, :math:`u_{B\phi}`,
 :math:`u_{B\theta}` and :math:`u_{B\psi}` have to be converted to individual
 motor control inputs :math:`u_{M_i}`.
