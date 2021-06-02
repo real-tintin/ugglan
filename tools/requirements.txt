@@ -31,6 +31,6 @@ scipy==1.6.0
 six==1.14.0
 snowballstemmer==2.0.0
 sympy==1.5.1
-urllib3==1.25.8
+urllib3==1.26.5
 wcwidth==0.1.8
 zipp==2.2.0
