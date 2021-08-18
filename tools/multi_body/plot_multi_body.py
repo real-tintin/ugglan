@@ -13,7 +13,7 @@ def plot_multi_body(m_body: MultiBody, ax_lim: List[float]) -> Axes3D:
     object.
     """
     fig = plt.figure()
-    plot3_ax = fig.gca(projection='3d')
+    plot3_ax = fig.add_subplot(projection='3d')
 
     for body in m_body.bodies:
         plot_shape(plot3_ax,

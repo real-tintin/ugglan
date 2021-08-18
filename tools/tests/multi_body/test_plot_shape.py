@@ -11,7 +11,7 @@ from multi_body.shapes import *
 @pytest.fixture
 def plot3_ax():
     fig = plt.figure()
-    ax = fig.gca(projection='3d')
+    ax = fig.add_subplot(projection='3d')
 
     yield ax
 

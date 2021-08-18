@@ -58,7 +58,7 @@ def _hard_iron_offset(data):
 
 def _create_3d_fig() -> Axes3D:
     fig = plt.figure()
-    ax = fig.gca(projection='3d')
+    ax = fig.add_subplot(projection='3d')
 
     return ax
 
