@@ -1,30 +1,33 @@
 import argparse
 from abc import abstractmethod, ABC
-from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
+import data_log.io as data_log_io
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-
-import data_log.io as data_log_io
+from dataclasses import dataclass
 
 mpl.rcParams['lines.linewidth'] = 0.5
 
 IMU_SAMPLE_RATE_S = 0.02  # 50 Hz
 
-N_SAMPLES_FOR_OFFSET_COMP = 10
+N_SAMPLES_GYRO_OFFSET_COMP = 10
 
-CUT_OFF_FREQ = 0.2  # [Hz]
+CF_CUT_OFF_FREQ = 0.2  # [Hz]
+CF_TAU_PHI = 1 / (2 * np.pi * CF_CUT_OFF_FREQ)
+CF_TAU_THETA = 1 / (2 * np.pi * CF_CUT_OFF_FREQ)
+CF_TAU_PSI = 1 / (2 * np.pi * CF_CUT_OFF_FREQ)
 
-CF_TAU_PHI = 1 / (2 * np.pi * CUT_OFF_FREQ)
-CF_TAU_THETA = 1 / (2 * np.pi * CUT_OFF_FREQ)
-CF_TAU_PSI = 1 / (2 * np.pi * CUT_OFF_FREQ)
+GYRO_LP_CUT_OFF_FREQ = 15  # [Hz]
 
 KALMAN_P_0 = np.zeros((3, 3))
-KALMAN_Q = np.diag([1e-3, 1e6, 1e-1])
-KALMAN_R = np.diag([2, 1e-2])
+KALMAN_Q_VARIANCE = 1e1
+KALMAN_G = np.array([0.5 * IMU_SAMPLE_RATE_S ** 2, IMU_SAMPLE_RATE_S, 1])
+KALMAN_Q = KALMAN_Q_VARIANCE * np.outer(KALMAN_G, KALMAN_G)
+KALMAN_R_VARIANCE = 1e-3
+KALMAN_R = KALMAN_R_VARIANCE * np.diag([1, 1])
 
 HARD_IRON_OFFSET_X = 0.131
 HARD_IRON_OFFSET_Y = 0.143
@@ -34,6 +37,7 @@ HARD_IRON_OFFSET_Z = -0.144
 class Estimator(Enum):
     ACC_MAG = 'AccMag'
     GYRO = 'Gyro'
+    GYRO_LP = 'GyroLp'
     CF = 'Cf'
     KALMAN = 'Kalman'
 
@@ -74,19 +78,17 @@ class AttEst(ABC):
     t_s: np.ndarray
 
     def __init__(self, imu_out: ImuOut):
-        nans = np.full(imu_out.t_s.size, np.nan)
+        self.phi = np.array([])
+        self.theta = np.array([])
+        self.psi = np.array([])
 
-        self.phi = nans
-        self.theta = nans
-        self.psi = nans
+        self.phi_p = np.array([])
+        self.theta_p = np.array([])
+        self.psi_p = np.array([])
 
-        self.phi_p = nans
-        self.theta_p = nans
-        self.psi_p = nans
-
-        self.phi_pp = nans
-        self.theta_pp = nans
-        self.psi_pp = nans
+        self.phi_pp = np.array([])
+        self.theta_pp = np.array([])
+        self.psi_pp = np.array([])
 
         self.t_s = imu_out.t_s
 
@@ -144,9 +146,9 @@ def _extract_imu_out(data) -> ImuOut:
     mag_y = np.array(data.Imu.MagneticFieldY.val) - HARD_IRON_OFFSET_Y
     mag_z = np.array(data.Imu.MagneticFieldZ.val) - HARD_IRON_OFFSET_Z
 
-    ang_rate_x -= np.mean(ang_rate_x[0:N_SAMPLES_FOR_OFFSET_COMP])
-    ang_rate_y -= np.mean(ang_rate_y[0:N_SAMPLES_FOR_OFFSET_COMP])
-    ang_rate_z -= np.mean(ang_rate_z[0:N_SAMPLES_FOR_OFFSET_COMP])
+    ang_rate_x -= np.mean(ang_rate_x[0:N_SAMPLES_GYRO_OFFSET_COMP])
+    ang_rate_y -= np.mean(ang_rate_y[0:N_SAMPLES_GYRO_OFFSET_COMP])
+    ang_rate_z -= np.mean(ang_rate_z[0:N_SAMPLES_GYRO_OFFSET_COMP])
 
     return ImuOut(
         acc_x=acc_x,
@@ -169,7 +171,7 @@ class AttEstAccMag(AttEst):
 
     def execute(self, imu_out: ImuOut):
         """
-        Use the IMU accelrometer and magnetometer to estimate angles (only).
+        Use the accelrometer and magnetometer to estimate angles (only).
         """
         self.phi = self.to_phi(imu_out.acc_y, imu_out.acc_z)
         self.theta = self.to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
@@ -180,7 +182,7 @@ class AttEstGyro(AttEst):
 
     def execute(self, imu_out: ImuOut):
         """
-        Use the IMU gyro for attitude estimation.
+        Use the gyro for attitude estimation.
         """
         self._est_angles(imu_out)
         self._est_angular_rates(imu_out)
@@ -200,6 +202,32 @@ class AttEstGyro(AttEst):
         self.phi_pp = np.diff(imu_out.ang_rate_x, prepend=0) / IMU_SAMPLE_RATE_S
         self.theta_pp = np.diff(imu_out.ang_rate_y, prepend=0) / IMU_SAMPLE_RATE_S
         self.psi_pp = np.diff(imu_out.ang_rate_z, prepend=0) / IMU_SAMPLE_RATE_S
+
+
+class AttEstGyroLp(AttEst):
+
+    def execute(self, imu_out: ImuOut):
+        """
+        Use a LP gyro for angular acceleration estimation.
+        """
+        phi_pp = np.diff(imu_out.ang_rate_x, prepend=0) / IMU_SAMPLE_RATE_S
+        theta_pp = np.diff(imu_out.ang_rate_y, prepend=0) / IMU_SAMPLE_RATE_S
+        psi_pp = np.diff(imu_out.ang_rate_z, prepend=0) / IMU_SAMPLE_RATE_S
+
+        self.phi_pp = self._lp(phi_pp, fc=GYRO_LP_CUT_OFF_FREQ, dt=IMU_SAMPLE_RATE_S)
+        self.theta_pp = self._lp(theta_pp, fc=GYRO_LP_CUT_OFF_FREQ, dt=IMU_SAMPLE_RATE_S)
+        self.psi_pp = self._lp(psi_pp, fc=GYRO_LP_CUT_OFF_FREQ, dt=IMU_SAMPLE_RATE_S)
+
+    def _lp(self, u, dt, fc):
+        alpha = 1 / (1 + 1 / 2 / np.pi / dt / fc)
+
+        y = np.zeros(len(u))
+        y[0] = alpha * u[0]
+
+        for k in range(1, len(u)):
+            y[k] = alpha * u[k] + (1 - alpha) * y[k - 1]
+
+        return y
 
 
 class AttEstCf(AttEst):
@@ -222,7 +250,7 @@ class AttEstCf(AttEst):
         y = np.zeros(len(u))
         alpha = tau / (tau + IMU_SAMPLE_RATE_S)
 
-        for k in range(2, len(u)):
+        for k in range(1, len(u)):
             y[k] = alpha * (y[k - 1] + up[k] * IMU_SAMPLE_RATE_S) + (1 - alpha) * u[k]
 
         return y
@@ -292,32 +320,32 @@ class PlotAttEst:
         self._axs_pp[2].set(xlabel='Time [s]', ylabel='Yaw-acc [rad/s^2]')
 
     def add(self, att_est: AttEst, name: str, color):
-        nan_plot = lambda axs, v, label: self._nan_plot(axs, t_s=att_est.t_s, v=v, color=color, label=label)
+        plot = lambda axs, v, label: self._plot(axs, t_s=att_est.t_s, v=v, color=color, label=label)
 
-        nan_plot(self._axs[0], att_est.phi, r'$\phi_{{{}}}$'.format(name))
-        nan_plot(self._axs[1], att_est.theta, r'$\theta_{{{}}}$'.format(name))
-        nan_plot(self._axs[2], att_est.psi, r'$\psi_{{{}}}$'.format(name))
+        plot(self._axs[0], att_est.phi, r'$\phi_{{{}}}$'.format(name))
+        plot(self._axs[1], att_est.theta, r'$\theta_{{{}}}$'.format(name))
+        plot(self._axs[2], att_est.psi, r'$\psi_{{{}}}$'.format(name))
 
-        nan_plot(self._axs_p[0], att_est.phi_p, r'$\dot{{\phi}}_{{{}}}$'.format(name))
-        nan_plot(self._axs_p[1], att_est.theta_p, r'$\dot{{\theta}}_{{{}}}$'.format(name))
-        nan_plot(self._axs_p[2], att_est.psi_p, r'$\dot{{\psi}}_{{{}}}$'.format(name))
+        plot(self._axs_p[0], att_est.phi_p, r'$\dot{{\phi}}_{{{}}}$'.format(name))
+        plot(self._axs_p[1], att_est.theta_p, r'$\dot{{\theta}}_{{{}}}$'.format(name))
+        plot(self._axs_p[2], att_est.psi_p, r'$\dot{{\psi}}_{{{}}}$'.format(name))
 
-        nan_plot(self._axs_pp[0], att_est.phi_pp, r'$\ddot{{\phi}}_{{{}}}$'.format(name))
-        nan_plot(self._axs_pp[1], att_est.theta_pp, r'$\ddot{{\theta}}_{{{}}}$'.format(name))
-        nan_plot(self._axs_pp[2], att_est.psi_pp, r'$\ddot{{\psi}}_{{{}}}$'.format(name))
+        plot(self._axs_pp[0], att_est.phi_pp, r'$\ddot{{\phi}}_{{{}}}$'.format(name))
+        plot(self._axs_pp[1], att_est.theta_pp, r'$\ddot{{\theta}}_{{{}}}$'.format(name))
+        plot(self._axs_pp[2], att_est.psi_pp, r'$\ddot{{\psi}}_{{{}}}$'.format(name))
 
     def show(self):
         for ax in [*self._axs, *self._axs_p, *self._axs_pp]:
-            ax.legend(loc='upper right')
+            h_legend, _ = ax.get_legend_handles_labels()
+            if len(h_legend) > 0:
+                ax.legend(loc='upper right')
             ax.grid()
 
         plt.show()
 
     @staticmethod
-    def _nan_plot(axs, t_s, v, label, color):
-        if np.isnan(v).any():
-            axs.plot(t_s, v, color=color)
-        else:
+    def _plot(axs, t_s, v, label, color):
+        if v.size > 0:
             axs.plot(t_s, v, color=color, label=label)
 
 
@@ -336,10 +364,13 @@ def main():
         plot_att_est.add(AttEstAccMag(imu_out), name=Estimator.ACC_MAG, color='c')
 
     if Estimator.GYRO in args.estimator:
-        plot_att_est.add(AttEstGyro(imu_out), name=Estimator.GYRO, color='b')
+        plot_att_est.add(AttEstGyro(imu_out), name=Estimator.GYRO, color='r')
+
+    if Estimator.GYRO_LP in args.estimator:
+        plot_att_est.add(AttEstGyroLp(imu_out), name=Estimator.GYRO_LP, color='m')
 
     if Estimator.CF in args.estimator:
-        plot_att_est.add(AttEstCf(imu_out), name=Estimator.CF, color='r')
+        plot_att_est.add(AttEstCf(imu_out), name=Estimator.CF, color='b')
 
     if Estimator.KALMAN in args.estimator:
         plot_att_est.add(AttEstKalman(imu_out), name=Estimator.KALMAN, color='g')
