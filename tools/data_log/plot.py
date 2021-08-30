@@ -263,22 +263,23 @@ def _plot_tasks(data):
 def main():
     parser = argparse.ArgumentParser(description='Plot and analyze data log file.')
     parser.add_argument('path', type=Path, help='Path to data log file')
-    parser.add_argument('plots', type=PlotSel, choices=list(PlotSel), nargs='+', help='Selected plots')
+    parser.add_argument('--plot', type=PlotSel, choices=list(PlotSel), nargs='+', default=list(PlotSel),
+                        help='Selected plot(s)')
     args = parser.parse_args()
 
     data = data_log_io.read(args.path)
 
-    if PlotSel.IMU in args.plots:
+    if PlotSel.IMU in args.plot:
         _plot_imu(data)
-    if PlotSel.ESC in args.plots:
+    if PlotSel.ESC in args.plot:
         _plot_esc(data)
-    if PlotSel.RC in args.plots:
+    if PlotSel.RC in args.plot:
         _plot_rc(data)
-    if PlotSel.STATE_EST in args.plots:
+    if PlotSel.STATE_EST in args.plot:
         _plot_state_est(data)
-    if PlotSel.STATE_CTRL in args.plots:
+    if PlotSel.STATE_CTRL in args.plot:
         _plot_state_ctrl(data)
-    if PlotSel.TASKS in args.plots:
+    if PlotSel.TASKS in args.plot:
         _plot_tasks(data)
 
     plt.show()
