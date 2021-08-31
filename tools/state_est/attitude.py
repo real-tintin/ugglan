@@ -1,13 +1,14 @@
 import argparse
 from abc import abstractmethod, ABC
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
-import data_log.io as data_log_io
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from dataclasses import dataclass
+
+import data_log.io as data_log_io
 
 mpl.rcParams['lines.linewidth'] = 0.5
 
@@ -208,7 +209,7 @@ class AttEstGyroLp(AttEst):
 
     def execute(self, imu_out: ImuOut):
         """
-        Use a LP gyro for angular acceleration estimation.
+        Use a LP-filtered (and derivative) of gyro for angular acceleration estimation.
         """
         phi_pp = np.diff(imu_out.ang_rate_x, prepend=0) / IMU_SAMPLE_RATE_S
         theta_pp = np.diff(imu_out.ang_rate_y, prepend=0) / IMU_SAMPLE_RATE_S

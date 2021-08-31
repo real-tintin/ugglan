@@ -152,14 +152,14 @@ where :math:`\mathbf{x_i}\in\mathbb{R}^3`, :math:`\mathbf{y_i}\in\mathbb{R}^2` a
     \mathbf{A_i}=
     \begin{bmatrix}
         0 & 1 & 0 \\
-        0 & 0 & c_i \\
+        0 & 0 & 1 \\
         0 & 0 & -\tfrac{1}{\tau_M}
     \end{bmatrix},
     \mathbf{B_i}=
     \begin{bmatrix}
         0 \\
         0 \\
-        \tfrac{1}{\tau_M}
+        \tfrac{c_i}{\tau_M}
     \end{bmatrix},
     \mathbf{C_i}=
     \begin{bmatrix}
@@ -178,26 +178,30 @@ state-space representation in roll
     \begin{bmatrix}
         \phi \\
         \dot\phi \\
-        M_{\phi}
+        \ddot\phi \\
     \end{bmatrix},
     u_4=u_\phi,
     c_4=\tfrac{1}{I_{xx}}.
 
-Note that the final state e.g., :math:`M_{\phi} (= I_{xx}\ddot\phi)` is observed using a reduced observer,
-see :ref:`force-torque-estimation`.
+Note, the final state e.g., :math:`\ddot\phi` is estimated using a Kalman filter,
+see :ref:`attitude-estimation`. This differs from the master thesis, where it was
+estimated using a reduced observer.
 
 State Estimation
 =================
 
+.. _attitude-estimation:
+
 Attitude Estimation
 --------------------
 For attitude control, the Euler angles :math:`\eta = [\phi, \theta, \psi]` and their respective
-time derivatives (angular rates) :math:`\dot{\eta} = \omega` (in the linearized model) are
-needed.
+time derivatives :math:`\dot{\eta}` (angular rates) and :math:`\ddot{\eta}` (angular accelerations)
+are needed.
 
-Here :math:`\omega` is simply given by the IMU's gyro, but :math:`\eta` has to be estimated. This
-can be accomplished using all sensors (accelerometer, gyro and magnetometer) and is a common
-problem. Without going into detail - geometrical relationships yield
+Geometry of IMU
+^^^^^^^^^^^^^^^^
+The euler angles can directly be computed from the IMU's accelerometer and magnetometer using
+the geometrical relationships
 
 .. math::
 
@@ -216,8 +220,41 @@ and :math:`a_B` is the acceleration and :math:`B_B` is the earths magnetic field
 IMU in the body frame. Where :math:`B_{Ix}` and :math:`B_{Iy}` are the magnetic fields in the
 inertial frame.
 
-These estimates can be improved by using the gyro and a simple first order complementary
-filter (see `IMU Data Fusing <http://www.olliw.eu/2013/imu-data-fusing/>`_)
+However, the estimates are noisy (see :numref:`ang_est`) and need to be enhanced
+e.g., by filtering.
+
+Kalman Filter
+^^^^^^^^^^^^^^
+A full state attitude estimation can be accomplished by using a Kalman filter (MLSE filter which assumes
+linearity and Gaussian noise) see e.g., `Wikipedia <https://en.wikipedia.org/wiki/Kalman_filter>`_ for
+details. This is a rather common approach for attitude estimation given the IMU outputs. So, without
+going into the details, the time discretized state space model in this case becomes
+
+.. math::
+    :label: kalman_filter
+
+    \mathbf{F}=
+    \begin{bmatrix}
+        1 & \Delta t & \tfrac{\Delta t^2}{2} \\
+        0 & 1 & \Delta t \\
+        0 & 0 & 1
+    \end{bmatrix},
+    \mathbf{B}= 0,
+    \mathbf{H}=
+    \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & 1 & 0
+    \end{bmatrix}.
+
+The covariance matrices :math:`\mathbf{P}_0`, :math:`\mathbf{Q}` and :math:`\mathbf{R}` are
+manually tunned and selected using a data driven approach, see Figure X for the final performance
+and comparison w.r.t to other filtering methods.
+
+Complementary filter
+^^^^^^^^^^^^^^^^^^^^^
+Another method to improve the (angle only) estimates is to use a first order complementary filter -
+fusing the accelerometer angles with the integrated gyro estimates (see
+`IMU Data Fusing <http://www.olliw.eu/2013/imu-data-fusing/>`_)
 
 .. math::
 
@@ -233,22 +270,52 @@ where
             &= \alpha(y^{k-1} + \dot{u}^k\Delta t) + (1-\alpha)u^k
 
 where :math:`\alpha = \tfrac{\tau}{\tau + \Delta t}` and :math:`\tau` is the cut-off frequency
-(:math:`\tau = \tfrac{1}{2 \pi f_c}`). Note that the estimates also need range limiting
-(module of angles) and offset compensation (gyro and hard iron).
+(:math:`\tau = \tfrac{1}{2 \pi f_c}`).
 
-In :numref:`attitude_estimation` the result of the attitude estimation is shown. Note the large
-drift of the gyro.
+Estimator Performance
+^^^^^^^^^^^^^^^^^^^^^^
+In :numref:`ang_est` - :numref:`ang_acc_est` the final performance of the attitude
+estimation is show for different estimators.
 
-.. _attitude_estimation:
-.. figure:: figures/attitude_estimation.svg
+.. _ang_est:
+.. figure:: figures/ang_est.svg
     :width: 100%
 
-    Attitude estimation of roll (:math:`\phi`), pitch (:math:`\theta`) and
-    yaw (:math:`\psi`). Both unfiltered and complementary filter estimates.
-    Here :math:`\tau_{\phi}=\tau_{\theta}=\tau_{\psi}` s.t. :math:`f_c=20` Hz.
+    Angle estimation using the IMU (accelerometer + magnetometer), integrated gyro,
+    complementary filter and the Kalman filter.
+
+.. _ang_rate_est:
+.. figure:: figures/ang_rate_est.svg
+    :width: 100%
+
+    Angular rate estimation using the gyro output and the Kalman filter.
+
+.. _ang_acc_est:
+.. figure:: figures/ang_acc_est.svg
+    :width: 100%
+
+    Angular acceleration estimation using the derivative of the gyro (w/o a LP-filter)
+    and the Kalman filter.
+
+Implementation Notes
+^^^^^^^^^^^^^^^^^^^^^
+
+Kalman Filter
+"""""""""""""""""
+TODO: Solve inv to get the Kalman gain.
+
+Gyro offset
+""""""""""""
+The gyro output contains an offset/bias which needs to be compensated for. This
+can simply be estimated during the standstill of the drone.
+
+Range Limit
+"""""""""""""""
+The estimates need to be range limited i.e., modulo of the euler angles e.g.,
+:math:`\theta \in [-\pi, \pi]`.
 
 Hard Iron Offset
-^^^^^^^^^^^^^^^^^
+"""""""""""""""""
 Magnetic fields affecting the magnetometer other than earth's need to be compensated
 for. One of those is hard iron (the other being soft iron) effects. These are static
 magnetic fields e.g., components on the PCB.
@@ -272,6 +339,7 @@ directions, see :numref:`hard_iron_offset`.
 
 Force and Torque Estimation
 ----------------------------
+TODO: RM
 The final state of :eq:`state_space_matrices` (force/torque), here denoted
 :math:`\tilde{x}_a` is not measured. It is instead estimated using a reduced
 observer, see `Design-Modeling-and-Control-of-an-Octocopter`_ Section (4.2.3)
@@ -315,6 +383,7 @@ for in depth details.
 
 Discretized Feedback
 ---------------------
+TODO: UPDATE
 In :ref:`force-torque-estimation` the reduced observer is presented, including the control
 input. Hence, by using :eq:`cont_state_feedback` and solving for :math:`u_k` one derives at the
 final time-discretized feedback controller
