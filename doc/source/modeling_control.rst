@@ -247,8 +247,8 @@ going into the details, the time discretized state space model in this case beco
     \end{bmatrix}.
 
 The covariance matrices :math:`\mathbf{P}_0`, :math:`\mathbf{Q}` and :math:`\mathbf{R}` are
-manually tunned and selected using a data driven approach, see Figure X for the final performance
-and comparison w.r.t to other filtering methods.
+manually tunned and selected using a data driven approach, see :ref:`estimator-performance` for the
+final performance and comparison w.r.t to other filtering methods.
 
 Complementary filter
 ^^^^^^^^^^^^^^^^^^^^^
@@ -271,6 +271,8 @@ where
 
 where :math:`\alpha = \tfrac{\tau}{\tau + \Delta t}` and :math:`\tau` is the cut-off frequency
 (:math:`\tau = \tfrac{1}{2 \pi f_c}`).
+
+.. _estimator-performance:
 
 Estimator Performance
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -302,7 +304,9 @@ Implementation Notes
 
 Kalman Filter
 """""""""""""""""
-TODO: Solve inv to get the Kalman gain.
+In order to solve for the optimal Kalman gain, a matrix inverse operation as to be
+performed. For this `LAPACK <http://www.netlib.org/lapack/>`_ is used. See the source
+code for details.
 
 Gyro offset
 """"""""""""
@@ -337,38 +341,6 @@ directions, see :numref:`hard_iron_offset`.
 
 .. _force-torque-estimation:
 
-Force and Torque Estimation
-----------------------------
-TODO: RM
-The final state of :eq:`state_space_matrices` (force/torque), here denoted
-:math:`\tilde{x}_a` is not measured. It is instead estimated using a reduced
-observer, see `Design-Modeling-and-Control-of-an-Octocopter`_ Section (4.2.3)
-for details.
-
-A first order backwards time-difference of the observer gives
-
-.. math::
-
-    \tilde{x}^k_a = \beta_1 (\tilde{x}^{k-1}_a -\alpha x^{k-1}_v) +
-    \beta_2 x^{k}_v + \beta_3 u^k, \tilde{x}^0_a = 0
-
-where
-
-.. math::
-
-    \beta_1 &= \frac{\tau_M}{\beta_4} \\
-    \beta_2 &= -\frac{\alpha\Delta t (1+ \alpha \tau_M c_i)}{\beta_4} \\
-    \beta_3 &= \frac{\Delta t}{\beta_4} \\
-    \beta_4 &= \tau_M + \Delta t (1 + \alpha \tau_M c_i)
-
-and :math:`x_v` is the (translational/rotational) velocity state of each
-state-space, :math:`\alpha` a tuning parameter. Note that
-:math:`\text{Re}(\alpha) > -\tfrac{1}{\tau_M c_i}` for stability.
-
-Also note that when :math:`\alpha\rightarrow\infty` the observer will result
-in a backwards time-difference of :math:`x_v` i.e., its derivative
-(:math:`\dot{x}_v = x_a`).
-
 State Control
 =================
 The drone's dynamics are stabilized using a full state feedback controller
@@ -381,21 +353,10 @@ The drone's dynamics are stabilized using a full state feedback controller
 Which allows for arbitrary pole placement, see `Design-Modeling-and-Control-of-an-Octocopter`_
 for in depth details.
 
-Discretized Feedback
----------------------
-TODO: UPDATE
-In :ref:`force-torque-estimation` the reduced observer is presented, including the control
-input. Hence, by using :eq:`cont_state_feedback` and solving for :math:`u_k` one derives at the
-final time-discretized feedback controller
-
-.. math::
-    :label: disc_state_feedback
-
-    u^k = -\frac{l_1 x_1^k + (l_2 + l_3(\beta_2 + \alpha)) x_2^k + l_3\beta_1(u^{k-1}
-    - \alpha x_2^{k-1})}{1 + l_3\beta_3}, u^0 = 0.
-
 Pilot Control
 ---------------------
+TODO: UPDATE
+
 Typically, the pilot controller (using the handheld controller), seeks for stability
 of roll, pitch and yaw-rate.
 
