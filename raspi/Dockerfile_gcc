@@ -4,6 +4,10 @@ FROM gcc:9.1
 RUN cd /bin && ln -s /usr/local/bin/gcc gcc-9.1
 RUN cd /bin && ln -s /usr/local/bin/g++ g++-9.1
 
+# Install lapack and blas
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y build-essential liblapack* libblas*
+
 # Copy dependent files (instead of mount to support Windows)
 ENV ROOT /raspi
 WORKDIR ${ROOT}
