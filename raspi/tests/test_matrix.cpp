@@ -95,3 +95,29 @@ TEST_CASE("transpose")
         REQUIRE(A == Matrix({{1, 4}, {2, 5}, {3, 6}}));
     }
 }
+
+TEST_CASE("multiplication")
+{
+    SECTION("scalar * 3x1")
+    {
+        Matrix A = Matrix({{3}, {2}, {1}});
+        REQUIRE((3 * A) == Matrix({{9}, {6}, {3}}));
+    }
+    SECTION("2x2 * scalar")
+    {
+        Matrix A = Matrix({{1, 2}, {2, 1}});
+        REQUIRE((A * 2) == Matrix({{2, 4}, {4, 2}}));
+    }
+    SECTION("2x2 * 2x2")
+    {
+        // TODO
+    }
+    SECTION("1x3 * 3x1")
+    {
+        // TODO
+    }
+    SECTION("3x2 * 2x3")
+    {
+        // TODO
+    }
+}

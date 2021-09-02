@@ -24,7 +24,10 @@ public:
     friend bool operator != (const Matrix& lhs, const Matrix& rhs) { return lhs._content != rhs._content; }
 
     std::vector<double>& operator [] (size_t index) { return _content[index]; }
-    // TODO: overload multiplication operator
+
+    friend Matrix operator * (const Matrix& mat, double scalar);
+    friend Matrix operator * (double scalar, const Matrix& mat);
+    // TODO: friend Matrix operator * (const Matrix& mat_0, const Matrix& mat_1);
 
     void inverse();
     void transpose();
