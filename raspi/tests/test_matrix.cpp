@@ -3,7 +3,7 @@
 
 #include <matrix.h>
 
-TEST_CASE("construct")
+TEST_CASE("constructor")
 {
     SECTION("Invalid dimension")
     {
@@ -11,25 +11,33 @@ TEST_CASE("construct")
     }
 }
 
-TEST_CASE("equal")
+TEST_CASE("equality operator")
 {
     Matrix A = Matrix({{1, 3}, {1, 3}});
 
     SECTION("should be equal")
     {
         Matrix B = Matrix({{1, 3}, {1, 3}});
-        REQUIRE(A.equal(B));
+        REQUIRE(A == B);
     }
     SECTION("same dimension but not content")
     {
         Matrix B = Matrix({{3, 1}, {1, 3}});
-        REQUIRE_FALSE(A.equal(B));
+        REQUIRE(A != B);
     }
     SECTION("different dimension")
     {
         Matrix B = Matrix({{3, 1, 3}, {1, 3, 1}});
-        REQUIRE_FALSE(A.equal(B));
+        REQUIRE(A != B);
     }
+}
+
+TEST_CASE("subscript operator")
+{
+    Matrix A = Matrix({{-1, -9}, {6, 7}});
+
+    REQUIRE(A[0][1] == -9);
+    REQUIRE(A[1][0] == 6);
 }
 
 TEST_CASE("inverse")
@@ -44,7 +52,7 @@ TEST_CASE("inverse")
         Matrix A_exp_inv = Matrix({{3, -2}, {-1, 1}});
 
         A.inverse();
-        REQUIRE(A.equal(A_exp_inv));
+        REQUIRE(A == A_exp_inv);
     }
     SECTION("not square")
     {
