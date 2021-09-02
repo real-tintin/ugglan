@@ -12,12 +12,12 @@ void Matrix::inverse()
     if (_is_square())
     {
         int m = static_cast<int>(_m);
-        int ipiv[_m];
-        int lwork = _m * _m;
+        int ipiv[m];
+        int lwork = m * m;
         double work[lwork];
         int info;
 
-        double lapack_content[_m * _m] = {};
+        double lapack_content[m * m] = {};
         _to_lapack(_content, lapack_content, _m, _n);
 
         dgetrf_(&m, &m, lapack_content, &m, ipiv, &info);
@@ -34,19 +34,9 @@ void Matrix::inverse()
     }
 }
 
-const MatrixContent Matrix::get_content()
+std::size_t Matrix::_check_and_get_n()
 {
-    return (static_cast<const MatrixContent>(_content));
-}
-
-bool Matrix::equal(Matrix other)
-{
-    return (_content == other.get_content());
-}
-
-uint32_t Matrix::_check_and_get_n()
-{
-    std::vector<int>::size_type exp_n = _content[0].size();
+    std::size_t exp_n = _content[0].size();
 
     for (auto const& row: _content)
     {
@@ -56,25 +46,25 @@ uint32_t Matrix::_check_and_get_n()
         }
     }
 
-    return static_cast<uint32_t>(exp_n);
+    return exp_n;
 }
 
-void Matrix::_to_lapack(MatrixContent& src, double* dst, uint32_t m, uint32_t n)
+void Matrix::_to_lapack(MatrixContent& src, double* dst, std::size_t m, std::size_t n)
 {
-    for (uint32_t i = 0; i < m; i++)
+    for (std::size_t i = 0; i < m; i++)
     {
-        for (uint32_t j = 0; j < n; j++)
+        for (std::size_t j = 0; j < n; j++)
         {
             dst[m * i + j] = src[i][j];
         }
     }
 }
 
-void Matrix::_from_lapack(double* src, MatrixContent& dst, uint32_t m, uint32_t n)
+void Matrix::_from_lapack(double* src, MatrixContent& dst, std::size_t m, std::size_t n)
 {
-    for (uint32_t i = 0; i < m; i++)
+    for (std::size_t i = 0; i < m; i++)
     {
-        for (uint32_t j = 0; j < n; j++)
+        for (std::size_t j = 0; j < n; j++)
         {
             dst[i][j] = src[m * i + j];
         }

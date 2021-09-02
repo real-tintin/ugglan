@@ -20,26 +20,29 @@ class Matrix
 public:
     Matrix(MatrixContent content);
 
+    friend bool operator == (const Matrix& lhs, const Matrix& rhs) { return lhs._content == rhs._content; }
+    friend bool operator != (const Matrix& lhs, const Matrix& rhs) { return lhs._content != rhs._content; }
+
+    std::vector<double>& operator [] (size_t index) { return _content[index]; }
+
     void inverse();
     // TODO: transpose
     // TODO: overload multiplication operator
-    // TODO: get content => overload []?
-    const MatrixContent get_content();
 
     bool equal(Matrix other);
 
-    uint32_t get_m() { return _m; }
-    uint32_t get_n() { return _n; }
+    std::size_t get_m() { return _m; }
+    std::size_t get_n() { return _n; }
 private:
     MatrixContent _content;
 
-    uint32_t _m;
-    uint32_t _n;
+    std::size_t _m;
+    std::size_t _n;
 
     bool _is_square() { return _m == _n; }
 
-    uint32_t _check_and_get_n();
+    std::size_t _check_and_get_n();
 
-    void _to_lapack(MatrixContent& src, double* dst, uint32_t m, uint32_t n);
-    void _from_lapack(double* src, MatrixContent& dst, uint32_t m, uint32_t n);
+    void _to_lapack(MatrixContent& src, double* dst, std::size_t m, std::size_t n);
+    void _from_lapack(double* src, MatrixContent& dst, std::size_t m, std::size_t n);
 };
