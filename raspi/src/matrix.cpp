@@ -1,10 +1,22 @@
 #include <matrix.h>
 
+static MatrixContent _scale_content(MatrixContent content, double scalar);
+
 Matrix::Matrix(std::vector<std::vector<double>> content) :
     _content(content)
 {
     _m = _content.size();
     _n = _check_and_get_n();
+}
+
+Matrix operator * (const Matrix& mat, double scalar)
+{
+    return Matrix(_scale_content(mat._content, scalar));
+}
+
+Matrix operator * (double scalar, const Matrix& mat)
+{
+    return Matrix(_scale_content(mat._content, scalar));
 }
 
 void Matrix::inverse()
@@ -38,7 +50,7 @@ void Matrix::transpose()
 {
     size_t m_t = _n;
     size_t n_t = _m;
-    MatrixContent _content_t;
+    MatrixContent content_t;
     std::vector<double> col_j;
 
     for (std::size_t j = 0; j < _n; j++)
@@ -48,12 +60,12 @@ void Matrix::transpose()
         {
             col_j.push_back(_content[i][j]);
         }
-        _content_t.push_back(col_j);
+        content_t.push_back(col_j);
     }
 
     _m = m_t;
     _n = n_t;
-    _content = _content_t;
+    _content = content_t;
 }
 
 std::size_t Matrix::_check_and_get_n()
@@ -91,4 +103,17 @@ void Matrix::_from_lapack(double* src, MatrixContent& dst, std::size_t m, std::s
             dst[i][j] = src[m * i + j];
         }
     }
+}
+
+static MatrixContent _scale_content(MatrixContent content, double scalar)
+{
+    for (std::size_t i = 0; i < content.size(); i++)
+    {
+        for (std::size_t j = 0; j < content[i].size(); j++)
+        {
+            content[i][j] *= scalar;
+        }
+    }
+
+    return content;
 }
