@@ -24,12 +24,10 @@ public:
     friend bool operator != (const Matrix& lhs, const Matrix& rhs) { return lhs._content != rhs._content; }
 
     std::vector<double>& operator [] (size_t index) { return _content[index]; }
-
-    void inverse();
-    // TODO: transpose
     // TODO: overload multiplication operator
 
-    bool equal(Matrix other);
+    void inverse();
+    void transpose();
 
     std::size_t get_m() { return _m; }
     std::size_t get_n() { return _n; }

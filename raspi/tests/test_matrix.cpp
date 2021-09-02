@@ -42,30 +42,56 @@ TEST_CASE("subscript operator")
 
 TEST_CASE("inverse")
 {
-    LogLevel org_level = logger.get_level();
-    catchutils::PatchStdCout patched_cout;
-    logger.set_level(LogLevel::info);
-
     SECTION("square")
     {
         Matrix A = Matrix({{1, 2}, {1, 3}});
-        Matrix A_exp_inv = Matrix({{3, -2}, {-1, 1}});
-
         A.inverse();
-        REQUIRE(A == A_exp_inv);
+        REQUIRE(A == Matrix({{3, -2}, {-1, 1}}));
     }
     SECTION("not square")
     {
         Matrix A = Matrix({{1, 2, 0}, {2, 3, -1}});
-        A.inverse();
-        REQUIRE(patched_cout.get().find("Can't compute inverse: matrix is not square") != std::string::npos);
+        REQUIRE_THROWS_WITH(A.inverse(), "Can't compute inverse: matrix is not square");
     }
     SECTION("singular")
     {
         Matrix A = Matrix({{1, 2}, {2, 4}});
+
+        LogLevel org_level = logger.get_level();
+        catchutils::PatchStdCout patched_cout;
+        logger.set_level(LogLevel::info);
+
         A.inverse();
         REQUIRE(patched_cout.get().find("Can't compute inverse: matrix is singular") != std::string::npos);
-    }
 
-    logger.set_level(org_level);
+        logger.set_level(org_level);
+    }
+}
+
+TEST_CASE("transpose")
+{
+    SECTION("1x3")
+    {
+        Matrix A = Matrix({{7}, {1}, {1}});
+        A.transpose();
+        REQUIRE(A == Matrix({{7, 1, 1}}));
+    }
+    SECTION("2x1")
+    {
+        Matrix A = Matrix({{4, 5}});
+        A.transpose();
+        REQUIRE(A == Matrix({{4}, {5}}));
+    }
+    SECTION("2x2")
+    {
+        Matrix A = Matrix({{3, 2}, {1, 0}});
+        A.transpose();
+        REQUIRE(A == Matrix({{3, 1}, {2, 0}}));
+    }
+    SECTION("2x3")
+    {
+        Matrix A = Matrix({{1, 2, 3}, {4, 5, 6}});
+        A.transpose();
+        REQUIRE(A == Matrix({{1, 4}, {2, 5}, {3, 6}}));
+    }
 }
