@@ -23,15 +23,37 @@ void Matrix::inverse()
         dgetrf_(&m, &m, lapack_content, &m, ipiv, &info);
         dgetri_(&m, lapack_content, &m, ipiv, work, &lwork, &info);
 
-        if (info > 0) { logger.error("Can't compute inverse: matrix is singular"); }
-        if (info < 0) { logger.error("Can't compute inverse: invalid arg to dgetri"); }
+        if (info > 0) { logger.warn("Can't compute inverse: matrix is singular"); }
+        if (info < 0) { logger.warn("Can't compute inverse: invalid arg to dgetri"); }
 
         _from_lapack(lapack_content, _content, _m, _n);
     }
     else
     {
-        logger.error("Can't compute inverse: matrix is not square");
+        throw std::logic_error("Can't compute inverse: matrix is not square");
     }
+}
+
+void Matrix::transpose()
+{
+    size_t m_t = _n;
+    size_t n_t = _m;
+    MatrixContent _content_t;
+    std::vector<double> col_j;
+
+    for (std::size_t j = 0; j < _n; j++)
+    {
+        col_j.clear();
+        for (std::size_t i = 0; i < _m; i++)
+        {
+            col_j.push_back(_content[i][j]);
+        }
+        _content_t.push_back(col_j);
+    }
+
+    _m = m_t;
+    _n = n_t;
+    _content = _content_t;
 }
 
 std::size_t Matrix::_check_and_get_n()
