@@ -1,12 +1,20 @@
 #include <matrix.h>
 
 static MatrixContent _scale_content(MatrixContent content, double scalar);
+static MatrixContent _init_content(size_t m, size_t n, double value = 0);
 
-Matrix::Matrix(std::vector<std::vector<double>> content) :
-    _content(content)
+static double _dot_product(std::vector<double> v_0, std::vector<double> v_1);
+
+Matrix::Matrix(std::vector<std::vector<double>> content) : _content(content)
 {
-    _m = _content.size();
-    _n = _check_and_get_n();
+    _check_and_set_size();
+}
+
+Matrix::Matrix(std::initializer_list<std::initializer_list<double>> lst)
+{
+    for (auto const& row : lst) { _content.push_back(row); }
+
+    _check_and_set_size();
 }
 
 Matrix operator * (const Matrix& mat, double scalar)
@@ -17,6 +25,29 @@ Matrix operator * (const Matrix& mat, double scalar)
 Matrix operator * (double scalar, const Matrix& mat)
 {
     return Matrix(_scale_content(mat._content, scalar));
+}
+
+Matrix operator * (const Matrix& mat_0, const Matrix& mat_1)
+{
+    if ((mat_0._m != mat_1._n) || (mat_0._n != mat_1._m))
+    {
+        throw std::logic_error("Can't multiply matrices: dimension mismatch");
+    }
+
+    MatrixContent content_m = _init_content(mat_0._m, mat_1._n);
+
+    Matrix mat_1_t = mat_1;
+    mat_1_t.transpose();
+
+    for (std::size_t i = 0; i < mat_0._m; i++)
+    {
+        for (std::size_t j = 0; j < mat_1._n; j++)
+        {
+            content_m[i][j] = _dot_product(mat_0._content[i], mat_1_t._content[j]);
+        }
+    }
+
+    return Matrix(content_m);
 }
 
 void Matrix::inverse()
@@ -50,22 +81,25 @@ void Matrix::transpose()
 {
     size_t m_t = _n;
     size_t n_t = _m;
-    MatrixContent content_t;
-    std::vector<double> col_j;
+    MatrixContent content_t = _init_content(m_t, n_t);
 
-    for (std::size_t j = 0; j < _n; j++)
+    for (std::size_t i = 0; i < _m; i++)
     {
-        col_j.clear();
-        for (std::size_t i = 0; i < _m; i++)
+        for (std::size_t j = 0; j < _n; j++)
         {
-            col_j.push_back(_content[i][j]);
+            content_t[j][i] = _content[i][j];
         }
-        content_t.push_back(col_j);
     }
 
     _m = m_t;
     _n = n_t;
     _content = content_t;
+}
+
+void Matrix::_check_and_set_size()
+{
+    _m = _content.size();
+    _n = _check_and_get_n();
 }
 
 std::size_t Matrix::_check_and_get_n()
@@ -116,4 +150,24 @@ static MatrixContent _scale_content(MatrixContent content, double scalar)
     }
 
     return content;
+}
+
+static MatrixContent _init_content(size_t m, size_t n, double value)
+{
+    std::vector<double> row(n, value);
+    MatrixContent mat(m, row);
+
+    return mat;
+}
+
+static double _dot_product(std::vector<double> v_0, std::vector<double> v_1)
+{
+    double dp = 0;
+
+    for (std::size_t i = 0; i < v_0.size(); i++)
+    {
+        dp += v_0[i] * v_1[i];
+    }
+
+    return dp;
 }

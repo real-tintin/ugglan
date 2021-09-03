@@ -19,6 +19,7 @@ class Matrix
 {
 public:
     Matrix(MatrixContent content);
+    Matrix(std::initializer_list<std::initializer_list<double>> lst);
 
     friend bool operator == (const Matrix& lhs, const Matrix& rhs) { return lhs._content == rhs._content; }
     friend bool operator != (const Matrix& lhs, const Matrix& rhs) { return lhs._content != rhs._content; }
@@ -27,7 +28,7 @@ public:
 
     friend Matrix operator * (const Matrix& mat, double scalar);
     friend Matrix operator * (double scalar, const Matrix& mat);
-    // TODO: friend Matrix operator * (const Matrix& mat_0, const Matrix& mat_1);
+    friend Matrix operator * (const Matrix& mat_0, const Matrix& mat_1);
 
     void inverse();
     void transpose();
@@ -42,6 +43,7 @@ private:
 
     bool _is_square() { return _m == _n; }
 
+    void _check_and_set_size();
     std::size_t _check_and_get_n();
 
     void _to_lapack(MatrixContent& src, double* dst, std::size_t m, std::size_t n);
