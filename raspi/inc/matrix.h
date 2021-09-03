@@ -30,8 +30,8 @@ public:
     friend Matrix operator * (double scalar, const Matrix& mat);
     friend Matrix operator * (const Matrix& mat_0, const Matrix& mat_1);
 
-    void inverse();
-    void transpose();
+    Matrix& inverse();
+    Matrix& transpose();
 
     std::size_t get_m() { return _m; }
     std::size_t get_n() { return _n; }

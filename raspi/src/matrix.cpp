@@ -29,7 +29,7 @@ Matrix operator * (double scalar, const Matrix& mat)
 
 Matrix operator * (const Matrix& mat_0, const Matrix& mat_1)
 {
-    if ((mat_0._m != mat_1._n) || (mat_0._n != mat_1._m))
+    if (mat_0._n != mat_1._m)
     {
         throw std::logic_error("Can't multiply matrices: dimension mismatch");
     }
@@ -50,7 +50,7 @@ Matrix operator * (const Matrix& mat_0, const Matrix& mat_1)
     return Matrix(content_m);
 }
 
-void Matrix::inverse()
+Matrix& Matrix::inverse()
 {
     if (_is_square())
     {
@@ -75,9 +75,11 @@ void Matrix::inverse()
     {
         throw std::logic_error("Can't compute inverse: matrix is not square");
     }
+
+    return *this;
 }
 
-void Matrix::transpose()
+Matrix& Matrix::transpose()
 {
     size_t m_t = _n;
     size_t n_t = _m;
@@ -94,6 +96,8 @@ void Matrix::transpose()
     _m = m_t;
     _n = n_t;
     _content = content_t;
+
+    return *this;
 }
 
 void Matrix::_check_and_set_size()
