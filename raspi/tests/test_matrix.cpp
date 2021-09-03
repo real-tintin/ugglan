@@ -3,6 +3,20 @@
 
 #include <matrix.h>
 
+void almost_equal(Matrix A, Matrix B, double abs_tol = 1e-6)
+{
+    REQUIRE(A.get_m() == B.get_m());
+    REQUIRE(A.get_n() == B.get_n());
+
+    for (size_t i = 0; i < A.get_m(); i++)
+    {
+        for (size_t j = 0; j < A.get_n(); j++)
+        {
+            REQUIRE((A[i][j] - B[i][j]) < abs_tol);
+        }
+    }
+}
+
 TEST_CASE("constructor")
 {
     SECTION("Invalid dimension")
@@ -45,8 +59,7 @@ TEST_CASE("inverse")
     SECTION("square")
     {
         Matrix A({{1, 2}, {1, 3}});
-        A.inverse();
-        REQUIRE(A == Matrix({{3, -2}, {-1, 1}}));
+        REQUIRE(A.inverse() == Matrix({{3, -2}, {-1, 1}}));
     }
     SECTION("not square")
     {
@@ -73,32 +86,27 @@ TEST_CASE("transpose")
     SECTION("1x1")
     {
         Matrix A({{8}});
-        A.transpose();
-        REQUIRE(A == Matrix({{8}}));
+        REQUIRE(A.transpose() == Matrix({{8}}));
     }
     SECTION("1x3")
     {
         Matrix A({{7}, {1}, {1}});
-        A.transpose();
-        REQUIRE(A == Matrix({{7, 1, 1}}));
+        REQUIRE(A.transpose() == Matrix({{7, 1, 1}}));
     }
     SECTION("2x1")
     {
         Matrix A({{4, 5}});
-        A.transpose();
-        REQUIRE(A == Matrix({{4}, {5}}));
+        REQUIRE(A.transpose() == Matrix({{4}, {5}}));
     }
     SECTION("2x2")
     {
         Matrix A({{3, 2}, {1, 0}});
-        A.transpose();
-        REQUIRE(A == Matrix({{3, 1}, {2, 0}}));
+        REQUIRE(A.transpose() == Matrix({{3, 1}, {2, 0}}));
     }
     SECTION("2x3")
     {
         Matrix A({{1, 2, 3}, {4, 5, 6}});
-        A.transpose();
-        REQUIRE(A == Matrix({{1, 4}, {2, 5}, {3, 6}}));
+        REQUIRE(A.transpose() == Matrix({{1, 4}, {2, 5}, {3, 6}}));
     }
 }
 
@@ -144,10 +152,26 @@ TEST_CASE("multiplication")
         Matrix B({{2, -1, 1}, {3, 1, 2}});
         REQUIRE((A * B) == Matrix({{7, -1, 4}, {9, -2, 5}, {8, -4, 4}}));
     }
+    SECTION("3x2 * 2x2")
+    {
+        Matrix A({{1, 1}, {2, 2}, {3, 3}});
+        Matrix B({{1, -1}, {2, 3}});
+        REQUIRE((A * B) == Matrix({{3, 2}, {6, 4}, {9, 6}}));
+    }
     SECTION("1x2 * 3x1 (dim mismatch)")
     {
         Matrix A({{1, 2}});
         Matrix B({{1}, {2}, {3}});
         REQUIRE_THROWS_WITH(A * B, "Can't multiply matrices: dimension mismatch");
     }
+}
+
+TEST_CASE("operator chaining")
+{
+    Matrix P({{0, 2, 4}, {2, 6, 8}, {4, 6, 10}});
+    Matrix H({{1, 0, 0}, {0, 1, 0}});
+    Matrix S({{1, 3}, {3, 7}});
+
+    Matrix K = P * H.transpose() * S.inverse();
+    almost_equal(K, Matrix({{3, -1}, {2, 0}, {-5, 3}}));
 }
