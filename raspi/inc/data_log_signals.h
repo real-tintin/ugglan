@@ -115,13 +115,16 @@ enum class DataLogSignal {
     StateCtrlPhi0,
     StateCtrlPhi1,
     StateCtrlPhi2,
+    StateCtrlPhi3,
 
     StateCtrlTheta0,
     StateCtrlTheta1,
     StateCtrlTheta2,
+    StateCtrlTheta3,
 
     StateCtrlPsi0,
     StateCtrlPsi1,
+    StateCtrlPsi2,
 
     StateCtrlMx,
     StateCtrlMy,
@@ -257,13 +260,16 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::StateCtrlPhi0, {"Phi0", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlPhi1, {"Phi1", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlPhi2, {"Phi2", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlPhi3, {"Phi3", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
 
     {DataLogSignal::StateCtrlTheta0, {"Theta0", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlTheta1, {"Theta1", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlTheta2, {"Theta2", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlTheta3, {"Theta3", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
 
     {DataLogSignal::StateCtrlPsi0, {"Psi0", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlPsi1, {"Psi1", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+    {DataLogSignal::StateCtrlPsi2, {"Psi2", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
 
     {DataLogSignal::StateCtrlMx, {"Mx", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlMy, {"My", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},

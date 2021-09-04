@@ -1,10 +1,10 @@
+#ifndef MOTOR_CONTROL_H
+#define MOTOR_CONTROL_H
+
 #include <cstdint>
 #include <math.h>
 #include <array>
 #include <drone_props.h>
-
-#ifndef MOTOR_CONTROL_H
-#define MOTOR_CONTROL_H
 
 struct BodyControl
 {
