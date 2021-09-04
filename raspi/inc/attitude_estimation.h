@@ -3,18 +3,13 @@
 
 #include <cstdint>
 #include <math.h>
+#include <utils.h>
+#include <matrix.h>
+
+inline const double ATT_EST_KALMAN_Q_VARIANCE = utils::get_env("ATT_EST_KALMAN_Q_VARIANCE", 1e1);
+inline const double ATT_EST_KALMAN_R_VARIANCE = utils::get_env("ATT_EST_KALMAN_R_VARIANCE", 1e-3);
 
 inline const uint8_t ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP = 20;
-
-inline const double ATT_EST_CUT_OFF_FREQ = 0.2; // [Hz]
-
-inline const double ATT_EST_TAU_ROLL = 1 / (2 * M_PI * ATT_EST_CUT_OFF_FREQ);
-inline const double ATT_EST_TAU_PITCH = 1 / (2 * M_PI * ATT_EST_CUT_OFF_FREQ);
-inline const double ATT_EST_TAU_YAW = 1 / (2 * M_PI * ATT_EST_CUT_OFF_FREQ);
-
-inline const double ATT_EST_MODULO_ROLL = M_PI;
-inline const double ATT_EST_MODULO_PITCH = M_PI / 2;
-inline const double ATT_EST_MODULO_YAW = M_PI;
 
 inline const double ATT_EST_HARD_IRON_OFFSET_X = 0.131;
 inline const double ATT_EST_HARD_IRON_OFFSET_Y = 0.143;
@@ -24,21 +19,32 @@ struct AttEstInput {
     double acc_x;       // [m/s^2]
     double acc_y;       // [m/s^2]
     double acc_z;       // [m/s^2]
+
     double ang_rate_x;  // [rad/s]
     double ang_rate_y;  // [rad/s]
     double ang_rate_z;  // [rad/s]
+
     double mag_field_x; // [gauss]
     double mag_field_y; // [gauss]
     double mag_field_z; // [gauss]
 };
 
+struct AttEstKalmanState {
+    Matrix x = {{0}, {0}, {0}};
+    Matrix z = {{0}, {0}};
+    Matrix P = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+};
+
+struct AttEstState {
+    double angle; // [rad]
+    double rate;  // [rad/s]
+    double acc;   // [rad/s^2]
+};
+
 struct AttEstimate {
-    double roll;       // [rad]
-    double pitch;      // [rad]
-    double yaw;        // [rad]
-    double roll_rate;  // [rad/s]
-    double pitch_rate; // [rad/s]
-    double yaw_rate;   // [rad/s]
+    AttEstState roll;
+    AttEstState pitch;
+    AttEstState yaw;
 };
 
 class AttitudeEstimation
@@ -52,7 +58,7 @@ public:
 
     bool is_calibrated();
 private:
-    const double _sample_rate_s;
+    const double _dt;
 
     AttEstInput _in = {0};
     AttEstimate _est = {0};
@@ -64,6 +70,17 @@ private:
     bool _is_gyro_offset_comp = false;
     uint8_t _samples_gyro_offset_comp = 0;
 
+    Matrix _Q;
+    Matrix _F;
+    Matrix _R;
+
+    Matrix _H = {{1, 0, 0}, {0, 1, 0}};
+    Matrix _I = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+
+    AttEstKalmanState _kalman_roll;
+    AttEstKalmanState _kalman_pitch;
+    AttEstKalmanState _kalman_yaw;
+
     void _gyro_offset_comp();
     void _hard_iron_offset_comp();
 
@@ -71,8 +88,14 @@ private:
     void _update_pitch();
     void _update_yaw();
 
-    double _complementary_filter(double y_old, double u, double up, double tau);
-    double _modulo_angle(double angle, double limit);
+    void _update_est(double z_0, double z_1,
+                     AttEstKalmanState& kalman_state,
+                     AttEstState& att_state,
+                     double modulo_lim);
+
+    void _update_kalman_state(AttEstKalmanState& state);
+    void _kalman_state_to_att_state(AttEstKalmanState& kalman, AttEstState& att);
+    void _modulo_angle(double* angle, double limit);
 };
 
 #endif /* ATTITUDE_ESTIMATION_H */
