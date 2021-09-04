@@ -61,10 +61,18 @@ TEST_CASE("equality operator")
 
 TEST_CASE("subscript operator")
 {
-    Matrix A({{-1, -9}, {6, 7}});
-
-    REQUIRE(A[0][1] == -9);
-    REQUIRE(A[1][0] == 6);
+    SECTION("non-const")
+    {
+        const Matrix A({{-1, -9}, {6, 7}});
+        REQUIRE(A[0][1] == -9);
+        REQUIRE(A[1][0] == 6);
+    }
+    SECTION("const")
+    {
+        Matrix A({{0, 5}, {2, 4}});
+        REQUIRE(A[1][0] == 2);
+        REQUIRE(A[0][1] == 5);
+    }
 }
 
 TEST_CASE("inverse")

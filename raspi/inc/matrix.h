@@ -28,7 +28,8 @@ public:
     friend bool operator == (const Matrix& lhs, const Matrix& rhs) { return lhs._content == rhs._content; }
     friend bool operator != (const Matrix& lhs, const Matrix& rhs) { return lhs._content != rhs._content; }
 
-    std::vector<double>& operator [] (size_t index) { return _content[index]; }
+    std::vector<double>& operator [] (const size_t index) { return _content[index]; }
+    const std::vector<double>& operator [] (const size_t index) const { return _content[index]; }
 
     friend Matrix operator * (const Matrix& mat, double scalar);
     friend Matrix operator * (double scalar, const Matrix& mat);
