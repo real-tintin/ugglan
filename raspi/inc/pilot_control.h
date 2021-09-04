@@ -9,9 +9,7 @@
 #include <motor_control.h>
 #include <drone_props.h>
 #include <utils.h>
-
-inline const uint8_t PILOT_CTRL_X_SIZE = 3;
-inline const uint8_t PILOT_CTRL_L_SIZE = 4;
+#include <matrix.h>
 
 inline const double PILOT_CTRL_ABS_MAX_REF_ROLL = M_PI / 8; // [rad]
 inline const double PILOT_CTRL_ABS_MAX_REF_PITCH = M_PI / 8; // [rad]
@@ -22,39 +20,43 @@ inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PHI = utils::get_env("PILOT_CTRL_
 inline const double PILOT_CTRL_ANTI_WINDUP_SAT_THETA = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_THETA", 0.3);
 inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PSI = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_PSI", 2.4);
 
-inline const double PILOT_CTRL_L_ROLL[PILOT_CTRL_L_SIZE] =
-    {
+inline const Matrix PILOT_CTRL_L_ROLL =
+    {{
     utils::get_env("PILOT_CTRL_L_ROLL_0", 1.5),
     utils::get_env("PILOT_CTRL_L_ROLL_1", 4.0),
     utils::get_env("PILOT_CTRL_L_ROLL_2", 0.6),
     utils::get_env("PILOT_CTRL_L_ROLL_3", 1.5)
-    }; // Feedback matrice for roll.
+    }}; // Feedback matrice for roll.
 
-inline const double PILOT_CTRL_L_PITCH[PILOT_CTRL_L_SIZE] =
-    {
+inline const Matrix PILOT_CTRL_L_PITCH =
+    {{
     utils::get_env("PILOT_CTRL_L_PITCH_0", 1.5),
     utils::get_env("PILOT_CTRL_L_PITCH_1", 4.0),
     utils::get_env("PILOT_CTRL_L_PITCH_2", 0.6),
     utils::get_env("PILOT_CTRL_L_PITCH_3", 1.5)
-    }; // Feedback matrice for pitch.
+    }}; // Feedback matrice for pitch.
 
-inline const double PILOT_CTRL_L_YAW_RATE[PILOT_CTRL_L_SIZE] =
-    {
-    0.0, // First state not used for yaw-rate ctrl.
+inline const Matrix PILOT_CTRL_L_YAW_RATE =
+    {{
     utils::get_env("PILOT_CTRL_L_YAW_RATE_0", 0.02),
     utils::get_env("PILOT_CTRL_L_YAW_RATE_1", 0.04),
     utils::get_env("PILOT_CTRL_L_YAW_RATE_2", 0.01)
-    }; // Feedback matrice for yaw-rate.
+    }}; // Feedback matrice for yaw-rate.
 
 enum class PilotCtrlState {
     Phi0,   // [rads]
     Phi1,   // [rad]
     Phi2,   // [rad/s]
+    Phi3,   // [rad/s^2]
+
     Theta0, // [rads]
     Theta1, // [rad]
     Theta2, // [rad/s]
+    Theta3, // [rad/s^2]
+
     Psi0,   // [rad]
-    Psi1    // [rad/s]
+    Psi1,   // [rad/s]
+    Psi2,   // [rad/s^2]
 };
 
 struct PilotCtrlRef
@@ -83,31 +85,20 @@ private:
 
     BodyControl _ctrl = {0};
 
-    double _x_phi[PILOT_CTRL_X_SIZE] = {0};
-    double _x_phi_prev[PILOT_CTRL_X_SIZE] = {0};
+    Matrix _x_phi = {{0}, {0}, {0}, {0}};
+    Matrix _x_theta = {{0}, {0}, {0}, {0}};
+    Matrix _x_psi = {{0}, {0}, {0}};
 
-    double _x_theta[PILOT_CTRL_X_SIZE] = {0};
-    double _x_theta_prev[PILOT_CTRL_X_SIZE] = {0};
-
-    double _x_psi[PILOT_CTRL_X_SIZE] = {0};
-    double _x_psi_prev[PILOT_CTRL_X_SIZE] = {0};
-
-    void _store_old_states();
-    void _change_of_variable(AttEstimate& att_est, PilotCtrlRef& ref);
-    void _update_new_states(AttEstimate& att_est);
-    void _integrate_states();
+    void _extract_states(AttEstimate& att_est);
+    void _change_of_variable(PilotCtrlRef& ref);
+    void _integrate_with_antiwindup();
 
     void _update_ctrl_mx();
     void _update_ctrl_my();
     void _update_ctrl_mz();
     void _update_ctrl_fz(PilotCtrlRef& ref);
 
-    double _feedback_ctrl(double x[PILOT_CTRL_X_SIZE],
-                          double x_prev[PILOT_CTRL_X_SIZE],
-                          double u_prev,
-                          const double c,
-                          const double alpha,
-                          const double L[PILOT_CTRL_L_SIZE]);
+    double _feedback_ctrl(Matrix x, Matrix L);
 };
 
 #endif /* PILOT_CONTROL_H */

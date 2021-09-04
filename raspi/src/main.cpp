@@ -237,13 +237,16 @@ private:
         _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Phi0), DataLogSignal::StateCtrlPhi0);
         _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Phi1), DataLogSignal::StateCtrlPhi1);
         _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Phi2), DataLogSignal::StateCtrlPhi2);
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Phi3), DataLogSignal::StateCtrlPhi3);
 
         _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Theta0), DataLogSignal::StateCtrlTheta0);
         _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Theta1), DataLogSignal::StateCtrlTheta1);
         _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Theta2), DataLogSignal::StateCtrlTheta2);
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Theta3), DataLogSignal::StateCtrlTheta3);
 
         _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Psi0), DataLogSignal::StateCtrlPsi0);
         _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Psi1), DataLogSignal::StateCtrlPsi1);
+        _data_log_queue.push(_pilot_ctrl.get_state(PilotCtrlState::Psi2), DataLogSignal::StateCtrlPsi2);
 
         _data_log_queue.push(_body_ctrl.m_x, DataLogSignal::StateCtrlMx);
         _data_log_queue.push(_body_ctrl.m_y, DataLogSignal::StateCtrlMy);
@@ -474,10 +477,6 @@ void print_env_vars()
     logger.debug("PILOT_CTRL_L_YAW_RATE_0: " + std::to_string(PILOT_CTRL_L_YAW_RATE[1]));
     logger.debug("PILOT_CTRL_L_YAW_RATE_1: " + std::to_string(PILOT_CTRL_L_YAW_RATE[2]));
     logger.debug("PILOT_CTRL_L_YAW_RATE_2: " + std::to_string(PILOT_CTRL_L_YAW_RATE[3]));
-
-    logger.debug("PILOT_CTRL_ALPHA_PHI: " + std::to_string(PILOT_CTRL_ALPHA_PHI));
-    logger.debug("PILOT_CTRL_ALPHA_THETA: " + std::to_string(PILOT_CTRL_ALPHA_THETA));
-    logger.debug("PILOT_CTRL_ALPHA_PSI: " + std::to_string(PILOT_CTRL_ALPHA_PSI));
 }
 
 bool is_shutdown_ready(DataLogQueue& data_log_queue)

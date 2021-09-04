@@ -37,17 +37,14 @@ PilotControl::PilotControl(double input_sample_rate_s) :
 
 void PilotControl::update(AttEstimate att_est, PilotCtrlRef ref)
 {
-    /*
-    _store_old_states();
-    _change_of_variable(att_est, ref);
-    _update_new_states(att_est);
-    _integrate_states();
+    _extract_states(att_est);
+    _change_of_variable(ref);
+    _integrate_with_antiwindup();
 
     _update_ctrl_mx();
     _update_ctrl_my();
     _update_ctrl_mz();
     _update_ctrl_fz(ref);
-    */
 }
 
 BodyControl PilotControl::get_ctrl()
@@ -60,79 +57,80 @@ double PilotControl::get_state(PilotCtrlState state)
     switch (state)
     {
         case PilotCtrlState::Phi0:
-            return _x_phi[0];
+            return _x_phi[0][0];
         case PilotCtrlState::Phi1:
-            return _x_phi[1];
+            return _x_phi[1][0];
         case PilotCtrlState::Phi2:
-            return _x_phi[2];
+            return _x_phi[2][0];
+        case PilotCtrlState::Phi3:
+            return _x_phi[3][0];
+
         case PilotCtrlState::Theta0:
-            return _x_theta[0];
+            return _x_theta[0][0];
         case PilotCtrlState::Theta1:
-            return _x_theta[1];
+            return _x_theta[1][0];
         case PilotCtrlState::Theta2:
-            return _x_theta[2];
+            return _x_theta[2][0];
+        case PilotCtrlState::Theta3:
+            return _x_theta[3][0];
+
         case PilotCtrlState::Psi0:
-            return _x_psi[1]; // Re-map Psi0 : x[1], since _x_psi[0] is not used.
+            return _x_psi[0][0];
         case PilotCtrlState::Psi1:
-            return _x_psi[2]; // Re-map Psi1 : x[2], since _x_psi[0] is not used.
+            return _x_psi[1][0];
+        case PilotCtrlState::Psi2:
+            return _x_psi[2][0];
+
         default:
             return 0; // Should never be reached.
     }
 }
-/*
-void PilotControl::_store_old_states()
+
+void PilotControl::_extract_states(AttEstimate& att_est)
 {
-    std::memcpy(_x_phi_prev, _x_phi, sizeof(double) * PILOT_CTRL_X_SIZE);
-    std::memcpy(_x_theta_prev, _x_theta, sizeof(double) * PILOT_CTRL_X_SIZE);
-    std::memcpy(_x_psi_prev, _x_psi, sizeof(double) * PILOT_CTRL_X_SIZE);
+    _x_phi[1][0] = att_est.roll.angle;
+    _x_phi[2][0] = att_est.roll.rate;
+    _x_phi[3][0] = att_est.roll.acc;
+
+    _x_theta[1][0] = att_est.pitch.angle;
+    _x_theta[2][0] = att_est.pitch.rate;
+    _x_theta[3][0] = att_est.pitch.acc;
+
+    _x_psi[1][0] = att_est.yaw.rate;
+    _x_psi[2][0] = att_est.yaw.acc;
 }
 
-void PilotControl::_change_of_variable(AttEstimate& att_est, PilotCtrlRef& ref)
+void PilotControl::_change_of_variable(PilotCtrlRef& ref)
 {
-    att_est.roll -= ref.roll;
-    att_est.pitch -= ref.pitch;
-    att_est.yaw_rate -= ref.yaw_rate;
+    _x_phi[1][0] -= ref.roll;
+    _x_theta[1][0] -= ref.pitch;
+    _x_psi[1][0] -= ref.yaw_rate;
 }
 
-void PilotControl::_update_new_states(AttEstimate& att_est)
+void PilotControl::_integrate_with_antiwindup()
 {
-    _x_phi[1] = att_est.roll;
-    _x_phi[2] = att_est.roll_rate;
+    _x_phi[0][0] += _x_phi[1][0] * _sample_rate_s;
+    _x_theta[0][0] += _x_theta[1][0] * _sample_rate_s;
+    _x_psi[0][0] += _x_psi[1][0] * _sample_rate_s;
 
-    _x_theta[1] = att_est.pitch;
-    _x_theta[2] = att_est.pitch_rate;
-
-    // _x_psi[0] not used i.e., _x_psi[1] is the integral of yaw-rate.
-    _x_psi[2] = att_est.yaw_rate;
-}
-
-void PilotControl::_integrate_states()
-{
-    _x_phi[0] += _x_phi[1] * _sample_rate_s;
-    _x_theta[0] += _x_theta[1] * _sample_rate_s;
-    _x_psi[1] += _x_psi[2] * _sample_rate_s;
-
-    _x_phi[0] = _range_sat(_x_phi[0], PILOT_CTRL_ANTI_WINDUP_SAT_PHI);
-    _x_theta[0] = _range_sat(_x_theta[0], PILOT_CTRL_ANTI_WINDUP_SAT_THETA);
-    _x_psi[1] = _range_sat(_x_psi[1], PILOT_CTRL_ANTI_WINDUP_SAT_PSI);
+    _x_phi[0][0] = _range_sat(_x_phi[0][0], PILOT_CTRL_ANTI_WINDUP_SAT_PHI);
+    _x_theta[0][0] = _range_sat(_x_theta[0][0], PILOT_CTRL_ANTI_WINDUP_SAT_THETA);
+    _x_psi[0][0] = _range_sat(_x_psi[0][0], PILOT_CTRL_ANTI_WINDUP_SAT_PSI);
 }
 
 void PilotControl::_update_ctrl_mx()
 {
-    _ctrl.m_x = _feedback_ctrl(_x_phi, _x_phi_prev, _ctrl.m_x,
-                          C_PHI, PILOT_CTRL_ALPHA_PHI, PILOT_CTRL_L_ROLL);
+    _ctrl.m_x = _feedback_ctrl(_x_phi, PILOT_CTRL_L_ROLL);
 }
 
 void PilotControl::_update_ctrl_my()
 {
-    _ctrl.m_y = _feedback_ctrl(_x_theta, _x_theta_prev, _ctrl.m_y,
-                          C_THETA, PILOT_CTRL_ALPHA_THETA, PILOT_CTRL_L_PITCH);
+    _ctrl.m_y = _feedback_ctrl(_x_theta, PILOT_CTRL_L_PITCH);
 }
 
 void PilotControl::_update_ctrl_mz()
 {
-    _ctrl.m_z = _feedback_ctrl(_x_psi, _x_psi_prev, _ctrl.m_z,
-                          C_PSI, PILOT_CTRL_ALPHA_PSI, PILOT_CTRL_L_YAW_RATE);
+    _ctrl.m_z = _feedback_ctrl(_x_psi, PILOT_CTRL_L_YAW_RATE);
 }
 
 void PilotControl::_update_ctrl_fz(PilotCtrlRef& ref)
@@ -140,23 +138,8 @@ void PilotControl::_update_ctrl_fz(PilotCtrlRef& ref)
     _ctrl.f_z = ref.f_z;
 }
 
-double PilotControl::_feedback_ctrl(double x[PILOT_CTRL_X_SIZE],
-                                    double x_prev[PILOT_CTRL_X_SIZE],
-                                    double u_prev,
-                                    const double c,
-                                    const double alpha,
-                                    const double L[PILOT_CTRL_L_SIZE])
+double PilotControl::_feedback_ctrl(Matrix x, Matrix L)
 {
-    See doc for details.
-    double beta_4 = droneprops::TAU_MOTOR + _sample_rate_s * (1 + droneprops::TAU_MOTOR * alpha * c);
-    double beta_1 = droneprops::TAU_MOTOR / beta_4;
-    double beta_2 = -alpha * _sample_rate_s * (1 + alpha * droneprops::TAU_MOTOR * c) / beta_4;
-    double beta_3 = _sample_rate_s / beta_4;
-
-    return (-(L[0] * x[0] +
-              L[1] * x[1] +
-             (L[2] + L[3] * (beta_2 + alpha)) * x[2] +
-              L[3] * beta_1 * (u_prev - alpha * x_prev[2])) /
-              (1 + L[3] * beta_3));
+    Matrix u = (-1 * L * x);
+    return u[0][0];
 }
-*/

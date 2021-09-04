@@ -51,7 +51,6 @@ void AttitudeEstimation::_update_roll()
 {
     double roll_acc = atan2(-_in.acc_y, -_in.acc_z);
 
-    std::cout << "roll_acc = " << roll_acc << std::endl;
     _update_est(roll_acc, _in.ang_rate_x, _kalman_roll, _est.roll, MODULO_ROLL);
 }
 
@@ -59,7 +58,6 @@ void AttitudeEstimation::_update_pitch()
 {
     double pitch_acc = atan2(_in.acc_x, sqrt(pow(_in.acc_y, 2) + pow(_in.acc_z, 2)));
 
-    std::cout << "pitch_acc = " << pitch_acc << std::endl;
     _update_est(pitch_acc, _in.ang_rate_y, _kalman_pitch, _est.pitch, MODULO_PITCH);
 }
 
@@ -72,7 +70,6 @@ void AttitudeEstimation::_update_yaw()
 
     double yaw_mag = atan2(-b_y, b_x);
 
-    std::cout << "yaw_mag = " << yaw_mag << std::endl;
     _update_est(yaw_mag, _in.ang_rate_z, _kalman_yaw, _est.yaw, MODULO_YAW);
 }
 

@@ -1,3 +1,6 @@
+#ifndef MATRIX_H
+#define MATRIX_H
+
 #include <cstdint>
 #include <cstring>
 #include <vector>
@@ -55,3 +58,5 @@ private:
     void _to_lapack(MatrixContent& src, double* dst, std::size_t m, std::size_t n);
     void _from_lapack(double* src, MatrixContent& dst, std::size_t m, std::size_t n);
 };
+
+#endif /* MATRIX_H */

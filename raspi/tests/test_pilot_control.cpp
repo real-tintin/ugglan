@@ -8,7 +8,7 @@ static const double SAMPLE_RATE_S = 0.02;
 
 TEST_CASE("pilot control")
 {
-    /*
+
     PilotControl pilot_ctrl(SAMPLE_RATE_S);
 
     AttEstimate est = {0};
@@ -25,6 +25,7 @@ TEST_CASE("pilot control")
         REQUIRE(fabs(ctrl.m_z - 0.0) <= FLOAT_TOL);
         REQUIRE(fabs(ctrl.f_z - 0.0) <= FLOAT_TOL);
     }
+
     SECTION("ctrl in fz")
     {
         ref.f_z = -PILOT_CTRL_ABS_MAX_REF_F_Z;
@@ -127,7 +128,6 @@ TEST_CASE("pilot control")
         REQUIRE(fabs(ctrl.m_y - saturated_ctrl.m_y) <= FLOAT_TOL);
         REQUIRE(fabs(ctrl.m_z - saturated_ctrl.m_z) <= FLOAT_TOL);
     }
-    */
 }
 
 TEST_CASE("tgyia6c_to_pilot_ctrl_ref")
