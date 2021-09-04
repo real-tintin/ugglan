@@ -37,7 +37,7 @@ Matrix operator * (const Matrix& mat_0, const Matrix& mat_1)
     MatrixContent content_m = _init_content(mat_0._m, mat_1._n);
 
     Matrix mat_1_t = mat_1;
-    mat_1_t.transpose();
+    mat_1_t = mat_1_t.transpose();
 
     for (std::size_t i = 0; i < mat_0._m; i++)
     {
@@ -50,8 +50,35 @@ Matrix operator * (const Matrix& mat_0, const Matrix& mat_1)
     return Matrix(content_m);
 }
 
-Matrix& Matrix::inverse()
+Matrix operator + (const Matrix& mat_0, const Matrix& mat_1)
 {
+    if ((mat_0._m != mat_1._m) || (mat_0._n != mat_1._n))
+    {
+        throw std::logic_error("Can't add/subtract matrices: dimension mismatch");
+    }
+
+    MatrixContent content_a = _init_content(mat_0._m, mat_0._n);
+
+    for (std::size_t i = 0; i < mat_0._m; i++)
+    {
+        for (std::size_t j = 0; j < mat_0._n; j++)
+        {
+            content_a[i][j] = mat_0._content[i][j] + mat_1._content[i][j];
+        }
+    }
+
+    return Matrix(content_a);
+}
+
+Matrix operator - (const Matrix& mat_0, const Matrix& mat_1)
+{
+    return mat_0 + (-1 * mat_1);
+}
+
+Matrix Matrix::inverse()
+{
+    MatrixContent content_i = _content;
+
     if (_is_square())
     {
         int m = static_cast<int>(_m);
@@ -69,17 +96,17 @@ Matrix& Matrix::inverse()
         if (info > 0) { logger.warn("Can't compute inverse: matrix is singular"); }
         if (info < 0) { logger.warn("Can't compute inverse: invalid arg to dgetri"); }
 
-        _from_lapack(lapack_content, _content, _m, _n);
+        _from_lapack(lapack_content, content_i, _m, _n);
     }
     else
     {
         throw std::logic_error("Can't compute inverse: matrix is not square");
     }
 
-    return *this;
+    return Matrix(content_i);
 }
 
-Matrix& Matrix::transpose()
+Matrix Matrix::transpose()
 {
     size_t m_t = _n;
     size_t n_t = _m;
@@ -93,11 +120,23 @@ Matrix& Matrix::transpose()
         }
     }
 
-    _m = m_t;
-    _n = n_t;
-    _content = content_t;
+    return Matrix(content_t);
+}
 
-    return *this;
+void Matrix::debug_print(std::string name)
+{
+    std::cout << name << " = " << std::endl;
+
+    for (auto row : _content)
+    {
+        for (auto x : row)
+        {
+            std::cout << x << "\t";
+        }
+        std::cout << std::endl;
+    }
+
+    std::cout << "-----------------" << std::endl;
 }
 
 void Matrix::_check_and_set_size()

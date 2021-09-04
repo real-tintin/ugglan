@@ -19,6 +19,19 @@ void almost_equal(Matrix A, Matrix B, double abs_tol = 1e-6)
 
 TEST_CASE("constructor")
 {
+    SECTION("Default")
+    {
+        Matrix A;
+    }
+    SECTION("MatrixContent")
+    {
+        MatrixContent content = {{0}};
+        Matrix A(content);
+    }
+    SECTION("Initializer list")
+    {
+        Matrix A({{1}});
+    }
     SECTION("Invalid dimension")
     {
         REQUIRE_THROWS_WITH(Matrix({{1}, {1, 0}}), "Matrix dimension error (not MxN)");
@@ -166,12 +179,58 @@ TEST_CASE("multiplication")
     }
 }
 
+TEST_CASE("addition")
+{
+    SECTION("1x1 * 1x1")
+    {
+        Matrix A({{2}});
+        Matrix B({{-5}});
+        REQUIRE((A + B) == Matrix({{-3}}));
+    }
+    SECTION("2x2 * 2x2")
+    {
+        Matrix A({{1, 2}, {2, 1}});
+        Matrix B({{1, 3}, {0, 1}});
+        REQUIRE((A + B) == Matrix({{2, 5}, {2, 2}}));
+    }
+    SECTION("1x2 * 3x1 (dim mismatch)")
+    {
+        Matrix A({{1, 2}});
+        Matrix B({{1}, {2}, {3}});
+        REQUIRE_THROWS_WITH(A + B, "Can't add/subtract matrices: dimension mismatch");
+    }
+}
+
+TEST_CASE("subtraction")
+{
+    SECTION("1x1 * 1x1")
+    {
+        Matrix A({{1}});
+        Matrix B({{6}});
+        REQUIRE((A - B) == Matrix({{-5}}));
+    }
+    SECTION("1x2 * 1x2")
+    {
+        Matrix A({{5}, {-2}});
+        Matrix B({{-1}, {3}});
+        REQUIRE((A - B) == Matrix({{6}, {-5}}));
+    }
+    SECTION("1x2 * 2x1 (dim mismatch)")
+    {
+        Matrix A({{1, 2}});
+        Matrix B({{1}, {2}});
+        REQUIRE_THROWS_WITH(A - B, "Can't add/subtract matrices: dimension mismatch");
+    }
+}
+
 TEST_CASE("operator chaining")
 {
     Matrix P({{0, 2, 4}, {2, 6, 8}, {4, 6, 10}});
     Matrix H({{1, 0, 0}, {0, 1, 0}});
-    Matrix S({{1, 3}, {3, 7}});
+    Matrix R({{1, 0}, {0, 1}});
 
+    Matrix S = H * P * H.transpose() + R;
     Matrix K = P * H.transpose() * S.inverse();
-    almost_equal(K, Matrix({{3, -1}, {2, 0}, {-5, 3}}));
+
+    almost_equal(K, Matrix({{-4.0/3.0, 2.0/3.0}, {2.0/3.0, 2.0/3.0}, {16.0/3.0, -2.0/3.0}}));
 }

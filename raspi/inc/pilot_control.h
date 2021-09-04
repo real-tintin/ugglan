@@ -46,10 +46,6 @@ inline const double PILOT_CTRL_L_YAW_RATE[PILOT_CTRL_L_SIZE] =
     utils::get_env("PILOT_CTRL_L_YAW_RATE_2", 0.01)
     }; // Feedback matrice for yaw-rate.
 
-inline const double PILOT_CTRL_ALPHA_PHI = utils::get_env("PILOT_CTRL_ALPHA_PHI", 5.0);     // Reduced observer parameter for phi.
-inline const double PILOT_CTRL_ALPHA_THETA = utils::get_env("PILOT_CTRL_ALPHA_THETA", 5.0); // Reduced observer parameter for theta.
-inline const double PILOT_CTRL_ALPHA_PSI = utils::get_env("PILOT_CTRL_ALPHA_PSI", 5.0);     // Reduced observer parameter for psi.
-
 enum class PilotCtrlState {
     Phi0,   // [rads]
     Phi1,   // [rad]

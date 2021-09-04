@@ -37,6 +37,7 @@ PilotControl::PilotControl(double input_sample_rate_s) :
 
 void PilotControl::update(AttEstimate att_est, PilotCtrlRef ref)
 {
+    /*
     _store_old_states();
     _change_of_variable(att_est, ref);
     _update_new_states(att_est);
@@ -46,6 +47,7 @@ void PilotControl::update(AttEstimate att_est, PilotCtrlRef ref)
     _update_ctrl_my();
     _update_ctrl_mz();
     _update_ctrl_fz(ref);
+    */
 }
 
 BodyControl PilotControl::get_ctrl()
@@ -77,7 +79,7 @@ double PilotControl::get_state(PilotCtrlState state)
             return 0; // Should never be reached.
     }
 }
-
+/*
 void PilotControl::_store_old_states()
 {
     std::memcpy(_x_phi_prev, _x_phi, sizeof(double) * PILOT_CTRL_X_SIZE);
@@ -145,7 +147,7 @@ double PilotControl::_feedback_ctrl(double x[PILOT_CTRL_X_SIZE],
                                     const double alpha,
                                     const double L[PILOT_CTRL_L_SIZE])
 {
-    /* See doc for details. */
+    See doc for details.
     double beta_4 = droneprops::TAU_MOTOR + _sample_rate_s * (1 + droneprops::TAU_MOTOR * alpha * c);
     double beta_1 = droneprops::TAU_MOTOR / beta_4;
     double beta_2 = -alpha * _sample_rate_s * (1 + alpha * droneprops::TAU_MOTOR * c) / beta_4;
@@ -157,3 +159,4 @@ double PilotControl::_feedback_ctrl(double x[PILOT_CTRL_X_SIZE],
               L[3] * beta_1 * (u_prev - alpha * x_prev[2])) /
               (1 + L[3] * beta_3));
 }
+*/

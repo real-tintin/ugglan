@@ -201,13 +201,17 @@ private:
         _att.update(_att_in);
         _att_est = _att.get_estimate();
 
-        _data_log_queue.push(_att_est.roll, DataLogSignal::StateEstRoll);
-        _data_log_queue.push(_att_est.pitch, DataLogSignal::StateEstPitch);
-        _data_log_queue.push(_att_est.yaw, DataLogSignal::StateEstYaw);
+        _data_log_queue.push(_att_est.roll.angle, DataLogSignal::StateEstRoll);
+        _data_log_queue.push(_att_est.pitch.angle, DataLogSignal::StateEstPitch);
+        _data_log_queue.push(_att_est.yaw.angle, DataLogSignal::StateEstYaw);
 
-        _data_log_queue.push(_att_est.roll_rate, DataLogSignal::StateEstRollRate);
-        _data_log_queue.push(_att_est.pitch_rate, DataLogSignal::StateEstPitchRate);
-        _data_log_queue.push(_att_est.yaw_rate, DataLogSignal::StateEstYawRate);
+        _data_log_queue.push(_att_est.roll.rate, DataLogSignal::StateEstRollRate);
+        _data_log_queue.push(_att_est.pitch.rate, DataLogSignal::StateEstPitchRate);
+        _data_log_queue.push(_att_est.yaw.rate, DataLogSignal::StateEstYawRate);
+
+        _data_log_queue.push(_att_est.roll.acc, DataLogSignal::StateEstRollAcc);
+        _data_log_queue.push(_att_est.pitch.acc, DataLogSignal::StateEstPitchAcc);
+        _data_log_queue.push(_att_est.yaw.acc, DataLogSignal::StateEstYawAcc);
 
         _data_log_queue.push(_att.is_calibrated(), DataLogSignal::StateEstAttIsCalib);
     }
@@ -449,6 +453,9 @@ void print_env_vars()
 {
     logger.debug("DATA_LOG_ROOT: " + DATA_LOG_ROOT.string());
     logger.debug("LOGGER_LEVEL: " + LOGGER_LEVEL);
+
+    logger.debug("ATT_EST_KALMAN_Q_VARIANCE: " + std::to_string(ATT_EST_KALMAN_Q_VARIANCE));
+    logger.debug("ATT_EST_KALMAN_R_VARIANCE: " + std::to_string(ATT_EST_KALMAN_R_VARIANCE));
 
     logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_PHI: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_PHI));
     logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_THETA: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_THETA));

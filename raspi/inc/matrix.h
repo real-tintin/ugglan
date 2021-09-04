@@ -18,6 +18,7 @@ typedef std::vector<std::vector<double>> MatrixContent;
 class Matrix
 {
 public:
+    Matrix() {};
     Matrix(MatrixContent content);
     Matrix(std::initializer_list<std::initializer_list<double>> lst);
 
@@ -30,8 +31,13 @@ public:
     friend Matrix operator * (double scalar, const Matrix& mat);
     friend Matrix operator * (const Matrix& mat_0, const Matrix& mat_1);
 
-    Matrix& inverse();
-    Matrix& transpose();
+    friend Matrix operator + (const Matrix& mat_0, const Matrix& mat_1);
+    friend Matrix operator - (const Matrix& mat_0, const Matrix& mat_1);
+
+    Matrix inverse();
+    Matrix transpose();
+
+    void debug_print(std::string name = "A");
 
     std::size_t get_m() { return _m; }
     std::size_t get_n() { return _n; }
