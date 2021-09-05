@@ -164,7 +164,8 @@ where :math:`\mathbf{x_i}\in\mathbb{R}^3`, :math:`\mathbf{y_i}\in\mathbb{R}^2` a
     \mathbf{C_i}=
     \begin{bmatrix}
         1 & 0 & 0 \\
-        0 & 1 & 0
+        0 & 1 & 0 \\
+        0 & 0 & 1
     \end{bmatrix},
     \mathbf{D_i}= 0.
 
@@ -355,14 +356,9 @@ for in depth details.
 
 Pilot Control
 ---------------------
-TODO: UPDATE
-
 Typically, the pilot controller (using the handheld controller), seeks for stability
-of roll, pitch and yaw-rate.
-
-To tune :math:`\mathbf{L}` and :math:`\alpha` (reduced observer), the step response of
-the closed loop is analyzed, see :numref:`tune_ctrl_roll_pitch`-:numref:`tune_ctrl_yaw_rate`.
-
+of roll, pitch and yaw-rate. To tune :math:`\mathbf{L}`, the step response of the
+closed loop is analyzed, see :numref:`tune_ctrl_roll_pitch`-:numref:`tune_ctrl_yaw_rate`.
 Note, an integrated state has been added for roll and pitch control (already in place
 for yaw-rate) i.e., :math:`\mathbf{x}\in\mathbb{R}^4`.
 
@@ -378,10 +374,9 @@ for yaw-rate) i.e., :math:`\mathbf{x}\in\mathbb{R}^4`.
 
     Tuning and parameter selection for yaw-rate control.
 
-In the above figures :math:`u` corresponds to :eq:`cont_state_feedback` and
-:math:`\tilde{u}` to :eq:`disc_state_feedback`. The abs-max value of the integrated
-state (reference error) is also shown to determine a suitable value for anti-windup
-i.e., to handle a large overshoot/instability caused by the integration.
+In the above figures the abs-max value of the integrated state (reference error)
+is also shown to determine a suitable value for anti-windup i.e., to handle a
+large overshoot/instability caused by the integration.
 
 In :numref:`rc_gimbal_def_pilot` the RC-gimbal definitions for the pilot controller
 are given.

@@ -186,6 +186,7 @@ def _plot_state_ctrl_phi(data):
     axs[0, 1].plot(data.StateCtrl.Phi0.t_s, data.StateCtrl.Phi0.val, label=r'$\int\tilde{\phi}$ [rads]')
     axs[0, 1].plot(data.StateCtrl.Phi1.t_s, data.StateCtrl.Phi1.val, label=r'$\tilde{\phi}$ [rad]')
     axs[0, 1].plot(data.StateCtrl.Phi2.t_s, data.StateCtrl.Phi2.val, label=r'$\tilde{\dot{\phi}}$ [rad/s]')
+    axs[0, 1].plot(data.StateCtrl.Phi3.t_s, data.StateCtrl.Phi2.val, label=r'$\tilde{\ddot{\phi}}$ [rad/s^2]')
 
     axs[1, 0].plot(data.StateCtrl.Mx.t_s, data.StateCtrl.Mx.val, label=r'$u_{Mx}$ [Nm]')
 
@@ -202,6 +203,7 @@ def _plot_state_ctrl_theta(data):
     axs[0, 1].plot(data.StateCtrl.Theta0.t_s, data.StateCtrl.Theta0.val, label=r'$\int\tilde{\theta}$ [rads]')
     axs[0, 1].plot(data.StateCtrl.Theta1.t_s, data.StateCtrl.Theta1.val, label=r'$\tilde{\theta}$ [rad]')
     axs[0, 1].plot(data.StateCtrl.Theta2.t_s, data.StateCtrl.Theta2.val, label=r'$\tilde{\dot{\theta}}$ [rad/s]')
+    axs[0, 1].plot(data.StateCtrl.Theta3.t_s, data.StateCtrl.Theta3.val, label=r'$\tilde{\ddot{\theta}}$ [rad/s^2]')
 
     axs[1, 0].plot(data.StateCtrl.My.t_s, data.StateCtrl.My.val, label=r'$u_{My}$ [Nm]')
 
@@ -217,6 +219,7 @@ def _plot_state_ctrl_psi(data):
 
     axs[0, 1].plot(data.StateCtrl.Psi0.t_s, data.StateCtrl.Psi0.val, label=r'$\int\tilde{\dot{\psi}}$ [rad]')
     axs[0, 1].plot(data.StateCtrl.Psi1.t_s, data.StateCtrl.Psi1.val, label=r'$\tilde{\dot{\psi}}$ [rad/s]')
+    axs[0, 1].plot(data.StateCtrl.Psi2.t_s, data.StateCtrl.Psi2.val, label=r'$\tilde{\dot{\psi}}$ [rad/s^2]')
 
     axs[1, 0].plot(data.StateCtrl.Mz.t_s, data.StateCtrl.Mz.val, label=r'$u_{Mz}$ [Nm]')
 

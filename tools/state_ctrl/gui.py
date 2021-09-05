@@ -12,9 +12,6 @@ overshoot: {:.1f}
 $\max(|\int x|)$: {:.3f}
 """
 
-SLIDER_STEP_ALPHA = 0.1
-SLIDER_MAX_ALPHA = 10
-
 SLIDER_INIT_POS = np.array([0.20, 0.18, 0.60, 0.01])
 SLIDER_DELTA_POS = np.array([0, -0.03, 0, 0])
 
@@ -43,7 +40,6 @@ def analyze_step(state: State,
                  x_0: np.array,
                  x_r: np.array,
                  L_0: np.array,
-                 alpha_0: float,
                  t_end: float,
                  title: str,
                  ref_state_ylabel: str,
@@ -76,13 +72,12 @@ def analyze_step(state: State,
 
     line_x, = axs[0].plot([], [], label='$x$', color='tab:blue')
     line_u, = axs[1].plot([], [], label=r'$u$', color='tab:green')
-    line_u_est, = axs[1].plot([], [], label=r'$\tilde{u}$', color='tab:red', linestyle='--')
 
     for ax in axs:
         ax.legend()
         ax.grid()
 
-    # Add sliders to interactively tune L and alpha
+    # Add sliders to interactively tune L
     sliders_L = []
     for i_slider in range(L_0.size):
         sliders_L.append(Slider(
@@ -90,16 +85,12 @@ def analyze_step(state: State,
             'L_' + str(i_slider + 1), 0, slider_max_L, valinit=L_0[0, i_slider], valstep=slider_step_L
         ))
 
-    slider_alpha = Slider(plt.axes(SLIDER_INIT_POS + SLIDER_DELTA_POS * L_0.size),
-                          r'$\alpha$', 0, SLIDER_MAX_ALPHA, valinit=alpha_0, valstep=SLIDER_STEP_ALPHA)
-
     def _update_plot(val=None):
         # Get parameters to tune controller & observer
-        alpha = slider_alpha.val
         L = np.array([[sl.val for sl in sliders_L]])
 
         # Step response of closed loop
-        t, x, y, u, u_est = step_response.closed_loop(state, L, alpha, x_0, x_r, t_end, add_intg_state)
+        t, x, y, u = step_response.closed_loop(state, L, x_0, x_r, t_end, add_intg_state)
         si = step_response.step_info(t, x[ref_state_idx])
 
         # Update and re-draw plot
@@ -108,7 +99,6 @@ def analyze_step(state: State,
 
         line_x.set_data(t, x[ref_state_idx])
         line_u.set_data(t, u)
-        line_u_est.set_data(t, u_est)
 
         for ax in axs:
             ax.relim()
@@ -117,7 +107,6 @@ def analyze_step(state: State,
     # Add slider cb's and draw plot
     for sl in sliders_L:
         sl.on_changed(_update_plot)
-    slider_alpha.on_changed(_update_plot)
 
     _update_plot()
     plt.show()
@@ -132,22 +121,22 @@ def main():
                  add_intg_state=True,
                  x_0=np.zeros((4, 1)),
                  x_r=np.array([[0, np.pi / 8, 0, 0]]).transpose(),
-                 L_0=np.array([[1.5, 4.0, 0.6, 1.5]]),
-                 alpha_0=5.0,
+                 L_0=np.array([[0.4, 3.85, 0.55, 0.02]]),
                  t_end=1,
                  title=r'Step in roll ($\phi$) & pitch ($\theta$)',
-                 ref_state_ylabel='Angle [rad]')
+                 ref_state_ylabel='Angle [rad]',
+                 slider_step_L=0.01,
+                 slider_max_L=5)
 
     analyze_step(state=State.PSI,
                  add_intg_state=False,
                  x_0=np.zeros((3, 1)),
                  x_r=np.array([[0, np.pi, 0]]).transpose(),
-                 L_0=np.array([[0.02, 0.04, 0.01]]),
-                 alpha_0=5.0,
+                 L_0=np.array([[0.02, 0.04, 0.0]]),
                  t_end=10,
                  title=r'Step in yaw-rate ($\dot\psi$)',
                  ref_state_ylabel='Angular-rate [rad/s]',
-                 slider_step_L=0.01,
+                 slider_step_L=0.001,
                  slider_max_L=0.1)
 
 

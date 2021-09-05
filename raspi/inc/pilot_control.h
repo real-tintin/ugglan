@@ -22,25 +22,25 @@ inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PSI = utils::get_env("PILOT_CTRL_
 
 inline const Matrix PILOT_CTRL_L_ROLL =
     {{
-    utils::get_env("PILOT_CTRL_L_ROLL_0", 1.5),
-    utils::get_env("PILOT_CTRL_L_ROLL_1", 4.0),
-    utils::get_env("PILOT_CTRL_L_ROLL_2", 0.6),
-    utils::get_env("PILOT_CTRL_L_ROLL_3", 1.5)
+    utils::get_env("PILOT_CTRL_L_ROLL_0", 0.40),
+    utils::get_env("PILOT_CTRL_L_ROLL_1", 3.85),
+    utils::get_env("PILOT_CTRL_L_ROLL_2", 0.55),
+    utils::get_env("PILOT_CTRL_L_ROLL_3", 0.02)
     }}; // Feedback matrice for roll.
 
 inline const Matrix PILOT_CTRL_L_PITCH =
     {{
-    utils::get_env("PILOT_CTRL_L_PITCH_0", 1.5),
-    utils::get_env("PILOT_CTRL_L_PITCH_1", 4.0),
-    utils::get_env("PILOT_CTRL_L_PITCH_2", 0.6),
-    utils::get_env("PILOT_CTRL_L_PITCH_3", 1.5)
+    utils::get_env("PILOT_CTRL_L_PITCH_0", 0.40),
+    utils::get_env("PILOT_CTRL_L_PITCH_1", 3.85),
+    utils::get_env("PILOT_CTRL_L_PITCH_2", 0.55),
+    utils::get_env("PILOT_CTRL_L_PITCH_3", 0.02)
     }}; // Feedback matrice for pitch.
 
 inline const Matrix PILOT_CTRL_L_YAW_RATE =
     {{
     utils::get_env("PILOT_CTRL_L_YAW_RATE_0", 0.02),
     utils::get_env("PILOT_CTRL_L_YAW_RATE_1", 0.04),
-    utils::get_env("PILOT_CTRL_L_YAW_RATE_2", 0.01)
+    utils::get_env("PILOT_CTRL_L_YAW_RATE_2", 0.00)
     }}; // Feedback matrice for yaw-rate.
 
 enum class PilotCtrlState {
