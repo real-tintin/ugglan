@@ -6,7 +6,7 @@
 #include <utils.h>
 #include <matrix.h>
 
-inline const double ATT_EST_KALMAN_Q_VARIANCE = utils::get_env("ATT_EST_KALMAN_Q_VARIANCE", 1e1);
+inline const double ATT_EST_KALMAN_Q_VARIANCE = utils::get_env("ATT_EST_KALMAN_Q_VARIANCE", 5e-1);
 inline const double ATT_EST_KALMAN_R_VARIANCE = utils::get_env("ATT_EST_KALMAN_R_VARIANCE", 1e-3);
 
 inline const uint8_t ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP = 20;
