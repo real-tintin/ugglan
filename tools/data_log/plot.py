@@ -16,7 +16,7 @@ mpl.rcParams['lines.linewidth'] = 0.5
 N_ESC = 4
 
 
-class PlotSel(Enum):
+class Figure(Enum):
     IMU = 'imu'
     ESC = 'esc'
     RC = 'rc'
@@ -33,7 +33,7 @@ def _finish_subplots(fig):
         _finish_subplots.sax = fig.get_axes()[0]
 
     for ax in fig.get_axes():
-        ax.get_shared_x_axes().join(ax, _finish_subplots.sax)
+        #ax.get_shared_x_axes().join(ax, _finish_subplots.sax) TODO: doesn't work for many figures...
         ax.set(xlabel='Time [s]')
         ax.grid()
         if all(ax.get_legend_handles_labels()):
@@ -163,8 +163,13 @@ def _plot_state_est(data):
     axs[0, 1].plot(data.StateEst.YawRate.t_s, data.StateEst.YawRate.val, label=r'$\dot{\psi}$')
     axs[0, 1].set(ylabel='Angular-rate [rad/s]')
 
-    axs[1, 0].plot(data.StateEst.AttIsCalib.t_s, data.StateEst.AttIsCalib.val, label='AttIsCalibrated')
-    axs[1, 0].set(ylabel='Status [-]')
+    axs[1, 0].plot(data.StateEst.RollAcc.t_s, data.StateEst.RollAcc.val, label=r'$\ddot{\phi}$')
+    axs[1, 0].plot(data.StateEst.PitchAcc.t_s, data.StateEst.PitchAcc.val, label=r'$\ddot{\theta}$')
+    axs[1, 0].plot(data.StateEst.YawAcc.t_s, data.StateEst.YawAcc.val, label=r'$\ddot{\psi}$')
+    axs[1, 0].set(ylabel='Angular-acceleration [rad/s^2]')
+
+    axs[1, 1].plot(data.StateEst.AttIsCalib.t_s, data.StateEst.AttIsCalib.val, label='AttIsCalibrated')
+    axs[1, 1].set(ylabel='Status [-]')
 
     _finish_subplots(fig)
 
@@ -186,7 +191,7 @@ def _plot_state_ctrl_phi(data):
     axs[0, 1].plot(data.StateCtrl.Phi0.t_s, data.StateCtrl.Phi0.val, label=r'$\int\tilde{\phi}$ [rads]')
     axs[0, 1].plot(data.StateCtrl.Phi1.t_s, data.StateCtrl.Phi1.val, label=r'$\tilde{\phi}$ [rad]')
     axs[0, 1].plot(data.StateCtrl.Phi2.t_s, data.StateCtrl.Phi2.val, label=r'$\tilde{\dot{\phi}}$ [rad/s]')
-    axs[0, 1].plot(data.StateCtrl.Phi3.t_s, data.StateCtrl.Phi2.val, label=r'$\tilde{\ddot{\phi}}$ [rad/s^2]')
+    axs[0, 1].plot(data.StateCtrl.Phi3.t_s, data.StateCtrl.Phi3.val, label=r'$\tilde{\ddot{\phi}}$ [rad/s^2]')
 
     axs[1, 0].plot(data.StateCtrl.Mx.t_s, data.StateCtrl.Mx.val, label=r'$u_{Mx}$ [Nm]')
 
@@ -266,23 +271,23 @@ def _plot_tasks(data):
 def main():
     parser = argparse.ArgumentParser(description='Plot and analyze data log file.')
     parser.add_argument('path', type=Path, help='Path to data log file')
-    parser.add_argument('--plot', type=PlotSel, choices=list(PlotSel), nargs='+', default=list(PlotSel),
-                        help='Selected plot(s)')
+    parser.add_argument('--figure', type=Figure, choices=list(Figure), nargs='+', default=list(Figure),
+                        help='Selected figure(s)')
     args = parser.parse_args()
 
     data = data_log_io.read(args.path)
 
-    if PlotSel.IMU in args.plot:
+    if Figure.IMU in args.figure:
         _plot_imu(data)
-    if PlotSel.ESC in args.plot:
+    if Figure.ESC in args.figure:
         _plot_esc(data)
-    if PlotSel.RC in args.plot:
+    if Figure.RC in args.figure:
         _plot_rc(data)
-    if PlotSel.STATE_EST in args.plot:
+    if Figure.STATE_EST in args.figure:
         _plot_state_est(data)
-    if PlotSel.STATE_CTRL in args.plot:
+    if Figure.STATE_CTRL in args.figure:
         _plot_state_ctrl(data)
-    if PlotSel.TASKS in args.plot:
+    if Figure.TASKS in args.figure:
         _plot_tasks(data)
 
     plt.show()
