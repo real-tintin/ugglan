@@ -2,13 +2,14 @@
 # code for target - a Raspberry Pi Zero.
 #   TARGET_NAME    : Set target name.
 #   BUILD_FOR_TEST : Set to TRUE, to build for testing.
+#   EXTRA_CXXFLAGS : Use to add extra CXXFLAGS.
 #
 
 TARGET := $(TARGET_NAME)
 SRCEXT := cpp
 
 CXX = g++-9.1
-CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread -llapack -lblas
+CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread -llapack -lblas $(EXTRA_CXXFLAGS)
 LDFLAGS += -lz
 
 SRCDIR := ./src

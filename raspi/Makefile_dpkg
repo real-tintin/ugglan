@@ -5,10 +5,19 @@
 RASPI_ROOT = /$(shell pwd)/
 RASPI_ROOT_MOUNTED = /raspi_mount
 
-.PHONY: build_dpkg_in_docker
+.DEFAULT_GOAL := build_dpkg
 
-build_dpkg_in_docker:
+.PHONY: build_image build_dpkg build_dpkg_for_profiling
+
+build_image:
 	docker build -f Dockerfile_raspi . -t raspi
+
+build_dpkg: build_image
 	docker run -v $(RASPI_ROOT):${RASPI_ROOT_MOUNTED} \
 	           -e ROOT_MOUNTED=${RASPI_ROOT_MOUNTED} \
 			    raspi /raspi/build_dpkg.sh
+
+build_dpkg_for_profiling: build_image
+	docker run -v $(RASPI_ROOT):${RASPI_ROOT_MOUNTED} \
+	           -e ROOT_MOUNTED=${RASPI_ROOT_MOUNTED} \
+			    raspi /raspi/build_dpkg.sh -c -pg
