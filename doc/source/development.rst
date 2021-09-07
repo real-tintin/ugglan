@@ -78,6 +78,13 @@ To build for target, the source is cross compiled in a Raspbian Docker container
 
     make -C ./raspi -f Makefile_dpkg
 
+It is also possible to compile for profiling::
+
+    make -C ./raspi -f Makefile_dpkg build_dpkg_for_profiling
+
+A profiling report can be generated using ``gprof``, see
+`What is gprof? <https://users.cs.duke.edu/~ola/courses/programming/gprof.html>`_.
+
 This will also build a Debian package (``ugglan.deb``) which can easily be deployed on
 target by using::
 

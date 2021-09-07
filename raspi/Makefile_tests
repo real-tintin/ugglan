@@ -2,8 +2,8 @@
 # tests in docker container.
 #
 
-.PHONY: run_tests_in_docker
+.PHONY: build_and_run_tests
 
-run_tests_in_docker:
+build_and_run_tests:
 	docker build -f Dockerfile_gcc . -t gcc
 	docker run gcc ./run_tests.sh
