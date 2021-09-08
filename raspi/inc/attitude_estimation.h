@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <math.h>
 #include <utils.h>
-#include <matrix.h>
+#include <eigen/Eigen>
 
 inline const double ATT_EST_KALMAN_Q_VARIANCE = utils::get_env("ATT_EST_KALMAN_Q_VARIANCE", 5e-1);
 inline const double ATT_EST_KALMAN_R_VARIANCE = utils::get_env("ATT_EST_KALMAN_R_VARIANCE", 1e-3);
@@ -30,9 +30,9 @@ struct AttEstInput {
 };
 
 struct AttEstKalmanState {
-    Matrix x = {{0}, {0}, {0}};
-    Matrix z = {{0}, {0}};
-    Matrix P = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+    Eigen::Vector3d x {{0}, {0}, {0}};
+    Eigen::Vector2d z {{0}, {0}};
+    Eigen::Matrix3d P {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 };
 
 struct AttEstState {
@@ -70,12 +70,22 @@ private:
     bool _is_gyro_offset_comp = false;
     uint8_t _samples_gyro_offset_comp = 0;
 
-    Matrix _Q;
-    Matrix _F;
-    Matrix _R;
+    Eigen::Matrix<double, 2, 3> _H {{1, 0, 0}, {0, 1, 0}};
+    Eigen::Matrix<double, 3, 2> _H_t = _H.transpose();
 
-    Matrix _H = {{1, 0, 0}, {0, 1, 0}};
-    Matrix _I = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    Eigen::Matrix3d _I {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+
+    Eigen::Matrix3d _Q;
+    Eigen::Matrix2d _R;
+
+    Eigen::Matrix3d _F;
+    Eigen::Matrix3d _F_t;
+
+    Eigen::Vector3d _x_pri;
+    Eigen::Matrix3d _P_pri;
+
+    Eigen::Matrix2d _S;
+    Eigen::Matrix<double, 3, 2> _K;
 
     AttEstKalmanState _kalman_roll;
     AttEstKalmanState _kalman_pitch;

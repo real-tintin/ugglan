@@ -148,6 +148,7 @@ private:
     DataLogQueue& _data_log_queue;
 };
 
+// TODO: Split this task?
 class TaskStateEstAndCtrl : public Task
 {
 public:
@@ -464,19 +465,19 @@ void print_env_vars()
     logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_THETA: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_THETA));
     logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_PSI: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_PSI));
 
-    logger.debug("PILOT_CTRL_L_ROLL_0: " + std::to_string(PILOT_CTRL_L_ROLL[0][0]));
-    logger.debug("PILOT_CTRL_L_ROLL_1: " + std::to_string(PILOT_CTRL_L_ROLL[0][1]));
-    logger.debug("PILOT_CTRL_L_ROLL_2: " + std::to_string(PILOT_CTRL_L_ROLL[0][2]));
-    logger.debug("PILOT_CTRL_L_ROLL_3: " + std::to_string(PILOT_CTRL_L_ROLL[0][3]));
+    logger.debug("PILOT_CTRL_L_ROLL_0: " + std::to_string(PILOT_CTRL_L_ROLL(0)));
+    logger.debug("PILOT_CTRL_L_ROLL_1: " + std::to_string(PILOT_CTRL_L_ROLL(1)));
+    logger.debug("PILOT_CTRL_L_ROLL_2: " + std::to_string(PILOT_CTRL_L_ROLL(2)));
+    logger.debug("PILOT_CTRL_L_ROLL_3: " + std::to_string(PILOT_CTRL_L_ROLL(3)));
 
-    logger.debug("PILOT_CTRL_L_PITCH_0: " + std::to_string(PILOT_CTRL_L_PITCH[0][0]));
-    logger.debug("PILOT_CTRL_L_PITCH_1: " + std::to_string(PILOT_CTRL_L_PITCH[0][1]));
-    logger.debug("PILOT_CTRL_L_PITCH_2: " + std::to_string(PILOT_CTRL_L_PITCH[0][2]));
-    logger.debug("PILOT_CTRL_L_PITCH_3: " + std::to_string(PILOT_CTRL_L_PITCH[0][3]));
+    logger.debug("PILOT_CTRL_L_PITCH_0: " + std::to_string(PILOT_CTRL_L_PITCH(0)));
+    logger.debug("PILOT_CTRL_L_PITCH_1: " + std::to_string(PILOT_CTRL_L_PITCH(1)));
+    logger.debug("PILOT_CTRL_L_PITCH_2: " + std::to_string(PILOT_CTRL_L_PITCH(2)));
+    logger.debug("PILOT_CTRL_L_PITCH_3: " + std::to_string(PILOT_CTRL_L_PITCH(3)));
 
-    logger.debug("PILOT_CTRL_L_YAW_RATE_0: " + std::to_string(PILOT_CTRL_L_YAW_RATE[0][1]));
-    logger.debug("PILOT_CTRL_L_YAW_RATE_1: " + std::to_string(PILOT_CTRL_L_YAW_RATE[0][2]));
-    logger.debug("PILOT_CTRL_L_YAW_RATE_2: " + std::to_string(PILOT_CTRL_L_YAW_RATE[0][3]));
+    logger.debug("PILOT_CTRL_L_YAW_RATE_0: " + std::to_string(PILOT_CTRL_L_YAW_RATE(0)));
+    logger.debug("PILOT_CTRL_L_YAW_RATE_1: " + std::to_string(PILOT_CTRL_L_YAW_RATE(1)));
+    logger.debug("PILOT_CTRL_L_YAW_RATE_2: " + std::to_string(PILOT_CTRL_L_YAW_RATE(2)));
 }
 
 bool is_shutdown_ready(DataLogQueue& data_log_queue)

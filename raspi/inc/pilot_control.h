@@ -9,7 +9,7 @@
 #include <motor_control.h>
 #include <drone_props.h>
 #include <utils.h>
-#include <matrix.h>
+#include <eigen/Eigen>
 
 inline const double PILOT_CTRL_ABS_MAX_REF_ROLL = M_PI / 8; // [rad]
 inline const double PILOT_CTRL_ABS_MAX_REF_PITCH = M_PI / 8; // [rad]
@@ -20,7 +20,7 @@ inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PHI = utils::get_env("PILOT_CTRL_
 inline const double PILOT_CTRL_ANTI_WINDUP_SAT_THETA = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_THETA", 0.3);
 inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PSI = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_PSI", 2.4);
 
-inline const Matrix PILOT_CTRL_L_ROLL =
+inline const Eigen::RowVector4d PILOT_CTRL_L_ROLL
     {{
     utils::get_env("PILOT_CTRL_L_ROLL_0", 0.40),
     utils::get_env("PILOT_CTRL_L_ROLL_1", 3.85),
@@ -28,7 +28,7 @@ inline const Matrix PILOT_CTRL_L_ROLL =
     utils::get_env("PILOT_CTRL_L_ROLL_3", 0.02)
     }}; // Feedback matrice for roll.
 
-inline const Matrix PILOT_CTRL_L_PITCH =
+inline const Eigen::RowVector4d PILOT_CTRL_L_PITCH
     {{
     utils::get_env("PILOT_CTRL_L_PITCH_0", 0.40),
     utils::get_env("PILOT_CTRL_L_PITCH_1", 3.85),
@@ -36,7 +36,7 @@ inline const Matrix PILOT_CTRL_L_PITCH =
     utils::get_env("PILOT_CTRL_L_PITCH_3", 0.02)
     }}; // Feedback matrice for pitch.
 
-inline const Matrix PILOT_CTRL_L_YAW_RATE =
+inline const Eigen::RowVector3d PILOT_CTRL_L_YAW_RATE
     {{
     utils::get_env("PILOT_CTRL_L_YAW_RATE_0", 0.02),
     utils::get_env("PILOT_CTRL_L_YAW_RATE_1", 0.04),
@@ -85,9 +85,9 @@ private:
 
     BodyControl _ctrl = {0};
 
-    Matrix _x_phi = {{0}, {0}, {0}, {0}};
-    Matrix _x_theta = {{0}, {0}, {0}, {0}};
-    Matrix _x_psi = {{0}, {0}, {0}};
+    Eigen::Vector4d _x_phi {{0}, {0}, {0}, {0}};
+    Eigen::Vector4d _x_theta {{0}, {0}, {0}, {0}};
+    Eigen::Vector3d _x_psi {{0}, {0}, {0}};
 
     void _extract_states(AttEstimate& att_est);
     void _change_of_variable(PilotCtrlRef& ref);
@@ -98,7 +98,8 @@ private:
     void _update_ctrl_mz();
     void _update_ctrl_fz(PilotCtrlRef& ref);
 
-    double _feedback_ctrl(Matrix x, Matrix L);
+    double _feedback_ctrl(Eigen::Vector4d x, Eigen::RowVector4d L);
+    double _feedback_ctrl(Eigen::Vector3d x, Eigen::RowVector3d L);
 };
 
 #endif /* PILOT_CONTROL_H */

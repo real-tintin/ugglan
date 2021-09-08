@@ -9,7 +9,7 @@ TARGET := $(TARGET_NAME)
 SRCEXT := cpp
 
 CXX = g++-9.1
-CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread -llapack -lblas $(EXTRA_CXXFLAGS)
+CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread $(EXTRA_CXXFLAGS)
 LDFLAGS += -lz
 
 SRCDIR := ./src

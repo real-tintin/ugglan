@@ -7,9 +7,7 @@ RUN apt-get install -y \
     bzip2 \
     libz-dev \
     libi2c-dev \
-    build-essential \
-    liblapack* \
-    libblas*
+    build-essential
 
 # Install pre-complied GCC 9.1 (https://bitbucket.org/sol_prog/raspberry-pi-gcc-binary/src/master/)
 RUN git clone https://bitbucket.org/sol_prog/raspberry-pi-gcc-binary.git
@@ -25,7 +23,6 @@ RUN ln -s /usr/include/arm-linux-gnueabihf/asm /usr/include/asm
 RUN ln -s /usr/lib/arm-linux-gnueabihf/crti.o /usr/lib/crti.o
 RUN ln -s /usr/lib/arm-linux-gnueabihf/crt1.o /usr/lib/crt1.o
 RUN ln -s /usr/lib/arm-linux-gnueabihf/crtn.o /usr/lib/crtn.o
-RUN ln -s /usr/lib/arm-linux-gnueabihf/gcrt1.o /usr/lib/gcrt1.o
 
 # Copy dependent files (instead of mount to support Windows)
 ENV ROOT /raspi

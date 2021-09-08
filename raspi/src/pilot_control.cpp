@@ -57,29 +57,29 @@ double PilotControl::get_state(PilotCtrlState state)
     switch (state)
     {
         case PilotCtrlState::Phi0:
-            return _x_phi[0][0];
+            return _x_phi(0);
         case PilotCtrlState::Phi1:
-            return _x_phi[1][0];
+            return _x_phi(1);
         case PilotCtrlState::Phi2:
-            return _x_phi[2][0];
+            return _x_phi(2);
         case PilotCtrlState::Phi3:
-            return _x_phi[3][0];
+            return _x_phi(3);
 
         case PilotCtrlState::Theta0:
-            return _x_theta[0][0];
+            return _x_theta(0);
         case PilotCtrlState::Theta1:
-            return _x_theta[1][0];
+            return _x_theta(1);
         case PilotCtrlState::Theta2:
-            return _x_theta[2][0];
+            return _x_theta(2);
         case PilotCtrlState::Theta3:
-            return _x_theta[3][0];
+            return _x_theta(3);
 
         case PilotCtrlState::Psi0:
-            return _x_psi[0][0];
+            return _x_psi(0);
         case PilotCtrlState::Psi1:
-            return _x_psi[1][0];
+            return _x_psi(1);
         case PilotCtrlState::Psi2:
-            return _x_psi[2][0];
+            return _x_psi(2);
 
         default:
             return 0; // Should never be reached.
@@ -88,34 +88,34 @@ double PilotControl::get_state(PilotCtrlState state)
 
 void PilotControl::_extract_states(AttEstimate& att_est)
 {
-    _x_phi[1][0] = att_est.roll.angle;
-    _x_phi[2][0] = att_est.roll.rate;
-    _x_phi[3][0] = att_est.roll.acc;
+    _x_phi(1) = att_est.roll.angle;
+    _x_phi(2) = att_est.roll.rate;
+    _x_phi(3) = att_est.roll.acc;
 
-    _x_theta[1][0] = att_est.pitch.angle;
-    _x_theta[2][0] = att_est.pitch.rate;
-    _x_theta[3][0] = att_est.pitch.acc;
+    _x_theta(1) = att_est.pitch.angle;
+    _x_theta(2) = att_est.pitch.rate;
+    _x_theta(3) = att_est.pitch.acc;
 
-    _x_psi[1][0] = att_est.yaw.rate;
-    _x_psi[2][0] = att_est.yaw.acc;
+    _x_psi(1) = att_est.yaw.rate;
+    _x_psi(2) = att_est.yaw.acc;
 }
 
 void PilotControl::_change_of_variable(PilotCtrlRef& ref)
 {
-    _x_phi[1][0] -= ref.roll;
-    _x_theta[1][0] -= ref.pitch;
-    _x_psi[1][0] -= ref.yaw_rate;
+    _x_phi(1) -= ref.roll;
+    _x_theta(1) -= ref.pitch;
+    _x_psi(1) -= ref.yaw_rate;
 }
 
 void PilotControl::_integrate_with_antiwindup()
 {
-    _x_phi[0][0] += _x_phi[1][0] * _sample_rate_s;
-    _x_theta[0][0] += _x_theta[1][0] * _sample_rate_s;
-    _x_psi[0][0] += _x_psi[1][0] * _sample_rate_s;
+    _x_phi(0) += _x_phi(1) * _sample_rate_s;
+    _x_theta(0) += _x_theta(1) * _sample_rate_s;
+    _x_psi(0) += _x_psi(1) * _sample_rate_s;
 
-    _x_phi[0][0] = _range_sat(_x_phi[0][0], PILOT_CTRL_ANTI_WINDUP_SAT_PHI);
-    _x_theta[0][0] = _range_sat(_x_theta[0][0], PILOT_CTRL_ANTI_WINDUP_SAT_THETA);
-    _x_psi[0][0] = _range_sat(_x_psi[0][0], PILOT_CTRL_ANTI_WINDUP_SAT_PSI);
+    _x_phi(0) = _range_sat(_x_phi(0), PILOT_CTRL_ANTI_WINDUP_SAT_PHI);
+    _x_theta(0) = _range_sat(_x_theta(0), PILOT_CTRL_ANTI_WINDUP_SAT_THETA);
+    _x_psi(0) = _range_sat(_x_psi(0), PILOT_CTRL_ANTI_WINDUP_SAT_PSI);
 }
 
 void PilotControl::_update_ctrl_mx()
@@ -138,8 +138,14 @@ void PilotControl::_update_ctrl_fz(PilotCtrlRef& ref)
     _ctrl.f_z = ref.f_z;
 }
 
-double PilotControl::_feedback_ctrl(Matrix x, Matrix L)
+double PilotControl::_feedback_ctrl(Eigen::Vector4d x, Eigen::RowVector4d L)
 {
-    Matrix u = (-1 * L * x);
-    return u[0][0];
+    Eigen::VectorXd u = -L * x;
+    return u(0);
+}
+
+double PilotControl::_feedback_ctrl(Eigen::Vector3d x, Eigen::RowVector3d L)
+{
+    Eigen::VectorXd u = -L * x;
+    return u(0);
 }
