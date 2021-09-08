@@ -22,5 +22,6 @@ class TaskId(AutoNumber):
     EscWrite2 = ()
     EscWrite3 = ()
     RcReceiver = ()
-    StateEstAndCtrl = ()
+    StateEst = ()
+    StateCtrl = ()
     DataLogger = ()

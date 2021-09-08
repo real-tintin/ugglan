@@ -18,13 +18,16 @@ the consumers, see :numref:`drone_sw_design`.
         ImuPres([ImuPres])
 
         EscRead([EscRead])
+        EscWrite([EscWrite])
+
         RcReceiver([RcReceiver])
 
-        DataLogQueue[(DataLogQueue)]
+        StateEst([StateEst])
+        StateCtrl([StateCtrl])
 
-        StateControl([StateControl])
-        EscWrite([EscWrite])
         DataLogger([DataLogger])
+
+        DataLogQueue[(DataLogQueue)]
 
         ImuAccMag -- push 50 Hz --> DataLogQueue
         ImuGyro -- push 50 Hz --> DataLogQueue
@@ -32,7 +35,8 @@ the consumers, see :numref:`drone_sw_design`.
         EscRead -- push 5 Hz --> DataLogQueue
         RcReceiver -- push 50 Hz --> DataLogQueue
 
-        DataLogQueue -- last value 50 Hz --> StateControl
+        DataLogQueue -- last value 50 Hz --> StateEst
+        DataLogQueue -- last value 50 Hz --> StateCtrl
         DataLogQueue -- last value 50 Hz --> EscWrite
         DataLogQueue -- pop 100 Hz --> DataLogger
 
@@ -45,19 +49,21 @@ the consumers, see :numref:`drone_sw_design`.
         end
 
         subgraph Consumers
-        StateControl
+        StateEst
+        StateCtrl
         EscWrite
         DataLogger
         end
 
 As one can see, the ``DataLogQueue`` maintains a thread safe queue for the producers to
 push to and the ``DataLogger`` to pop from. But it also stores the last (pushed) sample
-for consumers to use e.g., the ``StateControl`` which runs at a constant execution/sample
+for consumers to use e.g., the ``StateEst`` which runs at a constant execution/sample
 rate i.e., to simplify the signal processing. Note, other tasks than producers may populate
-the queue e.g., estimated states which are useful for offline tuning of control laws.
+the queue e.g., estimated states which are used by the ``StateCtrl`` or for offline
+tuning of control laws.
 
 Note, some signals such as the ones from the pressure sensor will only be sampled
-at 12.5 Hz. This has to be handled by the state controller.
+at 12.5 Hz.
 
 Data Logging
 =================
