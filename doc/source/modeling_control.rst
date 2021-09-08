@@ -305,9 +305,8 @@ Implementation Notes
 
 Kalman Filter
 """""""""""""""""
-In order to solve for the optimal Kalman gain, a matrix inverse operation as to be
-performed. For this `LAPACK <http://www.netlib.org/lapack/>`_ is used. See the source
-code for details.
+In order to solve for the optimal Kalman gain, matrix operations (e.g., inverse) have
+to be performed. For this `Eigen <https://eigen.tuxfamily.org/>`_ is used.
 
 Gyro offset
 """"""""""""

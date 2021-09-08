@@ -7,19 +7,20 @@ static const double MODULO_YAW = M_PI;
 AttitudeEstimation::AttitudeEstimation(double input_sample_rate_s) :
     _dt(input_sample_rate_s)
 {
-    _Q = ATT_EST_KALMAN_Q_VARIANCE * Matrix({
+    _Q = ATT_EST_KALMAN_Q_VARIANCE * Eigen::Matrix3d({
         {0.25 * pow(_dt, 4), 0.5 * pow(_dt, 3), 0.5 * pow(_dt, 2)},
         {0.5 * pow(_dt, 3), pow(_dt, 2), _dt},
         {0.5 * pow(_dt, 2), _dt, 1}
         });
 
-    _F = Matrix({
+    _F = Eigen::Matrix3d({
         {1, _dt, 0.5 * pow(_dt, 2)},
         {0, 1, _dt},
         {0, 0, 1}
         });
+    _F_t = _F.transpose();
 
-    _R = ATT_EST_KALMAN_R_VARIANCE * Matrix({{1, 0}, {0, 1}});
+    _R = ATT_EST_KALMAN_R_VARIANCE * Eigen::Matrix2d({{1, 0}, {0, 1}});
 }
 
 void AttitudeEstimation::update(AttEstInput input)
@@ -78,8 +79,8 @@ void AttitudeEstimation::_update_est(double z_0, double z_1,
                                      AttEstState& att_state,
                                      double modulo_lim)
 {
-    kalman_state.z[0][0] = z_0;
-    kalman_state.z[1][0] = z_1;
+    kalman_state.z(0) = z_0;
+    kalman_state.z(1) = z_1;
 
     _update_kalman_state(kalman_state);
     _kalman_state_to_att_state(kalman_state, att_state);
@@ -88,21 +89,21 @@ void AttitudeEstimation::_update_est(double z_0, double z_1,
 
 void AttitudeEstimation::_update_kalman_state(AttEstKalmanState& state)
 {
-    Matrix x_pri = _F * state.x;
-    Matrix P_pri = _F * state.P * _F.transpose() + _Q;
+    _x_pri = _F * state.x;
+    _P_pri = _F * state.P * _F_t + _Q;
 
-    Matrix S = _H * P_pri * _H.transpose() + _R;
-    Matrix K = P_pri * _H.transpose() * S.inverse();
+    _S = _H * _P_pri * _H_t + _R;
+    _K = _P_pri * _H_t * _S.inverse();
 
-    state.x = x_pri + K * (state.z - _H * x_pri);
-    state.P = (_I - K * _H) * P_pri;
+    state.x = _x_pri + _K * (state.z - _H * _x_pri);
+    state.P = (_I - _K * _H) * _P_pri;
 }
 
 void AttitudeEstimation::_kalman_state_to_att_state(AttEstKalmanState& kalman, AttEstState& att)
 {
-    att.angle = kalman.x[0][0];
-    att.rate = kalman.x[1][0];
-    att.acc = kalman.x[2][0];
+    att.angle = kalman.x(0);
+    att.rate = kalman.x(1);
+    att.acc = kalman.x(2);
 }
 
 void AttitudeEstimation::_modulo_angle(double* angle, double limit)
