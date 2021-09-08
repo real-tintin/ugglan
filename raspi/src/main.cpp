@@ -21,14 +21,15 @@
 static const std::filesystem::path DATA_LOG_ROOT = utils::get_env("DATA_LOG_ROOT", std::string(""));
 static const std::string LOGGER_LEVEL = utils::get_env("LOGGER_LEVEL", std::string(""));
 
-static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS            = 20;  // 50 Hz
-static const uint32_t TASK_GYRO_EXEC_PERIOD_MS               = 20;  // 50 Hz
-static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS          = 80;  // 12.5 Hz
-static const uint32_t TASK_STATE_EST_AND_CTRL_EXEC_PERIOD_MS = 20;  // 50 Hz
-static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS           = 200; // 5 Hz
-static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS          = 20;  // 50 Hz
-static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS        = 20;  // 50 Hz
-static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS        = 10;  // 100 Hz
+static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 20;  // 50 Hz
+static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 20;  // 50 Hz
+static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS   = 80;  // 12.5 Hz
+static const uint32_t TASK_STATE_EST_EXEC_PERIOD_MS   = 20;  // 50 Hz
+static const uint32_t TASK_STATE_CTRL_EXEC_PERIOD_MS  = 20;  // 50 Hz
+static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 200; // 5 Hz
+static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 20;  // 50 Hz
+static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 20;  // 50 Hz
+static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 10;  // 100 Hz
 
 static const uint8_t I2C_ADDRESS_ACC_MAG   = LSM303D_I2C_ADDRESS;
 static const uint8_t I2C_ADDRESS_GYRO      = L3GD20H_I2C_ADDRESS;
@@ -63,7 +64,8 @@ enum class TaskId {
     EscWrite2,
     EscWrite3,
     RcReceiver,
-    StateEstAndCtrl,
+    StateEst,
+    StateCtrl,
     DataLogger
 };
 
@@ -148,44 +150,16 @@ private:
     DataLogQueue& _data_log_queue;
 };
 
-// TODO: Split this task?
-class TaskStateEstAndCtrl : public Task
+class TaskStateEst : public Task
 {
 public:
-    TaskStateEstAndCtrl(uint32_t exec_period_ms, std::string name,
+    TaskStateEst(uint32_t exec_period_ms, std::string name,
                         double input_sample_rate_s, DataLogQueue& data_log_queue) :
                    Task(exec_period_ms, name),
-                        _att(input_sample_rate_s), _pilot_ctrl(input_sample_rate_s),
+                        _att(input_sample_rate_s),
                         _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
-    {
-        _exec_att_est();
-        _exec_pilot_ctrl();
-        _exec_motor_ctrl();
-
-        _data_log_queue.push(uint8_t(TaskId::StateEstAndCtrl), DataLogSignal::TaskExecute);
-    }
-private:
-    AttEstInput _att_in;
-    AttEstimate _att_est;
-    AttitudeEstimation _att;
-
-    double _gimbal_left_x, _gimbal_left_y, _gimbal_right_x, _gimbal_right_y;
-
-    PilotControl _pilot_ctrl;
-    PilotCtrlRef _ctrl_ref;
-
-    DataLogQueue& _data_log_queue;
-
-    BodyControl _body_ctrl;
-    MotorControl _motor_ctrl;
-
-    static constexpr DataLogSignal _sid_motor_cmd[N_ESC] = {
-        DataLogSignal::EscMotorCmd0, DataLogSignal::EscMotorCmd1,
-        DataLogSignal::EscMotorCmd2, DataLogSignal::EscMotorCmd3};
-
-    void _exec_att_est()
     {
         _data_log_queue.last_signal_data(&_att_in.acc_x, DataLogSignal::ImuAccelerationX);
         _data_log_queue.last_signal_data(&_att_in.acc_y, DataLogSignal::ImuAccelerationY);
@@ -215,10 +189,63 @@ private:
         _data_log_queue.push(_att_est.yaw.acc, DataLogSignal::StateEstYawAcc);
 
         _data_log_queue.push(_att.is_calibrated(), DataLogSignal::StateEstAttIsCalib);
+        _data_log_queue.push(uint8_t(TaskId::StateEst), DataLogSignal::TaskExecute);
     }
+private:
+    AttEstInput _att_in;
+    AttEstimate _att_est;
+    AttitudeEstimation _att;
+
+    DataLogQueue& _data_log_queue;
+};
+
+class TaskStateCtrl : public Task
+{
+public:
+    TaskStateCtrl(uint32_t exec_period_ms, std::string name,
+                        double input_sample_rate_s, DataLogQueue& data_log_queue) :
+                   Task(exec_period_ms, name),
+                        _pilot_ctrl(input_sample_rate_s),
+                        _data_log_queue(data_log_queue) {}
+protected:
+    void _execute()
+    {
+        _exec_pilot_ctrl();
+        _exec_motor_ctrl();
+
+        _data_log_queue.push(uint8_t(TaskId::StateCtrl), DataLogSignal::TaskExecute);
+    }
+private:
+    AttEstimate _att_est;
+
+    double _gimbal_left_x, _gimbal_left_y, _gimbal_right_x, _gimbal_right_y;
+
+    PilotControl _pilot_ctrl;
+    PilotCtrlRef _ctrl_ref;
+
+    DataLogQueue& _data_log_queue;
+
+    BodyControl _body_ctrl;
+    MotorControl _motor_ctrl;
+
+    static constexpr DataLogSignal _sid_motor_cmd[N_ESC] = {
+        DataLogSignal::EscMotorCmd0, DataLogSignal::EscMotorCmd1,
+        DataLogSignal::EscMotorCmd2, DataLogSignal::EscMotorCmd3};
 
     void _exec_pilot_ctrl()
     {
+        _data_log_queue.last_signal_data(&_att_est.roll.angle, DataLogSignal::StateEstRoll);
+        _data_log_queue.last_signal_data(&_att_est.pitch.angle, DataLogSignal::StateEstPitch);
+        _data_log_queue.last_signal_data(&_att_est.yaw.angle, DataLogSignal::StateEstYaw);
+
+        _data_log_queue.last_signal_data(&_att_est.roll.rate, DataLogSignal::StateEstRollRate);
+        _data_log_queue.last_signal_data(&_att_est.pitch.rate, DataLogSignal::StateEstPitchRate);
+        _data_log_queue.last_signal_data(&_att_est.yaw.rate, DataLogSignal::StateEstYawRate);
+
+        _data_log_queue.last_signal_data(&_att_est.roll.acc, DataLogSignal::StateEstRollAcc);
+        _data_log_queue.last_signal_data(&_att_est.pitch.acc, DataLogSignal::StateEstPitchAcc);
+        _data_log_queue.last_signal_data(&_att_est.yaw.acc, DataLogSignal::StateEstYawAcc);
+
         _data_log_queue.last_signal_data(&_gimbal_left_x, DataLogSignal::RcGimbalLeftX);
         _data_log_queue.last_signal_data(&_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
         _data_log_queue.last_signal_data(&_gimbal_right_x, DataLogSignal::RcGimbalRightX);
@@ -531,7 +558,10 @@ int main()
     tasks.emplace_back(new TaskRcReceiver(TASK_RC_RECEIVER_EXEC_PERIOD_MS, "RcReceiver",
                                           SERIAL_DEVICE_RC_RECEIVER, data_log_queue));
 
-    tasks.emplace_back(new TaskStateEstAndCtrl(TASK_STATE_EST_AND_CTRL_EXEC_PERIOD_MS, "StateEstAndCtrl",
+    tasks.emplace_back(new TaskStateEst(TASK_STATE_EST_EXEC_PERIOD_MS, "StateEst",
+                                               ATT_EST_INPUT_SAMPLE_RATE_S, data_log_queue));
+
+    tasks.emplace_back(new TaskStateCtrl(TASK_STATE_CTRL_EXEC_PERIOD_MS, "StateCtrl",
                                                ATT_EST_INPUT_SAMPLE_RATE_S, data_log_queue));
 
     tasks.emplace_back(new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, "DataLogger",

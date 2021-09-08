@@ -2,12 +2,12 @@ import argparse
 from enum import Enum
 from pathlib import Path
 
+import data_log.io as data_log_io
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from cycler import cycler
 
-import data_log.io as data_log_io
 from .task_ids import TaskId
 
 mpl.rcParams['axes.prop_cycle'] = cycler(color='bgrcmyk')
@@ -33,7 +33,7 @@ def _finish_subplots(fig):
         _finish_subplots.sax = fig.get_axes()[0]
 
     for ax in fig.get_axes():
-        #ax.get_shared_x_axes().join(ax, _finish_subplots.sax) TODO: doesn't work for many figures...
+        # ax.get_shared_x_axes().join(ax, _finish_subplots.sax) TODO: doesn't work for many figures...
         ax.set(xlabel='Time [s]')
         ax.grid()
         if all(ax.get_legend_handles_labels()):
@@ -261,7 +261,8 @@ def _plot_tasks(data):
 
     _plot_task_sample_rate(axs[1, 1], data.Task.Execute, TaskId.RcReceiver, 'RcReceiver')
 
-    _plot_task_sample_rate(axs[2, 0], data.Task.Execute, TaskId.StateEstAndCtrl, 'StateEstAndCtrl')
+    _plot_task_sample_rate(axs[2, 0], data.Task.Execute, TaskId.StateEst, 'StateEst')
+    _plot_task_sample_rate(axs[2, 0], data.Task.Execute, TaskId.StateCtrl, 'StateCtrl')
 
     _plot_task_sample_rate(axs[2, 1], data.Task.Execute, TaskId.DataLogger, 'DataLogger')
 
