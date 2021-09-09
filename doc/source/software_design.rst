@@ -38,7 +38,7 @@ the consumers, see :numref:`drone_sw_design`.
         DataLogQueue -- last value 50 Hz --> StateEst
         DataLogQueue -- last value 50 Hz --> StateCtrl
         DataLogQueue -- last value 50 Hz --> EscWrite
-        DataLogQueue -- pop 100 Hz --> DataLogger
+        DataLogQueue -- pack 10 Hz --> DataLogger
 
         subgraph Producers
         ImuAccMag
@@ -56,8 +56,8 @@ the consumers, see :numref:`drone_sw_design`.
         end
 
 As one can see, the ``DataLogQueue`` maintains a thread safe queue for the producers to
-push to and the ``DataLogger`` to pop from. But it also stores the last (pushed) sample
-for consumers to use e.g., the ``StateEst`` which runs at a constant execution/sample
+push to and the ``DataLogger`` to pack (pop until empty) from. But it also stores the last
+(pushed) sample for consumers to use e.g., the ``StateEst`` which runs at a constant sample
 rate i.e., to simplify the signal processing. Note, other tasks than producers may populate
 the queue e.g., estimated states which are used by the ``StateCtrl`` or for offline
 tuning of control laws.
