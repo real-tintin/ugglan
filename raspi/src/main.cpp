@@ -29,7 +29,7 @@ static const uint32_t TASK_STATE_CTRL_EXEC_PERIOD_MS  = 20;  // 50 Hz
 static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 200; // 5 Hz
 static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 20;  // 50 Hz
 static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 20;  // 50 Hz
-static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 10;  // 100 Hz
+static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 100; // 10 Hz
 
 static const uint8_t I2C_ADDRESS_ACC_MAG   = LSM303D_I2C_ADDRESS;
 static const uint8_t I2C_ADDRESS_GYRO      = L3GD20H_I2C_ADDRESS;
