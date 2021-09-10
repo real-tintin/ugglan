@@ -140,12 +140,12 @@ void PilotControl::_update_ctrl_fz(PilotCtrlRef& ref)
 
 double PilotControl::_feedback_ctrl(Eigen::Vector4d x, Eigen::RowVector4d L)
 {
-    Eigen::VectorXd u = -L * x;
-    return u(0);
+    _u.noalias() = L.lazyProduct(x);
+    return -_u(0);
 }
 
 double PilotControl::_feedback_ctrl(Eigen::Vector3d x, Eigen::RowVector3d L)
 {
-    Eigen::VectorXd u = -L * x;
-    return u(0);
+    _u.noalias() = L.lazyProduct(x);
+    return -_u(0);
 }

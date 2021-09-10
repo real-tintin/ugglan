@@ -89,6 +89,8 @@ private:
     Eigen::Vector4d _x_theta {{0}, {0}, {0}, {0}};
     Eigen::Vector3d _x_psi {{0}, {0}, {0}};
 
+    Eigen::Vector<double, 1> _u;
+
     void _extract_states(AttEstimate& att_est);
     void _change_of_variable(PilotCtrlRef& ref);
     void _integrate_with_antiwindup();
