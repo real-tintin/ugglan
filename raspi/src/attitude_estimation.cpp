@@ -89,14 +89,14 @@ void AttitudeEstimation::_update_est(double z_0, double z_1,
 
 void AttitudeEstimation::_update_kalman_state(AttEstKalmanState& state)
 {
-    _x_pri = _F * state.x;
-    _P_pri = _F * state.P * _F_t + _Q;
+    _x_pri.noalias() = _F * state.x;
+    _P_pri.noalias() = _F * state.P * _F_t + _Q;
 
-    _S = _H * _P_pri * _H_t + _R;
-    _K = _P_pri * _H_t * _S.inverse();
+    _S.noalias() = _H * _P_pri * _H_t + _R;
+    _K.noalias() = _P_pri * _H_t * _S.inverse();
 
-    state.x = _x_pri + _K * (state.z - _H * _x_pri);
-    state.P = (_I - _K * _H) * _P_pri;
+    state.x.noalias() = _x_pri + _K * (state.z - _H * _x_pri);
+    state.P.noalias() = (_I - _K * _H) * _P_pri;
 }
 
 void AttitudeEstimation::_kalman_state_to_att_state(AttEstKalmanState& kalman, AttEstState& att)
