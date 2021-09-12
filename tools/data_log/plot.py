@@ -29,11 +29,7 @@ class Figure(Enum):
 
 
 def _finish_subplots(fig):
-    if not hasattr(_finish_subplots, "sax"):
-        _finish_subplots.sax = fig.get_axes()[0]
-
     for ax in fig.get_axes():
-        # ax.get_shared_x_axes().join(ax, _finish_subplots.sax) TODO: doesn't work for many figures...
         ax.set(xlabel='Time [s]')
         ax.grid()
         if all(ax.get_legend_handles_labels()):
@@ -57,7 +53,7 @@ def _plot_task_sample_rate(axs, signal, task_id, task_name):
 
 
 def _plot_imu(data):
-    fig, axs = plt.subplots(3, 2)
+    fig, axs = plt.subplots(3, 2, sharex=True)
     fig.suptitle('IMU')
 
     axs[0, 0].plot(data.Imu.AccelerationX.t_s, data.Imu.AccelerationX.val, label='X')
@@ -90,7 +86,7 @@ def _plot_imu(data):
 
 
 def _plot_esc(data):
-    fig, axs = plt.subplots(3, 2)
+    fig, axs = plt.subplots(3, 2, sharex=True)
     fig.suptitle('ESC')
 
     _add_esc_features(axs[0, 0], data, 'AngularRate')
@@ -124,7 +120,7 @@ def _add_esc_features(ax, data, feature):
 
 
 def _plot_rc(data):
-    fig, axs = plt.subplots(3, 2)
+    fig, axs = plt.subplots(3, 2, sharex=True)
     fig.suptitle('RC')
 
     axs[0, 0].plot(data.Rc.GimbalLeftX.t_s, data.Rc.GimbalLeftX.val, label='X')
@@ -150,7 +146,7 @@ def _plot_rc(data):
 
 
 def _plot_state_est(data):
-    fig, axs = plt.subplots(2, 2)
+    fig, axs = plt.subplots(2, 2, sharex=True)
     fig.suptitle('State Est')
 
     axs[0, 0].plot(data.StateEst.Roll.t_s, data.StateEst.Roll.val, label=r'$\phi$')
@@ -182,7 +178,7 @@ def _plot_state_ctrl(data):
 
 
 def _plot_state_ctrl_phi(data):
-    fig, axs = plt.subplots(2, 2)
+    fig, axs = plt.subplots(2, 2, sharex=True)
     fig.suptitle(r'State Ctrl: $\phi$')
 
     axs[0, 0].plot(data.StateEst.Roll.t_s, data.StateEst.Roll.val, label=r'$\phi$ [rad]')
@@ -199,7 +195,7 @@ def _plot_state_ctrl_phi(data):
 
 
 def _plot_state_ctrl_theta(data):
-    fig, axs = plt.subplots(2, 2)
+    fig, axs = plt.subplots(2, 2, sharex=True)
     fig.suptitle(r'State Ctrl: $\theta$')
 
     axs[0, 0].plot(data.StateEst.Pitch.t_s, data.StateEst.Pitch.val, label=r'$\theta$ [rad]')
@@ -216,7 +212,7 @@ def _plot_state_ctrl_theta(data):
 
 
 def _plot_state_ctrl_psi(data):
-    fig, axs = plt.subplots(2, 2)
+    fig, axs = plt.subplots(2, 2, sharex=True)
     fig.suptitle(r'State Ctrl: $\psi$')
 
     axs[0, 0].plot(data.StateEst.YawRate.t_s, data.StateEst.YawRate.val, label=r'$\dot{\psi}$ [rad/s]')
@@ -232,7 +228,7 @@ def _plot_state_ctrl_psi(data):
 
 
 def _plot_state_ctrl_fz(data):
-    fig, axs = plt.subplots(1, 1)
+    fig, axs = plt.subplots(1, 1, sharex=True)
     fig.suptitle(r'State Ctrl: $F_z$')
 
     axs.plot(data.StateCtrl.FzRef.t_s, data.StateCtrl.FzRef.val, label=r'$F_{zr}$ [N]')
@@ -242,7 +238,7 @@ def _plot_state_ctrl_fz(data):
 
 
 def _plot_tasks(data):
-    fig, axs = plt.subplots(3, 2)
+    fig, axs = plt.subplots(3, 2, sharex=True)
     fig.suptitle('Task State')
 
     _plot_task_sample_rate(axs[0, 0], data.Task.Execute, TaskId.AccMag, 'AccMag')
