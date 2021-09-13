@@ -30,8 +30,10 @@ class Figure(Enum):
 
 def _finish_subplots(fig):
     for ax in fig.get_axes():
+        ax.xaxis.set_tick_params(labelbottom=True)
         ax.set(xlabel='Time [s]')
         ax.grid()
+
         if all(ax.get_legend_handles_labels()):
             ax.legend(loc='upper right', fontsize=7)
 
