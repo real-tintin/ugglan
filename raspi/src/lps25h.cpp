@@ -1,6 +1,6 @@
 #include <lps25h.h>
 
-Lps25h::Lps25h(I2cConn& i2c_conn) : PololuAltImu(i2c_conn)
+Lps25h::Lps25h(I2cConn& i2c_conn) : PololuAltImu(i2c_conn, "Lps25h")
 {
     _setup(LPS25H_CONFIG_MAP, LPS25H_READ_MAP);
 }

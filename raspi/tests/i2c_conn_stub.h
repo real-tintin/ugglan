@@ -32,9 +32,21 @@ public:
 
     bool write_byte_data(uint8_t reg, uint8_t data);
     bool write_block_data(uint8_t reg, uint8_t size, uint8_t* buf);
+
+    uint32_t get_n_calls_read_byte_data() { return _n_calls_read_byte_data; }
+    uint32_t get_n_calls_read_block_data() { return _n_calls_read_block_data; }
+
+    uint32_t get_n_calls_write_byte_data() { return _n_calls_write_byte_data; }
+    uint32_t get_n_calls_write_block_data() { return _n_calls_write_block_data; }
 private:
     std::string _device;
     uint8_t _address;
+
+    uint32_t _n_calls_read_byte_data = 0;
+    uint32_t _n_calls_read_block_data = 0;
+
+    uint32_t _n_calls_write_byte_data = 0;
+    uint32_t _n_calls_write_block_data = 0;
 
     I2cReadByteMap _read_byte_map;
     I2cReadBlockMap _read_block_map;

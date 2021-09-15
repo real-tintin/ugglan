@@ -29,6 +29,7 @@ bool I2cConn::open()
 bool I2cConn::read_byte_data(uint8_t reg, uint8_t* data)
 {
     auto it = _read_byte_map.find(reg);
+    _n_calls_read_byte_data++;
 
     if (it != _read_byte_map.end())
     {
@@ -41,6 +42,7 @@ bool I2cConn::read_byte_data(uint8_t reg, uint8_t* data)
 bool I2cConn::read_block_data(uint8_t reg, uint8_t size, uint8_t* buf)
 {
     auto it = _read_block_map.find(reg);
+    _n_calls_read_block_data++;
 
     if (it != _read_block_map.end())
     {
@@ -52,6 +54,8 @@ bool I2cConn::read_block_data(uint8_t reg, uint8_t size, uint8_t* buf)
 
 bool I2cConn::write_byte_data(uint8_t reg, uint8_t data)
 {
+    _n_calls_write_byte_data++;
+
     if (std::count(_write_map.begin(),_write_map.end(), reg))
     {
         return true;
@@ -61,6 +65,8 @@ bool I2cConn::write_byte_data(uint8_t reg, uint8_t data)
 
 bool I2cConn::write_block_data(uint8_t reg, uint8_t size, uint8_t* buf)
 {
+    _n_calls_write_block_data++;
+
     if (std::count(_write_map.begin(),_write_map.end(), reg))
     {
         return true;

@@ -1,7 +1,8 @@
 #include <pololu_alt_imu.h>
 
-PololuAltImu::PololuAltImu(I2cConn& i2c_conn) :
-    _i2c_conn(i2c_conn)
+PololuAltImu::PololuAltImu(I2cConn& i2c_conn, std::string sensor_name) :
+    _i2c_conn(i2c_conn),
+    _sensor_name(sensor_name)
 {
     _open_i2c_conn();
 }
@@ -57,20 +58,38 @@ void PololuAltImu::_setup(ConfigMap config_map, ReadMap read_map)
 
 void PololuAltImu::_write_config()
 {
+    bool did_read = true;
     bool did_write = true;
 
     for (auto const& it: _config_map)
     {
         uint8_t reg = it.first;
-        uint8_t data = it.second;
+        uint8_t exp_data = it.second;
+        uint8_t act_data;
 
-        did_write &= _i2c_conn.write_byte_data(reg, data);
+        did_read &= _i2c_conn.read_byte_data(reg, &act_data);
+
+        if (exp_data != act_data)
+        {
+            _write_config_log_msg(reg, exp_data, act_data);
+            did_write &= _i2c_conn.write_byte_data(reg, exp_data);
+        }
     }
 
-    if (!did_write)
+    if (!did_read || !did_write)
     {
         _status |= POLOLU_STATUS_ERR_CONF;
     }
+}
+
+void PololuAltImu::_write_config_log_msg(uint8_t reg, uint8_t exp_data, uint8_t act_data)
+{
+    std::stringstream log_msg;
+
+    log_msg << _sensor_name << ": Updating config 0x" << std::hex << int(reg) <<
+        " (from " << std::bitset<8>{act_data} << " to " << std::bitset<8>{exp_data} << ").";
+
+    logger.debug(log_msg.str());
 }
 
 void PololuAltImu::_allocate_buffer()

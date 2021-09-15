@@ -11,14 +11,26 @@ https://www.pololu.com/file/download/L3GD20H.pdf?file_id=0J731
 
 inline const uint8_t L3GD20H_I2C_ADDRESS = 0x6B;
 
-inline const uint8_t L3GD20H_REG_CTRL1   = 0x20;
-inline const uint8_t L3GD20H_REG_CTRL4   = 0x23;
+inline const uint8_t L3GD20H_REG_CTRL1 = 0x20;
+inline const uint8_t L3GD20H_REG_CTRL2 = 0x21;
+inline const uint8_t L3GD20H_REG_CTRL3 = 0x22;
+inline const uint8_t L3GD20H_REG_CTRL4 = 0x23;
+inline const uint8_t L3GD20H_REG_CTRL5 = 0x24;
+
+inline const uint8_t L3GD20H_REG_REFERENCE = 0x25;
+
 inline const uint8_t L3GD20H_REG_OUT_X_L = 0x28;
 inline const uint8_t L3GD20H_REG_OUT_X_H = 0x29;
 inline const uint8_t L3GD20H_REG_OUT_Y_L = 0x2A;
 inline const uint8_t L3GD20H_REG_OUT_Y_H = 0x2B;
 inline const uint8_t L3GD20H_REG_OUT_Z_L = 0x2C;
 inline const uint8_t L3GD20H_REG_OUT_Z_H = 0x2D;
+
+inline const uint8_t L3GD20H_REG_FIFO_CTRL = 0x2E;
+
+inline const uint8_t L3GD20H_REG_IG_CFG = 0x30;
+
+inline const uint8_t L3GD20H_REG_LOW_ODR = 0x39;
 
 inline const uint8_t L3GD20H_BUF_SIZE    = 6;
 inline const uint8_t L3GD20H_BUF_OUT_X_L = 0x00;
@@ -33,7 +45,18 @@ inline const double L3GD20H_GYRO_RESOLUTION = 32767; // 2^15-1 (16-bit signed in
 
 inline const ConfigMap L3GD20H_CONFIG_MAP = {
     {L3GD20H_REG_CTRL1, 0b00011111}, // Enable XYZ gyro axis at 100 Hz, normal mode
-    {L3GD20H_REG_CTRL4, 0b00010000}  // Continues data with scaling 500 deg/s
+    {L3GD20H_REG_CTRL2, 0b00000000}, // Default
+    {L3GD20H_REG_CTRL3, 0b00000000}, // Default
+    {L3GD20H_REG_CTRL4, 0b00010000}, // Continues data with scaling 500 deg/s
+    {L3GD20H_REG_CTRL5, 0b00000000}, // Default
+
+    {L3GD20H_REG_REFERENCE, 0b00000000}, // Default
+
+    {L3GD20H_REG_FIFO_CTRL, 0b00000000}, // Default
+
+    {L3GD20H_REG_IG_CFG, 0b00000000}, // Default
+
+    {L3GD20H_REG_LOW_ODR, 0b00000000} // Default
     };
 
 inline const ReadMap L3GD20H_READ_MAP = {
