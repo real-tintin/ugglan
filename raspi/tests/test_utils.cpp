@@ -33,3 +33,17 @@ TEST_CASE("get_env")
         REQUIRE(fabs(env - 3.14) <= FLOAT_TOL);
     }
 }
+
+TEST_CASE("byte_to_hex_str")
+{
+    REQUIRE(byte_to_hex_str(0).compare("0x00") == 0);
+    REQUIRE(byte_to_hex_str(10).compare("0x0A") == 0);
+    REQUIRE(byte_to_hex_str(255).compare("0xFF") == 0);
+}
+
+TEST_CASE("byte_to_bit_str")
+{
+    REQUIRE(byte_to_bit_str(0).compare("0b00000000") == 0);
+    REQUIRE(byte_to_bit_str(10).compare("0b00001010") == 0);
+    REQUIRE(byte_to_bit_str(255).compare("0b11111111") == 0);
+}

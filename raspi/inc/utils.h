@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <sstream>
 #include <type_traits>
+#include <ios>
+#include <bitset>
 #include "logger.h"
 
 namespace utils
@@ -32,6 +34,9 @@ namespace utils
 
         throw std::runtime_error("Unsupported data type");
     }
+
+    std::string byte_to_hex_str(uint8_t byte);
+    std::string byte_to_bit_str(uint8_t byte);
 }
 
 #endif /* UTILS_H */

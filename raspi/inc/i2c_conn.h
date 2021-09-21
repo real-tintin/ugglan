@@ -9,6 +9,7 @@
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 #include <logger.h>
+#include <utils.h>
 
 #if !defined(UNIT_TEST)
 class I2cConn

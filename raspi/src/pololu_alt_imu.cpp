@@ -84,12 +84,8 @@ void PololuAltImu::_write_config()
 
 void PololuAltImu::_write_config_log_msg(uint8_t reg, uint8_t exp_data, uint8_t act_data)
 {
-    std::stringstream log_msg;
-
-    log_msg << _sensor_name << ": Updating config 0x" << std::hex << int(reg) <<
-        " (from " << std::bitset<8>{act_data} << " to " << std::bitset<8>{exp_data} << ").";
-
-    logger.debug(log_msg.str());
+    logger.debug(_sensor_name + " updating config: " + utils::byte_to_hex_str(reg) + ": " +
+        utils::byte_to_bit_str(act_data) + " -> " + utils::byte_to_bit_str(exp_data));
 }
 
 void PololuAltImu::_allocate_buffer()
