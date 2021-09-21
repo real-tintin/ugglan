@@ -167,6 +167,7 @@ def _plot_state_est(data):
     axs[1, 0].set(ylabel='Angular-acceleration [rad/s^2]')
 
     axs[1, 1].plot(data.StateEst.AttIsCalib.t_s, data.StateEst.AttIsCalib.val, label='AttIsCalibrated')
+    axs[1, 1].plot(data.StateEst.AttIsStandstill.t_s, data.StateEst.AttIsStandstill.val, label='AttIsStandstill')
     axs[1, 1].set(ylabel='Status [-]')
 
     _finish_subplots(fig)

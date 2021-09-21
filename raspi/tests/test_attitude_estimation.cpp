@@ -6,11 +6,13 @@
 static const double FLOAT_TOL = 1e-1;
 static const double SAMPLE_RATE_S = 1.0;
 
-static const uint8_t EXEC_UNTIL_CONVERGENCE = ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP + 10;
+static const uint32_t EXEC_UNTIL_CALIB = ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP + ATT_EST_ROLLING_WINDOW_SIZE;
 
-void execute_n_samples(AttitudeEstimation &att, AttEstInput &input, uint8_t n_samples)
+static const uint32_t EXEC_UNTIL_CONVERGENCE = 10 * EXEC_UNTIL_CALIB;
+
+void execute_n_samples(AttitudeEstimation &att, AttEstInput &input, uint32_t n_samples)
 {
-    for (uint8_t i_sample = 0; i_sample < n_samples; i_sample++) { att.update(input); }
+    for (uint32_t i_sample = 0; i_sample < n_samples; i_sample++) { att.update(input); }
 }
 
 void add_gyro_offset(AttEstInput &input)
@@ -31,15 +33,21 @@ TEST_CASE("attitude estimation")
     SECTION("standstill calibration")
     {
         input.acc_z = -1;
+
         input.mag_field_x = ATT_EST_HARD_IRON_OFFSET_X;
         input.mag_field_y = ATT_EST_HARD_IRON_OFFSET_Y;
         input.mag_field_z = ATT_EST_HARD_IRON_OFFSET_Z;
 
         REQUIRE(att.is_calibrated() == false);
-        execute_n_samples(att, input, ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP);
+        REQUIRE(att.is_standstill() == false);
+
+        execute_n_samples(att, input, EXEC_UNTIL_CALIB);
+
         REQUIRE(att.is_calibrated() == true);
+        REQUIRE(att.is_standstill() == true);
 
         est = att.get_estimate();
+
         REQUIRE(fabs(est.roll.rate - 0.0) <= FLOAT_TOL);
         REQUIRE(fabs(est.pitch.rate - 0.0) <= FLOAT_TOL);
         REQUIRE(fabs(est.yaw.rate - 0.0) <= FLOAT_TOL);

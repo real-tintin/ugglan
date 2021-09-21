@@ -18,6 +18,7 @@ setup(
         'dataclasses',
         'matplotlib',
         'numpy',
+        'pandas',
         'scipy',
     ],
     python_requires='>=3.7'

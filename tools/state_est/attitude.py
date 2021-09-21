@@ -7,6 +7,7 @@ import data_log.io as data_log_io
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from data_log.io import Signals
 from dataclasses import dataclass
 
@@ -14,7 +15,10 @@ mpl.rcParams['lines.linewidth'] = 0.5
 
 IMU_SAMPLE_RATE_S = 0.02  # 50 Hz
 
-N_SAMPLES_GYRO_OFFSET_COMP = 10
+STATIC_GYRO_OFFSET_COMP_SAMPLES = 100
+
+DYNAMIC_GYRO_OFFSET_COMP_SAMPLES = 100
+DYNAMIC_GYRO_OFFSET_COMP_ABS_ACC_LIM = 0.2  # [rad/s^2]
 
 CF_CUT_OFF_FREQ = 0.2  # [Hz]
 CF_TAU_PHI = 1 / (2 * np.pi * CF_CUT_OFF_FREQ)
@@ -24,15 +28,17 @@ CF_TAU_PSI = 1 / (2 * np.pi * CF_CUT_OFF_FREQ)
 GYRO_LP_CUT_OFF_FREQ = 15  # [Hz]
 
 KALMAN_P_0 = np.zeros((3, 3))
-KALMAN_Q_VARIANCE = 5e-1
+KALMAN_Q_SCALE = 1e2
 KALMAN_G = np.array([0.5 * IMU_SAMPLE_RATE_S ** 2, IMU_SAMPLE_RATE_S, 1])
-KALMAN_Q = KALMAN_Q_VARIANCE * np.outer(KALMAN_G, KALMAN_G)
-KALMAN_R_VARIANCE = 1e-3
-KALMAN_R = KALMAN_R_VARIANCE * np.diag([1, 1])
+KALMAN_Q = KALMAN_Q_SCALE * np.outer(KALMAN_G, KALMAN_G)
+KALMAN_R_0_SCALE = 1
+KALMAN_R_1_SCALE = 1
+KALMAN_R_ALMOST_ZERO = 1e-9
+KALMAN_R_WINDOW_SIZE = 20
 
-HARD_IRON_OFFSET_X = 0.131
-HARD_IRON_OFFSET_Y = 0.143
-HARD_IRON_OFFSET_Z = -0.144
+HARD_IRON_OFFSET_X = 0.104
+HARD_IRON_OFFSET_Y = 0.076
+HARD_IRON_OFFSET_Z = 0.062
 
 
 class Estimator(Enum):
@@ -119,20 +125,10 @@ class AttEst(ABC):
         self.theta = self._modulo_phi(self.theta)
         self.psi = self._modulo_phi(self.psi)
 
-    @staticmethod
-    def _modulo_phi(x):
-        return np.mod(x + np.pi, 2 * np.pi) - np.pi
-
-    @staticmethod
-    def _modulo_theta(x):
-        return np.mod(x + np.pi / 2, np.pi) - np.pi / 2
-
-    @staticmethod
-    def _modulo_psi(x):
-        return np.mod(x + np.pi, 2 * np.pi) - np.pi
-
-    @staticmethod
-    def _extract_imu_out(data) -> ImuOut:
+    def _extract_imu_out(self, data,
+                         static_gyro_offset_comp=True,
+                         dynamic_gyro_offset_comp=False,
+                         hard_iron_offset_comp=True) -> ImuOut:
         t_s = np.array(data.Imu.AccelerationX.t_s)
 
         acc_x = np.array(data.Imu.AccelerationX.val)
@@ -143,13 +139,24 @@ class AttEst(ABC):
         ang_rate_y = np.array(data.Imu.AngularRateY.val)
         ang_rate_z = np.array(data.Imu.AngularRateZ.val)
 
-        mag_x = np.array(data.Imu.MagneticFieldX.val) - HARD_IRON_OFFSET_X
-        mag_y = np.array(data.Imu.MagneticFieldY.val) - HARD_IRON_OFFSET_Y
-        mag_z = np.array(data.Imu.MagneticFieldZ.val) - HARD_IRON_OFFSET_Z
+        mag_x = np.array(data.Imu.MagneticFieldX.val)
+        mag_y = np.array(data.Imu.MagneticFieldY.val)
+        mag_z = np.array(data.Imu.MagneticFieldZ.val)
 
-        ang_rate_x -= np.mean(ang_rate_x[0:N_SAMPLES_GYRO_OFFSET_COMP])
-        ang_rate_y -= np.mean(ang_rate_y[0:N_SAMPLES_GYRO_OFFSET_COMP])
-        ang_rate_z -= np.mean(ang_rate_z[0:N_SAMPLES_GYRO_OFFSET_COMP])
+        if static_gyro_offset_comp:
+            ang_rate_x = self._stat_gyro_offset_comp(ang_rate_x)
+            ang_rate_y = self._stat_gyro_offset_comp(ang_rate_y)
+            ang_rate_z = self._stat_gyro_offset_comp(ang_rate_z)
+
+        if dynamic_gyro_offset_comp:
+            ang_rate_x = self._dyn_gyro_offset_comp(ang_rate_x)
+            ang_rate_y = self._dyn_gyro_offset_comp(ang_rate_y)
+            ang_rate_z = self._dyn_gyro_offset_comp(ang_rate_z)
+
+        if hard_iron_offset_comp:
+            mag_x -= HARD_IRON_OFFSET_X
+            mag_y -= HARD_IRON_OFFSET_Y
+            mag_z -= HARD_IRON_OFFSET_Z
 
         return ImuOut(
             acc_x=acc_x,
@@ -166,6 +173,30 @@ class AttEst(ABC):
 
             t_s=t_s,
         )
+
+    @staticmethod
+    def _modulo_phi(x):
+        return np.mod(x + np.pi, 2 * np.pi) - np.pi
+
+    @staticmethod
+    def _modulo_theta(x):
+        return np.mod(x + np.pi / 2, np.pi) - np.pi / 2
+
+    @staticmethod
+    def _modulo_psi(x):
+        return np.mod(x + np.pi, 2 * np.pi) - np.pi
+
+    @staticmethod
+    def _stat_gyro_offset_comp(v):
+        return (v - np.mean(v[0:STATIC_GYRO_OFFSET_COMP_SAMPLES]))
+
+    @staticmethod
+    def _dyn_gyro_offset_comp(v):
+        vp = np.diff(v, prepend=0) / IMU_SAMPLE_RATE_S
+        indices = np.argwhere(np.abs(vp) < DYNAMIC_GYRO_OFFSET_COMP_ABS_ACC_LIM)
+        offset = np.mean(v[indices[0:DYNAMIC_GYRO_OFFSET_COMP_SAMPLES]])
+
+        return (v - offset)
 
 
 class AttEstAccMag(AttEst):
@@ -276,7 +307,6 @@ class AttEstCf(AttEst):
 class AttEstKalman(AttEst):
     P_0 = KALMAN_P_0
     Q = KALMAN_Q
-    R = KALMAN_R
 
     F = np.array([
         [1, IMU_SAMPLE_RATE_S, 0.5 * IMU_SAMPLE_RATE_S ** 2],
@@ -292,7 +322,7 @@ class AttEstKalman(AttEst):
         """
         Use a Kalman filter for attitude estimation.
         """
-        imu_out = self._extract_imu_out(data)
+        imu_out = self._extract_imu_out(data, static_gyro_offset_comp=False, dynamic_gyro_offset_comp=True)
 
         phi_acc = self.to_phi(imu_out.acc_y, imu_out.acc_z)
         self.phi, self.phi_p, self.phi_pp = self._kalman_filter(phi_acc, imu_out.ang_rate_x)
@@ -309,17 +339,33 @@ class AttEstKalman(AttEst):
         x = np.zeros((3, len(z)))
         P_pre = self.P_0
 
+        z_var = pd.Series(z).rolling(window=KALMAN_R_WINDOW_SIZE).var()
+        z_p_var = pd.Series(z_p).rolling(window=KALMAN_R_WINDOW_SIZE).var()
+
         for k in range(1, len(z)):
             x_pri = self.F @ x[:, k - 1]
             P_pri = self.F @ P_pre @ np.transpose(self.F) + self.Q
 
-            S = self.H @ P_pri @ np.transpose(self.H) + self.R
+            R = self._get_R(z_var[k], z_p_var[k])
+
+            S = self.H @ P_pri @ np.transpose(self.H) + R
             K = P_pri @ np.transpose(self.H) @ np.linalg.inv(S)
 
             x[:, k] = x_pri + K @ (np.array([z[k], z_p[k]]) - self.H @ x_pri)
             P_pre = (np.eye(3) - K @ self.H) @ P_pri
 
         return x[0, :], x[1, :], x[2, :]
+
+    @staticmethod
+    def _get_R(z_var, z_p_var):
+        def _check_if_almost_zero_or_nan(x):
+            if np.isnan(x) or x < KALMAN_R_ALMOST_ZERO:
+                return KALMAN_R_ALMOST_ZERO
+            else:
+                return x
+
+        return np.diag([KALMAN_R_0_SCALE * _check_if_almost_zero_or_nan(z_var),
+                        KALMAN_R_1_SCALE * _check_if_almost_zero_or_nan(z_p_var)])
 
 
 class AttEstTarget(AttEst):

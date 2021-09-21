@@ -189,6 +189,8 @@ protected:
         _data_log_queue.push(_att_est.yaw.acc, DataLogSignal::StateEstYawAcc);
 
         _data_log_queue.push(_att.is_calibrated(), DataLogSignal::StateEstAttIsCalib);
+        _data_log_queue.push(_att.is_standstill(), DataLogSignal::StateEstAttIsStandstill);
+
         _data_log_queue.push(uint8_t(TaskId::StateEst), DataLogSignal::TaskExecute);
     }
 private:
@@ -210,12 +212,18 @@ public:
 protected:
     void _execute()
     {
-        _exec_pilot_ctrl();
-        _exec_motor_ctrl();
+        _data_log_queue.last_signal_data(&_att_est_is_calibrated, DataLogSignal::StateEstAttIsCalib);
+
+        if (_att_est_is_calibrated)
+        {
+            _exec_pilot_ctrl();
+            _exec_motor_ctrl();
+        }
 
         _data_log_queue.push(uint8_t(TaskId::StateCtrl), DataLogSignal::TaskExecute);
     }
 private:
+    bool _att_est_is_calibrated;
     AttEstimate _att_est;
 
     double _gimbal_left_x, _gimbal_left_y, _gimbal_right_x, _gimbal_right_y;
@@ -485,8 +493,9 @@ void print_env_vars()
     logger.debug("DATA_LOG_ROOT: " + DATA_LOG_ROOT.string());
     logger.debug("LOGGER_LEVEL: " + LOGGER_LEVEL);
 
-    logger.debug("ATT_EST_KALMAN_Q_VARIANCE: " + std::to_string(ATT_EST_KALMAN_Q_VARIANCE));
-    logger.debug("ATT_EST_KALMAN_R_VARIANCE: " + std::to_string(ATT_EST_KALMAN_R_VARIANCE));
+    logger.debug("ATT_EST_KALMAN_Q_SCALE: " + std::to_string(ATT_EST_KALMAN_Q_SCALE));
+    logger.debug("ATT_EST_KALMAN_R_0_SCALE: " + std::to_string(ATT_EST_KALMAN_R_0_SCALE));
+    logger.debug("ATT_EST_KALMAN_R_1_SCALE: " + std::to_string(ATT_EST_KALMAN_R_1_SCALE));
 
     logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_PHI: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_PHI));
     logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_THETA: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_THETA));

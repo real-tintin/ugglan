@@ -2,18 +2,24 @@
 #define ATTITUDE_ESTIMATION_H
 
 #include <cstdint>
+#include <algorithm>
 #include <math.h>
 #include <utils.h>
+#include <statistics.h>
+#include <logger.h>
 #include <eigen/Eigen>
 
-inline const double ATT_EST_KALMAN_Q_VARIANCE = utils::get_env("ATT_EST_KALMAN_Q_VARIANCE", 5e-1);
-inline const double ATT_EST_KALMAN_R_VARIANCE = utils::get_env("ATT_EST_KALMAN_R_VARIANCE", 1e-3);
+inline const double ATT_EST_KALMAN_Q_SCALE = utils::get_env("ATT_EST_KALMAN_Q_SCALE", 1e2);
+inline const double ATT_EST_KALMAN_R_0_SCALE = utils::get_env("ATT_EST_KALMAN_R_0_SCALE", 1.0);
+inline const double ATT_EST_KALMAN_R_1_SCALE = utils::get_env("ATT_EST_KALMAN_R_1_SCALE", 1.0);
 
-inline const uint8_t ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP = 20;
+inline const uint8_t ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP = 100;
 
-inline const double ATT_EST_HARD_IRON_OFFSET_X = 0.131;
-inline const double ATT_EST_HARD_IRON_OFFSET_Y = 0.143;
-inline const double ATT_EST_HARD_IRON_OFFSET_Z = -0.144;
+inline const uint32_t ATT_EST_ROLLING_WINDOW_SIZE = 20;
+
+inline const double ATT_EST_HARD_IRON_OFFSET_X = 0.104;
+inline const double ATT_EST_HARD_IRON_OFFSET_Y = 0.076;
+inline const double ATT_EST_HARD_IRON_OFFSET_Z = 0.062;
 
 struct AttEstInput {
     double acc_x;       // [m/s^2]
@@ -33,6 +39,7 @@ struct AttEstKalmanState {
     Eigen::Vector3d x {{0}, {0}, {0}};
     Eigen::Vector2d z {{0}, {0}};
     Eigen::Matrix3d P {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+    Eigen::Matrix2d R {{0, 0}, {0, 0}};
 };
 
 struct AttEstState {
@@ -57,15 +64,22 @@ public:
     AttEstimate get_estimate();
 
     bool is_calibrated();
+    bool is_standstill();
 private:
     const double _dt;
 
     AttEstInput _in = {0};
     AttEstimate _est = {0};
 
+    bool _is_standstill = false;
+
     double _gyro_offset_x = 0;
     double _gyro_offset_y = 0;
     double _gyro_offset_z = 0;
+
+    double _imu_roll_angle = 0;
+    double _imu_pitch_angle = 0;
+    double _imu_yaw_angle = 0;
 
     bool _is_gyro_offset_comp = false;
     uint8_t _samples_gyro_offset_comp = 0;
@@ -76,7 +90,6 @@ private:
     Eigen::Matrix3d _I {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
 
     Eigen::Matrix3d _Q;
-    Eigen::Matrix2d _R;
 
     Eigen::Matrix3d _F;
     Eigen::Matrix3d _F_t;
@@ -91,6 +104,18 @@ private:
     AttEstKalmanState _kalman_pitch;
     AttEstKalmanState _kalman_yaw;
 
+    statistics::RollingStats _rolling_stats_roll_angle;
+    statistics::RollingStats _rolling_stats_pitch_angle;
+    statistics::RollingStats _rolling_stats_yaw_angle;
+
+    statistics::RollingStats _rolling_stats_roll_rate;
+    statistics::RollingStats _rolling_stats_pitch_rate;
+    statistics::RollingStats _rolling_stats_yaw_rate;
+
+    void _update_imu_angles();
+    void _update_rolling_stats();
+    void _update_standstill_status();
+
     void _gyro_offset_comp();
     void _hard_iron_offset_comp();
 
@@ -99,6 +124,7 @@ private:
     void _update_yaw();
 
     void _update_est(double z_0, double z_1,
+                     double r_0, double r_1,
                      AttEstKalmanState& kalman_state,
                      AttEstState& att_state,
                      double modulo_lim);
