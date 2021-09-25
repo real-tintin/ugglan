@@ -232,7 +232,7 @@ details. This is a rather common approach for attitude estimation given the IMU 
 going into the details, the time discretized state space model in this case becomes
 
 .. math::
-    :label: kalman_filter
+    :label: kalman_filter_ss
 
     \mathbf{F}=
     \begin{bmatrix}
@@ -245,11 +245,32 @@ going into the details, the time discretized state space model in this case beco
     \begin{bmatrix}
         1 & 0 & 0 \\
         0 & 1 & 0
-    \end{bmatrix}.
+    \end{bmatrix}
 
-The covariance matrices :math:`\mathbf{P}_0`, :math:`\mathbf{Q}` and :math:`\mathbf{R}` are
-manually tunned and selected using a data driven approach, see :ref:`estimator-performance` for the
-final performance and comparison w.r.t to other filtering methods.
+with the selected covariance matrices
+
+.. math::
+    :label: kalman_filter_cov
+
+    \mathbf{Q}= \kappa_{Q}
+    \begin{bmatrix}
+        \tfrac{\Delta t^4}{4} & \tfrac{\Delta t^3}{2} & \tfrac{\Delta t^2}{2} \\
+        \tfrac{\Delta t^3}{2} & \Delta t^2 & \Delta t \\
+        \tfrac{\Delta t^2}{2} & \Delta t & 1
+    \end{bmatrix},
+    \mathbf{R}=
+    \begin{bmatrix}
+        \kappa_{R_0}\sigma_{acc|mag}^2 & 0 \\
+        0 & \kappa_{R_1}\sigma_{gyro}^2
+    \end{bmatrix},
+    \mathbf{P}_0= 0.
+
+Here :math:`\sigma_{acc|mag}^2` and :math:`\sigma_{gyro}^2` is the variance of the imu
+angle (accelerometer and magnetometer only) and gyro respectively. They are continuously
+computed using a rolling variance. :math:`\kappa` is a scaling factor and used for tuning.
+
+See :ref:`estimator-performance` for the final performance
+and comparison w.r.t to other filtering methods.
 
 Complementary filter
 ^^^^^^^^^^^^^^^^^^^^^
