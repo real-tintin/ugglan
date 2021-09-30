@@ -47,6 +47,15 @@ void PilotControl::update(AttEstimate att_est, PilotCtrlRef ref)
     _update_ctrl_fz(ref);
 }
 
+void PilotControl::reset()
+{
+    std::memset(&_ctrl, 0, sizeof(BodyControl));
+
+    _x_phi.setZero();
+    _x_theta.setZero();
+    _x_psi.setZero();
+}
+
 BodyControl PilotControl::get_ctrl()
 {
     return _ctrl;

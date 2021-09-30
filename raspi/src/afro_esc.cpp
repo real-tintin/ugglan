@@ -35,6 +35,8 @@ void AfroEsc::arm()
 
 void AfroEsc::arm_fast() { write(0U); }
 
+void AfroEsc::halt() { write(0U); }
+
 void AfroEsc::read()
 {
     _reset_is_alive_byte();

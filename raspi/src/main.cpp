@@ -212,18 +212,14 @@ public:
 protected:
     void _execute()
     {
-        _data_log_queue.last_signal_data(&_att_est_is_calibrated, DataLogSignal::StateEstAttIsCalib);
-
-        if (_att_est_is_calibrated)
-        {
-            _exec_pilot_ctrl();
-            _exec_motor_ctrl();
-        }
+        _exec_pilot_ctrl();
+        _exec_motor_ctrl();
 
         _data_log_queue.push(uint8_t(TaskId::StateCtrl), DataLogSignal::TaskExecute);
     }
 private:
     bool _att_est_is_calibrated;
+    bool _state_ctrl_reset;
     AttEstimate _att_est;
 
     double _gimbal_left_x, _gimbal_left_y, _gimbal_right_x, _gimbal_right_y;
@@ -242,27 +238,38 @@ private:
 
     void _exec_pilot_ctrl()
     {
-        _data_log_queue.last_signal_data(&_att_est.roll.angle, DataLogSignal::StateEstRoll);
-        _data_log_queue.last_signal_data(&_att_est.pitch.angle, DataLogSignal::StateEstPitch);
-        _data_log_queue.last_signal_data(&_att_est.yaw.angle, DataLogSignal::StateEstYaw);
+        _data_log_queue.last_signal_data(&_att_est_is_calibrated, DataLogSignal::StateEstAttIsCalib, false);
+        _data_log_queue.last_signal_data(&_state_ctrl_reset, DataLogSignal::StateCtrlReset, true);
 
-        _data_log_queue.last_signal_data(&_att_est.roll.rate, DataLogSignal::StateEstRollRate);
-        _data_log_queue.last_signal_data(&_att_est.pitch.rate, DataLogSignal::StateEstPitchRate);
-        _data_log_queue.last_signal_data(&_att_est.yaw.rate, DataLogSignal::StateEstYawRate);
+        if (_state_ctrl_reset)
+        {
+            _pilot_ctrl.reset();
+        }
+        else if (_att_est_is_calibrated && !_state_ctrl_reset)
+        {
+            _data_log_queue.last_signal_data(&_att_est.roll.angle, DataLogSignal::StateEstRoll);
+            _data_log_queue.last_signal_data(&_att_est.pitch.angle, DataLogSignal::StateEstPitch);
+            _data_log_queue.last_signal_data(&_att_est.yaw.angle, DataLogSignal::StateEstYaw);
 
-        _data_log_queue.last_signal_data(&_att_est.roll.acc, DataLogSignal::StateEstRollAcc);
-        _data_log_queue.last_signal_data(&_att_est.pitch.acc, DataLogSignal::StateEstPitchAcc);
-        _data_log_queue.last_signal_data(&_att_est.yaw.acc, DataLogSignal::StateEstYawAcc);
+            _data_log_queue.last_signal_data(&_att_est.roll.rate, DataLogSignal::StateEstRollRate);
+            _data_log_queue.last_signal_data(&_att_est.pitch.rate, DataLogSignal::StateEstPitchRate);
+            _data_log_queue.last_signal_data(&_att_est.yaw.rate, DataLogSignal::StateEstYawRate);
 
-        _data_log_queue.last_signal_data(&_gimbal_left_x, DataLogSignal::RcGimbalLeftX);
-        _data_log_queue.last_signal_data(&_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
-        _data_log_queue.last_signal_data(&_gimbal_right_x, DataLogSignal::RcGimbalRightX);
-        _data_log_queue.last_signal_data(&_gimbal_right_y, DataLogSignal::RcGimbalRightY);
+            _data_log_queue.last_signal_data(&_att_est.roll.acc, DataLogSignal::StateEstRollAcc);
+            _data_log_queue.last_signal_data(&_att_est.pitch.acc, DataLogSignal::StateEstPitchAcc);
+            _data_log_queue.last_signal_data(&_att_est.yaw.acc, DataLogSignal::StateEstYawAcc);
 
-        _ctrl_ref = tgyia6c_to_pilot_ctrl_ref(_gimbal_left_x, _gimbal_left_y,
-                                              _gimbal_right_x, _gimbal_right_y);
+            _data_log_queue.last_signal_data(&_gimbal_left_x, DataLogSignal::RcGimbalLeftX);
+            _data_log_queue.last_signal_data(&_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
+            _data_log_queue.last_signal_data(&_gimbal_right_x, DataLogSignal::RcGimbalRightX);
+            _data_log_queue.last_signal_data(&_gimbal_right_y, DataLogSignal::RcGimbalRightY);
 
-        _pilot_ctrl.update(_att_est, _ctrl_ref);
+            _ctrl_ref = tgyia6c_to_pilot_ctrl_ref(_gimbal_left_x, _gimbal_left_y,
+                                                _gimbal_right_x, _gimbal_right_y);
+
+            _pilot_ctrl.update(_att_est, _ctrl_ref);
+        }
+
         _body_ctrl = _pilot_ctrl.get_ctrl();
 
         _data_log_queue.push(_ctrl_ref.roll, DataLogSignal::StateCtrlRollRef);
@@ -368,43 +375,33 @@ public:
 protected:
     void _setup()
     {
-        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
-        {
-            _esc[i_esc].arm();
-            _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskSetup);
-        }
+        _arm_escs();
+        _push_task_state_to_data_log(DataLogSignal::TaskSetup);
     }
 
     void _execute()
     {
-        int16_t motor_cmd;
-        SwitchLr switch_left;
+        EscState user_reqeusted_esc_state = _get_user_requested_esc_state();
+        EscState limited_esc_state = _limit_change_of_esc_state(user_reqeusted_esc_state, _old_esc_state);
 
-        _data_log_queue.last_signal_data(&switch_left, DataLogSignal::RcSwitchLeft, SwitchLr::High);
+        _update_escs(limited_esc_state);
+        _old_esc_state = limited_esc_state;
 
-        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
-        {
-            switch(switch_left)
-            {
-                case SwitchLr::Low:
-                    _data_log_queue.last_signal_data(&motor_cmd, _sid_motor_cmd[i_esc]);
-                    _esc[i_esc].write(motor_cmd);
-                    break;
-                case SwitchLr::Middle:
-                    _esc[i_esc].arm_fast();
-                    break;
-                case SwitchLr::High:
-                    // Do nothing (disarm).
-                    break;
-                default:
-                    // Do nothing (disarm).
-                    break;
-            }
-            _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), DataLogSignal::TaskExecute);
-        }
+        _push_task_state_to_data_log(DataLogSignal::TaskExecute);
     }
 
+    void _finish()
+    {
+        _halt_escs();
+        _push_task_state_to_data_log(DataLogSignal::TaskFinish);
+    }
 private:
+    enum class EscState {
+        Run,
+        Arm,
+        Disarm
+    };
+
     AfroEsc (&_esc)[N_ESC];
     DataLogQueue& _data_log_queue;
 
@@ -414,6 +411,109 @@ private:
 
     static constexpr TaskId _task_write_ids[N_ESC] = {
         TaskId::EscWrite0, TaskId::EscWrite1, TaskId::EscWrite2, TaskId::EscWrite3};
+
+    EscState _old_esc_state = EscState::Disarm;
+
+    EscState _get_user_requested_esc_state()
+    {
+        SwitchLr switch_left;
+        _data_log_queue.last_signal_data(&switch_left, DataLogSignal::RcSwitchLeft, SwitchLr::High);
+
+        switch(switch_left)
+        {
+            case SwitchLr::Low:
+                return EscState::Run;
+            case SwitchLr::Middle:
+                return EscState::Arm;
+            case SwitchLr::High:
+                return EscState::Disarm;
+            default:
+                return EscState::Disarm;
+        }
+    }
+
+    EscState _limit_change_of_esc_state(EscState new_esc_state, EscState old_esc_state)
+    {
+        if (new_esc_state > old_esc_state)
+        {
+            return EscState(uint8_t(old_esc_state) + 1U);
+        }
+        else if (new_esc_state < old_esc_state)
+        {
+            return EscState(uint8_t(old_esc_state) - 1U);
+        }
+        else
+        {
+            return new_esc_state;
+        }
+    }
+
+    void _update_escs(EscState esc_state)
+    {
+        switch(esc_state)
+        {
+            case EscState::Run:
+                _data_log_queue.push(false, DataLogSignal::StateCtrlReset);
+                _get_and_write_cmds();
+                break;
+
+            case EscState::Arm:
+                _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
+                _arm_escs_fast();
+                break;
+
+            case EscState::Disarm:
+                _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
+                break;
+
+            default:
+                _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
+                break;
+        }
+    }
+
+    void _arm_escs()
+    {
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            _esc[i_esc].arm();
+        }
+    }
+
+    void _get_and_write_cmds()
+    {
+        uint16_t motor_cmd;
+
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            _data_log_queue.last_signal_data(&motor_cmd, _sid_motor_cmd[i_esc]);
+            _esc[i_esc].write(motor_cmd);
+        }
+    }
+
+    void _arm_escs_fast()
+    {
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            _esc[i_esc].arm_fast();
+        }
+    }
+
+    void _halt_escs()
+    {
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            _esc[i_esc].halt();
+        }
+    }
+
+    void _push_task_state_to_data_log(DataLogSignal task_state)
+    {
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            _data_log_queue.push(uint8_t(_task_write_ids[i_esc]), task_state);
+        }
+    }
 };
 
 class TaskRcReceiver : public Task

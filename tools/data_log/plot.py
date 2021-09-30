@@ -178,6 +178,7 @@ def _plot_state_ctrl(data):
     _plot_state_ctrl_theta(data)
     _plot_state_ctrl_psi(data)
     _plot_state_ctrl_fz(data)
+    _plot_state_ctrl_flags(data)
 
 
 def _plot_state_ctrl_phi(data):
@@ -239,6 +240,13 @@ def _plot_state_ctrl_fz(data):
 
     _finish_subplots(fig)
 
+def _plot_state_ctrl_flags(data):
+    fig, axs = plt.subplots(1, 1, sharex=True)
+    fig.suptitle('State Ctrl: Flags')
+
+    axs.plot(data.StateCtrl.Reset.t_s, data.StateCtrl.Reset.val, label='Reset')
+
+    _finish_subplots(fig)
 
 def _plot_tasks(data):
     fig, axs = plt.subplots(3, 2, sharex=True)

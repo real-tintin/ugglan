@@ -73,6 +73,8 @@ public:
     void arm();
     void arm_fast();
 
+    void halt();
+
     void read();
     void write(int16_t motor_cmd);
 

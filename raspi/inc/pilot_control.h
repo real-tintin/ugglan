@@ -76,6 +76,7 @@ public:
     PilotControl(double input_sample_rate_s);
 
     void update(AttEstimate est, PilotCtrlRef ref);
+    void reset();
 
     BodyControl get_ctrl();
 

@@ -132,6 +132,8 @@ enum class DataLogSignal {
     StateCtrlMz,
     StateCtrlFz,
 
+    StateCtrlReset,
+
     TaskSetup,
     TaskExecute,
     TaskFinish
@@ -277,6 +279,8 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::StateCtrlMy, {"My", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlMz, {"Mz", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
     {DataLogSignal::StateCtrlFz, {"Fz", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},
+
+    {DataLogSignal::StateCtrlReset, {"Reset", DataLogGroup::StateCtrl, DataLogType::BOOL}},
 
     {DataLogSignal::TaskSetup, {"Setup", DataLogGroup::Task, DataLogType::UINT8}},
     {DataLogSignal::TaskExecute, {"Execute", DataLogGroup::Task, DataLogType::UINT8}},
