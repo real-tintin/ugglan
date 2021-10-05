@@ -11,12 +11,7 @@ Heavily inspired by https://github.com/aanon4/FlySkyIBus.
 #include <cstdint>
 #include <map>
 #include <science_const.h>
-
-#if defined(UNIT_TEST)
-#include <serial_conn_stub.h>
-#else
 #include <serial_conn.h>
-#endif
 
 enum class SwitchLr {Low, Middle, High};
 enum class SwitchM {Low, High};

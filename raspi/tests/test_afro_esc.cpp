@@ -43,7 +43,7 @@ static I2cReadBlockMap READ_MAP = { {AFRO_REG_READ_REV_H, READ_BUF} };
 
 TEST_CASE("afro esc")
 {
-    I2cConn i2c_conn;
+    I2cConnStub i2c_conn;
     i2c_conn.set_write_map(WRITE_MAP);
     i2c_conn.set_read_block_map(READ_MAP);
 

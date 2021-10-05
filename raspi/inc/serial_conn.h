@@ -19,7 +19,6 @@ struct ControlFlags {
 
 typedef uint16_t Mode;
 
-#if !defined(UNIT_TEST)
 class SerialConn
 {
 public:
@@ -27,14 +26,13 @@ public:
 
     ~SerialConn();
 
-    bool open(Mode mode, ControlFlags flags);
+    virtual bool open(Mode mode, ControlFlags flags);
 
-    uint32_t bytes_available();
-    uint32_t read(uint8_t* buf, uint32_t size);
+    virtual uint32_t bytes_available();
+    virtual uint32_t read(uint8_t* buf, uint32_t size);
 private:
     int8_t _fd;
     std::string _device;
 };
-#endif
 
 #endif /* SERIAL_CONN_H */

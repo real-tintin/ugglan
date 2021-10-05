@@ -6,12 +6,7 @@
 #include <algorithm>
 #include <utils.h>
 #include <logger.h>
-
-#if defined(UNIT_TEST)
-#include <i2c_conn_stub.h>
-#else
 #include <i2c_conn.h>
-#endif
 
 inline const uint8_t POLOLU_AUTO_INCREMENT = 0b10000000;
 

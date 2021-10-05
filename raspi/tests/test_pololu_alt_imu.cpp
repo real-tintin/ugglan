@@ -64,11 +64,11 @@ public:
     uint8_t* get_reg_1_bytes() { return _get_buffer(TEST_READ_REG_1); }
 };
 
-I2cConn get_i2c_conn_stub(I2cReadByteMap read_byte_map,
-                          I2cReadBlockMap read_block_map,
-                          I2cWriteMap write_map)
+I2cConnStub get_i2c_conn_stub(I2cReadByteMap read_byte_map,
+                              I2cReadBlockMap read_block_map,
+                              I2cWriteMap write_map)
 {
-    I2cConn i2c_conn;
+    I2cConnStub i2c_conn;
 
     i2c_conn.set_read_byte_map(read_byte_map);
     i2c_conn.set_read_block_map(read_block_map);
@@ -79,7 +79,7 @@ I2cConn get_i2c_conn_stub(I2cReadByteMap read_byte_map,
 
 TEST_CASE("valid i2c registry")
 {
-    I2cConn valid_i2c_conn = get_i2c_conn_stub(MATCHING_READ_BYTE_MAP, VALID_READ_BLOCK_MAP, VALID_WRITE_MAP);
+    I2cConnStub valid_i2c_conn = get_i2c_conn_stub(MATCHING_READ_BYTE_MAP, VALID_READ_BLOCK_MAP, VALID_WRITE_MAP);
     TestPololuAltImu alt_imu(valid_i2c_conn);
 
     SECTION("config")
@@ -98,7 +98,7 @@ TEST_CASE("valid i2c registry")
 
 TEST_CASE("invalid i2c registry")
 {
-    I2cConn invalid_i2c_conn = get_i2c_conn_stub(MISMATCHING_READ_BYTE_MAP, INVALID_READ_BLOCK_MAP, INVALID_WRITE_MAP);
+    I2cConnStub invalid_i2c_conn = get_i2c_conn_stub(MISMATCHING_READ_BYTE_MAP, INVALID_READ_BLOCK_MAP, INVALID_WRITE_MAP);
     TestPololuAltImu alt_imu(invalid_i2c_conn);
 
     SECTION("config")
@@ -117,7 +117,7 @@ TEST_CASE("invalid i2c registry")
 
 TEST_CASE("recover error read status")
 {
-    I2cConn i2c_conn = get_i2c_conn_stub(MATCHING_READ_BYTE_MAP, VALID_READ_BLOCK_MAP, VALID_WRITE_MAP);
+    I2cConnStub i2c_conn = get_i2c_conn_stub(MATCHING_READ_BYTE_MAP, VALID_READ_BLOCK_MAP, VALID_WRITE_MAP);
     TestPololuAltImu alt_imu(i2c_conn);
 
     alt_imu.update();
@@ -136,7 +136,7 @@ TEST_CASE("update of config")
 {
     SECTION("matching")
     {
-        I2cConn i2c_conn = get_i2c_conn_stub(MATCHING_READ_BYTE_MAP, VALID_READ_BLOCK_MAP, VALID_WRITE_MAP);
+        I2cConnStub i2c_conn = get_i2c_conn_stub(MATCHING_READ_BYTE_MAP, VALID_READ_BLOCK_MAP, VALID_WRITE_MAP);
 
         uint32_t n_calls_read_byte_data = i2c_conn.get_n_calls_read_byte_data();
         uint32_t n_calls_write_byte_data = i2c_conn.get_n_calls_write_byte_data();
@@ -148,7 +148,7 @@ TEST_CASE("update of config")
     }
     SECTION("mismatching")
     {
-        I2cConn i2c_conn = get_i2c_conn_stub(MISMATCHING_READ_BYTE_MAP, VALID_READ_BLOCK_MAP, VALID_WRITE_MAP);
+        I2cConnStub i2c_conn = get_i2c_conn_stub(MISMATCHING_READ_BYTE_MAP, VALID_READ_BLOCK_MAP, VALID_WRITE_MAP);
 
         uint32_t n_calls_read_byte_data = i2c_conn.get_n_calls_read_byte_data();
         uint32_t n_calls_write_byte_data = i2c_conn.get_n_calls_write_byte_data();

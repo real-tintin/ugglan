@@ -12,12 +12,7 @@ Heavily inspired by https://github.com/bluerobotics/Arduino_I2C_ESC.
 #include <math.h>
 #include <wall_time.h>
 #include <logger.h>
-
-#if defined(UNIT_TEST)
-#include <i2c_conn_stub.h>
-#else
 #include <i2c_conn.h>
-#endif
 
 inline const uint8_t AFRO_REG_WRITE_THROTTLE_H = 0x00;
 inline const uint8_t AFRO_REG_WRITE_THROTTLE_L = 0x01;

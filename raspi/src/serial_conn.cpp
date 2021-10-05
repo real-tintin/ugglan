@@ -1,7 +1,5 @@
 #include <serial_conn.h>
 
-#if !defined(UNIT_TEST)
-
 SerialConn::SerialConn(std::string device) :
     _device(device)
 {
@@ -54,5 +52,3 @@ uint32_t SerialConn::read(uint8_t* buf, uint32_t size)
     if (n_bytes >= 0) { return n_bytes; }
     else { return 0; }
 }
-
-#endif

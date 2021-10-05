@@ -9,7 +9,7 @@ static const double FLOAT_TOL = 1e-4;
 static I2cWriteMap WRITE_MAP = {LSM303D_REG_CTRL1, LSM303D_REG_CTRL2,
     LSM303D_REG_CTRL5, LSM303D_REG_CTRL6, LSM303D_REG_CTRL7};
 
-void set_lsm303d_stub_data(I2cConn& i2c_conn, uint8_t acc[LSM303D_BUF_ACC_SIZE],
+void set_lsm303d_stub_data(I2cConnStub& i2c_conn, uint8_t acc[LSM303D_BUF_ACC_SIZE],
                            uint8_t mag[LSM303D_BUF_MAG_SIZE])
 {
     I2cReadBlockMap read_map = {
@@ -22,7 +22,7 @@ void set_lsm303d_stub_data(I2cConn& i2c_conn, uint8_t acc[LSM303D_BUF_ACC_SIZE],
 
 TEST_CASE("lsm303d interpretation")
 {
-    I2cConn i2c_conn;
+    I2cConnStub i2c_conn;
     i2c_conn.set_write_map(WRITE_MAP);
 
     Lsm303d acc_mag(i2c_conn);

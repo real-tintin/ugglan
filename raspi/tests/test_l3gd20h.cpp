@@ -8,7 +8,7 @@ static const double FLOAT_TOL = 1e-4;
 
 static I2cWriteMap WRITE_MAP = {L3GD20H_REG_CTRL1, L3GD20H_REG_CTRL4};
 
-void set_l3gd20h_stub_data(I2cConn& i2c_conn, uint8_t data[L3GD20H_BUF_SIZE])
+void set_l3gd20h_stub_data(I2cConnStub& i2c_conn, uint8_t data[L3GD20H_BUF_SIZE])
 {
     I2cReadBlockMap read_map = {{L3GD20H_REG_OUT_X_L | POLOLU_AUTO_INCREMENT, data}};
     i2c_conn.set_read_block_map(read_map);
@@ -16,7 +16,7 @@ void set_l3gd20h_stub_data(I2cConn& i2c_conn, uint8_t data[L3GD20H_BUF_SIZE])
 
 TEST_CASE("l3gd20h interpretation")
 {
-    I2cConn i2c_conn;
+    I2cConnStub i2c_conn;
     i2c_conn.set_write_map(WRITE_MAP);
 
     L3gd20h gyro(i2c_conn);

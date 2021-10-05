@@ -21,7 +21,8 @@ SOURCES := $(wildcard $(SRCDIR)/*.$(SRCEXT))
 INC := -I $(INCDIR)
 
 ifeq ($(BUILD_FOR_TEST), TRUE)
-	CXXFLAGS += -D UNIT_TEST
+	CXXFLAGS += -D UNIT_TEST -D I2C_VERSION_GTE_40
+	LDFLAGS += -li2c
 
 	SOURCES += $(wildcard $(TESTDIR)/*.$(SRCEXT))
 	INC += -I $(TESTDIR)

@@ -1,7 +1,5 @@
 #include <i2c_conn.h>
 
-#if !defined(UNIT_TEST)
-
 I2cConn::I2cConn(std::string device, uint8_t address) :
     _device(device),
     _address(address)
@@ -55,5 +53,3 @@ bool I2cConn::write_block_data(uint8_t reg, uint8_t size, uint8_t* buf)
     int32_t status = i2c_smbus_write_i2c_block_data(_fd, reg, size, buf);
     return status >= 0;
 }
-
-#endif

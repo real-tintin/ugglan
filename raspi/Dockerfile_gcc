@@ -1,5 +1,9 @@
 FROM gcc:9.1
 
+# Install i2c lib
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y libi2c-dev
+
 # Create symbolic links ("alias") for GCC 9.1
 RUN cd /bin && ln -s /usr/local/bin/gcc gcc-9.1
 RUN cd /bin && ln -s /usr/local/bin/g++ g++-9.1

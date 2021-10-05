@@ -1,21 +1,20 @@
 #ifndef SERIAL_CONN_STUB_H
 #define SERIAL_CONN_STUB_H
 
-#include <serial_conn.h>
-
 #include <stdio.h>
 #include <fcntl.h>
 #include <cstdint>
 #include <cstring>
 #include <cassert>
 #include <algorithm>
+#include <serial_conn.h>
 
 inline const uint32_t MAX_BUF_SIZE = 4096;
 
-class SerialConn
+class SerialConnStub : public SerialConn
 {
 public:
-    SerialConn(std::string device = "not/used");
+    SerialConnStub() : SerialConn("not/used") {};
 
     void set_read_buf(uint8_t* buf, uint32_t size);
 
@@ -24,8 +23,6 @@ public:
     uint32_t bytes_available();
     uint32_t read(uint8_t* buf, uint32_t size);
 private:
-    std::string _device;
-
     uint8_t _read_buf[MAX_BUF_SIZE] = {0};
     uint32_t _read_buf_size = 0;
 };
