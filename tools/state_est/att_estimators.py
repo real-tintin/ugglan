@@ -1,17 +1,12 @@
-import argparse
 from abc import abstractmethod, ABC
+from copy import deepcopy
+from dataclasses import dataclass
 from enum import Enum
-from pathlib import Path
 
-import data_log.io as data_log_io
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from data_log.io import Signals
-from dataclasses import dataclass
 
-mpl.rcParams['lines.linewidth'] = 0.5
+from data_log.io import Signals
 
 IMU_SAMPLE_RATE_S = 0.01  # 100 Hz
 
@@ -70,6 +65,24 @@ class ImuOut:
     t_s: np.ndarray
 
 
+def extract_imu_out(data: Signals) -> ImuOut:
+    return ImuOut(
+        acc_x=np.array(data.Imu.AccelerationX.val),
+        acc_y=np.array(data.Imu.AccelerationY.val),
+        acc_z=np.array(data.Imu.AccelerationZ.val),
+
+        ang_rate_x=np.array(data.Imu.AngularRateX.val),
+        ang_rate_y=np.array(data.Imu.AngularRateY.val),
+        ang_rate_z=np.array(data.Imu.AngularRateZ.val),
+
+        mag_x=np.array(data.Imu.MagneticFieldX.val),
+        mag_y=np.array(data.Imu.MagneticFieldY.val),
+        mag_z=np.array(data.Imu.MagneticFieldZ.val),
+
+        t_s=np.array(data.Imu.AccelerationX.t_s)
+    )
+
+
 class AttEst(ABC):
     phi: np.ndarray
     theta: np.ndarray
@@ -85,7 +98,7 @@ class AttEst(ABC):
 
     t_s: np.ndarray
 
-    def __init__(self, data: Signals):
+    def __init__(self):
         self.phi = np.array([])
         self.theta = np.array([])
         self.psi = np.array([])
@@ -98,21 +111,43 @@ class AttEst(ABC):
         self.theta_pp = np.array([])
         self.psi_pp = np.array([])
 
-        self.t_s = np.array(data.Imu.AccelerationX.t_s)
+        self.t_s = np.array([])
 
-        self.execute(data)
+    def execute(self,
+                imu_out: ImuOut,
+                modulo_of_angles=True,
+                static_gyro_offset_comp=False,
+                dynamic_gyro_offset_comp=True,
+                hard_iron_offset_comp=True):
+
+        def pre_exec():
+            self.t_s = imu_out.t_s
+
+            _imu_out = deepcopy(imu_out)
+            return self._imu_offset_comp(_imu_out,
+                                         static_gyro_offset_comp,
+                                         dynamic_gyro_offset_comp,
+                                         hard_iron_offset_comp)
+
+        def post_exec():
+            if modulo_of_angles:
+                self._modulo_of_angles()
+
+        _imu_out = pre_exec()
+        self._execute(_imu_out)
+        post_exec()
 
     @abstractmethod
-    def execute(self, data: Signals):
+    def _execute(self, imu_out: ImuOut):
         pass
 
-    def to_phi(self, acc_y, acc_z):
+    def _to_phi(self, acc_y, acc_z):
         return np.arctan2(-acc_y, -acc_z)
 
-    def to_theta(self, acc_x, acc_y, acc_z):
+    def _to_theta(self, acc_x, acc_y, acc_z):
         return np.arctan2(acc_x, np.sqrt(acc_y ** 2 + acc_z ** 2))
 
-    def to_psi(self, phi, theta, mag_x, mag_y, mag_z):
+    def _to_psi(self, phi, theta, mag_x, mag_y, mag_z):
         b_x = mag_x * np.cos(theta) + \
               mag_y * np.sin(phi) * np.sin(theta) + \
               mag_z * np.sin(theta) * np.cos(phi)
@@ -125,54 +160,27 @@ class AttEst(ABC):
         self.theta = self._modulo_phi(self.theta)
         self.psi = self._modulo_phi(self.psi)
 
-    def _extract_imu_out(self, data,
-                         static_gyro_offset_comp=True,
-                         dynamic_gyro_offset_comp=False,
-                         hard_iron_offset_comp=True) -> ImuOut:
-        t_s = np.array(data.Imu.AccelerationX.t_s)
-
-        acc_x = np.array(data.Imu.AccelerationX.val)
-        acc_y = np.array(data.Imu.AccelerationY.val)
-        acc_z = np.array(data.Imu.AccelerationZ.val)
-
-        ang_rate_x = np.array(data.Imu.AngularRateX.val)
-        ang_rate_y = np.array(data.Imu.AngularRateY.val)
-        ang_rate_z = np.array(data.Imu.AngularRateZ.val)
-
-        mag_x = np.array(data.Imu.MagneticFieldX.val)
-        mag_y = np.array(data.Imu.MagneticFieldY.val)
-        mag_z = np.array(data.Imu.MagneticFieldZ.val)
+    def _imu_offset_comp(self, imu_out: ImuOut,
+                         static_gyro_offset_comp,
+                         dynamic_gyro_offset_comp,
+                         hard_iron_offset_comp) -> ImuOut:
 
         if static_gyro_offset_comp:
-            ang_rate_x = self._stat_gyro_offset_comp(ang_rate_x)
-            ang_rate_y = self._stat_gyro_offset_comp(ang_rate_y)
-            ang_rate_z = self._stat_gyro_offset_comp(ang_rate_z)
+            imu_out.ang_rate_x = self._stat_gyro_offset_comp(imu_out.ang_rate_x)
+            imu_out.ang_rate_y = self._stat_gyro_offset_comp(imu_out.ang_rate_y)
+            imu_out.ang_rate_z = self._stat_gyro_offset_comp(imu_out.ang_rate_z)
 
         if dynamic_gyro_offset_comp:
-            ang_rate_x = self._dyn_gyro_offset_comp(ang_rate_x)
-            ang_rate_y = self._dyn_gyro_offset_comp(ang_rate_y)
-            ang_rate_z = self._dyn_gyro_offset_comp(ang_rate_z)
+            imu_out.ang_rate_x = self._dyn_gyro_offset_comp(imu_out.ang_rate_x)
+            imu_out.ang_rate_y = self._dyn_gyro_offset_comp(imu_out.ang_rate_y)
+            imu_out.ang_rate_z = self._dyn_gyro_offset_comp(imu_out.ang_rate_z)
 
         if hard_iron_offset_comp:
-            mag_x -= HARD_IRON_OFFSET_X
-            mag_y -= HARD_IRON_OFFSET_Y
-            mag_z -= HARD_IRON_OFFSET_Z
+            imu_out.mag_x -= HARD_IRON_OFFSET_X
+            imu_out.mag_y -= HARD_IRON_OFFSET_Y
+            imu_out.mag_z -= HARD_IRON_OFFSET_Z
 
-        return ImuOut(
-            acc_x=acc_x,
-            acc_y=acc_y,
-            acc_z=acc_z,
-
-            ang_rate_x=ang_rate_x,
-            ang_rate_y=ang_rate_y,
-            ang_rate_z=ang_rate_z,
-
-            mag_x=mag_x,
-            mag_y=mag_y,
-            mag_z=mag_z,
-
-            t_s=t_s,
-        )
+        return imu_out
 
     @staticmethod
     def _modulo_phi(x):
@@ -188,7 +196,7 @@ class AttEst(ABC):
 
     @staticmethod
     def _stat_gyro_offset_comp(v):
-        return (v - np.mean(v[0:STATIC_GYRO_OFFSET_COMP_SAMPLES]))
+        return v - np.mean(v[0:STATIC_GYRO_OFFSET_COMP_SAMPLES])
 
     @staticmethod
     def _dyn_gyro_offset_comp(v):
@@ -196,37 +204,29 @@ class AttEst(ABC):
         indices = np.argwhere(np.abs(vp) < DYNAMIC_GYRO_OFFSET_COMP_ABS_ACC_LIM)
         offset = np.mean(v[indices[0:DYNAMIC_GYRO_OFFSET_COMP_SAMPLES]])
 
-        return (v - offset)
+        return v - offset
 
 
 class AttEstAccMag(AttEst):
 
-    def execute(self, data: Signals):
+    def _execute(self, imu_out: ImuOut):
         """
         Use the accelrometer and magnetometer to estimate angles (only).
         """
-        imu_out = self._extract_imu_out(data)
-
-        self.phi = self.to_phi(imu_out.acc_y, imu_out.acc_z)
-        self.theta = self.to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
-        self.psi = self.to_psi(self.phi, self.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
-
-        self._modulo_of_angles()
+        self.phi = self._to_phi(imu_out.acc_y, imu_out.acc_z)
+        self.theta = self._to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
+        self.psi = self._to_psi(self.phi, self.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
 
 
 class AttEstGyro(AttEst):
 
-    def execute(self, data: Signals):
+    def _execute(self, imu_out: ImuOut):
         """
         Use the gyro for attitude estimation.
         """
-        imu_out = self._extract_imu_out(data)
-
         self._est_angles(imu_out)
         self._est_angular_rates(imu_out)
         self._est_angular_accelerations(imu_out)
-
-        self._modulo_of_angles()
 
     def _est_angles(self, imu_out: ImuOut):
         self.phi = np.cumsum(imu_out.ang_rate_x * IMU_SAMPLE_RATE_S)
@@ -246,12 +246,10 @@ class AttEstGyro(AttEst):
 
 class AttEstGyroLp(AttEst):
 
-    def execute(self, data: Signals):
+    def _execute(self, imu_out: ImuOut):
         """
         Use a LP-filtered (and derivative) of gyro for angular acceleration estimation.
         """
-        imu_out = self._extract_imu_out(data)
-
         phi_pp = np.diff(imu_out.ang_rate_x, prepend=0) / IMU_SAMPLE_RATE_S
         theta_pp = np.diff(imu_out.ang_rate_y, prepend=0) / IMU_SAMPLE_RATE_S
         psi_pp = np.diff(imu_out.ang_rate_z, prepend=0) / IMU_SAMPLE_RATE_S
@@ -259,8 +257,6 @@ class AttEstGyroLp(AttEst):
         self.phi_pp = self._lp(phi_pp, fc=GYRO_LP_CUT_OFF_FREQ, dt=IMU_SAMPLE_RATE_S)
         self.theta_pp = self._lp(theta_pp, fc=GYRO_LP_CUT_OFF_FREQ, dt=IMU_SAMPLE_RATE_S)
         self.psi_pp = self._lp(psi_pp, fc=GYRO_LP_CUT_OFF_FREQ, dt=IMU_SAMPLE_RATE_S)
-
-        self._modulo_of_angles()
 
     def _lp(self, u, dt, fc):
         alpha = 1 / (1 + 1 / 2 / np.pi / dt / fc)
@@ -276,22 +272,18 @@ class AttEstGyroLp(AttEst):
 
 class AttEstCf(AttEst):
 
-    def execute(self, data: Signals):
+    def _execute(self, imu_out: ImuOut):
         """
         Use a complementary filter to estimate angles (only).
         """
-        imu_out = self._extract_imu_out(data)
-
-        phi_acc = self.to_phi(imu_out.acc_y, imu_out.acc_z)
+        phi_acc = self._to_phi(imu_out.acc_y, imu_out.acc_z)
         self.phi = self._complementary_filter(phi_acc, imu_out.ang_rate_x, CF_TAU_PHI)
 
-        theta_acc = self.to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
+        theta_acc = self._to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
         self.theta = self._complementary_filter(theta_acc, imu_out.ang_rate_y, CF_TAU_THETA)
 
-        psi_mag = self.to_psi(self.phi, self.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
+        psi_mag = self._to_psi(self.phi, self.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
         self.psi = self._complementary_filter(psi_mag, imu_out.ang_rate_z, CF_TAU_PSI)
-
-        self._modulo_of_angles()
 
     @staticmethod
     def _complementary_filter(u, up, tau):
@@ -318,22 +310,18 @@ class AttEstKalman(AttEst):
         [0, 1, 0]
     ])
 
-    def execute(self, data: Signals):
+    def _execute(self, imu_out: ImuOut):
         """
         Use a Kalman filter for attitude estimation.
         """
-        imu_out = self._extract_imu_out(data, static_gyro_offset_comp=False, dynamic_gyro_offset_comp=True)
-
-        phi_acc = self.to_phi(imu_out.acc_y, imu_out.acc_z)
+        phi_acc = self._to_phi(imu_out.acc_y, imu_out.acc_z)
         self.phi, self.phi_p, self.phi_pp = self._kalman_filter(phi_acc, imu_out.ang_rate_x)
 
-        theta_acc = self.to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
+        theta_acc = self._to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
         self.theta, self.theta_p, self.theta_pp = self._kalman_filter(theta_acc, imu_out.ang_rate_y)
 
-        psi_mag = self.to_psi(self.phi, self.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
+        psi_mag = self._to_psi(self.phi, self.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
         self.psi, self.psi_p, self.psi_pp = self._kalman_filter(psi_mag, imu_out.ang_rate_z)
-
-        self._modulo_of_angles()
 
     def _kalman_filter(self, z, z_p):
         x = np.zeros((3, len(z)))
@@ -370,9 +358,13 @@ class AttEstKalman(AttEst):
 
 class AttEstTarget(AttEst):
 
-    def execute(self, data: Signals):
+    def _execute(self, imu_out: ImuOut):
+        pass  # Note, extract_target_data should be used instead.
+
+    def extract_target_data(self, data: Signals):
         """
-        Extracts the target attitude estimation.
+        Extracts the target attitude estimation. Note, should be called
+        after a possible execute to avoid alteration of states.
         """
         self.phi = np.array(data.StateEst.Roll.val)
         self.phi_p = np.array(data.StateEst.RollRate.val)
@@ -385,86 +377,3 @@ class AttEstTarget(AttEst):
         self.psi = np.array(data.StateEst.Yaw.val)
         self.psi_p = np.array(data.StateEst.YawRate.val)
         self.psi_pp = np.array(data.StateEst.YawAcc.val)
-
-
-class PlotAttEst:
-
-    def __init__(self):
-        self._fig, self._axs = plt.subplots(3, 1)
-        self._axs[0].set(title='Angles', ylabel='Roll [rad]')
-        self._axs[1].set(ylabel='Pitch [rad]')
-        self._axs[2].set(xlabel='Time [s]', ylabel='Yaw [rad]')
-
-        self._fig_p, self._axs_p = plt.subplots(3, 1)
-        self._axs_p[0].set(title='Angular-rates', ylabel='Roll-rate [rad/s]')
-        self._axs_p[1].set(ylabel='Pitch-rate [rad/s]')
-        self._axs_p[2].set(xlabel='Time [s]', ylabel='Yaw-rate [rad/s]')
-
-        self._fig_pp, self._axs_pp = plt.subplots(3, 1)
-        self._axs_pp[0].set(title='Angular-accelerations', ylabel='Roll-acc [rad/s^2]')
-        self._axs_pp[1].set(ylabel='Pitch-acc [rad/s^2]')
-        self._axs_pp[2].set(xlabel='Time [s]', ylabel='Yaw-acc [rad/s^2]')
-
-    def add(self, att_est: AttEst, name: str, color):
-        plot = lambda axs, v, label: self._plot(axs, t_s=att_est.t_s, v=v, color=color, label=label)
-
-        plot(self._axs[0], att_est.phi, r'$\phi_{{{}}}$'.format(name))
-        plot(self._axs[1], att_est.theta, r'$\theta_{{{}}}$'.format(name))
-        plot(self._axs[2], att_est.psi, r'$\psi_{{{}}}$'.format(name))
-
-        plot(self._axs_p[0], att_est.phi_p, r'$\dot{{\phi}}_{{{}}}$'.format(name))
-        plot(self._axs_p[1], att_est.theta_p, r'$\dot{{\theta}}_{{{}}}$'.format(name))
-        plot(self._axs_p[2], att_est.psi_p, r'$\dot{{\psi}}_{{{}}}$'.format(name))
-
-        plot(self._axs_pp[0], att_est.phi_pp, r'$\ddot{{\phi}}_{{{}}}$'.format(name))
-        plot(self._axs_pp[1], att_est.theta_pp, r'$\ddot{{\theta}}_{{{}}}$'.format(name))
-        plot(self._axs_pp[2], att_est.psi_pp, r'$\ddot{{\psi}}_{{{}}}$'.format(name))
-
-    def show(self):
-        for ax in [*self._axs, *self._axs_p, *self._axs_pp]:
-            h_legend, _ = ax.get_legend_handles_labels()
-            if len(h_legend) > 0:
-                ax.legend(loc='upper right')
-            ax.grid()
-
-        plt.show()
-
-    @staticmethod
-    def _plot(axs, t_s, v, label, color):
-        if v.size > 0:
-            axs.plot(t_s, v, color=color, label=label)
-
-
-def main():
-    parser = argparse.ArgumentParser(description='Attitude estimation of data log file.')
-    parser.add_argument('path', type=Path, help='Path to data log file')
-    parser.add_argument('--estimator', type=Estimator, nargs='+', choices=list(Estimator),
-                        default=list(Estimator), help='Selected estimator(s)')
-    args = parser.parse_args()
-
-    data = data_log_io.read(args.path, resample_to_fixed_rate_s=IMU_SAMPLE_RATE_S)
-    plot_att_est = PlotAttEst()
-
-    if Estimator.ACC_MAG in args.estimator:
-        plot_att_est.add(AttEstAccMag(data), name=Estimator.ACC_MAG, color='c')
-
-    if Estimator.GYRO in args.estimator:
-        plot_att_est.add(AttEstGyro(data), name=Estimator.GYRO, color='r')
-
-    if Estimator.GYRO_LP in args.estimator:
-        plot_att_est.add(AttEstGyroLp(data), name=Estimator.GYRO_LP, color='m')
-
-    if Estimator.CF in args.estimator:
-        plot_att_est.add(AttEstCf(data), name=Estimator.CF, color='b')
-
-    if Estimator.KALMAN in args.estimator:
-        plot_att_est.add(AttEstKalman(data), name=Estimator.KALMAN, color='g')
-
-    if Estimator.TARGET in args.estimator:
-        plot_att_est.add(AttEstTarget(data), name=Estimator.TARGET, color='k')
-
-    plot_att_est.show()
-
-
-if __name__ == "__main__":
-    main()
