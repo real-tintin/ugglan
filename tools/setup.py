@@ -11,7 +11,7 @@ setup(
             'plot-hard-iron-offset=state_est.hard_iron_offset:main',
             'plot-motor-dyn=state_est.motor_dynamics:main',
             'plot-motor-thrust=state_est.motor_thrust:main',
-            'gui-state-ctrl=state_ctrl.gui:main',
+            'gui-linear-sim=linear_sim.gui:main',
         ]
     },
     install_requires=[
