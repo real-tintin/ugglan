@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Ugglan'
-copyright = '2019, Oscar Goldring'
+copyright = '2021, Oscar Goldring'
 author = 'Oscar Goldring'
 
 # The full version, including alpha/beta/rc tags
