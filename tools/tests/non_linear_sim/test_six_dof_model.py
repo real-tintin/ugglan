@@ -26,11 +26,6 @@ def unit_model_zero_init():
     yield UnitSixDofModel()
 
 
-@pytest.fixture
-def unit_model_non_zero_init():
-    yield UnitSixDofModel()
-
-
 def assert_states_eq(exp, act):
     for member in State.__annotations__:
         np.array_equal(getattr(exp, member), getattr(act, member))
@@ -38,18 +33,7 @@ def assert_states_eq(exp, act):
 
 class TestSixDofModel:
 
-    def test_init_without_arg(self):
-        model = UnitSixDofModel()
-
-        assert_states_eq(model.get_state(), STATE_ZERO)
-
-    @pytest.mark.parametrize("state", [STATE_ZERO, STATE_NON_ZERO])
-    def test_init_with_arg(self, state):
-        model = UnitSixDofModel(state)
-
-        assert_states_eq(model.get_state(), state)
-
-    def test_step_standstill(self, unit_model_zero_init):
+    def test_standstill(self, unit_model_zero_init):
         self.step_n_times(unit_model_zero_init, BodyInput(fx=0, fy=0, fz=0, mx=0, my=0, mz=0), n=100)
 
         assert_states_eq(unit_model_zero_init.get_state(), STATE_ZERO)
@@ -62,7 +46,7 @@ class TestSixDofModel:
         (4, BodyInput(fx=0, fy=0, fz=0, mx=0, my=1.0, mz=0)),
         (5, BodyInput(fx=0, fy=0, fz=0, mx=0, my=0, mz=-1.3)),
     ])
-    def test_step_constant_force_or_torque(self, unit_model_zero_init, moving_axis, body_input):
+    def test_constant_force_or_torque(self, unit_model_zero_init, moving_axis, body_input):
         standstill_axis = list(set(range(6)) - {moving_axis})
 
         self.step_n_times(unit_model_zero_init, body_input, n=10)
@@ -72,7 +56,7 @@ class TestSixDofModel:
         assert position[moving_axis] != 0
         assert not np.any(position[standstill_axis])
 
-    def test_step_acc_and_stop(self, unit_model_zero_init):
+    def test_accelerate_and_stop(self, unit_model_zero_init):
         state = unit_model_zero_init.get_state()
         assert not np.any(state.v_b)
         assert not np.any(state.w_b)
@@ -86,17 +70,6 @@ class TestSixDofModel:
         state = unit_model_zero_init.get_state()
         assert np.all(np.isclose(state.v_b, 1e-9))
         assert np.all(np.isclose(state.w_b, 1e-9))
-
-    def test_reset_without_arg(self, unit_model_non_zero_init):
-        unit_model_non_zero_init.reset()
-
-        assert_states_eq(unit_model_non_zero_init.get_state(), STATE_ZERO)
-
-    @pytest.mark.parametrize("state", [STATE_ZERO, STATE_NON_ZERO])
-    def test_reset_with_arg(self, unit_model_non_zero_init, state):
-        unit_model_non_zero_init.reset(state)
-
-        assert_states_eq(unit_model_non_zero_init.get_state(), STATE_ZERO)
 
     @staticmethod
     def step_n_times(model: SixDofModel, body_input: BodyInput, n: int):

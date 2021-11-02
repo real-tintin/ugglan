@@ -28,6 +28,7 @@ class State:
 
     n_i: np.ndarray = np.zeros(3)  # rotational position (euler angles) inertial-frame
     w_b: np.ndarray = np.zeros(3)  # rotational velocity body-frame
+    wp_b: np.ndarray = np.zeros(3)  # rotational acceleration body-frame
 
 
 STATE_ZERO = State()
@@ -50,15 +51,12 @@ class SixDofModel:
         self._dt = dt
         self._t = 0.0
 
-        self._setup_odes()
+        self._init_odes()
 
     def step(self, body_input: BodyInput):
-        """
-        Step dynamics dt given the body input.
-        """
         self._t += self._dt
 
-        v_b, a_b, w_b = self._step_6dof(body_input)
+        v_b, a_b, w_b, wp_b = self._step_6dof(body_input)
         q = self._step_quat(w_b)
 
         n_i = self._quat_to_euler(q)
@@ -78,21 +76,17 @@ class SixDofModel:
 
             n_i=n_i,
             w_b=w_b,
+            wp_b=wp_b,
         )
 
     def reset(self, state_reset: State = STATE_ZERO):
-        """
-        Reset states.
-        """
         self._state = state_reset
+        self._init_odes()
 
     def get_state(self) -> State:
-        """
-        Returns states in the inertial frame.
-        """
         return self._state
 
-    def _setup_odes(self):
+    def _init_odes(self):
         self._ode_6dof = ode(self._f_6dof).set_integrator('dopri5')
         self._ode_6dof.set_initial_value(y=[*self._state.v_b, *self._state.w_b])
 
@@ -102,7 +96,7 @@ class SixDofModel:
         self._ode_ri = ode(self._f_ri).set_integrator('dopri5')
         self._ode_ri.set_initial_value(y=self._state.r_i)
 
-    def _step_6dof(self, body_input: BodyInput) -> (np.ndarray, np.ndarray):
+    def _step_6dof(self, body_input: BodyInput) -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray):
         F_b = np.array([body_input.fx, body_input.fy, body_input.fz])
         M_b = np.array([body_input.mx, body_input.my, body_input.mz])
 
@@ -113,8 +107,9 @@ class SixDofModel:
         v_b = y[0:3]
         a_b = yp[0:3]
         w_b = y[3:6]
+        wp_b = yp[3:6]
 
-        return v_b, a_b, w_b
+        return v_b, a_b, w_b, wp_b
 
     def _step_quat(self, w_b: np.ndarray) -> np.ndarray:
         self._ode_quat.set_f_params(w_b)
