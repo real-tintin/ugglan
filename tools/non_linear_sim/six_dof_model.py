@@ -42,12 +42,12 @@ class SixDofModel:
     """
 
     def __init__(self, mass: float, moment_of_inertia: np.ndarray,
-                 state_init: State = STATE_ZERO, dt: float = 0.01):
+                 state: State = STATE_ZERO, dt: float = 0.01):
         self._m = mass
         self._I_b = moment_of_inertia
         self._I_b_inv = np.linalg.inv(self._I_b)
 
-        self._state = state_init
+        self._state = state
         self._dt = dt
         self._t = 0.0
 
@@ -79,8 +79,8 @@ class SixDofModel:
             wp_b=wp_b,
         )
 
-    def reset(self, state_reset: State = STATE_ZERO):
-        self._state = state_reset
+    def reset(self, state: State = STATE_ZERO):
+        self._state = state
         self._init_odes()
 
     def get_state(self) -> State:

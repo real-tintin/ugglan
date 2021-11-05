@@ -17,8 +17,8 @@ STATE_NON_ZERO = State(
 
 
 class UnitSixDofModel(SixDofModel):
-    def __init__(self, state_init: State = STATE_ZERO):
-        super().__init__(mass=1.0, moment_of_inertia=np.eye(3), state_init=state_init)
+    def __init__(self, state: State = STATE_ZERO):
+        super().__init__(mass=1.0, moment_of_inertia=np.eye(3), state=state)
 
 
 @pytest.fixture

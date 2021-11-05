@@ -5,14 +5,16 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import data_log.io as data_log_io
-from .att_estimators import *
+from state_est.att_estimators import *
 
 mpl.rcParams['lines.linewidth'] = 0.5
+
+TARGET_IMU_SAMPLE_RATE_S = 0.02
 
 
 class PlotAttEst:
 
-    def __init__(self):
+    def __init__(self, t_s: np.ndarray):
         self._fig, self._axs = plt.subplots(3, 1)
         self._axs[0].set(title='Angles', ylabel='Roll [rad]')
         self._axs[1].set(ylabel='Pitch [rad]')
@@ -28,20 +30,23 @@ class PlotAttEst:
         self._axs_pp[1].set(ylabel='Pitch-acc [rad/s^2]')
         self._axs_pp[2].set(xlabel='Time [s]', ylabel='Yaw-acc [rad/s^2]')
 
+        self.t_s = t_s
+
     def add(self, att_est: AttEst, name: str, color):
-        plot = lambda axs, v, label: self._plot(axs, t_s=att_est.t_s, v=v, color=color, label=label)
+        plot = lambda axs, v, label: self._plot(axs, t_s=self.t_s, v=v, color=color, label=label)
+        state = att_est.get_state()
 
-        plot(self._axs[0], att_est.phi, r'$\phi_{{{}}}$'.format(name))
-        plot(self._axs[1], att_est.theta, r'$\theta_{{{}}}$'.format(name))
-        plot(self._axs[2], att_est.psi, r'$\psi_{{{}}}$'.format(name))
+        plot(self._axs[0], state.phi, r'$\phi_{{{}}}$'.format(name))
+        plot(self._axs[1], state.theta, r'$\theta_{{{}}}$'.format(name))
+        plot(self._axs[2], state.psi, r'$\psi_{{{}}}$'.format(name))
 
-        plot(self._axs_p[0], att_est.phi_p, r'$\dot{{\phi}}_{{{}}}$'.format(name))
-        plot(self._axs_p[1], att_est.theta_p, r'$\dot{{\theta}}_{{{}}}$'.format(name))
-        plot(self._axs_p[2], att_est.psi_p, r'$\dot{{\psi}}_{{{}}}$'.format(name))
+        plot(self._axs_p[0], state.phi_p, r'$\dot{{\phi}}_{{{}}}$'.format(name))
+        plot(self._axs_p[1], state.theta_p, r'$\dot{{\theta}}_{{{}}}$'.format(name))
+        plot(self._axs_p[2], state.psi_p, r'$\dot{{\psi}}_{{{}}}$'.format(name))
 
-        plot(self._axs_pp[0], att_est.phi_pp, r'$\ddot{{\phi}}_{{{}}}$'.format(name))
-        plot(self._axs_pp[1], att_est.theta_pp, r'$\ddot{{\theta}}_{{{}}}$'.format(name))
-        plot(self._axs_pp[2], att_est.psi_pp, r'$\ddot{{\psi}}_{{{}}}$'.format(name))
+        plot(self._axs_pp[0], state.phi_pp, r'$\ddot{{\phi}}_{{{}}}$'.format(name))
+        plot(self._axs_pp[1], state.theta_pp, r'$\ddot{{\theta}}_{{{}}}$'.format(name))
+        plot(self._axs_pp[2], state.psi_pp, r'$\ddot{{\psi}}_{{{}}}$'.format(name))
 
     def show(self):
         for ax in [*self._axs, *self._axs_p, *self._axs_pp]:
@@ -59,10 +64,14 @@ class PlotAttEst:
 
 
 def _create_and_exec_att_est(att_est_type: AttEst, imu_out: ImuOut):
-    att_est = att_est_type()
+    att_est = att_est_type(dt=TARGET_IMU_SAMPLE_RATE_S)
     att_est.execute(imu_out)
 
     return att_est
+
+
+def _get_imu_t_s(data: Signals):
+    return data.Imu.AccelerationX.t_s
 
 
 def main():
@@ -72,9 +81,9 @@ def main():
                         default=list(Estimator), help='Selected estimator(s)')
     args = parser.parse_args()
 
-    data = data_log_io.read(args.path, resample_to_fixed_rate_s=IMU_SAMPLE_RATE_S)
+    data = data_log_io.read(args.path, resample_to_fixed_rate_s=TARGET_IMU_SAMPLE_RATE_S)
     imu_out = extract_imu_out(data)
-    plot_att_est = PlotAttEst()
+    plot_att_est = PlotAttEst(t_s=_get_imu_t_s(data))
 
     if Estimator.ACC_MAG in args.estimator:
         plot_att_est.add(_create_and_exec_att_est(AttEstAccMag, imu_out), name=Estimator.ACC_MAG, color='c')

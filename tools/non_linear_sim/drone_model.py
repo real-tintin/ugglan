@@ -10,10 +10,10 @@ from state_est.physical_const import MASS, TAU_M, I_XX, I_YY, I_ZZ
 
 @dataclass
 class CtrlInput:
-    f_z: float
-    m_x: float
-    m_y: float
-    m_z: float
+    f_z: float = 0.0
+    m_x: float = 0.0
+    m_y: float = 0.0
+    m_z: float = 0.0
 
 
 @dataclass
@@ -61,7 +61,7 @@ class DroneModel:
 
     def __init__(self, drone_params: DroneParams = DEFAULT_DRONE_PARAMS,
                  env_params: EnvParams = DEFAULT_ENV_PARAMS,
-                 state_init: State = STATE_ZERO,
+                 state: State = STATE_ZERO,
                  dt: float = 0.01):
         self._drone_params = drone_params
         self._env_params = env_params
@@ -73,7 +73,7 @@ class DroneModel:
         self._init_motor_dyn()
         self._6dof_model = SixDofModel(mass=drone_params.m,
                                        moment_of_inertia=drone_params.I_drone,
-                                       state_init=state_init,
+                                       state=state,
                                        dt=dt)
 
     def step(self, ctrl_input: CtrlInput):
@@ -98,12 +98,15 @@ class DroneModel:
             mx=M_b[0], my=M_b[1], mz=M_b[2])
         )
 
-    def reset(self, state_reset: State = STATE_ZERO):
-        self._6dof_model.reset(state_reset)
+    def reset(self, state: State = STATE_ZERO):
+        self._6dof_model.reset(state)
         self._init_motor_dyn()
 
     def get_6dof_state(self) -> State:
         return self._6dof_model.get_state()
+
+    def get_t() -> float:
+        return self._t
 
     def _init_motor_dyn(self):
         self._ode_motor_dyn = ode(self._f_motor_dyn).set_integrator('dopri5')

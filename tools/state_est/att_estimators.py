@@ -10,31 +10,6 @@ from data_log.io import Signals
 
 IMU_SAMPLE_RATE_S = 0.01  # 100 Hz
 
-STATIC_GYRO_OFFSET_COMP_SAMPLES = 100
-
-DYNAMIC_GYRO_OFFSET_COMP_SAMPLES = 100
-DYNAMIC_GYRO_OFFSET_COMP_ABS_ACC_LIM = 0.2  # [rad/s^2]
-
-CF_CUT_OFF_FREQ = 0.2  # [Hz]
-CF_TAU_PHI = 1 / (2 * np.pi * CF_CUT_OFF_FREQ)
-CF_TAU_THETA = 1 / (2 * np.pi * CF_CUT_OFF_FREQ)
-CF_TAU_PSI = 1 / (2 * np.pi * CF_CUT_OFF_FREQ)
-
-GYRO_LP_CUT_OFF_FREQ = 15  # [Hz]
-
-KALMAN_P_0 = np.zeros((3, 3))
-KALMAN_Q_SCALE = 1e2
-KALMAN_G = np.array([0.5 * IMU_SAMPLE_RATE_S ** 2, IMU_SAMPLE_RATE_S, 1])
-KALMAN_Q = KALMAN_Q_SCALE * np.outer(KALMAN_G, KALMAN_G)
-KALMAN_R_0_SCALE = 1
-KALMAN_R_1_SCALE = 1
-KALMAN_R_ALMOST_ZERO = 1e-9
-KALMAN_R_WINDOW_SIZE = 20
-
-HARD_IRON_OFFSET_X = 0.104
-HARD_IRON_OFFSET_Y = 0.076
-HARD_IRON_OFFSET_Z = 0.062
-
 
 class Estimator(Enum):
     ACC_MAG = 'AccMag'
@@ -62,8 +37,6 @@ class ImuOut:
     mag_y: np.ndarray
     mag_z: np.ndarray
 
-    t_s: np.ndarray
-
 
 def extract_imu_out(data: Signals) -> ImuOut:
     return ImuOut(
@@ -78,40 +51,37 @@ def extract_imu_out(data: Signals) -> ImuOut:
         mag_x=np.array(data.Imu.MagneticFieldX.val),
         mag_y=np.array(data.Imu.MagneticFieldY.val),
         mag_z=np.array(data.Imu.MagneticFieldZ.val),
-
-        t_s=np.array(data.Imu.AccelerationX.t_s)
     )
 
 
+@dataclass
+class State:
+    phi: np.ndarray = np.array([])
+    theta: np.ndarray = np.array([])
+    psi: np.ndarray = np.array([])
+
+    phi_p: np.ndarray = np.array([])
+    theta_p: np.ndarray = np.array([])
+    psi_p: np.ndarray = np.array([])
+
+    phi_pp: np.ndarray = np.array([])
+    theta_pp: np.ndarray = np.array([])
+    psi_pp: np.ndarray = np.array([])
+
+
 class AttEst(ABC):
-    phi: np.ndarray
-    theta: np.ndarray
-    psi: np.ndarray
+    STATIC_GYRO_OFFSET_COMP_SAMPLES = 100
 
-    phi_p: np.ndarray
-    theta_p: np.ndarray
-    psi_p: np.ndarray
+    DYNAMIC_GYRO_OFFSET_COMP_SAMPLES = 100
+    DYNAMIC_GYRO_OFFSET_COMP_ABS_ACC_LIM = 0.2  # [rad/s^2]
 
-    phi_pp: np.ndarray
-    theta_pp: np.ndarray
-    psi_pp: np.ndarray
+    TARGET_HARD_IRON_OFFSET_X = 0.104
+    TARGET_HARD_IRON_OFFSET_Y = 0.076
+    TARGET_HARD_IRON_OFFSET_Z = 0.062
 
-    t_s: np.ndarray
-
-    def __init__(self):
-        self.phi = np.array([])
-        self.theta = np.array([])
-        self.psi = np.array([])
-
-        self.phi_p = np.array([])
-        self.theta_p = np.array([])
-        self.psi_p = np.array([])
-
-        self.phi_pp = np.array([])
-        self.theta_pp = np.array([])
-        self.psi_pp = np.array([])
-
-        self.t_s = np.array([])
+    def __init__(self, dt: float):
+        self._dt = dt
+        self._state = State()
 
     def execute(self,
                 imu_out: ImuOut,
@@ -121,8 +91,6 @@ class AttEst(ABC):
                 hard_iron_offset_comp=True):
 
         def pre_exec():
-            self.t_s = imu_out.t_s
-
             _imu_out = deepcopy(imu_out)
             return self._imu_offset_comp(_imu_out,
                                          static_gyro_offset_comp,
@@ -136,6 +104,9 @@ class AttEst(ABC):
         _imu_out = pre_exec()
         self._execute(_imu_out)
         post_exec()
+
+    def get_state(self):
+        return self._state
 
     @abstractmethod
     def _execute(self, imu_out: ImuOut):
@@ -156,9 +127,9 @@ class AttEst(ABC):
         return np.arctan2(-b_y, b_x)
 
     def _modulo_of_angles(self):
-        self.phi = self._modulo_phi(self.phi)
-        self.theta = self._modulo_phi(self.theta)
-        self.psi = self._modulo_phi(self.psi)
+        self._state.phi = self._modulo_phi(self._state.phi)
+        self._state.theta = self._modulo_phi(self._state.theta)
+        self._state.psi = self._modulo_phi(self._state.psi)
 
     def _imu_offset_comp(self, imu_out: ImuOut,
                          static_gyro_offset_comp,
@@ -176,11 +147,21 @@ class AttEst(ABC):
             imu_out.ang_rate_z = self._dyn_gyro_offset_comp(imu_out.ang_rate_z)
 
         if hard_iron_offset_comp:
-            imu_out.mag_x -= HARD_IRON_OFFSET_X
-            imu_out.mag_y -= HARD_IRON_OFFSET_Y
-            imu_out.mag_z -= HARD_IRON_OFFSET_Z
+            imu_out.mag_x -= self.TARGET_HARD_IRON_OFFSET_X
+            imu_out.mag_y -= self.TARGET_HARD_IRON_OFFSET_Y
+            imu_out.mag_z -= self.TARGET_HARD_IRON_OFFSET_Z
 
         return imu_out
+
+    def _stat_gyro_offset_comp(self, v):
+        return v - np.mean(v[0:self.STATIC_GYRO_OFFSET_COMP_SAMPLES])
+
+    def _dyn_gyro_offset_comp(self, v):
+        vp = np.diff(v, prepend=0) / self._dt
+        indices = np.argwhere(np.abs(vp) < self.DYNAMIC_GYRO_OFFSET_COMP_ABS_ACC_LIM)
+        offset = np.mean(v[indices[0:self.DYNAMIC_GYRO_OFFSET_COMP_SAMPLES]])
+
+        return v - offset
 
     @staticmethod
     def _modulo_phi(x):
@@ -194,69 +175,58 @@ class AttEst(ABC):
     def _modulo_psi(x):
         return np.mod(x + np.pi, 2 * np.pi) - np.pi
 
-    @staticmethod
-    def _stat_gyro_offset_comp(v):
-        return v - np.mean(v[0:STATIC_GYRO_OFFSET_COMP_SAMPLES])
-
-    @staticmethod
-    def _dyn_gyro_offset_comp(v):
-        vp = np.diff(v, prepend=0) / IMU_SAMPLE_RATE_S
-        indices = np.argwhere(np.abs(vp) < DYNAMIC_GYRO_OFFSET_COMP_ABS_ACC_LIM)
-        offset = np.mean(v[indices[0:DYNAMIC_GYRO_OFFSET_COMP_SAMPLES]])
-
-        return v - offset
-
 
 class AttEstAccMag(AttEst):
+    """
+    Use the accelrometer and magnetometer to estimate angles (only).
+    """
 
     def _execute(self, imu_out: ImuOut):
-        """
-        Use the accelrometer and magnetometer to estimate angles (only).
-        """
-        self.phi = self._to_phi(imu_out.acc_y, imu_out.acc_z)
-        self.theta = self._to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
-        self.psi = self._to_psi(self.phi, self.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
+        self._state.phi = self._to_phi(imu_out.acc_y, imu_out.acc_z)
+        self._state.theta = self._to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
+        self._state.psi = self._to_psi(self._state.phi, self._state.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
 
 
 class AttEstGyro(AttEst):
+    """
+    Use the gyro for attitude estimation.
+    """
 
     def _execute(self, imu_out: ImuOut):
-        """
-        Use the gyro for attitude estimation.
-        """
         self._est_angles(imu_out)
         self._est_angular_rates(imu_out)
         self._est_angular_accelerations(imu_out)
 
     def _est_angles(self, imu_out: ImuOut):
-        self.phi = np.cumsum(imu_out.ang_rate_x * IMU_SAMPLE_RATE_S)
-        self.theta = np.cumsum(imu_out.ang_rate_y * IMU_SAMPLE_RATE_S)
-        self.psi = np.cumsum(imu_out.ang_rate_z * IMU_SAMPLE_RATE_S)
+        self._state.phi = np.cumsum(imu_out.ang_rate_x * self._dt)
+        self._state.theta = np.cumsum(imu_out.ang_rate_y * self._dt)
+        self._state.psi = np.cumsum(imu_out.ang_rate_z * self._dt)
 
     def _est_angular_rates(self, imu_out: ImuOut):
-        self.phi_p = imu_out.ang_rate_x
-        self.theta_p = imu_out.ang_rate_y
-        self.psi_p = imu_out.ang_rate_z
+        self._state.phi_p = imu_out.ang_rate_x
+        self._state.theta_p = imu_out.ang_rate_y
+        self._state.psi_p = imu_out.ang_rate_z
 
     def _est_angular_accelerations(self, imu_out: ImuOut):
-        self.phi_pp = np.diff(imu_out.ang_rate_x, prepend=0) / IMU_SAMPLE_RATE_S
-        self.theta_pp = np.diff(imu_out.ang_rate_y, prepend=0) / IMU_SAMPLE_RATE_S
-        self.psi_pp = np.diff(imu_out.ang_rate_z, prepend=0) / IMU_SAMPLE_RATE_S
+        self._state.phi_pp = np.diff(imu_out.ang_rate_x, prepend=0) / self._dt
+        self._state.theta_pp = np.diff(imu_out.ang_rate_y, prepend=0) / self._dt
+        self._state.psi_pp = np.diff(imu_out.ang_rate_z, prepend=0) / self._dt
 
 
 class AttEstGyroLp(AttEst):
+    """
+    Use a LP-filtered (and derivative) of gyro for angular acceleration estimation.
+    """
+    LP_CUT_OFF_FREQ = 15  # [Hz]
 
     def _execute(self, imu_out: ImuOut):
-        """
-        Use a LP-filtered (and derivative) of gyro for angular acceleration estimation.
-        """
-        phi_pp = np.diff(imu_out.ang_rate_x, prepend=0) / IMU_SAMPLE_RATE_S
-        theta_pp = np.diff(imu_out.ang_rate_y, prepend=0) / IMU_SAMPLE_RATE_S
-        psi_pp = np.diff(imu_out.ang_rate_z, prepend=0) / IMU_SAMPLE_RATE_S
+        phi_pp = np.diff(imu_out.ang_rate_x, prepend=0) / self._dt
+        theta_pp = np.diff(imu_out.ang_rate_y, prepend=0) / self._dt
+        psi_pp = np.diff(imu_out.ang_rate_z, prepend=0) / self._dt
 
-        self.phi_pp = self._lp(phi_pp, fc=GYRO_LP_CUT_OFF_FREQ, dt=IMU_SAMPLE_RATE_S)
-        self.theta_pp = self._lp(theta_pp, fc=GYRO_LP_CUT_OFF_FREQ, dt=IMU_SAMPLE_RATE_S)
-        self.psi_pp = self._lp(psi_pp, fc=GYRO_LP_CUT_OFF_FREQ, dt=IMU_SAMPLE_RATE_S)
+        self._state.phi_pp = self._lp(phi_pp, fc=self.LP_CUT_OFF_FREQ, dt=self._dt)
+        self._state.theta_pp = self._lp(theta_pp, fc=self.LP_CUT_OFF_FREQ, dt=self._dt)
+        self._state.psi_pp = self._lp(psi_pp, fc=self.LP_CUT_OFF_FREQ, dt=self._dt)
 
     def _lp(self, u, dt, fc):
         alpha = 1 / (1 + 1 / 2 / np.pi / dt / fc)
@@ -271,64 +241,82 @@ class AttEstGyroLp(AttEst):
 
 
 class AttEstCf(AttEst):
+    """
+    Use a complementary filter to estimate angles (only).
+    """
+    CUT_OFF_FREQ_PHI = 0.2  # [Hz]
+    CUT_OFF_FREQ_THETA = 0.2  # [Hz]
+    CUT_OFF_FREQ_PSI = 0.2  # [Hz]
 
     def _execute(self, imu_out: ImuOut):
-        """
-        Use a complementary filter to estimate angles (only).
-        """
         phi_acc = self._to_phi(imu_out.acc_y, imu_out.acc_z)
-        self.phi = self._complementary_filter(phi_acc, imu_out.ang_rate_x, CF_TAU_PHI)
+        self._state.phi = self._complementary_filter(phi_acc, imu_out.ang_rate_x, self.CUT_OFF_FREQ_PHI)
 
         theta_acc = self._to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
-        self.theta = self._complementary_filter(theta_acc, imu_out.ang_rate_y, CF_TAU_THETA)
+        self._state.theta = self._complementary_filter(theta_acc, imu_out.ang_rate_y, self.CUT_OFF_FREQ_THETA)
 
-        psi_mag = self._to_psi(self.phi, self.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
-        self.psi = self._complementary_filter(psi_mag, imu_out.ang_rate_z, CF_TAU_PSI)
+        psi_mag = self._to_psi(self._state.phi, self._state.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
+        self._state.psi = self._complementary_filter(psi_mag, imu_out.ang_rate_z, self.CUT_OFF_FREQ_PSI)
 
-    @staticmethod
-    def _complementary_filter(u, up, tau):
+    def _complementary_filter(self, u, up, freq):
         y = np.zeros(len(u))
-        alpha = tau / (tau + IMU_SAMPLE_RATE_S)
+        tau = 1 / (2 * np.pi * freq)
+        alpha = tau / (tau + self._dt)
 
         for k in range(1, len(u)):
-            y[k] = alpha * (y[k - 1] + up[k] * IMU_SAMPLE_RATE_S) + (1 - alpha) * u[k]
+            y[k] = alpha * (y[k - 1] + up[k] * self._dt) + (1 - alpha) * u[k]
 
         return y
 
 
 class AttEstKalman(AttEst):
-    P_0 = KALMAN_P_0
-    Q = KALMAN_Q
+    """
+    Use a Kalman filter for attitude estimation.
+    """
+    Q_SCALE = 1e2
 
-    F = np.array([
-        [1, IMU_SAMPLE_RATE_S, 0.5 * IMU_SAMPLE_RATE_S ** 2],
-        [0, 1, IMU_SAMPLE_RATE_S],
-        [0, 0, 1]
-    ])
-    H = np.array([
-        [1, 0, 0],
-        [0, 1, 0]
-    ])
+    R_0_SCALE = 1
+    R_1_SCALE = 1
+
+    R_ALMOST_ZERO = 1e-9
+    R_WINDOW_SIZE = 20
+
+    def __init__(self, dt: float):
+        super().__init__(dt)
+
+        self.P_0 = np.zeros((3, 3))
+
+        G = np.array([0.5 * dt ** 2, dt, 1])
+        self.Q = self.Q_SCALE * np.outer(G, G)
+
+        self.F = np.array([
+            [1, dt, 0.5 * dt ** 2],
+            [0, 1, dt],
+            [0, 0, 1]
+        ])
+
+        self.H = np.array([
+            [1, 0, 0],
+            [0, 1, 0]
+        ])
 
     def _execute(self, imu_out: ImuOut):
-        """
-        Use a Kalman filter for attitude estimation.
-        """
         phi_acc = self._to_phi(imu_out.acc_y, imu_out.acc_z)
-        self.phi, self.phi_p, self.phi_pp = self._kalman_filter(phi_acc, imu_out.ang_rate_x)
+        self._state.phi, self._state.phi_p, self._state.phi_pp = self._kalman_filter(phi_acc, imu_out.ang_rate_x)
 
         theta_acc = self._to_theta(imu_out.acc_x, imu_out.acc_y, imu_out.acc_z)
-        self.theta, self.theta_p, self.theta_pp = self._kalman_filter(theta_acc, imu_out.ang_rate_y)
+        self._state.theta, self._state.theta_p, self._state.theta_pp = self._kalman_filter(theta_acc,
+                                                                                           imu_out.ang_rate_y)
 
-        psi_mag = self._to_psi(self.phi, self.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
-        self.psi, self.psi_p, self.psi_pp = self._kalman_filter(psi_mag, imu_out.ang_rate_z)
+        psi_mag = self._to_psi(self._state.phi, self._state.theta, imu_out.mag_x, imu_out.mag_y, imu_out.mag_z)
+        self._state.psi, self._state.psi_p, self._state.psi_pp = self._kalman_filter(psi_mag, imu_out.ang_rate_z)
 
     def _kalman_filter(self, z, z_p):
         x = np.zeros((3, len(z)))
         P_pre = self.P_0
 
-        z_var = pd.Series(z).rolling(window=KALMAN_R_WINDOW_SIZE).var()
-        z_p_var = pd.Series(z_p).rolling(window=KALMAN_R_WINDOW_SIZE).var()
+        z_var = pd.Series(z).rolling(window=self.R_WINDOW_SIZE).var()
+        z_p_var = pd.Series(z_p).rolling(window=self.R_WINDOW_SIZE).var()
 
         for k in range(1, len(z)):
             x_pri = self.F @ x[:, k - 1]
@@ -344,36 +332,37 @@ class AttEstKalman(AttEst):
 
         return x[0, :], x[1, :], x[2, :]
 
-    @staticmethod
-    def _get_R(z_var, z_p_var):
+    def _get_R(self, z_var, z_p_var):
         def _check_if_almost_zero_or_nan(x):
-            if np.isnan(x) or x < KALMAN_R_ALMOST_ZERO:
-                return KALMAN_R_ALMOST_ZERO
+            if np.isnan(x) or x < self.R_ALMOST_ZERO:
+                return self.R_ALMOST_ZERO
             else:
                 return x
 
-        return np.diag([KALMAN_R_0_SCALE * _check_if_almost_zero_or_nan(z_var),
-                        KALMAN_R_1_SCALE * _check_if_almost_zero_or_nan(z_p_var)])
+        return np.diag([self.R_0_SCALE * _check_if_almost_zero_or_nan(z_var),
+                        self.R_1_SCALE * _check_if_almost_zero_or_nan(z_p_var)])
 
 
 class AttEstTarget(AttEst):
+    """
+    Extracts the target attitude estimation.
+    """
 
     def _execute(self, imu_out: ImuOut):
         pass  # Note, extract_target_data should be used instead.
 
     def extract_target_data(self, data: Signals):
         """
-        Extracts the target attitude estimation. Note, should be called
-        after a possible execute to avoid alteration of states.
+        Note, should be called after a possible execute to avoid alteration of states.
         """
-        self.phi = np.array(data.StateEst.Roll.val)
-        self.phi_p = np.array(data.StateEst.RollRate.val)
-        self.phi_pp = np.array(data.StateEst.RollAcc.val)
+        self._state.phi = np.array(data.StateEst.Roll.val)
+        self._state.phi_p = np.array(data.StateEst.RollRate.val)
+        self._state.phi_pp = np.array(data.StateEst.RollAcc.val)
 
-        self.theta = np.array(data.StateEst.Pitch.val)
-        self.theta_p = np.array(data.StateEst.PitchRate.val)
-        self.theta_pp = np.array(data.StateEst.PitchAcc.val)
+        self._state.theta = np.array(data.StateEst.Pitch.val)
+        self._state.theta_p = np.array(data.StateEst.PitchRate.val)
+        self._state.theta_pp = np.array(data.StateEst.PitchAcc.val)
 
-        self.psi = np.array(data.StateEst.Yaw.val)
-        self.psi_p = np.array(data.StateEst.YawRate.val)
-        self.psi_pp = np.array(data.StateEst.YawAcc.val)
+        self._state.psi = np.array(data.StateEst.Yaw.val)
+        self._state.psi_p = np.array(data.StateEst.YawRate.val)
+        self._state.psi_pp = np.array(data.StateEst.YawAcc.val)
