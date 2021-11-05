@@ -13,7 +13,6 @@ from non_linear_sim.six_dof_model import State as SixDofState
 # TODO: Add IMU sensor noise.
 
 
-
 class Simulator:
 
     def __init__(self,
@@ -79,19 +78,13 @@ class Simulator:
     def _euler_to_imu_mag_for_yaw_est(phi, theta, psi):
         """
         Use the euler angles to fabricate the magnetic field
-        from a body mounted imu. The heuristic is:
-            B_x = 1
-            B_y = -tan(psi)
-            B_z = 0 (assume 90 deg inclination angle)
-
-            M = (R_theta * R_phi).transpose() * B
+        from a body mounted imu. Note, we let B_z = 0 i.e.,
+        assume 90 deg inclination angle.
         """
         R_phi = rotation_matrix(x_rad=phi)
         R_theta = rotation_matrix(y_rad=theta)
 
-        # TODO: Probably need to inverted atan2 logic here.
-
-        B = np.array([1, -np.tan(psi), 0])
+        B = np.array([np.cos(psi), -np.sin(psi), 0])
         M = (R_theta @ R_phi).transpose() @ B
 
         return M
