@@ -7,15 +7,11 @@
 #include <unistd.h>
 #include <cstdint>
 #include <sys/ioctl.h>
-#ifdef I2C_VERSION_GTE_40
 extern "C"
 {
 #include <linux/i2c-dev.h>
 #include <i2c/smbus.h>
 }
-#else
-#include <linux/i2c-dev.h>
-#endif
 #include <logger.h>
 #include <utils.h>
 

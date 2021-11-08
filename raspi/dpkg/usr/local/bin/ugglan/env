@@ -1,6 +1,11 @@
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/gcc-9.1.0/bin
 LD_LIBRARY_PATH=/opt/gcc-9.1.0/lib
 
+SERIAL_DEV_GPIO=/dev/serial0
+
+I2C_DEV_HW_FAST_MODE=/dev/i2c-1
+I2C_DEV_SW_NORMAL_MODE=/dev/i2c-4
+
 DATA_LOG_ROOT=/usr/local/bin/ugglan/data_logs
 LOGGER_LEVEL=DEBUG
 

@@ -94,7 +94,7 @@ i2c_breadboard = Body(
 )
 
 raspberry_pi = Body(
-    name='Raspberry Pi Zero',
+    name='Raspberry Pi Zero 2 W',
     shape_m=Cuboid(0.065, 0.03, 0.0054),
     mass_kg=0.015,
     trans_i_frame_m=np.array([-0.02, -0.04, 0.0232]),

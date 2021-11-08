@@ -1,5 +1,5 @@
 # Makefile for compilation of the drone C++ source
-# code for target - a Raspberry Pi Zero.
+# code for target - a Raspberry Pi Zero 2 W.
 #   TARGET_NAME    : Set target name.
 #   BUILD_FOR_TEST : Set to TRUE, to build for testing.
 #   EXTRA_CXXFLAGS : Use to add extra CXXFLAGS.
@@ -8,9 +8,9 @@
 TARGET := $(TARGET_NAME)
 SRCEXT := cpp
 
-CXX = g++-9.1
+CXX = g++-10
 CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread -O3 $(EXTRA_CXXFLAGS)
-LDFLAGS += -lz
+LDFLAGS += -lz -li2c
 
 SRCDIR := ./src
 OBJDIR := ./build
@@ -21,8 +21,7 @@ SOURCES := $(wildcard $(SRCDIR)/*.$(SRCEXT))
 INC := -I $(INCDIR)
 
 ifeq ($(BUILD_FOR_TEST), TRUE)
-	CXXFLAGS += -D UNIT_TEST -D I2C_VERSION_GTE_40
-	LDFLAGS += -li2c
+	CXXFLAGS += -D UNIT_TEST
 
 	SOURCES += $(wildcard $(TESTDIR)/*.$(SRCEXT))
 	INC += -I $(TESTDIR)

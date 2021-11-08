@@ -63,14 +63,13 @@ configure the needed pins on the Pi, add the following to the end of ``/boot/con
     # Enable UART
     enable_uart=1
 
-Install GCC 9.1
-----------------
-The C++ application is compiled using gcc 9.1 (for C++17) and needs to be installed on the Pi
-(dependent libs). See ``./raspi/Dockerfile_raspi`` for details.
+Note, if the GPIO serial pins are used, verify that the login prompt on ``/dev/serial0`` is
+disable. If not, there might be another process (getty), reading from the same port,
+causing issues. This can be configured via ``raspi-config``.
 
 Remote access
 --------------
-Setup wpa supplicant and interfaces for remote access e.g., connect to a hotspot.
+Setup ssh and network interfaces for remote access e.g., connecting to a hotspot.
 
 Build for & Deploy on Target
 =============================

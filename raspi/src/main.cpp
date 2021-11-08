@@ -42,10 +42,10 @@ static const uint8_t I2C_ADDRESS_ESC_3 = 0x2d;
 
 static const uint8_t N_ESC = droneprops::N_MOTORS;
 
-static const std::string SERIAL_DEVICE_RC_RECEIVER = "/dev/ttyAMA0";
+static const std::string SERIAL_DEVICE_RC_RECEIVER = utils::get_env("SERIAL_DEV_GPIO", std::string(""));
 
-static const std::string I2C_DEVICE_IMU = "/dev/i2c-1"; // Using HW in fast mode (400 kHz)
-static const std::string I2C_DEVICE_ESC = "/dev/i2c-4"; // Using SW in normal mode (100 kHz)
+static const std::string I2C_DEVICE_IMU = utils::get_env("I2C_DEV_HW_FAST_MODE", std::string(""));
+static const std::string I2C_DEVICE_ESC = utils::get_env("I2C_DEV_SW_NORMAL_MODE", std::string(""));
 
 static const uint32_t MAIN_SLEEP_MS = 1000;
 

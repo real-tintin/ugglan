@@ -6,7 +6,7 @@
 Welcome to Ugglan's documentation!
 ==================================
 The drone a.k.a "Ugglan" (Swedish for owl) is a DIY build quadcopter,
-using the Raspberry Pi Zero.
+using the Raspberry Pi Zero 2 W.
 
 .. toctree::
    :maxdepth: 2

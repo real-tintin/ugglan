@@ -10,7 +10,7 @@ Components
 ==============
 The drone hardware components are is listed below
 
-* Raspberry Pi Zero
+* Raspberry Pi Zero 2 W
 * Diatone Q450 with PCB
 * Pololu AltIMU-10 v4
 * Afro ESC 20 A
@@ -34,7 +34,7 @@ is communicating over UART, a serial connection. See overview in :numref:`connec
 
 .. _connected_busses:
 .. mermaid::
-    :caption: Overview of the hardware devices connected to the Pi Zero and their respective protocols.
+    :caption: Overview of the hardware devices connected to the Pi Zero 2 W and their respective protocols.
 
     graph TD
         Esc_i -- i2c read 100 kHz --> Raspi
@@ -49,3 +49,25 @@ Wiring
     :width: 100%
 
     Wiring diagram.
+
+
+Single core vs. Multi core
+============================
+During the project, the Raspberry Pi Zero single core processor was upgraded to a 2 W multi core
+processor. As the application is utilizing threading, it was interesting to compare the
+application performance between the two.
+
+In :numref:`task_exec_rate_single_core` and :numref:`task_exec_rate_multi_core` the task execution
+rates in time is shown. As one can see, the execution rates on the multi core processor are much smoother.
+
+.. _task_exec_rate_single_core:
+.. figure:: figures/task_exec_rate_single_core.svg
+    :width: 100%
+
+    Task execution rates on the single core Raspberry Pi Zero.
+
+.. _task_exec_rate_multi_core:
+.. figure:: figures/task_exec_rate_multi_core.svg
+    :width: 100%
+
+    Task execution rates on the multi core Raspberry Pi Zero 2 W.

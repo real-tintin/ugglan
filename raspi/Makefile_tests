@@ -5,5 +5,5 @@
 .PHONY: build_and_run_tests
 
 build_and_run_tests:
-	docker build -f Dockerfile_gcc . -t gcc
-	docker run gcc ./run_tests.sh
+	docker build -f Dockerfile . -t raspi
+	docker run raspi ./run_tests.sh
