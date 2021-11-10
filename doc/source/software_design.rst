@@ -29,15 +29,15 @@ the consumers, see :numref:`drone_sw_design`.
 
         DataLogQueue[(DataLogQueue)]
 
-        ImuAccMag -- push 50 Hz --> DataLogQueue
-        ImuGyro -- push 50 Hz --> DataLogQueue
-        ImuPres -- push 12.5 Hz --> DataLogQueue
-        EscRead -- push 5 Hz --> DataLogQueue
-        RcReceiver -- push 50 Hz --> DataLogQueue
+        ImuAccMag -- push 100 Hz --> DataLogQueue
+        ImuGyro -- push 100 Hz --> DataLogQueue
+        ImuPres -- push 10 Hz --> DataLogQueue
+        EscRead -- push 1 Hz --> DataLogQueue
+        RcReceiver -- push 100 Hz --> DataLogQueue
 
-        DataLogQueue -- last value 50 Hz --> StateEst
-        DataLogQueue -- last value 50 Hz --> StateCtrl
-        DataLogQueue -- last value 50 Hz --> EscWrite
+        DataLogQueue -- last value 100 Hz --> StateEst
+        DataLogQueue -- last value 100 Hz --> StateCtrl
+        DataLogQueue -- last value 100 Hz --> EscWrite
         DataLogQueue -- pack 10 Hz --> DataLogger
 
         subgraph Producers
@@ -61,9 +61,6 @@ push to and the ``DataLogger`` to pack (pop until empty) from. But it also store
 rate i.e., to simplify the signal processing. Note, other tasks than producers may populate
 the queue e.g., estimated states which are used by the ``StateCtrl`` or for offline
 tuning of control laws.
-
-Note, some signals such as the ones from the pressure sensor will only be sampled
-at 12.5 Hz.
 
 Data Logging
 =================

@@ -12,7 +12,7 @@ import data_log.io as data_log_io
 mpl.rcParams['axes.prop_cycle'] = cycler(color='bgrcmyk')
 mpl.rcParams['lines.linewidth'] = 0.5
 
-IMU_SAMPLE_RATE_S = 0.02  # 50 Hz
+IMU_SAMPLE_RATE_S = 0.01  # 100 Hz
 
 TITLE_STR = r'Hard iron offset: $V_x$ = {:.3f}, $V_y$ = {:.3f}, $V_z$ = {:.3f}'
 

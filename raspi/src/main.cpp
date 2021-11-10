@@ -21,15 +21,15 @@
 static const std::filesystem::path DATA_LOG_ROOT = utils::get_env("DATA_LOG_ROOT", std::string(""));
 static const std::string LOGGER_LEVEL = utils::get_env("LOGGER_LEVEL", std::string(""));
 
-static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 20;  // 50 Hz
-static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 20;  // 50 Hz
-static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS   = 80;  // 12.5 Hz
-static const uint32_t TASK_STATE_EST_EXEC_PERIOD_MS   = 20;  // 50 Hz
-static const uint32_t TASK_STATE_CTRL_EXEC_PERIOD_MS  = 20;  // 50 Hz
-static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 200; // 5 Hz
-static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 20;  // 50 Hz
-static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 20;  // 50 Hz
-static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 100; // 10 Hz
+static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 10;   // 100 Hz.
+static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 10;   // 100 Hz.
+static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS   = 100;  // 10 Hz.
+static const uint32_t TASK_STATE_EST_EXEC_PERIOD_MS   = 10;   // 100 Hz.
+static const uint32_t TASK_STATE_CTRL_EXEC_PERIOD_MS  = 10;   // 100 Hz.
+static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 1000; // 1 Hz.
+static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 10;   // 100 Hz.
+static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 10;   // 100 Hz.
+static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 100;  // 10 Hz.
 
 static const uint8_t I2C_ADDRESS_ACC_MAG   = LSM303D_I2C_ADDRESS;
 static const uint8_t I2C_ADDRESS_GYRO      = L3GD20H_I2C_ADDRESS;
@@ -49,7 +49,7 @@ static const std::string I2C_DEVICE_ESC = utils::get_env("I2C_DEV_SW_NORMAL_MODE
 
 static const uint32_t MAIN_SLEEP_MS = 1000;
 
-static const double ATT_EST_INPUT_SAMPLE_RATE_S = 20 / 1e3; // Acc, Mag & Gyro run at 50 Hz
+static const double ATT_EST_INPUT_SAMPLE_RATE_S = double(TASK_STATE_EST_EXEC_PERIOD_MS) / 1e3;
 
 enum class TaskId {
     AccMag,
@@ -592,6 +592,11 @@ void print_env_vars()
 {
     logger.debug("DATA_LOG_ROOT: " + DATA_LOG_ROOT.string());
     logger.debug("LOGGER_LEVEL: " + LOGGER_LEVEL);
+
+    logger.debug("SERIAL_DEVICE_RC_RECEIVER: " + SERIAL_DEVICE_RC_RECEIVER);
+
+    logger.debug("I2C_DEVICE_IMU: " + I2C_DEVICE_IMU);
+    logger.debug("I2C_DEVICE_ESC: " + I2C_DEVICE_IMU);
 
     logger.debug("ATT_EST_KALMAN_Q_SCALE: " + std::to_string(ATT_EST_KALMAN_Q_SCALE));
     logger.debug("ATT_EST_KALMAN_R_0_SCALE: " + std::to_string(ATT_EST_KALMAN_R_0_SCALE));

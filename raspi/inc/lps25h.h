@@ -46,7 +46,7 @@ inline const double LPS25H_TEMP_OFFSET = 42.5; // [C]
 inline const ConfigMap LPS25H_CONFIG_MAP = {
     {LPS25H_REG_RES_CONF, 0b00001111},  // Set highest resolution on pressure and temperature
 
-    {LPS25H_REG_CTRL_REG1, 0b11000000}, // Enable pressure and temperature for continues output at 25 Hz
+    {LPS25H_REG_CTRL_REG1, 0b10110000}, // Enable pressure and temperature for continues output at 12.5 Hz
     {LPS25H_REG_CTRL_REG2, 0b00000000}, // Default
     {LPS25H_REG_CTRL_REG3, 0b00000000}, // Default
     {LPS25H_REG_CTRL_REG4, 0b00000000}, // Default

@@ -13,7 +13,7 @@ from dataclasses import dataclass
 
 mpl.rcParams['lines.linewidth'] = 0.5
 
-IMU_SAMPLE_RATE_S = 0.02  # 50 Hz
+IMU_SAMPLE_RATE_S = 0.01  # 100 Hz
 
 STATIC_GYRO_OFFSET_COMP_SAMPLES = 100
 
