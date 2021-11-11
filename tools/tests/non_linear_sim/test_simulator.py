@@ -7,7 +7,7 @@ from non_linear_sim.pilot_ctrl import PilotCtrl, DEFAULT_PILOT_CTRL_PARAMS, RefI
 from non_linear_sim.simulator import Simulator
 from non_linear_sim.six_dof_model import STATE_ZERO
 
-TEST_DT = 0.02
+TEST_DT = 0.01
 MG = DEFAULT_DRONE_PARAMS.m * DEFAULT_ENV_PARAMS.g
 
 
@@ -26,24 +26,27 @@ def default_sim():
 class TestSimulator:
 
     @staticmethod
-    def test_step_response(default_sim):
-        # TODO: Different states and refs.
-        import matplotlib.pyplot as plt
+    def test_step_for_one_s(default_sim):
+        n_samples_one_s = int(1 / TEST_DT)
 
-        roll_ref = np.pi / 8
-        n_samples_ten_s = int(1 / TEST_DT * 10)
+        for i in range(n_samples_one_s):
+            default_sim.step(ref_input=RefInput(f_z=-MG, roll=np.pi / 2, pitch=-np.pi / 7, yaw_rate=np.pi / 3))
 
-        roll = np.zeros(n_samples_ten_s)
+        assert np.isclose(default_sim.get_t(), 1.0, 1e-9)
 
-        for i in range(n_samples_ten_s):
-            default_sim.step(ref_input=RefInput(f_z=-MG, roll=roll_ref, pitch=0, yaw_rate=0))
-            roll[i] = default_sim.get_6dof_state().n_i[0]
+    @staticmethod
+    @pytest.mark.parametrize("a_b, n_i, exp_imu_a", [
+        (np.array([0, 0, MG]), np.array([0, 0, 0]), np.array([0, 0, 0])),
+        (np.array([0, 0, 0]), np.array([0, 0, 0]), np.array([0, 0, -MG])),
+        (np.array([0, 0, -MG]), np.array([0, 0, 0]), np.array([0, 0, -2 * MG])),
+        (np.array([0, 0, 0]), np.array([np.pi / 2, 0, 0]), np.array([0, -MG, 0])),
+        (np.array([0, 0, 0]), np.array([0, np.pi / 2, 0]), np.array([MG, 0, 0])),
+        (np.array([0, 0, 0]), np.array([0, 0, np.pi]), np.array([0, 0, - MG])),
+    ])
+    def test_body_acc_to_imu_acc(default_sim, a_b, n_i, exp_imu_a):
+        act_imu_a = default_sim._body_acc_to_imu_acc(a_b, n_i, MG)
 
-        plt.plot(roll)
-        plt.show()
-
-        act_roll = default_sim.get_6dof_state().n_i[0]
-        assert abs(act_roll - roll_ref) < 1e-3
+        assert np.all(np.isclose(exp_imu_a, act_imu_a, 1e-9))
 
     @staticmethod
     @pytest.mark.parametrize("phi, theta, psi", [

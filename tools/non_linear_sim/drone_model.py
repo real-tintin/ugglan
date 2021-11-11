@@ -1,10 +1,8 @@
-from dataclasses import dataclass
-
 import numpy as np
-from scipy.integrate import ode
-
+from dataclasses import dataclass
 from multi_body.euclidean_transform import rotation_matrix
 from non_linear_sim.six_dof_model import SixDofModel, State, STATE_ZERO, BodyInput
+from scipy.integrate import ode
 from state_est.physical_const import MASS, TAU_M, I_XX, I_YY, I_ZZ
 
 
@@ -105,7 +103,7 @@ class DroneModel:
     def get_6dof_state(self) -> State:
         return self._6dof_model.get_state()
 
-    def get_t() -> float:
+    def get_t(self) -> float:
         return self._t
 
     def _init_motor_dyn(self):
