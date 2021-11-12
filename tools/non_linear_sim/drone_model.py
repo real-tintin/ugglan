@@ -31,7 +31,7 @@ class DroneParams:
     lz: float = 0.24  # length z [m]
 
     c_fz: float = 8.37e-6  # motor propeller force constant [Ns^2/rad^2]
-    c_mz: float = 8.37e-6 / 50  # m otor propeller torque constant [Nms^2/rad^2]
+    c_mz: float = 8.37e-6 / 50  # motor propeller torque constant [Nms^2/rad^2]
 
     tau_m: float = TAU_M  # motor time constant [s]
 

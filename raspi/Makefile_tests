@@ -2,8 +2,10 @@
 # tests in docker container.
 #
 
+IMAGE_NAME = raspi_host
+
 .PHONY: build_and_run_tests
 
 build_and_run_tests:
-	docker build -f Dockerfile . -t raspi
-	docker run raspi ./run_tests.sh
+	docker build -f Dockerfile . -t ${IMAGE_NAME}
+	docker run ${IMAGE_NAME} ./run_tests.sh

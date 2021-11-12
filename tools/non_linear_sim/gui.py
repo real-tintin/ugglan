@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, Menu
 
 import numpy as np
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
@@ -7,8 +7,12 @@ from matplotlib.figure import Figure
 
 
 # TODO: Draw first by hand. Refactor in the end!
+# Are tabs good? It would be nice to se a change in parameter right away. Maybe some parameters can be changed
+# quickly (e.g., sliders for pilot ctrl) and some "more hidden".
+# * Settings menu with EnvParams, DroneParams, DT and initial state. Makes it easy to add new members.
+# * Would be cool with one subplot which is changeable e.g., checkboxes/marked list for figures to show.
 
-# TODO: Tab/box for  drone params, env params, att_est tuning, noise (imu + vibrations), pilot_ctrl tuning.
+# TODO: Tab/box for  drone params, env params, att_est tuning, noise (imu + vibrations), default_pilot_ctrl tuning.
 # TODO: Feature to select input type (step response or game-pad).
 # TODO: 3d plot of octocopter.
 # TODO: time analysis plot where different signals can be selected.
@@ -25,8 +29,25 @@ class Gui(tk.Tk):
 
         self.title("Non-linear 6dof simulator")
 
-        self._setup_tabs()
+        # self._setup_tabs()
+        self._setup_menu()
         self._setup_plot()
+
+    def _setup_menu(self):
+        # TODO: Refactor this to make it re-usable, setup from a dataclass.
+        # See https://stackoverflow.com/questions/20369754/update-label-of-tkinter-menubar-item
+        menu = Menu(self)
+
+        menu_config = Menu(menu, tearoff=False)
+        #menu_config.add_command(label="Env Params")
+
+        menu_config_env_params = Menu(menu, tearoff=False)
+        menu_config_env_params.add_command(label="variable 1: 123")
+
+        menu_config.add_cascade(label="Env Params", menu=menu_config_env_params)
+        menu.add_cascade(label="Config", menu=menu_config)
+
+        self.config(menu=menu)
 
     def _setup_tabs(self):
         self._tab_ctrl = ttk.Notebook(self)
@@ -54,13 +75,13 @@ class Gui(tk.Tk):
 
         self._plot, = fig.add_subplot(111).plot(t, np.sin(self._sine_freq * np.pi * t))
 
-        self._plot_canvas = FigureCanvasTkAgg(fig, master=self._tab_1)  # A tk.DrawingArea.
+        self._plot_canvas = FigureCanvasTkAgg(fig, master=self)
         self._plot_canvas.draw()
 
         self._plot_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         self._plot_canvas.get_tk_widget().after(10, self._update_plot)
 
-        toolbar = NavigationToolbar2Tk(self._plot_canvas, self._tab_1)
+        toolbar = NavigationToolbar2Tk(self._plot_canvas, self)
         toolbar.update()
 
         self._plot_canvas.get_tk_widget().pack()

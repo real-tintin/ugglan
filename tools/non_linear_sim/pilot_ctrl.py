@@ -1,5 +1,5 @@
 # TODO: This is basically a copy of the target implementation (pilot_controller.cpp). In would be beneficial
-#  if the target implementation could be used instead (DRY).
+#  if the target implementation could be used instead (DRY), see https://github.com/real-tintin/ugglan/issues/13.
 
 import numpy as np
 from dataclasses import dataclass
@@ -28,9 +28,9 @@ class Params:
     L_theta: np.ndarray = np.array([0.4, 3.85, 0.55, 0.02])
     L_psi: np.ndarray = np.array([0.02, 0.04, 0.00])
 
-    anti_windup_say_phi: float = 0.3
-    anti_windup_say_theta: float = 0.3
-    anti_windup_say_psi: float = 2.4
+    anti_windup_sat_phi: float = 0.3
+    anti_windup_sat_theta: float = 0.3
+    anti_windup_sat_psi: float = 2.4
 
 
 DEFAULT_PILOT_CTRL_PARAMS = Params()
@@ -42,8 +42,7 @@ class PilotCtrl:
         self._params = params
         self._dt = dt
 
-        self._state = State()
-        self._ctrl_input = CtrlInput()
+        self.reset()
 
     def update(self, ref_input: RefInput, att_estimate: AttEstimate):
         self._extract_att_estimates(att_estimate)
@@ -54,6 +53,7 @@ class PilotCtrl:
 
     def reset(self):
         self._state = State()
+        self._ctrl_input = CtrlInput()
 
     def get_ctrl_input(self) -> CtrlInput:
         return self._ctrl_input
@@ -83,9 +83,9 @@ class PilotCtrl:
         self._state.x_theta[0] += self._state.x_theta[1] * self._dt
         self._state.x_psi[0] += self._state.x_psi[1] * self._dt
 
-        self._state.x_phi[0] = self._range_sat(self._state.x_phi[0], self._params.anti_windup_say_phi)
-        self._state.x_theta[0] = self._range_sat(self._state.x_theta[0], self._params.anti_windup_say_theta)
-        self._state.x_psi[0] = self._range_sat(self._state.x_psi[0], self._params.anti_windup_say_psi)
+        self._state.x_phi[0] = self._range_sat(self._state.x_phi[0], self._params.anti_windup_sat_phi)
+        self._state.x_theta[0] = self._range_sat(self._state.x_theta[0], self._params.anti_windup_sat_theta)
+        self._state.x_psi[0] = self._range_sat(self._state.x_psi[0], self._params.anti_windup_sat_psi)
 
     def _update_ctrl(self, ref_f_z):
         self._ctrl_input.f_z = ref_f_z

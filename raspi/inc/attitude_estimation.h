@@ -6,7 +6,6 @@
 #include <math.h>
 #include <utils.h>
 #include <statistics.h>
-#include <logger.h>
 #include <eigen/Eigen>
 
 inline const double ATT_EST_KALMAN_Q_SCALE = utils::get_env("ATT_EST_KALMAN_Q_SCALE", 1e2);

@@ -8,7 +8,6 @@ from non_linear_sim.pilot_ctrl import State as PilotCtrlState
 from non_linear_sim.six_dof_model import State as SixDofState
 
 
-# TODO: Unit test this, some steps etc.
 # TODO: Add IMU sensor noise.
 # TODO: Let Att estimator calibrate?
 

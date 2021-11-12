@@ -1,9 +1,9 @@
 # TODO: This is basically a copy of the target implementation (attitude_estimation.cpp). In would be beneficial
-#  if the target implementation could be used instead (DRY). Also, note that another python implementation exists 
-#  under ./state_est/attitude_estimators (AttEstKalman).
+#  if the target implementation could be used instead (DRY), see https://github.com/real-tintin/ugglan/issues/13.
+#  Also, note that another python implementation exists under ./state_est/attitude_estimators (AttEstKalman).
 
 import numpy as np
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 MODULO_ROLL = np.pi
 MODULO_PITCH = np.pi / 2
@@ -34,9 +34,9 @@ class AttState:
 
 @dataclass
 class AttEstimate:
-    roll: AttState = AttState()
-    pitch: AttState = AttState()
-    yaw: AttState = AttState()
+    roll: AttState = field(default_factory=AttState)
+    pitch: AttState = field(default_factory=AttState)
+    yaw: AttState = field(default_factory=AttState)
 
 
 @dataclass
@@ -89,16 +89,7 @@ class AttEstimator:
         ])
         self._H_t = self._H.transpose()
 
-        self._imu_out = ImuOut()
-
-        self._att_est = AttEstimate()
-        self._imu_ang_est = ImuAngleEst()
-
-        self._kalman_roll = KalmanState()
-        self._kalman_pitch = KalmanState()
-        self._kalman_yaw = KalmanState()
-
-        self._is_rolling_var_ready = False
+        self.reset()
 
     def update(self, imu_out: ImuOut):
         self._imu_out = imu_out
@@ -113,11 +104,15 @@ class AttEstimator:
             self._update_yaw()
 
     def reset(self):
-        self._est = AttState()
+        self._att_est = AttEstimate()
+        self._imu_ang_est = ImuAngleEst()
 
         self._kalman_roll = KalmanState()
         self._kalman_pitch = KalmanState()
         self._kalman_yaw = KalmanState()
+
+        self._is_rolling_var_ready = False
+        # TODO: Reset rolling variance.
 
     def get_estimate(self) -> AttEstimate:
         return self._att_est
