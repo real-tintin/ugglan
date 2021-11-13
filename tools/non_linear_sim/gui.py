@@ -1,12 +1,12 @@
 import tkinter as tk
-from tkinter import ttk, Menu
+from functools import partial
+from tkinter import ttk, Menu, simpledialog, messagebox
 
 import numpy as np
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
+from non_linear_sim.simulator import EnvParams, DroneParams
 
-
-# TODO: Draw first by hand. Refactor in the end!
 # Are tabs good? It would be nice to se a change in parameter right away. Maybe some parameters can be changed
 # quickly (e.g., sliders for pilot ctrl) and some "more hidden".
 # * Settings menu with EnvParams, DroneParams, DT and initial state. Makes it easy to add new members.
@@ -18,8 +18,9 @@ from matplotlib.figure import Figure
 # TODO: time analysis plot where different signals can be selected.
 
 # READ: https://python-textbok.readthedocs.io/en/1.0/Introduction_to_GUI_Programming.html
-# Use class design pattern e.g., https://www.pythontutorial.net/tkinter/tkinter-after/: Create an app to call.
-# Make use of menu?
+
+FORMAT_MENU_LABEL = "{key}: {val}"
+
 
 class Gui(tk.Tk):
     PLOT_RATE_MS = 10
@@ -30,24 +31,34 @@ class Gui(tk.Tk):
         self.title("Non-linear 6dof simulator")
 
         # self._setup_tabs()
+        self._env_params = EnvParams()
+        self._drone_params = DroneParams()
+
         self._setup_menu()
         self._setup_plot()
 
     def _setup_menu(self):
-        # TODO: Refactor this to make it re-usable, setup from a dataclass.
-        # See https://stackoverflow.com/questions/20369754/update-label-of-tkinter-menubar-item
-        menu = Menu(self)
+        menu_root = Menu(self)
+        menu_config = Menu(menu_root, tearoff=False)
 
-        menu_config = Menu(menu, tearoff=False)
-        #menu_config.add_command(label="Env Params")
+        menu_env_params = self._setup_interactive_menu_from_dataclass(menu_root, self._env_params)
+        menu_drone_params = self._setup_interactive_menu_from_dataclass(menu_root, self._drone_params)
 
-        menu_config_env_params = Menu(menu, tearoff=False)
-        menu_config_env_params.add_command(label="variable 1: 123")
+        menu_config.add_cascade(label="EnvParams", menu=menu_env_params)
+        menu_config.add_cascade(label="DroneParams", menu=menu_drone_params)
 
-        menu_config.add_cascade(label="Env Params", menu=menu_config_env_params)
-        menu.add_cascade(label="Config", menu=menu_config)
+        menu_root.add_cascade(label="Config", menu=menu_config)
+        self.config(menu=menu_root)
 
-        self.config(menu=menu)
+    def _setup_interactive_menu_from_dataclass(self, menu_root, data_class):
+        menu_dataclass = Menu(menu_root, tearoff=False)
+
+        for idx, member in enumerate(data_class.__annotations__):
+            menu_dataclass_cb = partial(self._menu_dataclass_update, menu_dataclass, idx, data_class, member)
+            menu_dataclass.add_command(label=FORMAT_MENU_LABEL.format(key=member, val=getattr(data_class, member)),
+                                       command=menu_dataclass_cb)
+
+        return menu_dataclass
 
     def _setup_tabs(self):
         self._tab_ctrl = ttk.Notebook(self)
@@ -94,6 +105,46 @@ class Gui(tk.Tk):
 
         self._plot_canvas.draw()
         self._plot_canvas.get_tk_widget().after(self.PLOT_RATE_MS, self._update_plot)
+
+    @staticmethod
+    def _menu_dataclass_update(menu, entry_idx, data_class, member):
+        cast_successful = False
+
+        old_val = getattr(data_class, member)
+        new_val_as_str = simpledialog.askstring(title=FORMAT_MENU_LABEL.format(key=member, val=old_val),
+                                                prompt="Update value:",
+                                                initialvalue=str(old_val))
+
+        if new_val_as_str is None:
+            return
+
+        if isinstance(old_val, int):
+            try:
+                new_val = int(new_val_as_str)
+                cast_successful = True
+            except:
+                messagebox.showerror("Invalid format", "Can't cast string to int, check format.")
+
+        elif isinstance(old_val, float):
+            try:
+                new_val = float(new_val_as_str)
+                cast_successful = True
+            except:
+                messagebox.showerror("Invalid format", "Can't cast string to float, check format.")
+
+        elif isinstance(old_val, np.ndarray):
+            try:
+                new_val = np.array(new_val_as_str)
+                cast_successful = True
+            except:
+                messagebox.showerror("Invalid format", "Can't cast string to ndarray, check format.")
+
+        else:
+            raise NotImplementedError
+
+        if cast_successful:
+            setattr(data_class, member, new_val)
+            menu.entryconfigure(entry_idx, label=FORMAT_MENU_LABEL.format(key=member, val=new_val))
 
 
 def main():
