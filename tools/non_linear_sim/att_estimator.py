@@ -2,12 +2,16 @@
 #  if the target implementation could be used instead (DRY), see https://github.com/real-tintin/ugglan/issues/13.
 #  Also, note that another python implementation exists under ./state_est/attitude_estimators (AttEstKalman).
 
+from collections import deque
+
 import numpy as np
 from dataclasses import dataclass, field
 
 MODULO_ROLL = np.pi
 MODULO_PITCH = np.pi / 2
 MODULO_YAW = np.pi
+
+R_ALMOST_ZERO = 1e-6
 
 
 @dataclass
@@ -61,6 +65,8 @@ class Params:
     scale_R_0: float = 1.0
     scale_R_1: float = 1.0
 
+    rolling_var_window_size: int = 20
+
 
 DEFAULT_ATT_EST_PARAMS = Params()
 
@@ -95,8 +101,7 @@ class AttEstimator:
         self._imu_out = imu_out
 
         self._update_imu_angle_est()
-        # TODO: self._update_rolling_var()
-        self._is_rolling_var_ready = True  # TODO: Rm when rolling var impl.
+        self._update_rolling_var()
 
         if self._is_rolling_var_ready:
             self._update_roll()
@@ -112,10 +117,21 @@ class AttEstimator:
         self._kalman_yaw = KalmanState()
 
         self._is_rolling_var_ready = False
-        # TODO: Reset rolling variance.
+        self._rolling_var_samples_in_buf = 0
+
+        self._rolling_var_roll_angle = deque(maxlen=self._params.rolling_var_window_size)
+        self._rolling_var_pitch_angle = deque(maxlen=self._params.rolling_var_window_size)
+        self._rolling_var_yaw_angle = deque(maxlen=self._params.rolling_var_window_size)
+
+        self._rolling_var_roll_rate = deque(maxlen=self._params.rolling_var_window_size)
+        self._rolling_var_pitch_rate = deque(maxlen=self._params.rolling_var_window_size)
+        self._rolling_var_yaw_rate = deque(maxlen=self._params.rolling_var_window_size)
 
     def get_estimate(self) -> AttEstimate:
         return self._att_est
+
+    def is_calibrated(self) -> bool:
+        return self._is_rolling_var_ready
 
     def _update_imu_angle_est(self):
         self._imu_ang_est.roll = np.arctan2(-self._imu_out.acc_y,
@@ -133,12 +149,28 @@ class AttEstimator:
 
         self._imu_ang_est.yaw = np.arctan2(-b_y, b_x)
 
+    def _update_rolling_var(self):
+        self._rolling_var_roll_angle.append(self._imu_ang_est.roll)
+        self._rolling_var_pitch_angle.append(self._imu_ang_est.pitch)
+        self._rolling_var_yaw_angle.append(self._imu_ang_est.yaw)
+
+        self._rolling_var_roll_rate.append(self._imu_out.ang_rate_x)
+        self._rolling_var_pitch_rate.append(self._imu_out.ang_rate_y)
+        self._rolling_var_yaw_rate.append(self._imu_out.ang_rate_z)
+
+        self._rolling_var_samples_in_buf += 1
+
+        if self._rolling_var_samples_in_buf >= self._params.rolling_var_window_size:
+            self._is_rolling_var_ready = True
+        else:
+            self._is_rolling_var_ready = False
+
     def _update_roll(self):
         self._update_est(
             self._imu_ang_est.roll,
             self._imu_out.ang_rate_x,
-            1.0,  # TODO
-            1.0,  # TODO
+            np.var(self._rolling_var_roll_angle),
+            np.var(self._rolling_var_roll_rate),
             self._kalman_roll,
             self._att_est.roll,
             MODULO_ROLL,
@@ -148,8 +180,8 @@ class AttEstimator:
         self._update_est(
             self._imu_ang_est.pitch,
             self._imu_out.ang_rate_y,
-            1.0,  # TODO
-            1.0,  # TODO
+            np.var(self._rolling_var_pitch_angle),
+            np.var(self._rolling_var_pitch_rate),
             self._kalman_pitch,
             self._att_est.pitch,
             MODULO_PITCH,
@@ -159,8 +191,8 @@ class AttEstimator:
         self._update_est(
             self._imu_ang_est.yaw,
             self._imu_out.ang_rate_z,
-            1.0,  # TODO
-            1.0,  # TODO
+            np.var(self._rolling_var_yaw_angle),
+            np.var(self._rolling_var_yaw_rate),
             self._kalman_yaw,
             self._att_est.yaw,
             MODULO_YAW,
@@ -175,8 +207,8 @@ class AttEstimator:
         kalamn_state.z[0] = z_0
         kalamn_state.z[1] = z_1
 
-        kalamn_state.R[0, 0] = self._params.scale_R_0 * r_0
-        kalamn_state.R[1, 1] = self._params.scale_R_1 * r_1
+        kalamn_state.R[0, 0] = self._params.scale_R_0 * max(r_0, R_ALMOST_ZERO)
+        kalamn_state.R[1, 1] = self._params.scale_R_1 * max(r_1, R_ALMOST_ZERO)
 
         self._update_kalman_state(kalamn_state)
         self._kalman_state_to_att_(kalamn_state, att_state)

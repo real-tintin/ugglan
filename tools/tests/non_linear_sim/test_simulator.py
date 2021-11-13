@@ -4,7 +4,7 @@ import pytest
 from non_linear_sim.att_estimator import AttEstimator, DEFAULT_ATT_EST_PARAMS
 from non_linear_sim.drone_model import DEFAULT_ENV_PARAMS, DEFAULT_DRONE_PARAMS
 from non_linear_sim.pilot_ctrl import PilotCtrl, DEFAULT_PILOT_CTRL_PARAMS, RefInput
-from non_linear_sim.simulator import Simulator
+from non_linear_sim.simulator import Simulator, DEFAULT_IMU_NOISE
 from non_linear_sim.six_dof_model import STATE_ZERO
 
 TEST_DT = 0.01
@@ -19,6 +19,7 @@ def default_sim():
         six_dof_state=STATE_ZERO,
         drone_params=DEFAULT_DRONE_PARAMS,
         env_params=DEFAULT_ENV_PARAMS,
+        imu_noise=DEFAULT_IMU_NOISE,
         dt=TEST_DT,
     )
 
