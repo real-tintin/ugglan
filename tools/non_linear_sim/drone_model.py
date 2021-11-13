@@ -17,7 +17,11 @@ class CtrlInput:
 @dataclass
 class DroneParams:
     m: float = MASS  # mass [kg]
-    I_drone: np.ndarray = np.diag([I_XX, I_YY, I_ZZ])  # moi of drone body [kg/m^3]
+
+    I_drone_xx: float = I_XX  # moi of drone body about x [kg/m^3]
+    I_drone_yy: float = I_YY  # moi of drone body about y [kg/m^3]
+    I_drone_zz: float = I_ZZ  # moi of drone body about z [kg/m^3]
+
     I_motor_zz: float = 1e-4  # moi of drone motor & propeller about z [kg/m^3]
 
     Axz: float = 0.004  # area xz-plane [m^2]
@@ -70,7 +74,9 @@ class DroneModel:
 
         self._init_motor_dyn()
         self._6dof_model = SixDofModel(mass=drone_params.m,
-                                       moment_of_inertia=drone_params.I_drone,
+                                       moment_of_inertia=np.diag([drone_params.I_drone_xx,
+                                                                  drone_params.I_drone_yy,
+                                                                  drone_params.I_drone_zz]),
                                        state=state,
                                        dt=dt)
 

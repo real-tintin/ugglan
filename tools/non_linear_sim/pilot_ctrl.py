@@ -24,9 +24,19 @@ class State:
 
 @dataclass
 class Params:
-    L_phi: np.ndarray = np.array([0.4, 3.85, 0.55, 0.02])
-    L_theta: np.ndarray = np.array([0.4, 3.85, 0.55, 0.02])
-    L_psi: np.ndarray = np.array([0.02, 0.04, 0.00])
+    L_phi_0: float = 0.40
+    L_phi_1: float = 3.85
+    L_phi_2: float = 0.55
+    L_phi_3: float = 0.02
+
+    L_theta_0: float = 0.40
+    L_theta_1: float = 3.85
+    L_theta_2: float = 0.55
+    L_theta_3: float = 0.02
+
+    L_psi_0: float = 0.02
+    L_psi_1: float = 0.04
+    L_psi_2: float = 0.00
 
     anti_windup_sat_phi: float = 0.3
     anti_windup_sat_theta: float = 0.3
@@ -39,6 +49,10 @@ DEFAULT_PILOT_CTRL_PARAMS = Params()
 class PilotCtrl:
 
     def __init__(self, params: Params, dt: float):
+        self._L_phi = np.array([params.L_phi_0, params.L_phi_1, params.L_phi_2, params.L_phi_3])
+        self._L_theta = np.array([params.L_theta_0, params.L_theta_1, params.L_theta_2, params.L_theta_3])
+        self._L_psi = np.array([params.L_psi_0, params.L_psi_1, params.L_psi_2])
+
         self._params = params
         self._dt = dt
 
@@ -90,9 +104,9 @@ class PilotCtrl:
     def _update_ctrl(self, ref_f_z):
         self._ctrl_input.f_z = ref_f_z
 
-        self._ctrl_input.m_x = -np.dot(self._params.L_phi, self._state.x_phi)
-        self._ctrl_input.m_y = -np.dot(self._params.L_theta, self._state.x_theta)
-        self._ctrl_input.m_z = -np.dot(self._params.L_psi, self._state.x_psi)
+        self._ctrl_input.m_x = -np.dot(self._L_phi, self._state.x_phi)
+        self._ctrl_input.m_y = -np.dot(self._L_theta, self._state.x_theta)
+        self._ctrl_input.m_z = -np.dot(self._L_psi, self._state.x_psi)
 
     @staticmethod
     def _range_sat(x, v):
