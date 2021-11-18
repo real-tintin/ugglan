@@ -20,6 +20,9 @@ setup(
         'numpy',
         'pandas',
         'scipy',
+        'pyqtgraph',
+        'PyQt5',
+        'PyOpenGL',
     ],
     python_requires='>=3.7'
 )
