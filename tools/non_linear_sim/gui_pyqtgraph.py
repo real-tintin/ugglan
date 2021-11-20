@@ -19,16 +19,11 @@ from non_linear_sim.simulator import Simulator
 from non_linear_sim.six_dof_model import STATE_ZERO as SIX_DOF_STATE_ZERO
 from non_linear_sim.threaded_task import ThreadedTask
 
+
 # TODO: Some method to update simulation model, menu, buttons etc.
-# TODO: Select subplot with breakout?
-# TODO: Use MG for -fz as default value.
+# TODO: Refactor t_end, t_window_size logic. Add GuiParams? Add option to stop for ref?
 # TODO: Gamepad logic class and refactor with ref step.
 # TODO: Subplots to add: Pilotctrl, att_est, motor_ang_rate
-
-GUI_REFRESH_RATE_S = 1 / 30  # 30 Hz
-N_SUBPLOTS = 3
-
-DEFAULT_TIME_WINDOW_SIZE_S = 10.0
 
 
 class Subplot(Enum):
@@ -58,30 +53,31 @@ class GuiState(Enum):
 
 
 @dataclass
-class SimParams:
+class ConfSim:
     dt_s: float = 0.01
     standstill_calib_att_est: bool = True
 
 
-DEFAULT_SIM_PARAMS = SimParams()
+DEFAULT_CONF_SIM = ConfSim()
 
 
 @dataclass
-class ConfigStepResponse:
-    t_end_s: float = 10.0
-    ref_input: RefInput = RefInput(f_z=-11.0, roll=-np.pi / 32, pitch=0.0, yaw_rate=0.0)
+class ConfGui:
+    refresh_rate_s: float = 1 / 30  # 30 Hz
+    t_window_size_s: float = 10.0
 
 
-DEFAULT_CONFIG_STEP_RESPONSE = ConfigStepResponse()
+DEFAULT_CONF_GUI = ConfGui()
 
 
 @dataclass
-class ConfigGamepad:
-    t_window_s: float = 10.0
-    ref_input_scale: RefInput = RefInput(f_z=-12.0, roll=np.pi / 4, pitch=np.pi / 4, yaw_rate=np.pi)
+class ConfStepResponse:
+    ref_input: RefInput
 
 
-DEFAULT_CONFIG_GAMEPAD = ConfigGamepad()
+@dataclass
+class ConfGamepad:
+    ref_input_scale: RefInput
 
 
 class SubplotWidget(ABC):
@@ -171,10 +167,11 @@ class Gui(QtGui.QMainWindow):
         self._drone_params = DEFAULT_DRONE_PARAMS
 
         self._imu_noise = DEFAULT_IMU_NOISE
-        self._sim_params = DEFAULT_SIM_PARAMS
+        self._conf_sim = DEFAULT_CONF_SIM
+        self._conf_gui = DEFAULT_CONF_GUI
 
-        self._config_step_response = DEFAULT_CONFIG_STEP_RESPONSE
-        self._config_gamepad = DEFAULT_CONFIG_GAMEPAD
+        self._conf_step_response = self._get_default_conf_step_response()
+        self._conf_gamepad = self._get_default_conf_gamepad()
 
         self._setup_gui()
 
@@ -223,6 +220,16 @@ class Gui(QtGui.QMainWindow):
 
         self._gui_state = GuiState.INIT
 
+    def _get_default_conf_step_response(self):
+        mg = self._drone_params.m * self._env_params.g
+
+        return ConfStepResponse(ref_input=RefInput(f_z=-mg, roll=0.0, pitch=0.0, yaw_rate=0.0))
+
+    def _get_default_conf_gamepad(self):
+        mg = self._drone_params.m * self._env_params.g
+
+        return ConfGamepad(ref_input_scale=RefInput(f_z=-2 * mg, roll=0.0, pitch=0.0, yaw_rate=0.0))
+
     def _run(self):
         if self._gui_state != GuiState.RUNNING:
             self._init_rolling_sim_data()
@@ -242,7 +249,7 @@ class Gui(QtGui.QMainWindow):
     def _run_gui_loop(self):
         self._gui_timer = QtCore.QTimer()
         self._gui_timer.timeout.connect(self._update_gui)
-        self._gui_timer.start(int(GUI_REFRESH_RATE_S * 1e3))
+        self._gui_timer.start(int(self._conf_gui.refresh_rate_s * 1e3))
 
     def _stop_gui_loop(self):
         self._gui_timer.stop()
@@ -265,7 +272,7 @@ class Gui(QtGui.QMainWindow):
 
     def _init_rolling_sim_data(self):
         self._rolling_sim_data = RollingSimData(
-            n_samples=int(DEFAULT_TIME_WINDOW_SIZE_S / GUI_REFRESH_RATE_S / 2))  # TODO: Why / 2?
+            n_samples=int(self._conf_gui.t_window_size_s / self._conf_gui.refresh_rate_s / 2))  # TODO: Why / 2?
 
     def _init_simulator(self):
         self._simulator = Simulator(
@@ -275,7 +282,7 @@ class Gui(QtGui.QMainWindow):
             drone_params=self._drone_params,
             env_params=self._env_params,
             imu_noise=self._imu_noise,
-            dt=self._sim_params.dt_s,
+            dt=self._conf_sim.dt_s,
         )
 
     def _run_sim_in_thread(self):
@@ -283,14 +290,14 @@ class Gui(QtGui.QMainWindow):
         Note, this approach is fine (w.r.t race conditions) as long as we
         only read from the simulator i.e., non-modifiable access.
         """
-        self._threaded_task_exec_sim = ThreadedTask(cb=self._exec_simulator, exec_period_s=self._sim_params.dt_s)
+        self._threaded_task_exec_sim = ThreadedTask(cb=self._exec_simulator, exec_period_s=self._conf_sim.dt_s)
         self._threaded_task_exec_sim.launch()
 
     def _stop_sim_in_thread(self):
         self._threaded_task_exec_sim.teardown()
 
     def _exec_simulator(self):
-        self._simulator.step(ref_input=self._config_step_response.ref_input)
+        self._simulator.step(ref_input=self._conf_step_response.ref_input)
 
     def _update_gui(self):
         self._update_rolling_sim_data()
@@ -324,10 +331,10 @@ class Gui(QtGui.QMainWindow):
             est_pitch_acc=self._simulator.get_att_estimate().pitch.acc,
             est_yaw_acc=self._simulator.get_att_estimate().yaw.acc,
 
-            ref_fz=self._config_step_response.ref_input.f_z,
-            ref_roll=self._config_step_response.ref_input.roll,
-            ref_pitch=self._config_step_response.ref_input.pitch,
-            ref_yaw_rate=self._config_step_response.ref_input.yaw_rate,
+            ref_fz=self._conf_step_response.ref_input.f_z,
+            ref_roll=self._conf_step_response.ref_input.roll,
+            ref_pitch=self._conf_step_response.ref_input.pitch,
+            ref_yaw_rate=self._conf_step_response.ref_input.yaw_rate,
 
             ctrl_fz=self._simulator.get_ctrl_input().f_z,
             ctrl_mx=self._simulator.get_ctrl_input().m_x,

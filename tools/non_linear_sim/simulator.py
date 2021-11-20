@@ -1,5 +1,7 @@
-import numpy as np
 from dataclasses import dataclass
+
+import numpy as np
+
 from multi_body.euclidean_transform import rotation_matrix
 from non_linear_sim.att_estimator import AttEstimator, ImuOut, AttEstimate
 from non_linear_sim.att_estimator import Params as AttEstParams
