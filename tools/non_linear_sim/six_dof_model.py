@@ -30,6 +30,8 @@ class State:
     w_b: np.ndarray = np.zeros(3)  # rotational velocity body-frame
     wp_b: np.ndarray = np.zeros(3)  # rotational acceleration body-frame
 
+    q: np.ndarray = np.zeros(4)  # rotation as an quaternion (yaw -> pitch -> roll)
+
 
 STATE_ZERO = State()
 
@@ -42,7 +44,7 @@ class SixDofModel:
     """
 
     def __init__(self, mass: float, moment_of_inertia: np.ndarray,
-                 state: State = STATE_ZERO, dt: float = 0.01):
+                 dt: float, state: State = STATE_ZERO):
         self._m = mass
         self._I_b = moment_of_inertia
         self._I_b_inv = np.linalg.inv(self._I_b)
@@ -77,6 +79,8 @@ class SixDofModel:
             n_i=n_i,
             w_b=w_b,
             wp_b=wp_b,
+
+            q=q,
         )
 
     def reset(self, state: State = STATE_ZERO):
@@ -149,7 +153,7 @@ class SixDofModel:
         q_theta = np.array([np.cos(n[1] / 2), 0, np.sin(n[1] / 2), 0])
         q_psi = np.array([np.cos(n[2] / 2), 0, 0, np.sin(n[2] / 2)])
 
-        return self._quat_multi(q_psi, self._quat_multi(q_theta, q_psi))
+        return self._quat_multi(q_psi, self._quat_multi(q_theta, q_phi))
 
     @staticmethod
     def _quat_to_euler(q: np.ndarray) -> np.ndarray:

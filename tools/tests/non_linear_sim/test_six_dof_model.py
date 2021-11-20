@@ -15,10 +15,12 @@ STATE_NON_ZERO = State(
     w_b=np.random.rand(3),
 )
 
+TEST_DT = 0.01
+
 
 class UnitSixDofModel(SixDofModel):
     def __init__(self, state: State = STATE_ZERO):
-        super().__init__(mass=1.0, moment_of_inertia=np.eye(3), state=state)
+        super().__init__(mass=1.0, moment_of_inertia=np.eye(3), dt=TEST_DT, state=state)
 
 
 @pytest.fixture
@@ -70,6 +72,21 @@ class TestSixDofModel:
         state = unit_model_zero_init.get_state()
         assert np.all(np.isclose(state.v_b, 1e-9))
         assert np.all(np.isclose(state.w_b, 1e-9))
+
+    @pytest.mark.parametrize("init_n_i, expression", [
+        (np.array([np.pi / 4, 0, 0]), "state.r_i[1] < 0"),
+        (np.array([-np.pi / 8, 0, 0]), "state.r_i[1] > 0"),
+        (np.array([0, -np.pi / 4, 0]), "state.r_i[0] > 0"),
+        (np.array([0, np.pi / 8, 0]), "state.r_i[0] < 0"),
+        (np.array([0, 0, np.pi]), "np.all(np.isclose(state.r_i))"),
+    ])
+    def test_translation_using_rotation_and_fz(self, unit_model_zero_init, init_n_i, expression):
+        unit_model_zero_init.reset(state=State(n_i=init_n_i))
+
+        self.step_n_times(unit_model_zero_init, BodyInput(fx=0, fy=0, fz=-1, mx=0, my=0, mz=0), n=20)
+        state = unit_model_zero_init.get_state()
+
+        assert expression
 
     @staticmethod
     def step_n_times(model: SixDofModel, body_input: BodyInput, n: int):

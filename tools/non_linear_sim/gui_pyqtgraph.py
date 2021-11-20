@@ -1,6 +1,5 @@
 import sys
 from abc import ABC, abstractmethod
-from copy import copy
 from dataclasses import dataclass
 from enum import Enum
 from typing import Union, Callable
@@ -8,6 +7,7 @@ from typing import Union, Callable
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
+from PyQt5.QtGui import QMatrix4x4, QQuaternion
 from pyqtgraph.Qt import QtGui, QtWidgets, QtCore
 
 from non_linear_sim.att_estimator import DEFAULT_ATT_EST_PARAMS
@@ -51,6 +51,12 @@ class GridPos(Enum):
     BOTTOM_RIGHT = 3
 
 
+class GuiState(Enum):
+    INIT = 0
+    RUNNING = 1
+    STOPPED = 2
+
+
 @dataclass
 class SimParams:
     dt_s: float = 0.01
@@ -63,7 +69,7 @@ DEFAULT_SIM_PARAMS = SimParams()
 @dataclass
 class ConfigStepResponse:
     t_end_s: float = 10.0
-    ref_input: RefInput = RefInput(f_z=-11.0, roll=0.0, pitch=0.0, yaw_rate=0.0)
+    ref_input: RefInput = RefInput(f_z=-11.0, roll=-np.pi / 32, pitch=0.0, yaw_rate=0.0)
 
 
 DEFAULT_CONFIG_STEP_RESPONSE = ConfigStepResponse()
@@ -98,35 +104,43 @@ class SixDofWidget(SubplotWidget):
     def __init__(self, data_cb: Callable):
         super().__init__(data_cb)
 
-        # TODO: Should be a 3d-drone object.
-        self._scatter = gl.GLScatterPlotItem(pos=np.zeros(3))
-        self._grid = gl.GLGridItem(size=QtGui.QVector3D(20, 20, 10))
+        self._drone = self.get_meshed_drone()
+        self._mesh = gl.GLMeshItem(meshdata=self._drone, smooth=True, drawEdges=True, shader='balloon')
+        self._grid = gl.GLGridItem(size=QtGui.QVector3D(10, 10, 10))
         self._axis = gl.GLAxisItem()
 
         self._base_widget = gl.GLViewWidget()
-        self._base_widget.addItem(self._scatter)
+        self._base_widget.addItem(self._mesh)
         self._base_widget.addItem(self._grid)
         self._base_widget.addItem(self._axis)
 
-    def _update(self, pos: np.ndarray, angle: np.ndarray):
-        self._scatter.setData(pos=self._flip_z_axis(pos))
+    def _update(self, r_i: np.ndarray, q: np.ndarray):
+        """
+        Transforms and updates the mesh item.
+            1. Axis in 6dof is rotated with pi about x, hence -y and -z.
+            2. Rotate using quaternion (yaw -> pitch -> roll).
+        """
+        transform = QMatrix4x4()
+
+        transform.translate(r_i[0], -r_i[1], -r_i[2])
+        transform.rotate(QQuaternion(*q))
+
+        self._mesh.setTransform(transform)
 
     @staticmethod
-    def _flip_z_axis(pos):
-        pos_negative_z = copy(pos)
-        pos_negative_z[2] *= -1  # Can it be done via the GLGridItem instead?
-
-        return pos_negative_z
+    def get_meshed_drone():
+        return gl.MeshData.cylinder(rows=10, cols=20, radius=[0.1, 0.2], length=0.05)  # TODO: Replace by actual drone.
 
 
 class AttRefWidget(SubplotWidget):
-    def __init__(self, data_cb: Callable, y_label: str, y_unit: str):
+    def __init__(self, data_cb: Callable, title: str, y_label: str, y_unit: str):
         super().__init__(data_cb)
 
-        self._base_widget = pg.PlotWidget()
+        self._base_widget = pg.PlotWidget(title=title)
         self._base_widget.setLabel('bottom', 'Time', units='s')
         self._base_widget.setLabel('left', y_label, units=y_unit)
         self._base_widget.addLegend()
+        self._base_widget.showGrid(x=True, y=True)
 
         self._plot_att_act = pg.PlotDataItem(pen=pg.mkPen(color="b", style=QtCore.Qt.SolidLine), name='act')
         self._plot_att_est = pg.PlotDataItem(pen=pg.mkPen(color="r", style=QtCore.Qt.SolidLine), name='est')
@@ -189,11 +203,11 @@ class Gui(QtGui.QMainWindow):
         def _setup_menu_and_actions():
             menuBar = self.menuBar()
 
-            self._reset_action = menuBar.addAction("&Start")
-            self._reset_action.triggered.connect(self._start)
+            self._run_action = menuBar.addAction("&Run")
+            self._run_action.triggered.connect(self._run)
 
-            self._reset_action = menuBar.addAction("&Stop")
-            self._reset_action.triggered.connect(self._stop)
+            self._stop_action = menuBar.addAction("&Stop")
+            self._stop_action.triggered.connect(self._stop)
 
             # Creating menus using a QMenu object
             # fileMenu = QMenu("&File", self)
@@ -207,17 +221,25 @@ class Gui(QtGui.QMainWindow):
         _setup_and_place_widgets_in_grid()
         _setup_menu_and_actions()
 
-    def _start(self):
-        self._init_rolling_sim_data()
-        self._init_simulator()
-        self._start_sim_in_thread()
-        self._start_gui_loop()
+        self._gui_state = GuiState.INIT
+
+    def _run(self):
+        if self._gui_state != GuiState.RUNNING:
+            self._init_rolling_sim_data()
+            self._init_simulator()
+            self._run_sim_in_thread()
+            self._run_gui_loop()
+
+        self._gui_state = GuiState.RUNNING
 
     def _stop(self):
-        self._stop_sim_in_thread()
-        self._stop_gui_loop()
+        if self._gui_state == GuiState.RUNNING:
+            self._stop_sim_in_thread()
+            self._stop_gui_loop()
 
-    def _start_gui_loop(self):
+        self._gui_state = GuiState.STOPPED
+
+    def _run_gui_loop(self):
         self._gui_timer = QtCore.QTimer()
         self._gui_timer.timeout.connect(self._update_gui)
         self._gui_timer.start(int(GUI_REFRESH_RATE_S * 1e3))
@@ -256,7 +278,7 @@ class Gui(QtGui.QMainWindow):
             dt=self._sim_params.dt_s,
         )
 
-    def _start_sim_in_thread(self):
+    def _run_sim_in_thread(self):
         """
         Note, this approach is fine (w.r.t race conditions) as long as we
         only read from the simulator i.e., non-modifiable access.
@@ -322,19 +344,19 @@ class Gui(QtGui.QMainWindow):
 
     def _init_roll_ref_widget(self):
         return AttRefWidget(data_cb=self._cb_roll_ref_widget,
-                            y_label="roll", y_unit="rad")
+                            title="Roll", y_label="Angle", y_unit="rad")
 
     def _init_pitch_ref_widget(self):
         return AttRefWidget(data_cb=self._cb_pitch_ref_widget,
-                            y_label="pitch", y_unit="rad")
+                            title="Pitch", y_label="Angle", y_unit="rad")
 
     def _init_yaw_rate_ref_widget(self):
         return AttRefWidget(data_cb=self._cb_yaw_rate_ref_widget,
-                            y_label="yaw-rate", y_unit="rad/s")
+                            title="Yaw-rate", y_label="Angular-rate", y_unit="rad/s")
 
     def _cb_6dof_widget(self):
-        return {"pos": self._simulator.get_6dof_state().r_i,
-                "angle": self._simulator.get_6dof_state().n_i}
+        return {"r_i": self._simulator.get_6dof_state().v_i,
+                "q": self._simulator.get_6dof_state().q}
 
     def _cb_roll_ref_widget(self):
         return {"t_s": self._rolling_sim_data.t_s,
@@ -355,7 +377,7 @@ class Gui(QtGui.QMainWindow):
                 "att_ref": self._rolling_sim_data.ref_yaw_rate}
 
     def closeEvent(self, event):
-        self._stop_sim_in_thread()
+        self._stop()
 
 
 def main():
