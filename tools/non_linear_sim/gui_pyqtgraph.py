@@ -23,6 +23,7 @@ from non_linear_sim.threaded_task import ThreadedTask
 # TODO: Select subplot with breakout?
 # TODO: Use MG for -fz as default value.
 # TODO: Gamepad logic class and refactor with ref step.
+# TODO: Subplots to add: Pilotctrl, att_est, motor_ang_rate
 
 GUI_REFRESH_RATE_S = 1 / 30  # 30 Hz
 N_SUBPLOTS = 3
@@ -161,13 +162,7 @@ class Gui(QtGui.QMainWindow):
         self._config_step_response = DEFAULT_CONFIG_STEP_RESPONSE
         self._config_gamepad = DEFAULT_CONFIG_GAMEPAD
 
-        self._rolling_sim_data = RollingSimData(
-            n_samples=int(DEFAULT_TIME_WINDOW_SIZE_S / GUI_REFRESH_RATE_S / 2))  # TODO: Why / 2?
-
-        self._init_simulator()
         self._setup_gui()
-        self._launch_sim_in_thread()
-        self._start_gui()
 
     def _setup_gui(self):
         def _conf_main_window():
@@ -191,15 +186,44 @@ class Gui(QtGui.QMainWindow):
             for grid_pos, widget in self._subplot_widget_map.items():
                 self._place_widget_in_grid(widget=widget.get_base_widget(), grid_pos=grid_pos)
 
+        def _setup_menu_and_actions():
+            menuBar = self.menuBar()
+
+            self._reset_action = menuBar.addAction("&Start")
+            self._reset_action.triggered.connect(self._start)
+
+            self._reset_action = menuBar.addAction("&Stop")
+            self._reset_action.triggered.connect(self._stop)
+
+            # Creating menus using a QMenu object
+            # fileMenu = QMenu("&File", self)
+            # menuBar.addMenu(fileMenu)
+            # Creating menus using a title
+            # editMenu = menuBar.addMenu("&Edit")
+
         _conf_main_window()
         _create_grid()
         _init_default_subplot_widget_map()
         _setup_and_place_widgets_in_grid()
+        _setup_menu_and_actions()
 
-    def _start_gui(self):
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self._update_gui)
-        self.timer.start(int(GUI_REFRESH_RATE_S * 1e3))
+    def _start(self):
+        self._init_rolling_sim_data()
+        self._init_simulator()
+        self._start_sim_in_thread()
+        self._start_gui_loop()
+
+    def _stop(self):
+        self._stop_sim_in_thread()
+        self._stop_gui_loop()
+
+    def _start_gui_loop(self):
+        self._gui_timer = QtCore.QTimer()
+        self._gui_timer.timeout.connect(self._update_gui)
+        self._gui_timer.start(int(GUI_REFRESH_RATE_S * 1e3))
+
+    def _stop_gui_loop(self):
+        self._gui_timer.stop()
 
     def _place_widget_in_grid(self, widget: Union[pg.PlotWidget, gl.GLViewWidget], grid_pos: GridPos):
         if grid_pos == GridPos.TOP_LEFT:
@@ -217,6 +241,10 @@ class Gui(QtGui.QMainWindow):
         else:
             raise ValueError
 
+    def _init_rolling_sim_data(self):
+        self._rolling_sim_data = RollingSimData(
+            n_samples=int(DEFAULT_TIME_WINDOW_SIZE_S / GUI_REFRESH_RATE_S / 2))  # TODO: Why / 2?
+
     def _init_simulator(self):
         self._simulator = Simulator(
             att_est_params=self._att_est_params,
@@ -228,13 +256,16 @@ class Gui(QtGui.QMainWindow):
             dt=self._sim_params.dt_s,
         )
 
-    def _launch_sim_in_thread(self):
+    def _start_sim_in_thread(self):
         """
         Note, this approach is fine (w.r.t race conditions) as long as we
         only read from the simulator i.e., non-modifiable access.
         """
         self._threaded_task_exec_sim = ThreadedTask(cb=self._exec_simulator, exec_period_s=self._sim_params.dt_s)
         self._threaded_task_exec_sim.launch()
+
+    def _stop_sim_in_thread(self):
+        self._threaded_task_exec_sim.teardown()
 
     def _exec_simulator(self):
         self._simulator.step(ref_input=self._config_step_response.ref_input)
@@ -324,7 +355,7 @@ class Gui(QtGui.QMainWindow):
                 "att_ref": self._rolling_sim_data.ref_yaw_rate}
 
     def closeEvent(self, event):
-        self._threaded_task_exec_sim.teardown()
+        self._stop_sim_in_thread()
 
 
 def main():
