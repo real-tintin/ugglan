@@ -7,7 +7,7 @@ from typing import Union, Callable
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
-from PyQt5.QtGui import QMatrix4x4, QQuaternion
+from PyQt5.QtGui import QMatrix4x4, QQuaternion, QFont
 from pyqtgraph.Qt import QtGui, QtWidgets, QtCore
 
 from non_linear_sim.att_estimator import DEFAULT_ATT_EST_PARAMS
@@ -20,10 +20,9 @@ from non_linear_sim.six_dof_model import STATE_ZERO as SIX_DOF_STATE_ZERO
 from non_linear_sim.threaded_task import ThreadedTask
 
 
-# TODO: Some method to update simulation model, menu, buttons etc.
-# TODO: Refactor t_end, t_window_size logic. Add GuiParams? Add option to stop for ref?
+# TODO: Add menus for update of all conf and params.
 # TODO: Gamepad logic class and refactor with ref step.
-# TODO: Subplots to add: Pilotctrl, att_est, motor_ang_rate
+# TODO: Subplots to add: Pilotctrl, att_est and motor_ang_rate.
 
 
 class Subplot(Enum):
@@ -98,24 +97,25 @@ class SubplotWidget(ABC):
 
 class SixDofWidget(SubplotWidget):
     def __init__(self, data_cb: Callable):
+        """
+        Note, as the axis in the 6dof model is rotated with
+        pi about x, we set -y and -z.
+        """
         super().__init__(data_cb)
 
-        self._drone = self.get_meshed_drone()
-        self._mesh = gl.GLMeshItem(meshdata=self._drone, smooth=True, drawEdges=True, shader='balloon')
-        self._grid = gl.GLGridItem(size=QtGui.QVector3D(10, 10, 10))
-        self._axis = gl.GLAxisItem()
+        self._mesh = gl.GLMeshItem(meshdata=self.get_meshed_drone(), smooth=True, drawEdges=True, shader='balloon')
 
         self._base_widget = gl.GLViewWidget()
         self._base_widget.addItem(self._mesh)
-        self._base_widget.addItem(self._grid)
-        self._base_widget.addItem(self._axis)
+
+        self._base_widget.addItem(gl.GLGridItem(size=QtGui.QVector3D(10, 10, 10)))
+        self._base_widget.addItem(gl.GLAxisItem(QtGui.QVector3D(1, -1, -1)))
+
+        self._base_widget.addItem(gl.GLTextItem(pos=[1, 0, 0], text='x (m)', font=QFont('Helvetica', 7)))
+        self._base_widget.addItem(gl.GLTextItem(pos=[0, -1, 0], text='y (m)', font=QFont('Helvetica', 7)))
+        self._base_widget.addItem(gl.GLTextItem(pos=[0, 0, -1], text='z (m)', font=QFont('Helvetica', 7)))
 
     def _update(self, r_i: np.ndarray, q: np.ndarray):
-        """
-        Transforms and updates the mesh item.
-            1. Axis in 6dof is rotated with pi about x, hence -y and -z.
-            2. Rotate using quaternion (yaw -> pitch -> roll).
-        """
         transform = QMatrix4x4()
 
         transform.translate(r_i[0], -r_i[1], -r_i[2])
