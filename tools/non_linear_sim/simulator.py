@@ -39,13 +39,17 @@ class Simulator:
         self._drone_model = DroneModel(state=six_dof_state, drone_params=drone_params, env_params=env_params, dt=dt)
         self._imu_noise = imu_noise
         self._mg = drone_params.m * env_params.g
+        self._imu_out = ImuOut()
 
         if standstill_calib_att_est:
             self._calib_att_est()
 
     def step(self, ref_input: RefInput):
         self._drone_model.step(ctrl_input=self._pilot_ctrl.get_ctrl_input())
-        self._att_estimator.update(imu_out=self._extract_imu_out(self._drone_model.get_6dof_state()))
+
+        self._imu_out = self._extract_imu_out(self._drone_model.get_6dof_state())
+        self._att_estimator.update(imu_out=self._imu_out)
+
         self._pilot_ctrl.update(ref_input=ref_input, att_estimate=self._att_estimator.get_estimate())
 
     def get_6dof_state(self):
@@ -59,6 +63,9 @@ class Simulator:
 
     def get_pilot_ctrl_state(self) -> PilotCtrlState:
         return self._pilot_ctrl.get_state()
+
+    def get_imu_out(self) -> ImuOut:
+        return self._imu_out
 
     def get_t(self) -> float:
         return self._drone_model.get_t()

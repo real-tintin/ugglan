@@ -13,7 +13,7 @@ from pyqtgraph.Qt import QtGui, QtWidgets, QtCore
 from non_linear_sim.att_estimator import DEFAULT_ATT_EST_PARAMS
 from non_linear_sim.drone_model import DEFAULT_DRONE_PARAMS, DEFAULT_ENV_PARAMS
 from non_linear_sim.pilot_ctrl import DEFAULT_PILOT_CTRL_PARAMS, RefInput
-from non_linear_sim.rolling_sim_data import RollingSimData
+from non_linear_sim.rolling_buffer import RollingBuffer
 from non_linear_sim.simulator import DEFAULT_IMU_NOISE
 from non_linear_sim.simulator import Simulator
 from non_linear_sim.six_dof_model import STATE_ZERO as SIX_DOF_STATE_ZERO
@@ -22,7 +22,7 @@ from non_linear_sim.threaded_task import ThreadedTask
 
 # TODO: Add menus for update of all conf and params.
 # TODO: Gamepad logic class and refactor with ref step.
-# TODO: Subplots to add: Pilotctrl, att_est and motor_ang_rate.
+# TODO: Subplots to add: Pilotctrl, att_est, motor_ang_rate, imu_out.
 
 
 class Subplot(Enum):
@@ -36,6 +36,7 @@ class Subplot(Enum):
     ATT_EST = 'att_estimation'
 
     MOTOR_ANG_RATES = 'motor_ang_rates'
+    IMU_OUT = 'imu_out'
 
 
 class GridPos(Enum):
@@ -97,10 +98,6 @@ class SubplotWidget(ABC):
 
 class SixDofWidget(SubplotWidget):
     def __init__(self, data_cb: Callable):
-        """
-        Note, as the axis in the 6dof model is rotated with
-        pi about x, we set -y and -z.
-        """
         super().__init__(data_cb)
 
         self._mesh = gl.GLMeshItem(meshdata=self.get_meshed_drone(), smooth=True, drawEdges=True, shader='balloon')
@@ -108,6 +105,7 @@ class SixDofWidget(SubplotWidget):
         self._base_widget = gl.GLViewWidget()
         self._base_widget.addItem(self._mesh)
 
+        #  Note, as the axis in the 6dof model is rotated with pi about x, we set -y and -z.
         self._base_widget.addItem(gl.GLGridItem(size=QtGui.QVector3D(10, 10, 10)))
         self._base_widget.addItem(gl.GLAxisItem(QtGui.QVector3D(1, -1, -1)))
 
@@ -232,8 +230,8 @@ class Gui(QtGui.QMainWindow):
 
     def _run(self):
         if self._gui_state != GuiState.RUNNING:
-            self._init_rolling_sim_data()
             self._init_simulator()
+            self._init_rolling_sim_buf()
             self._run_sim_in_thread()
             self._run_gui_loop()
 
@@ -270,8 +268,30 @@ class Gui(QtGui.QMainWindow):
         else:
             raise ValueError
 
-    def _init_rolling_sim_data(self):
-        self._rolling_sim_data = RollingSimData(
+    def _init_rolling_sim_buf(self):
+        self._rolling_sim_buf = RollingBuffer(
+            member_cb_map={
+                "t_s": self._simulator.get_t,
+
+                "roll_ang": lambda: self._simulator.get_6dof_state().n_i[0],
+                "roll_rate": lambda: self._simulator.get_6dof_state().w_b[0],
+                "roll_acc": lambda: self._simulator.get_6dof_state().wp_b[0],
+
+                "pitch_ang": lambda: self._simulator.get_6dof_state().n_i[1],
+                "pitch_rate": lambda: self._simulator.get_6dof_state().w_b[1],
+                "pitch_acc": lambda: self._simulator.get_6dof_state().wp_b[0],
+
+                "yaw_ang": lambda: self._simulator.get_6dof_state().n_i[2],
+                "yaw_rate": lambda: self._simulator.get_6dof_state().w_b[2],
+                "yaw_acc": lambda: self._simulator.get_6dof_state().wp_b[0],
+
+                "ref_input": lambda: self._conf_step_response.ref_input,
+                "ctrl_input": self._simulator.get_ctrl_input,
+
+                "att_est": self._simulator.get_att_estimate,
+                "imu_out": self._simulator.get_imu_out
+
+            },
             n_samples=int(self._conf_gui.t_window_size_s / self._conf_gui.refresh_rate_s / 2))  # TODO: Why / 2?
 
     def _init_simulator(self):
@@ -300,47 +320,8 @@ class Gui(QtGui.QMainWindow):
         self._simulator.step(ref_input=self._conf_step_response.ref_input)
 
     def _update_gui(self):
-        self._update_rolling_sim_data()
+        self._rolling_sim_buf.update()
         self._update_subplots()
-
-    def _update_rolling_sim_data(self):
-        self._rolling_sim_data.update(
-            t_s=self._simulator.get_t(),
-
-            roll_ang=self._simulator.get_6dof_state().n_i[0],
-            roll_rate=self._simulator.get_6dof_state().w_b[0],
-            roll_acc=self._simulator.get_6dof_state().wp_b[0],
-
-            pitch_ang=self._simulator.get_6dof_state().n_i[1],
-            pitch_rate=self._simulator.get_6dof_state().w_b[1],
-            pitch_acc=self._simulator.get_6dof_state().wp_b[0],
-
-            yaw_ang=self._simulator.get_6dof_state().n_i[2],
-            yaw_rate=self._simulator.get_6dof_state().w_b[2],
-            yaw_acc=self._simulator.get_6dof_state().wp_b[0],
-
-            est_roll_ang=self._simulator.get_att_estimate().roll.angle,
-            est_pitch_ang=self._simulator.get_att_estimate().pitch.angle,
-            est_yaw_ang=self._simulator.get_att_estimate().yaw.angle,
-
-            est_roll_rate=self._simulator.get_att_estimate().roll.rate,
-            est_pitch_rate=self._simulator.get_att_estimate().pitch.rate,
-            est_yaw_rate=self._simulator.get_att_estimate().yaw.rate,
-
-            est_roll_acc=self._simulator.get_att_estimate().roll.acc,
-            est_pitch_acc=self._simulator.get_att_estimate().pitch.acc,
-            est_yaw_acc=self._simulator.get_att_estimate().yaw.acc,
-
-            ref_fz=self._conf_step_response.ref_input.f_z,
-            ref_roll=self._conf_step_response.ref_input.roll,
-            ref_pitch=self._conf_step_response.ref_input.pitch,
-            ref_yaw_rate=self._conf_step_response.ref_input.yaw_rate,
-
-            ctrl_fz=self._simulator.get_ctrl_input().f_z,
-            ctrl_mx=self._simulator.get_ctrl_input().m_x,
-            ctrl_my=self._simulator.get_ctrl_input().m_y,
-            ctrl_mz=self._simulator.get_ctrl_input().m_z,
-        )
 
     def _update_subplots(self):
         for widget in self._subplot_widget_map.values():
@@ -366,22 +347,22 @@ class Gui(QtGui.QMainWindow):
                 "q": self._simulator.get_6dof_state().q}
 
     def _cb_roll_ref_widget(self):
-        return {"t_s": self._rolling_sim_data.t_s,
-                "att_act": self._rolling_sim_data.roll_ang,
-                "att_est": self._rolling_sim_data.est_roll_ang,
-                "att_ref": self._rolling_sim_data.ref_roll}
+        return {"t_s": self._rolling_sim_buf.t_s,
+                "att_act": self._rolling_sim_buf.roll_ang,
+                "att_est": self._rolling_sim_buf.att_est.roll.angle,
+                "att_ref": self._rolling_sim_buf.ref_input.roll}
 
     def _cb_pitch_ref_widget(self):
-        return {"t_s": self._rolling_sim_data.t_s,
-                "att_act": self._rolling_sim_data.pitch_ang,
-                "att_est": self._rolling_sim_data.est_pitch_ang,
-                "att_ref": self._rolling_sim_data.ref_pitch}
+        return {"t_s": self._rolling_sim_buf.t_s,
+                "att_act": self._rolling_sim_buf.pitch_ang,
+                "att_est": self._rolling_sim_buf.att_est.pitch.angle,
+                "att_ref": self._rolling_sim_buf.ref_input.pitch}
 
     def _cb_yaw_rate_ref_widget(self):
-        return {"t_s": self._rolling_sim_data.t_s,
-                "att_act": self._rolling_sim_data.yaw_rate,
-                "att_est": self._rolling_sim_data.est_yaw_rate,
-                "att_ref": self._rolling_sim_data.ref_yaw_rate}
+        return {"t_s": self._rolling_sim_buf.t_s,
+                "att_act": self._rolling_sim_buf.yaw_rate,
+                "att_est": self._rolling_sim_buf.att_est.yaw.rate,
+                "att_ref": self._rolling_sim_buf.ref_input.yaw_rate}
 
     def closeEvent(self, event):
         self._stop()
