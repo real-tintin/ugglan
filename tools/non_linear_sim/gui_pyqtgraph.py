@@ -1,14 +1,9 @@
 import sys
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Union, Callable
 
-import numpy as np
-import pyqtgraph as pg
-import pyqtgraph.opengl as gl
-from PyQt5.QtGui import QMatrix4x4, QQuaternion, QFont
-from pyqtgraph.Qt import QtGui, QtWidgets, QtCore
+from pyqtgraph.Qt import QtGui, QtCore
+from pyqtgraph.Qt import QtWidgets
 
 from non_linear_sim.att_estimator import DEFAULT_ATT_EST_PARAMS
 from non_linear_sim.drone_model import DEFAULT_DRONE_PARAMS, DEFAULT_ENV_PARAMS
@@ -17,33 +12,28 @@ from non_linear_sim.rolling_buffer import RollingBuffer
 from non_linear_sim.simulator import DEFAULT_IMU_NOISE
 from non_linear_sim.simulator import Simulator
 from non_linear_sim.six_dof_model import STATE_ZERO as SIX_DOF_STATE_ZERO
+from non_linear_sim.subplot_widgets import SubplotWidget, SixDofWidget, AttRefWidget
 from non_linear_sim.threaded_task import ThreadedTask
 
 
 # TODO: Add menus for update of all conf and params.
 # TODO: Gamepad logic class and refactor with ref step.
-# TODO: Subplots to add: Pilotctrl, att_est, motor_ang_rate, imu_out.
+# TODO: Subplots to add: Pilotctrl, att_est, motor_ang_rate, imu_out. How many subplots would i need?
+# 6dof, 3 x att_ctrl, pilot_ctrl, 3 x imu_out, motor_ang, (3 x att_est?), Maybe combine 3 x att_est: re?
+# Maybe have different sizes? The imu is not sooo important all the time? Maybe split into
 
-
-class Subplot(Enum):
+class SubplotId(Enum):
     SIX_DOF = 'six_dof'
 
-    ROLL = 'roll'
-    PITCH = 'pitch'
-    YAW_RATE = 'yaw_rate'
+    ROLL_REF = 'roll_ref'
+    PITCH_REF = 'pitch_ref'
+    YAW_RATE_REF = 'yaw_rate_ref'
 
     PILOT_CTRL = 'pilot_ctrl'
     ATT_EST = 'att_estimation'
 
     MOTOR_ANG_RATES = 'motor_ang_rates'
     IMU_OUT = 'imu_out'
-
-
-class GridPos(Enum):
-    TOP_LEFT = 0
-    TOP_RIGHT = 1
-    BOTTOM_LEFT = 2
-    BOTTOM_RIGHT = 3
 
 
 class GuiState(Enum):
@@ -80,80 +70,6 @@ class ConfGamepad:
     ref_input_scale: RefInput
 
 
-class SubplotWidget(ABC):
-    def __init__(self, data_cb: Callable):
-        self._data_cb = data_cb
-        self._base_widget = None
-
-    def update(self):
-        self._update(**self._data_cb())
-
-    def get_base_widget(self):
-        return self._base_widget
-
-    @abstractmethod
-    def _update(self, *args, **kwargs):
-        pass
-
-
-class SixDofWidget(SubplotWidget):
-    def __init__(self, data_cb: Callable):
-        super().__init__(data_cb)
-
-        self._mesh = gl.GLMeshItem(meshdata=self.get_meshed_drone(), smooth=True, drawEdges=True, shader='balloon')
-
-        self._base_widget = gl.GLViewWidget()
-        self._base_widget.addItem(self._mesh)
-
-        #  Note, as the axis in the 6dof model is rotated with pi about x, we set -y and -z.
-        self._base_widget.addItem(gl.GLGridItem(size=QtGui.QVector3D(10, 10, 10)))
-        self._base_widget.addItem(gl.GLAxisItem(QtGui.QVector3D(1, -1, -1)))
-
-        self._base_widget.addItem(gl.GLTextItem(pos=[1, 0, 0], text='x (m)', font=QFont('Helvetica', 7)))
-        self._base_widget.addItem(gl.GLTextItem(pos=[0, -1, 0], text='y (m)', font=QFont('Helvetica', 7)))
-        self._base_widget.addItem(gl.GLTextItem(pos=[0, 0, -1], text='z (m)', font=QFont('Helvetica', 7)))
-
-    def _update(self, r_i: np.ndarray, q: np.ndarray):
-        transform = QMatrix4x4()
-
-        transform.translate(r_i[0], -r_i[1], -r_i[2])
-        transform.rotate(QQuaternion(*q))
-
-        self._mesh.setTransform(transform)
-
-    @staticmethod
-    def get_meshed_drone():
-        return gl.MeshData.cylinder(rows=10, cols=20, radius=[0.1, 0.2], length=0.05)  # TODO: Replace by actual drone.
-
-
-class AttRefWidget(SubplotWidget):
-    def __init__(self, data_cb: Callable, title: str, y_label: str, y_unit: str):
-        super().__init__(data_cb)
-
-        self._base_widget = pg.PlotWidget(title=title)
-        self._base_widget.setLabel('bottom', 'Time', units='s')
-        self._base_widget.setLabel('left', y_label, units=y_unit)
-        self._base_widget.addLegend()
-        self._base_widget.showGrid(x=True, y=True)
-
-        self._plot_att_act = pg.PlotDataItem(pen=pg.mkPen(color="b", style=QtCore.Qt.SolidLine), name='act')
-        self._plot_att_est = pg.PlotDataItem(pen=pg.mkPen(color="r", style=QtCore.Qt.SolidLine), name='est')
-        self._plot_att_ref = pg.PlotDataItem(pen=pg.mkPen(color="g", style=QtCore.Qt.DashLine), name='ref')
-
-        self._base_widget.addItem(self._plot_att_act)
-        self._base_widget.addItem(self._plot_att_est)
-        self._base_widget.addItem(self._plot_att_ref)
-
-    def _update(self,
-                t_s: np.ndarray,
-                att_act: np.ndarray,
-                att_est: np.ndarray,
-                att_ref: np.ndarray):
-        self._plot_att_act.setData(x=t_s, y=att_act)
-        self._plot_att_est.setData(x=t_s, y=att_est)
-        self._plot_att_ref.setData(x=t_s, y=att_ref)
-
-
 class Gui(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(Gui, self).__init__(parent)
@@ -185,15 +101,15 @@ class Gui(QtGui.QMainWindow):
 
         def _init_default_subplot_widget_map():
             self._subplot_widget_map = {
-                GridPos.TOP_LEFT: self._init_6dof_widget(),
-                GridPos.TOP_RIGHT: self._init_roll_ref_widget(),
-                GridPos.BOTTOM_RIGHT: self._init_pitch_ref_widget(),
-                GridPos.BOTTOM_LEFT: self._init_yaw_rate_ref_widget(),
+                SubplotId.SIX_DOF: self._init_6dof_widget(),
+                SubplotId.ROLL_REF: self._init_roll_ref_widget(),
+                SubplotId.PITCH_REF: self._init_pitch_ref_widget(),
+                SubplotId.YAW_RATE_REF: self._init_yaw_rate_ref_widget(),
             }
 
         def _setup_and_place_widgets_in_grid():
-            for grid_pos, widget in self._subplot_widget_map.items():
-                self._place_widget_in_grid(widget=widget.get_base_widget(), grid_pos=grid_pos)
+            for subplot_id, subplot_widget in self._subplot_widget_map.items():
+                self._place_subplot_in_grid(subplot_id, subplot_widget)
 
         def _setup_menu_and_actions():
             menuBar = self.menuBar()
@@ -252,21 +168,20 @@ class Gui(QtGui.QMainWindow):
     def _stop_gui_loop(self):
         self._gui_timer.stop()
 
-    def _place_widget_in_grid(self, widget: Union[pg.PlotWidget, gl.GLViewWidget], grid_pos: GridPos):
-        if grid_pos == GridPos.TOP_LEFT:
-            self._grid.addWidget(widget, 0, 0, 1, 1)
+    def _place_subplot_in_grid(self, subplot_id=SubplotId, widget=SubplotWidget):
+        if subplot_id == SubplotId.SIX_DOF:
+            self._grid.addWidget(widget.get_base_widget(), 0, 0, 3, 3)
 
-        elif grid_pos == GridPos.TOP_RIGHT:
-            self._grid.addWidget(widget, 0, 1, 1, 1)
+        if subplot_id == SubplotId.ROLL_REF:
+            self._grid.addWidget(widget.get_base_widget(), 0, 3, 1, 3)
 
-        elif grid_pos == GridPos.BOTTOM_LEFT:
-            self._grid.addWidget(widget, 1, 0, 1, 1)
+        if subplot_id == SubplotId.PITCH_REF:
+            self._grid.addWidget(widget.get_base_widget(), 1, 3, 1, 3)
 
-        elif grid_pos == GridPos.BOTTOM_RIGHT:
-            self._grid.addWidget(widget, 1, 1, 1, 1)
+        if subplot_id == SubplotId.YAW_RATE_REF:
+            self._grid.addWidget(widget.get_base_widget(), 2, 3, 1, 3)
 
-        else:
-            raise ValueError
+        self._grid.addWidget(QtGui.QLabel("TODO"), 3, 0, 3, 6)
 
     def _init_rolling_sim_buf(self):
         self._rolling_sim_buf = RollingBuffer(
