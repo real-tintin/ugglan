@@ -9,6 +9,7 @@ from non_linear_sim.six_dof_model import STATE_ZERO
 
 TEST_DT = 0.01
 MG = DEFAULT_DRONE_PARAMS.m * DEFAULT_ENV_PARAMS.g
+G = DEFAULT_ENV_PARAMS.g
 
 
 @pytest.fixture
@@ -37,15 +38,15 @@ class TestSimulator:
 
     @staticmethod
     @pytest.mark.parametrize("a_b, n_i, exp_imu_a", [
-        (np.array([0, 0, MG]), np.array([0, 0, 0]), np.array([0, 0, 0])),
-        (np.array([0, 0, 0]), np.array([0, 0, 0]), np.array([0, 0, -MG])),
-        (np.array([0, 0, -MG]), np.array([0, 0, 0]), np.array([0, 0, -2 * MG])),
-        (np.array([0, 0, 0]), np.array([np.pi / 2, 0, 0]), np.array([0, -MG, 0])),
-        (np.array([0, 0, 0]), np.array([0, np.pi / 2, 0]), np.array([MG, 0, 0])),
-        (np.array([0, 0, 0]), np.array([0, 0, np.pi]), np.array([0, 0, - MG])),
+        (np.array([0, 0, G]), np.array([0, 0, 0]), np.array([0, 0, 0])),
+        (np.array([0, 0, 0]), np.array([0, 0, 0]), np.array([0, 0, -G])),
+        (np.array([0, 0, -G]), np.array([0, 0, 0]), np.array([0, 0, -2 * G])),
+        (np.array([0, 0, 0]), np.array([np.pi / 2, 0, 0]), np.array([0, -G, 0])),
+        (np.array([0, 0, 0]), np.array([0, np.pi / 2, 0]), np.array([G, 0, 0])),
+        (np.array([0, 0, 0]), np.array([0, 0, np.pi]), np.array([0, 0, - G])),
     ])
     def test_body_acc_to_imu_acc(default_sim, a_b, n_i, exp_imu_a):
-        act_imu_a = default_sim._body_acc_to_imu_acc(a_b, n_i, MG)
+        act_imu_a = default_sim._body_acc_to_imu_acc(a_b, n_i, G)
 
         assert np.all(np.isclose(exp_imu_a, act_imu_a, 1e-9))
 

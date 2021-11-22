@@ -38,7 +38,7 @@ class Simulator:
         self._pilot_ctrl = PilotCtrl(params=pilot_ctrl_params, dt=dt)
         self._drone_model = DroneModel(state=six_dof_state, drone_params=drone_params, env_params=env_params, dt=dt)
         self._imu_noise = imu_noise
-        self._mg = drone_params.m * env_params.g
+        self._g = env_params.g
         self._imu_out = ImuOut()
 
         if standstill_calib_att_est:
@@ -80,7 +80,7 @@ class Simulator:
             self._att_estimator.update(imu_out=self._extract_imu_out(self._drone_model.get_6dof_state()))
 
     def _extract_imu_out(self, state: SixDofState) -> ImuOut:
-        imu_acc = self._body_acc_to_imu_acc(state.a_b, state.n_i, self._mg)
+        imu_acc = self._body_acc_to_imu_acc(state.a_b, state.n_i, self._g)
         imu_mag = self._euler_to_imu_mag_for_yaw_est(*state.n_i)
 
         return ImuOut(
@@ -98,14 +98,14 @@ class Simulator:
         )
 
     @staticmethod
-    def _body_acc_to_imu_acc(a_b, n_i, mg):
+    def _body_acc_to_imu_acc(a_b, n_i, g):
         """
         Convert the body acceleration to imu (or proper)
         accelerations.
         """
         e_z = np.array([0, 0, 1])
         R_i_to_b = rotation_matrix(*n_i).transpose()
-        a_proper = a_b - (R_i_to_b @ e_z * mg)
+        a_proper = a_b - (R_i_to_b @ e_z * g)
 
         return a_proper
 
