@@ -5,7 +5,7 @@ import numpy as np
 from multi_body.euclidean_transform import rotation_matrix
 from non_linear_sim.att_estimator import AttEstimator, ImuOut, AttEstimate
 from non_linear_sim.att_estimator import Params as AttEstParams
-from non_linear_sim.drone_model import DroneModel, DroneParams, EnvParams, CtrlInput
+from non_linear_sim.drone_model import DroneModel, DroneParams, EnvParams, CtrlInput, MotorAngRates
 from non_linear_sim.pilot_ctrl import Params as PilotCtrlParams
 from non_linear_sim.pilot_ctrl import RefInput, PilotCtrl
 from non_linear_sim.pilot_ctrl import State as PilotCtrlState
@@ -66,6 +66,9 @@ class Simulator:
 
     def get_imu_out(self) -> ImuOut:
         return self._imu_out
+
+    def get_motor_ang_rates(self) -> MotorAngRates:
+        return self._drone_model.get_motor_ang_rates()
 
     def get_t(self) -> float:
         return self._drone_model.get_t()

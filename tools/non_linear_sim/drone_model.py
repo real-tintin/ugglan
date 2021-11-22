@@ -17,6 +17,14 @@ class CtrlInput:
 
 
 @dataclass
+class MotorAngRates:
+    w_0: float = 0.0
+    w_1: float = 0.0
+    w_2: float = 0.0
+    w_3: float = 0.0
+
+
+@dataclass
 class DroneParams:
     m: float = MASS  # mass [kg]
 
@@ -73,6 +81,7 @@ class DroneModel:
         self._init_H_and_H_inv()
         self._dt = dt
         self._t = 0.0
+        self._w_m = np.zeros(4)
 
         self._init_motor_dyn()
         self._6dof_model = SixDofModel(mass=drone_params.m,
@@ -88,13 +97,13 @@ class DroneModel:
 
         state_6dof = self._6dof_model.get_state()
 
-        F_m, M_m, w_m = self._exec_motor_dyn(ctrl_input)
+        F_m, M_m, self._w_m = self._exec_motor_dyn(ctrl_input)
 
         F_d = self._compute_F_d(state_6dof.v_b)
         F_g = self._compute_F_g(state_6dof.n_i)
 
         M_d = self._compute_M_d(state_6dof.w_b)
-        M_p = self._compute_M_p(state_6dof.w_b, w_m)
+        M_p = self._compute_M_p(state_6dof.w_b, self._w_m)
 
         F_b = F_m + F_d + F_g
         M_b = M_m + M_d + M_p
@@ -110,6 +119,9 @@ class DroneModel:
 
     def get_6dof_state(self) -> State:
         return self._6dof_model.get_state()
+
+    def get_motor_ang_rates(self) -> MotorAngRates:
+        return MotorAngRates(*self._w_m)
 
     def get_t(self) -> float:
         return self._t

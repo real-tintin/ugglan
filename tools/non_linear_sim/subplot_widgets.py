@@ -132,3 +132,36 @@ class BodyCtrlWidget(SubplotWidget):
         self._plot_ctrl_mx.setData(x=t_s, y=ctrl_mx)
         self._plot_ctrl_my.setData(x=t_s, y=ctrl_my)
         self._plot_ctrl_mz.setData(x=t_s, y=ctrl_mz)
+
+
+class MotorCtrlWidget(SubplotWidget):
+    def __init__(self, data_cb: Callable):
+        super().__init__(data_cb)
+
+    def _ini_base_widget(self):
+        self._base_widget = pg.PlotWidget()
+        self._base_widget.setLabel('bottom', 'Time', units='s')
+        self._base_widget.setLabel('left', 'Angular-rate', units='rad/s')
+        self._base_widget.addLegend()
+        self._base_widget.showGrid(x=True, y=True)
+
+        self._plot_w_0 = pg.PlotDataItem(pen=pg.mkPen(color="b", style=QtCore.Qt.DashLine), name='w0')
+        self._plot_w_1 = pg.PlotDataItem(pen=pg.mkPen(color="r", style=QtCore.Qt.DashLine), name='w1')
+        self._plot_w_2 = pg.PlotDataItem(pen=pg.mkPen(color="g", style=QtCore.Qt.DashLine), name='w2')
+        self._plot_w_3 = pg.PlotDataItem(pen=pg.mkPen(color="m", style=QtCore.Qt.DashLine), name='w3')
+
+        self._base_widget.addItem(self._plot_w_0)
+        self._base_widget.addItem(self._plot_w_1)
+        self._base_widget.addItem(self._plot_w_2)
+        self._base_widget.addItem(self._plot_w_3)
+
+    def _update(self,
+                t_s: np.ndarray,
+                w_0: np.ndarray,
+                w_1: np.ndarray,
+                w_2: np.ndarray,
+                w_3: np.ndarray):
+        self._plot_w_0.setData(x=t_s, y=w_0)
+        self._plot_w_1.setData(x=t_s, y=w_1)
+        self._plot_w_2.setData(x=t_s, y=w_2)
+        self._plot_w_3.setData(x=t_s, y=w_3)

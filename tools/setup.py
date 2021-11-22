@@ -12,6 +12,7 @@ setup(
             'plot-motor-dyn=state_est.motor_dynamics:main',
             'plot-motor-thrust=state_est.motor_thrust:main',
             'gui-linear-sim=linear_sim.gui:main',
+            'gui-6dof-sim=non_linear_sim.gui:main',
         ]
     },
     install_requires=[
