@@ -77,11 +77,11 @@ class SixDofWidget(SubplotWidget):
 
 
 class AttRefWidget(SubplotWidget):
-    def __init__(self, data_cb: Callable, title: str, y_label: str, y_unit: str):
-        super().__init__(data_cb, title, y_label, y_unit)
+    def __init__(self, data_cb: Callable, y_label: str, y_unit: str):
+        super().__init__(data_cb, y_label, y_unit)
 
-    def _ini_base_widget(self, title: str, y_label: str, y_unit: str):
-        self._base_widget = pg.PlotWidget(title=title)
+    def _ini_base_widget(self, y_label: str, y_unit: str):
+        self._base_widget = pg.PlotWidget()
         self._base_widget.setLabel('bottom', 'Time', units='s')
         self._base_widget.setLabel('left', y_label, units=y_unit)
         self._base_widget.addLegend()
@@ -103,3 +103,32 @@ class AttRefWidget(SubplotWidget):
         self._plot_att_act.setData(x=t_s, y=att_act)
         self._plot_att_est.setData(x=t_s, y=att_est)
         self._plot_att_ref.setData(x=t_s, y=att_ref)
+
+
+class BodyCtrlWidget(SubplotWidget):
+    def __init__(self, data_cb: Callable):
+        super().__init__(data_cb)
+
+    def _ini_base_widget(self):
+        self._base_widget = pg.PlotWidget()
+        self._base_widget.setLabel('bottom', 'Time', units='s')
+        self._base_widget.setLabel('left', 'Torque', units='Nm')
+        self._base_widget.addLegend()
+        self._base_widget.showGrid(x=True, y=True)
+
+        self._plot_ctrl_mx = pg.PlotDataItem(pen=pg.mkPen(color="b", style=QtCore.Qt.SolidLine), name='mx')
+        self._plot_ctrl_my = pg.PlotDataItem(pen=pg.mkPen(color="r", style=QtCore.Qt.SolidLine), name='my')
+        self._plot_ctrl_mz = pg.PlotDataItem(pen=pg.mkPen(color="g", style=QtCore.Qt.SolidLine), name='mz')
+
+        self._base_widget.addItem(self._plot_ctrl_mx)
+        self._base_widget.addItem(self._plot_ctrl_my)
+        self._base_widget.addItem(self._plot_ctrl_mz)
+
+    def _update(self,
+                t_s: np.ndarray,
+                ctrl_mx: np.ndarray,
+                ctrl_my: np.ndarray,
+                ctrl_mz: np.ndarray):
+        self._plot_ctrl_mx.setData(x=t_s, y=ctrl_mx)
+        self._plot_ctrl_my.setData(x=t_s, y=ctrl_my)
+        self._plot_ctrl_mz.setData(x=t_s, y=ctrl_mz)

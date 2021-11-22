@@ -26,9 +26,9 @@ class DroneParams:
 
     I_motor_zz: float = 1e-4  # moi of drone motor & propeller about z [kg/m^3]
 
-    Axz: float = 0.004  # area xz-plane [m^2]
-    Ayz: float = 0.004  # area yz-plane [m^2]
-    Axy: float = 0.05  # area xy-plane [m^2]
+    Axz: float = 0.1 * 0.5  # area xz-plane [m^2]
+    Ayz: float = 0.1 * 0.5  # area yz-plane [m^2]
+    Axy: float = 0.5 ** 2  # area xy-plane [m^2]
 
     C_d: float = 1.0  # drag coefficient [-]
 
