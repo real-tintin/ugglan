@@ -20,11 +20,9 @@ from non_linear_sim.six_dof_model import STATE_ZERO as SIX_DOF_STATE_ZERO
 from non_linear_sim.subplot_widgets import SixDofWidget, AttRefWidget, BodyCtrlWidget, MotorCtrlWidget
 from non_linear_sim.threaded_task import ThreadedTask
 
-# TODO: Add menus for selection of input.
-# TODO: Gamepad logic class and refactor with ref step.
+# TODO: Gamepad logic class and use ref in sim.
 # TODO: Subplots to add: imu_out, pos and velocity.
-# TODO: Due to performance reasons we need a configureable supblot menu.... Let it be a 2x2 grid for performance. We
-#  need to update all the plots in the background but not show.
+# TODO: Menu to select subplot in grid.
 
 FORMAT_MENU_LABEL = "{key}: {val}"
 
@@ -130,6 +128,7 @@ class Gui(QtGui.QMainWindow):
             self._menu = self.menuBar()
 
             _setup_menu_conf()
+            _setup_menu_input()
             _setup_action_run()
             _setup_action_stop()
 
@@ -169,6 +168,19 @@ class Gui(QtGui.QMainWindow):
             self._add_menu_from_dataclass(self._menu_conf_input, self._conf_step_response, label="Step response")
             self._add_menu_from_dataclass(self._menu_conf_input, self._conf_gamepad, label="Gamepad")
 
+        def _setup_menu_input():
+            self._menu_input = self._menu.addMenu("Input")
+
+            self._action_input_step = self._menu_input.addAction("&Step response")
+            self._action_input_step.setCheckable(True)
+            self._action_input_step.setChecked(True)
+            self._action_input_step.triggered.connect(self._cb_input_step_checked)
+
+            self._action_input_gamepad = self._menu_input.addAction("&Gamepad")
+            self._action_input_gamepad.setCheckable(True)
+            self._action_input_gamepad.setChecked(False)
+            self._action_input_gamepad.triggered.connect(self._cb_input_gamepad_checked)
+
         def _setup_action_run():
             self._action_run = self._menu.addAction("&Run")
             self._action_run.triggered.connect(self._run)
@@ -196,6 +208,17 @@ class Gui(QtGui.QMainWindow):
             else:
                 action = menu_dataclass.addAction(self._format_menu_label(key=member, val=val))
                 action.triggered.connect(partial(self._action_dataclass_cb, action, data_class, member))
+
+    def _cb_input_step_checked(self):
+        self._action_input_step.setChecked(True)
+        self._action_input_gamepad.setChecked(False)
+
+    def _cb_input_gamepad_checked(self):
+        self._action_input_step.setChecked(False)
+        self._action_input_gamepad.setChecked(True)
+
+    def _is_input_step_selected(self):
+        return self._action_input_step.isChecked()
 
     def _get_default_conf_step_response(self):
         mg = self._drone_params.m * self._env_params.g
@@ -294,7 +317,10 @@ class Gui(QtGui.QMainWindow):
         self._threaded_task_exec_sim.teardown()
 
     def _exec_simulator(self):
-        self._simulator.step(ref_input=self._conf_step_response.ref_input)
+        if self._is_input_step_selected():
+            self._simulator.step(ref_input=self._conf_step_response.ref_input)
+        else:
+            raise NotImplementedError
 
     def _update_gui(self):
         self._rolling_sim_buf.update()
