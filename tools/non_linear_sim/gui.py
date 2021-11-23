@@ -2,11 +2,8 @@ import sys
 from dataclasses import dataclass, is_dataclass
 from enum import Enum
 from functools import partial
-from typing import Union
 
-import pyqtgraph as pg
-import pyqtgraph.opengl as gl
-from PyQt5.QtWidgets import QInputDialog
+from PyQt5.QtWidgets import QInputDialog, QStackedWidget
 from pyqtgraph.Qt import QtGui, QtCore
 from pyqtgraph.Qt import QtWidgets
 
@@ -43,10 +40,10 @@ class SubplotId(Enum):
 
 
 class GridPos(Enum):
-    TOP_LEFT = 0
-    TOP_RIGHT = 1
-    BOTTOM_LEFT = 2
-    BOTTOM_RIGHT = 3
+    TOP_LEFT = 'top_left'
+    TOP_RIGHT = 'top_right'
+    BOTTOM_LEFT = 'bottom_left'
+    BOTTOM_RIGHT = 'bottom_right'
 
 
 class GuiState(Enum):
@@ -103,112 +100,178 @@ class Gui(QtGui.QMainWindow):
         self._setup_gui()
 
     def _setup_gui(self):
-        def _conf_main_window():
+        def conf_main_window():
             self.setWindowTitle('Non-linear 6dof simulator')
             self.setGeometry(100, 100, 1200, 800)
 
-        def _create_grid():
+        def create_grid():
             self._central_widget = QtWidgets.QWidget()
             self.setCentralWidget(self._central_widget)
-            self._grid = QtWidgets.QGridLayout(self.centralWidget())
 
-        def _init_default_subplot_widget_map():
-            self._subplot_widget_map = {
-                GridPos.TOP_LEFT: self._init_6dof_widget(),
-                GridPos.TOP_RIGHT: self._init_roll_ref_widget(),
-                GridPos.BOTTOM_LEFT: self._init_pitch_ref_widget(),
-                GridPos.BOTTOM_RIGHT: self._init_yaw_rate_ref_widget(),
+            self._grid = QtWidgets.QGridLayout(self.centralWidget())
+            self._grid_stack_map = {
+                GridPos.TOP_LEFT: QStackedWidget(),
+                GridPos.TOP_RIGHT: QStackedWidget(),
+                GridPos.BOTTOM_LEFT: QStackedWidget(),
+                GridPos.BOTTOM_RIGHT: QStackedWidget(),
             }
 
-        def _setup_and_place_widgets_in_grid():
-            for grid_pos, subplot in self._subplot_widget_map.items():
-                self._place_widget_in_grid(grid_pos, subplot.get_base_widget())
+            self._grid.addWidget(self._grid_stack_map[GridPos.TOP_LEFT], 0, 0, 1, 1)
+            self._grid.addWidget(self._grid_stack_map[GridPos.TOP_RIGHT], 0, 1, 1, 1)
+            self._grid.addWidget(self._grid_stack_map[GridPos.BOTTOM_LEFT], 1, 0, 1, 1)
+            self._grid.addWidget(self._grid_stack_map[GridPos.BOTTOM_RIGHT], 1, 1, 1, 1)
 
-        def _setup_menu_and_actions():
+        def init_subplot_widget_map():
+            self._subplot_widget_map = {
+                SubplotId.SIX_DOF: self._init_6dof_widget(),
+                SubplotId.ROLL_REF: self._init_roll_ref_widget(),
+                SubplotId.PITCH_REF: self._init_pitch_ref_widget(),
+                SubplotId.YAW_RATE_REF: self._init_yaw_rate_ref_widget(),
+                SubplotId.BODY_CTRL: self._init_body_ctrl_widget(),
+                SubplotId.MOTOR_CTRL: self._init_motor_ctrl_widget(),
+            }
+
+        def init_default_grid_subplot_map():
+            self._grid_subplot_map = {
+                GridPos.TOP_LEFT: SubplotId.SIX_DOF,
+                GridPos.TOP_RIGHT: SubplotId.ROLL_REF,
+                GridPos.BOTTOM_LEFT: SubplotId.PITCH_REF,
+                GridPos.BOTTOM_RIGHT: SubplotId.YAW_RATE_REF,
+            }
+
+        def setup_menu_and_actions():
             self._menu = self.menuBar()
 
-            _setup_menu_conf()
-            _setup_menu_input()
-            _setup_action_run()
-            _setup_action_stop()
+            setup_menu_conf()
+            setup_menu_plots()
+            setup_menu_input()
+            setup_action_run()
+            setup_action_stop()
 
-        def _setup_menu_conf():
+        def setup_menu_conf():
             self._menu_conf = self._menu.addMenu("Config")
             self._menu_conf_model = self._menu_conf.addMenu("Model")
             self._menu_conf_input = self._menu_conf.addMenu("Input")
 
-            _setup_menu_config_model()
-            _setup_menu_conf_att_est()
-            _setup_menu_config_pilot_ctrl()
-            _setup_menu_config_imu_noise()
-            _setup_menu_config_gui()
-            _setup_menu_config_sim()
-            _setup_menu_config_input()
+            setup_menu_config_model()
+            setup_menu_conf_att_est()
+            setup_menu_config_pilot_ctrl()
+            setup_menu_config_imu_noise()
+            setup_menu_config_gui()
+            setup_menu_config_sim()
+            setup_menu_config_input()
 
-        def _setup_menu_config_model():
+        def setup_menu_config_model():
             self._add_menu_from_dataclass(self._menu_conf_model, self._env_params, label="Env")
             self._add_menu_from_dataclass(self._menu_conf_model, self._drone_params, label="Drone")
 
-        def _setup_menu_conf_att_est():
+        def setup_menu_conf_att_est():
             self._add_menu_from_dataclass(self._menu_conf, self._att_est_params, label="Attitude estimator")
 
-        def _setup_menu_config_pilot_ctrl():
+        def setup_menu_config_pilot_ctrl():
             self._add_menu_from_dataclass(self._menu_conf, self._pilot_ctrl_params, label="Pilot controller")
 
-        def _setup_menu_config_imu_noise():
+        def setup_menu_config_imu_noise():
             self._add_menu_from_dataclass(self._menu_conf, self._imu_noise, label="Imu noise")
 
-        def _setup_menu_config_sim():
+        def setup_menu_config_sim():
             self._add_menu_from_dataclass(self._menu_conf, self._conf_sim, label="Simulation")
 
-        def _setup_menu_config_gui():
+        def setup_menu_config_gui():
             self._add_menu_from_dataclass(self._menu_conf, self._conf_gui, label="Gui")
 
-        def _setup_menu_config_input():
+        def setup_menu_config_input():
             self._add_menu_from_dataclass(self._menu_conf_input, self._conf_step_response, label="Step response")
             self._add_menu_from_dataclass(self._menu_conf_input, self._conf_gamepad, label="Gamepad")
 
-        def _setup_menu_input():
+        def setup_menu_plots():
+            self._menu_plots = self._menu.addMenu("Plots")
+            self._grid_subplot_action_map = {}
+
+            for grid_pos in GridPos:
+                menu_grid = self._menu_plots.addMenu(grid_pos.value)
+                subplot_action_map = {}
+
+                for subplot_id in SubplotId:
+                    action_subplot = menu_grid.addAction(subplot_id.value)
+                    action_subplot.setCheckable(True)
+
+                    if subplot_id == self._grid_subplot_map[grid_pos]:
+                        action_subplot.setChecked(True)
+
+                    action_subplot.triggered.connect(partial(self._cb_action_grid_subplot, grid_pos, subplot_id, ))
+                    subplot_action_map.update({subplot_id: action_subplot})
+
+                self._grid_subplot_action_map.update({grid_pos: subplot_action_map})
+
+        def setup_menu_input():
             self._menu_input = self._menu.addMenu("Input")
 
-            self._action_input_step = self._menu_input.addAction("&Step response")
+            self._action_input_step = self._menu_input.addAction("Step response")
             self._action_input_step.setCheckable(True)
             self._action_input_step.setChecked(True)
             self._action_input_step.triggered.connect(self._cb_input_step_checked)
 
-            self._action_input_gamepad = self._menu_input.addAction("&Gamepad")
+            self._action_input_gamepad = self._menu_input.addAction("Gamepad")
             self._action_input_gamepad.setCheckable(True)
             self._action_input_gamepad.setChecked(False)
             self._action_input_gamepad.triggered.connect(self._cb_input_gamepad_checked)
 
-        def _setup_action_run():
-            self._action_run = self._menu.addAction("&Run")
+        def setup_action_run():
+            self._action_run = self._menu.addAction("Run")
             self._action_run.triggered.connect(self._run)
 
-        def _setup_action_stop():
-            self._action_stop = self._menu.addAction("&Stop")
+        def setup_action_stop():
+            self._action_stop = self._menu.addAction("Stop")
             self._action_stop.triggered.connect(self._stop)
 
-        _conf_main_window()
-        _create_grid()
-        _init_default_subplot_widget_map()
-        _setup_and_place_widgets_in_grid()
-        _setup_menu_and_actions()
+        conf_main_window()
+        create_grid()
+        init_subplot_widget_map()
+        init_default_grid_subplot_map()
+        setup_menu_and_actions()
+        self._update_subplots_in_grid()
 
         self._gui_state = GuiState.INIT
 
-    def _place_widget_in_grid(self, grid_pos: GridPos, widget: Union[pg.PlotWidget, gl.GLViewWidget]):
-        if grid_pos == GridPos.TOP_LEFT:
-            self._grid.addWidget(widget, 0, 0, 1, 1)
+    def _update_subplots_in_grid(self):
+        for grid_pos, subplot_id in self._grid_subplot_map.items():
+            subplot_widget = self._subplot_widget_map[subplot_id].get_base_widget()
 
-        if grid_pos == GridPos.TOP_RIGHT:
-            self._grid.addWidget(widget, 0, 1, 1, 1)
+            if self._grid_stack_map[grid_pos].indexOf(subplot_widget) < 0:
+                self._grid_stack_map[grid_pos].addWidget(subplot_widget)
 
-        if grid_pos == GridPos.BOTTOM_LEFT:
-            self._grid.addWidget(widget, 1, 0, 1, 1)
+            self._grid_stack_map[grid_pos].setCurrentWidget(subplot_widget)
 
-        if grid_pos == GridPos.BOTTOM_RIGHT:
-            self._grid.addWidget(widget, 1, 1, 1, 1)
+    def _cb_action_grid_subplot(self, grid_pos, new_subplot_id):
+        old_subplot_id = self._set_new_subplot_id_and_get_old(grid_pos, new_subplot_id)
+        self._if_new_subplot_in_other_grid_swap_with_old_subplot(grid_pos, new_subplot_id, old_subplot_id)
+        self._check_and_uncheck_all_subplot_actions()
+        self._update_subplots_in_grid()
+
+    def _set_new_subplot_id_and_get_old(self, grid_pos, new_subplot_id):
+        subplot_id_action_map = self._grid_subplot_action_map[grid_pos]
+
+        for subplot_id, action in subplot_id_action_map.items():
+            if action.isChecked() and subplot_id == new_subplot_id:
+                old_subplot_id = self._grid_subplot_map[grid_pos]
+                self._grid_subplot_map[grid_pos] = new_subplot_id
+
+        return old_subplot_id
+
+    def _if_new_subplot_in_other_grid_swap_with_old_subplot(self, grid_pos, new_subplot_id, old_subplot_id):
+        for other_grid_pos in (set(GridPos) - set([grid_pos])):
+            for subplot_id, action in self._grid_subplot_action_map[other_grid_pos].items():
+                if action.isChecked() and subplot_id == new_subplot_id:
+                    self._grid_subplot_map[other_grid_pos] = old_subplot_id
+
+    def _check_and_uncheck_all_subplot_actions(self):
+        for grid_pos in list(GridPos):
+            for subplot_id, action in self._grid_subplot_action_map[grid_pos].items():
+                if subplot_id == self._grid_subplot_map[grid_pos]:
+                    action.setChecked(True)
+                else:
+                    action.setChecked(False)
 
     def _add_menu_from_dataclass(self, menu_parent, data_class, label):
         menu_dataclass = menu_parent.addMenu(label)
@@ -328,8 +391,8 @@ class Gui(QtGui.QMainWindow):
         self._update_subplots()
 
     def _update_subplots(self):
-        for widget in self._subplot_widget_map.values():
-            widget.update()
+        for subplot in self._subplot_widget_map.values():
+            subplot.update()
 
     def _stop(self):
         if self._gui_state == GuiState.RUNNING:
