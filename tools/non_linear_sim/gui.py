@@ -14,7 +14,7 @@ from non_linear_sim.rolling_buffer import RollingBuffer
 from non_linear_sim.simulator import DEFAULT_IMU_NOISE
 from non_linear_sim.simulator import Simulator
 from non_linear_sim.six_dof_model import STATE_ZERO as SIX_DOF_STATE_ZERO
-from non_linear_sim.subplot_widgets import SixDofWidget, AttRefWidget, BodyCtrlWidget, MotorCtrlWidget
+from non_linear_sim.subplot_widgets import SixDofWidget, LinePlotWidget
 from non_linear_sim.threaded_task import ThreadedTask
 
 # TODO: Gamepad logic class and use ref in sim.
@@ -199,7 +199,7 @@ class Gui(QtGui.QMainWindow):
                     if subplot_id == self._grid_subplot_map[grid_pos]:
                         action_subplot.setChecked(True)
 
-                    action_subplot.triggered.connect(partial(self._cb_action_grid_subplot, grid_pos, subplot_id, ))
+                    action_subplot.triggered.connect(partial(self._cb_action_grid_subplot, grid_pos, subplot_id))
                     subplot_action_map.update({subplot_id: action_subplot})
 
                 self._grid_subplot_action_map.update({grid_pos: subplot_action_map})
@@ -411,19 +411,32 @@ class Gui(QtGui.QMainWindow):
         return SixDofWidget(data_cb=self._cb_6dof_widget)
 
     def _init_roll_ref_widget(self):
-        return AttRefWidget(data_cb=self._cb_roll_ref_widget, y_label="Roll", y_unit="rad")
+        return LinePlotWidget(data_cb=self._cb_roll_ref_widget,
+                              labels=["act", "est", "ref"],
+                              line_styles=[QtCore.Qt.SolidLine, QtCore.Qt.SolidLine, QtCore.Qt.DashLine],
+                              y_label="Roll", y_unit="rad")
 
     def _init_pitch_ref_widget(self):
-        return AttRefWidget(data_cb=self._cb_pitch_ref_widget, y_label="Pitch", y_unit="rad")
+        return LinePlotWidget(data_cb=self._cb_pitch_ref_widget,
+                              labels=["act", "est", "ref"],
+                              line_styles=[QtCore.Qt.SolidLine, QtCore.Qt.SolidLine, QtCore.Qt.DashLine],
+                              y_label="Pitch", y_unit="rad")
 
     def _init_yaw_rate_ref_widget(self):
-        return AttRefWidget(data_cb=self._cb_yaw_rate_ref_widget, y_label="Yaw-rate", y_unit="rad/s")
+        return LinePlotWidget(data_cb=self._cb_yaw_rate_ref_widget,
+                              labels=["act", "est", "ref"],
+                              line_styles=[QtCore.Qt.SolidLine, QtCore.Qt.SolidLine, QtCore.Qt.DashLine],
+                              y_label="Yaw-rate", y_unit="rad/s")
 
     def _init_body_ctrl_widget(self):
-        return BodyCtrlWidget(data_cb=self._cb_body_ctrl_widget)
+        return LinePlotWidget(data_cb=self._cb_body_ctrl_widget,
+                              labels=["mx", "my", "mz"],
+                              y_label="Torque", y_unit="Nm")
 
     def _init_motor_ctrl_widget(self):
-        return MotorCtrlWidget(data_cb=self._cb_motor_ctrl_widget)
+        return LinePlotWidget(data_cb=self._cb_motor_ctrl_widget,
+                              labels=["w_0", "w_1", "w_2", "w_3"],
+                              y_label="Angular-rate", y_unit="rad/s")
 
     def _cb_6dof_widget(self):
         return {"r_i": self._simulator.get_6dof_state().r_i,
@@ -431,34 +444,34 @@ class Gui(QtGui.QMainWindow):
 
     def _cb_roll_ref_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
-                "att_act": self._rolling_sim_buf.roll_ang,
-                "att_est": self._rolling_sim_buf.att_est.roll.angle,
-                "att_ref": self._rolling_sim_buf.ref_input.roll}
+                "y": [self._rolling_sim_buf.roll_ang,
+                      self._rolling_sim_buf.att_est.roll.angle,
+                      self._rolling_sim_buf.ref_input.roll]}
 
     def _cb_pitch_ref_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
-                "att_act": self._rolling_sim_buf.pitch_ang,
-                "att_est": self._rolling_sim_buf.att_est.pitch.angle,
-                "att_ref": self._rolling_sim_buf.ref_input.pitch}
+                "y": [self._rolling_sim_buf.pitch_ang,
+                      self._rolling_sim_buf.att_est.pitch.angle,
+                      self._rolling_sim_buf.ref_input.pitch]}
 
     def _cb_yaw_rate_ref_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
-                "att_act": self._rolling_sim_buf.yaw_rate,
-                "att_est": self._rolling_sim_buf.att_est.yaw.rate,
-                "att_ref": self._rolling_sim_buf.ref_input.yaw_rate}
+                "y": [self._rolling_sim_buf.yaw_rate,
+                      self._rolling_sim_buf.att_est.yaw.rate,
+                      self._rolling_sim_buf.ref_input.yaw_rate]}
 
     def _cb_body_ctrl_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
-                "ctrl_mx": self._rolling_sim_buf.ctrl_input.m_x,
-                "ctrl_my": self._rolling_sim_buf.ctrl_input.m_y,
-                "ctrl_mz": self._rolling_sim_buf.ctrl_input.m_z}
+                "y": [self._rolling_sim_buf.ctrl_input.m_x,
+                      self._rolling_sim_buf.ctrl_input.m_y,
+                      self._rolling_sim_buf.ctrl_input.m_z]}
 
     def _cb_motor_ctrl_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
-                "w_0": self._rolling_sim_buf.motor_ang_rates.w_0,
-                "w_1": self._rolling_sim_buf.motor_ang_rates.w_1,
-                "w_2": self._rolling_sim_buf.motor_ang_rates.w_2,
-                "w_3": self._rolling_sim_buf.motor_ang_rates.w_3}
+                "y": [self._rolling_sim_buf.motor_ang_rates.w_0,
+                      self._rolling_sim_buf.motor_ang_rates.w_1,
+                      self._rolling_sim_buf.motor_ang_rates.w_2,
+                      self._rolling_sim_buf.motor_ang_rates.w_3]}
 
     def closeEvent(self, event):
         self._stop()

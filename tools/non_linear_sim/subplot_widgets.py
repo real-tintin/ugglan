@@ -1,11 +1,17 @@
 from abc import ABC, abstractmethod
-from typing import Callable
+from typing import Callable, List
 
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
-from PyQt5.QtGui import QMatrix4x4, QQuaternion, QFont
+from PyQt5.QtGui import QMatrix4x4, QQuaternion, QFont, QColor
 from pyqtgraph.Qt import QtGui, QtCore
+
+DEFAULT_COLOR_ORDER = [QColor(31, 119, 180),
+                       QColor(214, 39, 40),
+                       QColor(255, 127, 14),
+                       QColor(127, 127, 127),
+                       QColor(23, 190, 207)]  # Matplotlib v2.0 color palette
 
 
 class SubplotWidget(ABC):
@@ -76,92 +82,39 @@ class SixDofWidget(SubplotWidget):
         return gl.MeshData.cylinder(rows=10, cols=20, radius=[0.1, 0.2], length=0.05)  # TODO: Replace by actual drone.
 
 
-class AttRefWidget(SubplotWidget):
-    def __init__(self, data_cb: Callable, y_label: str, y_unit: str):
-        super().__init__(data_cb, y_label, y_unit)
+class LinePlotWidget(SubplotWidget):
+    def __init__(self, data_cb: Callable, labels: [], y_label: str, y_unit: str,
+                 color_order: List = DEFAULT_COLOR_ORDER, line_styles: List = None):
+        super().__init__(data_cb, labels, y_label, y_unit, color_order, line_styles)
 
-    def _ini_base_widget(self, y_label: str, y_unit: str):
+    def _ini_base_widget(self,
+                         labels: [],
+                         y_label: str,
+                         y_unit: str,
+                         color_order: List = DEFAULT_COLOR_ORDER,
+                         line_styles: List = None):
         self._base_widget = pg.PlotWidget()
+
         self._base_widget.setLabel('bottom', 'Time', units='s')
         self._base_widget.setLabel('left', y_label, units=y_unit)
+
         self._base_widget.addLegend()
         self._base_widget.showGrid(x=True, y=True)
 
-        self._plot_att_act = pg.PlotDataItem(pen=pg.mkPen(color="b", style=QtCore.Qt.SolidLine), name='act')
-        self._plot_att_est = pg.PlotDataItem(pen=pg.mkPen(color="r", style=QtCore.Qt.SolidLine), name='est')
-        self._plot_att_ref = pg.PlotDataItem(pen=pg.mkPen(color="g", style=QtCore.Qt.DashLine), name='ref')
+        n_lines = len(labels)
+        self._line_plots = []
 
-        self._base_widget.addItem(self._plot_att_act)
-        self._base_widget.addItem(self._plot_att_est)
-        self._base_widget.addItem(self._plot_att_ref)
+        if line_styles is None:
+            line_styles = [QtCore.Qt.SolidLine for _ in range(n_lines)]
 
-    def _update(self,
-                t_s: np.ndarray,
-                att_act: np.ndarray,
-                att_est: np.ndarray,
-                att_ref: np.ndarray):
-        self._plot_att_act.setData(x=t_s, y=att_act)
-        self._plot_att_est.setData(x=t_s, y=att_est)
-        self._plot_att_ref.setData(x=t_s, y=att_ref)
+        for i_line in range(n_lines):
+            line_plot = pg.PlotDataItem(pen=pg.mkPen(color=color_order[i_line],
+                                                     style=line_styles[i_line]),
+                                        name=labels[i_line])
 
+            self._line_plots.append(line_plot)
+            self._base_widget.addItem(line_plot)
 
-class BodyCtrlWidget(SubplotWidget):
-    def __init__(self, data_cb: Callable):
-        super().__init__(data_cb)
-
-    def _ini_base_widget(self):
-        self._base_widget = pg.PlotWidget()
-        self._base_widget.setLabel('bottom', 'Time', units='s')
-        self._base_widget.setLabel('left', 'Torque', units='Nm')
-        self._base_widget.addLegend()
-        self._base_widget.showGrid(x=True, y=True)
-
-        self._plot_ctrl_mx = pg.PlotDataItem(pen=pg.mkPen(color="b", style=QtCore.Qt.SolidLine), name='mx')
-        self._plot_ctrl_my = pg.PlotDataItem(pen=pg.mkPen(color="r", style=QtCore.Qt.SolidLine), name='my')
-        self._plot_ctrl_mz = pg.PlotDataItem(pen=pg.mkPen(color="g", style=QtCore.Qt.SolidLine), name='mz')
-
-        self._base_widget.addItem(self._plot_ctrl_mx)
-        self._base_widget.addItem(self._plot_ctrl_my)
-        self._base_widget.addItem(self._plot_ctrl_mz)
-
-    def _update(self,
-                t_s: np.ndarray,
-                ctrl_mx: np.ndarray,
-                ctrl_my: np.ndarray,
-                ctrl_mz: np.ndarray):
-        self._plot_ctrl_mx.setData(x=t_s, y=ctrl_mx)
-        self._plot_ctrl_my.setData(x=t_s, y=ctrl_my)
-        self._plot_ctrl_mz.setData(x=t_s, y=ctrl_mz)
-
-
-class MotorCtrlWidget(SubplotWidget):
-    def __init__(self, data_cb: Callable):
-        super().__init__(data_cb)
-
-    def _ini_base_widget(self):
-        self._base_widget = pg.PlotWidget()
-        self._base_widget.setLabel('bottom', 'Time', units='s')
-        self._base_widget.setLabel('left', 'Angular-rate', units='rad/s')
-        self._base_widget.addLegend()
-        self._base_widget.showGrid(x=True, y=True)
-
-        self._plot_w_0 = pg.PlotDataItem(pen=pg.mkPen(color="b", style=QtCore.Qt.DashLine), name='w0')
-        self._plot_w_1 = pg.PlotDataItem(pen=pg.mkPen(color="r", style=QtCore.Qt.DashLine), name='w1')
-        self._plot_w_2 = pg.PlotDataItem(pen=pg.mkPen(color="g", style=QtCore.Qt.DashLine), name='w2')
-        self._plot_w_3 = pg.PlotDataItem(pen=pg.mkPen(color="m", style=QtCore.Qt.DashLine), name='w3')
-
-        self._base_widget.addItem(self._plot_w_0)
-        self._base_widget.addItem(self._plot_w_1)
-        self._base_widget.addItem(self._plot_w_2)
-        self._base_widget.addItem(self._plot_w_3)
-
-    def _update(self,
-                t_s: np.ndarray,
-                w_0: np.ndarray,
-                w_1: np.ndarray,
-                w_2: np.ndarray,
-                w_3: np.ndarray):
-        self._plot_w_0.setData(x=t_s, y=w_0)
-        self._plot_w_1.setData(x=t_s, y=w_1)
-        self._plot_w_2.setData(x=t_s, y=w_2)
-        self._plot_w_3.setData(x=t_s, y=w_3)
+    def _update(self, t_s: np.ndarray, y: np.ndarray):
+        for i_line, line_plot in enumerate(self._line_plots):
+            line_plot.setData(x=t_s, y=y[i_line])
