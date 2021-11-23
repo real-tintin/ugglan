@@ -197,6 +197,19 @@ class Gui(QtGui.QMainWindow):
 
         self._gui_state = GuiState.INIT
 
+    def _place_widget_in_grid(self, grid_pos: GridPos, widget: Union[pg.PlotWidget, gl.GLViewWidget]):
+        if grid_pos == GridPos.TOP_LEFT:
+            self._grid.addWidget(widget, 0, 0, 1, 1)
+
+        if grid_pos == GridPos.TOP_RIGHT:
+            self._grid.addWidget(widget, 0, 1, 1, 1)
+
+        if grid_pos == GridPos.BOTTOM_LEFT:
+            self._grid.addWidget(widget, 1, 0, 1, 1)
+
+        if grid_pos == GridPos.BOTTOM_RIGHT:
+            self._grid.addWidget(widget, 1, 1, 1, 1)
+
     def _add_menu_from_dataclass(self, menu_parent, data_class, label):
         menu_dataclass = menu_parent.addMenu(label)
 
@@ -206,8 +219,22 @@ class Gui(QtGui.QMainWindow):
             if is_dataclass(val):
                 self._add_menu_from_dataclass(menu_dataclass, val, member)
             else:
-                action = menu_dataclass.addAction(self._format_menu_label(key=member, val=val))
+                action = menu_dataclass.addAction(FORMAT_MENU_LABEL.format(key=member, val=val))
                 action.triggered.connect(partial(self._action_dataclass_cb, action, data_class, member))
+
+    def _action_dataclass_cb(self, action, data_class, member):
+        old_val = getattr(data_class, member)
+
+        if isinstance(old_val, int):
+            new_val, is_updated = QInputDialog.getInt(self, member, 'Update value:', value=old_val)
+        elif isinstance(old_val, float):
+            new_val, is_updated = QInputDialog.getDouble(self, member, 'Update value:', value=old_val, decimals=5)
+        else:
+            raise NotImplementedError
+
+        if is_updated:
+            setattr(data_class, member, new_val)
+            action.setText(FORMAT_MENU_LABEL.format(key=member, val=new_val))
 
     def _cb_input_step_checked(self):
         self._action_input_step.setChecked(True)
@@ -237,35 +264,18 @@ class Gui(QtGui.QMainWindow):
             self._run_sim_in_thread()
             self._run_gui_loop()
 
-        self._gui_state = GuiState.RUNNING
+            self._gui_state = GuiState.RUNNING
 
-    def _stop(self):
-        if self._gui_state == GuiState.RUNNING:
-            self._stop_sim_in_thread()
-            self._stop_gui_loop()
-
-        self._gui_state = GuiState.STOPPED
-
-    def _run_gui_loop(self):
-        self._gui_timer = QtCore.QTimer()
-        self._gui_timer.timeout.connect(self._update_gui)
-        self._gui_timer.start(int(self._conf_gui.refresh_rate_s * 1e3))
-
-    def _stop_gui_loop(self):
-        self._gui_timer.stop()
-
-    def _place_widget_in_grid(self, grid_pos: GridPos, widget: Union[pg.PlotWidget, gl.GLViewWidget]):
-        if grid_pos == GridPos.TOP_LEFT:
-            self._grid.addWidget(widget, 0, 0, 1, 1)
-
-        if grid_pos == GridPos.TOP_RIGHT:
-            self._grid.addWidget(widget, 0, 1, 1, 1)
-
-        if grid_pos == GridPos.BOTTOM_LEFT:
-            self._grid.addWidget(widget, 1, 0, 1, 1)
-
-        if grid_pos == GridPos.BOTTOM_RIGHT:
-            self._grid.addWidget(widget, 1, 1, 1, 1)
+    def _init_simulator(self):
+        self._simulator = Simulator(
+            att_est_params=self._att_est_params,
+            pilot_ctrl_params=self._pilot_ctrl_params,
+            six_dof_state=SIX_DOF_STATE_ZERO,
+            drone_params=self._drone_params,
+            env_params=self._env_params,
+            imu_noise=self._imu_noise,
+            dt=self._conf_sim.dt_s,
+        )
 
     def _init_rolling_sim_buf(self):
         self._rolling_sim_buf = RollingBuffer(
@@ -294,17 +304,6 @@ class Gui(QtGui.QMainWindow):
             },
             n_samples=int(self._conf_gui.t_window_size_s / self._conf_gui.refresh_rate_s / 2))  # TODO: Why / 2?
 
-    def _init_simulator(self):
-        self._simulator = Simulator(
-            att_est_params=self._att_est_params,
-            pilot_ctrl_params=self._pilot_ctrl_params,
-            six_dof_state=SIX_DOF_STATE_ZERO,
-            drone_params=self._drone_params,
-            env_params=self._env_params,
-            imu_noise=self._imu_noise,
-            dt=self._conf_sim.dt_s,
-        )
-
     def _run_sim_in_thread(self):
         """
         Note, this approach is fine (w.r.t race conditions) as long as we
@@ -313,14 +312,16 @@ class Gui(QtGui.QMainWindow):
         self._threaded_task_exec_sim = ThreadedTask(cb=self._exec_simulator, exec_period_s=self._conf_sim.dt_s)
         self._threaded_task_exec_sim.launch()
 
-    def _stop_sim_in_thread(self):
-        self._threaded_task_exec_sim.teardown()
-
     def _exec_simulator(self):
         if self._is_input_step_selected():
             self._simulator.step(ref_input=self._conf_step_response.ref_input)
         else:
             raise NotImplementedError
+
+    def _run_gui_loop(self):
+        self._gui_timer = QtCore.QTimer()
+        self._gui_timer.timeout.connect(self._update_gui)
+        self._gui_timer.start(int(self._conf_gui.refresh_rate_s * 1e3))
 
     def _update_gui(self):
         self._rolling_sim_buf.update()
@@ -329,6 +330,19 @@ class Gui(QtGui.QMainWindow):
     def _update_subplots(self):
         for widget in self._subplot_widget_map.values():
             widget.update()
+
+    def _stop(self):
+        if self._gui_state == GuiState.RUNNING:
+            self._stop_sim_in_thread()
+            self._stop_gui_loop()
+
+        self._gui_state = GuiState.STOPPED
+
+    def _stop_sim_in_thread(self):
+        self._threaded_task_exec_sim.teardown()
+
+    def _stop_gui_loop(self):
+        self._gui_timer.stop()
 
     def _init_6dof_widget(self):
         return SixDofWidget(data_cb=self._cb_6dof_widget)
@@ -385,33 +399,6 @@ class Gui(QtGui.QMainWindow):
 
     def closeEvent(self, event):
         self._stop()
-
-    def _action_dataclass_cb(self, action, data_class, member):
-        old_val = getattr(data_class, member)
-
-        if isinstance(old_val, int):
-            new_val, is_updated = QInputDialog.getInt(self, member, 'Update value:', value=old_val)
-
-        elif isinstance(old_val, float):
-            new_val, is_updated = QInputDialog.getDouble(self, member, 'Update value:', value=old_val, decimals=5)
-
-        else:
-            raise NotImplementedError
-
-        if is_updated:
-            setattr(data_class, member, new_val)
-            action.setText(self._format_menu_label(key=member, val=new_val))
-
-    @staticmethod
-    def _format_menu_label(key: str, val=Union[bool, int, float]) -> str:
-        if isinstance(val, int):
-            return FORMAT_MENU_LABEL.format(key=key, val=int(val))
-
-        elif isinstance(val, float):
-            return FORMAT_MENU_LABEL.format(key=key, val=float(val))
-
-        else:
-            raise NotImplementedError
 
 
 def main():
