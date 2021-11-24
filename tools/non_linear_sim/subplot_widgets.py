@@ -5,6 +5,7 @@ import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 from PyQt5.QtGui import QMatrix4x4, QQuaternion, QFont, QColor
+from PyQt5.QtWidgets import QLabel
 from pyqtgraph.Qt import QtGui, QtCore
 
 DEFAULT_COLOR_ORDER = [QColor(31, 119, 180),
@@ -61,6 +62,11 @@ class SixDofWidget(SubplotWidget):
         self._base_widget = gl.GLViewWidget()
         self._base_widget.addItem(self._mesh)
 
+        self._text_label = QLabel(self._base_widget)
+        self._text_label.setStyleSheet("QLabel { color : white; }")
+        self._text_label.setText(self._format_text_label(np.zeros(3), np.zeros(3), np.zeros(3)))
+        self._text_label.setFont(QFont("Consolas", 8))
+
         #  Note, as the axis in the 6dof model is rotated with pi about x, we set -y and -z.
         self._base_widget.addItem(gl.GLGridItem(size=QtGui.QVector3D(10, 10, 10)))
         self._base_widget.addItem(gl.GLAxisItem(QtGui.QVector3D(1, -1, -1)))
@@ -69,7 +75,7 @@ class SixDofWidget(SubplotWidget):
         self._base_widget.addItem(gl.GLTextItem(pos=[0, -1, 0], text='y (m)', font=QFont('Helvetica', 7)))
         self._base_widget.addItem(gl.GLTextItem(pos=[0, 0, -1], text='z (m)', font=QFont('Helvetica', 7)))
 
-    def _update(self, r_i: np.ndarray, q: np.ndarray):
+    def _update(self, r_i: np.ndarray, v_i: np.ndarray, a_i: np.ndarray, q: np.ndarray):
         transform = QMatrix4x4()
 
         transform.translate(r_i[0], -r_i[1], -r_i[2])
@@ -77,22 +83,33 @@ class SixDofWidget(SubplotWidget):
 
         self._mesh.setTransform(transform)
 
+        self._text_label.setText(self._format_text_label(r_i, v_i, a_i))
+
+    @staticmethod
+    def _format_text_label(r_i: np.ndarray, v_i: np.ndarray, a_i: np.ndarray):
+        def arr2str(x):
+            return np.array2string(x, precision=2, floatmode='fixed', sign=' ', suppress_small=True)
+
+        return " r_i = {} m\n" \
+               " v_i = {} m/s\n" \
+               " a_i = {} m/s^2".format(arr2str(r_i), arr2str(v_i), arr2str(a_i))
+
     @staticmethod
     def get_meshed_drone():
         return gl.MeshData.cylinder(rows=10, cols=20, radius=[0.1, 0.2], length=0.05)  # TODO: Replace by actual drone.
 
 
 class LinePlotWidget(SubplotWidget):
-    def __init__(self, data_cb: Callable, labels: [], y_label: str, y_unit: str,
-                 color_order: List = DEFAULT_COLOR_ORDER, line_styles: List = None):
-        super().__init__(data_cb, labels, y_label, y_unit, color_order, line_styles)
+    def __init__(self, data_cb: Callable,
+                 labels: [],
+                 y_label: str,
+                 y_unit: str,
+                 color_order: List = None,
+                 line_styles: List = None,
+                 width: float = 1.0):
+        super().__init__(data_cb, labels, y_label, y_unit, color_order, line_styles, width)
 
-    def _ini_base_widget(self,
-                         labels: [],
-                         y_label: str,
-                         y_unit: str,
-                         color_order: List = DEFAULT_COLOR_ORDER,
-                         line_styles: List = None):
+    def _ini_base_widget(self, labels, y_label, y_unit, color_order, styles, width):
         self._base_widget = pg.PlotWidget()
 
         self._base_widget.setLabel('bottom', 'Time', units='s')
@@ -104,17 +121,21 @@ class LinePlotWidget(SubplotWidget):
         n_lines = len(labels)
         self._line_plots = []
 
-        if line_styles is None:
-            line_styles = [QtCore.Qt.SolidLine for _ in range(n_lines)]
+        if color_order is None:
+            color_order = DEFAULT_COLOR_ORDER
+
+        if styles is None:
+            styles = [QtCore.Qt.SolidLine for _ in range(n_lines)]
 
         for i_line in range(n_lines):
             line_plot = pg.PlotDataItem(pen=pg.mkPen(color=color_order[i_line],
-                                                     style=line_styles[i_line]),
+                                                     style=styles[i_line],
+                                                     width=width),
                                         name=labels[i_line])
 
             self._line_plots.append(line_plot)
             self._base_widget.addItem(line_plot)
 
-    def _update(self, t_s: np.ndarray, y: np.ndarray):
+    def _update(self, t_s: List, y: List[List]):
         for i_line, line_plot in enumerate(self._line_plots):
             line_plot.setData(x=t_s, y=y[i_line])

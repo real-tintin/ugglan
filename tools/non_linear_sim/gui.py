@@ -19,31 +19,32 @@ from non_linear_sim.threaded_task import ThreadedTask
 
 # TODO: Gamepad logic class and use ref in sim.
 # TODO: Subplots to add: imu_out, pos and velocity.
-# TODO: Menu to select subplot in grid.
+# TODO: Update the drone model.
+
 
 FORMAT_MENU_LABEL = "{key}: {val}"
 
 
 class SubplotId(Enum):
-    SIX_DOF = 'six_dof'
+    SIX_DOF = '6dof'
 
-    ROLL_REF = 'roll_ref'
-    PITCH_REF = 'pitch_ref'
-    YAW_RATE_REF = 'yaw_rate_ref'
+    ROLL_REF = 'Roll ref'
+    PITCH_REF = 'Pitch ref'
+    YAW_RATE_REF = 'Yaw-rate ref'
 
-    BODY_CTRL = 'body_ctrl'
-    MOTOR_CTRL = 'motor_ctrl'
+    BODY_CTRL = 'Body ctrl'
+    MOTOR_CTRL = 'Motor ctrl'
 
-    IMU_ACC = 'imu_acc'
-    IMU_GYRO = 'imu_gyro'
-    IMU_MAG = 'imu_mag'
+    IMU_ACC = 'Imu acc'
+    IMU_GYRO = 'Imu gyro'
+    IMU_MAG = 'Imu mag'
 
 
 class GridPos(Enum):
-    TOP_LEFT = 'top_left'
-    TOP_RIGHT = 'top_right'
-    BOTTOM_LEFT = 'bottom_left'
-    BOTTOM_RIGHT = 'bottom_right'
+    TOP_LEFT = 'Top left'
+    TOP_RIGHT = 'Top right'
+    BOTTOM_LEFT = 'Bottom left'
+    BOTTOM_RIGHT = 'Bottom right'
 
 
 class GuiState(Enum):
@@ -129,6 +130,9 @@ class Gui(QtGui.QMainWindow):
                 SubplotId.YAW_RATE_REF: self._init_yaw_rate_ref_widget(),
                 SubplotId.BODY_CTRL: self._init_body_ctrl_widget(),
                 SubplotId.MOTOR_CTRL: self._init_motor_ctrl_widget(),
+                SubplotId.IMU_ACC: self._init_imu_acc_widget(),
+                SubplotId.IMU_GYRO: self._init_imu_gyro_widget(),
+                SubplotId.IMU_MAG: self._init_imu_mag_widget(),
             }
 
         def init_default_grid_subplot_map():
@@ -430,16 +434,34 @@ class Gui(QtGui.QMainWindow):
 
     def _init_body_ctrl_widget(self):
         return LinePlotWidget(data_cb=self._cb_body_ctrl_widget,
-                              labels=["mx", "my", "mz"],
+                              labels=["m<sub>x</sub>", "m<sub>y</sub>", "m<sub>z</sub>"],
                               y_label="Torque", y_unit="Nm")
 
     def _init_motor_ctrl_widget(self):
         return LinePlotWidget(data_cb=self._cb_motor_ctrl_widget,
-                              labels=["w_0", "w_1", "w_2", "w_3"],
+                              labels=["\u03C9<sub>0</sub>", "\u03C9<sub>1</sub>",
+                                      "\u03C9<sub>2</sub>", "\u03C9<sub>3</sub>"],
                               y_label="Angular-rate", y_unit="rad/s")
+
+    def _init_imu_acc_widget(self):
+        return LinePlotWidget(data_cb=self._cb_imu_acc_widget,
+                              labels=["x", "y", "z"],
+                              y_label="Imu accelerometer", y_unit="m/s<sub>2</sub>")
+
+    def _init_imu_gyro_widget(self):
+        return LinePlotWidget(data_cb=self._cb_imu_gyro_widget,
+                              labels=["x", "y", "z"],
+                              y_label="Imu gyro", y_unit="rad/s")
+
+    def _init_imu_mag_widget(self):
+        return LinePlotWidget(data_cb=self._cb_imu_mag_widget,
+                              labels=["x", "y", "z"],
+                              y_label="Imu magnetometer", y_unit="gauss")
 
     def _cb_6dof_widget(self):
         return {"r_i": self._simulator.get_6dof_state().r_i,
+                "v_i": self._simulator.get_6dof_state().v_i,
+                "a_i": self._simulator.get_6dof_state().a_i,
                 "q": self._simulator.get_6dof_state().q}
 
     def _cb_roll_ref_widget(self):
@@ -472,6 +494,24 @@ class Gui(QtGui.QMainWindow):
                       self._rolling_sim_buf.motor_ang_rates.w_1,
                       self._rolling_sim_buf.motor_ang_rates.w_2,
                       self._rolling_sim_buf.motor_ang_rates.w_3]}
+
+    def _cb_imu_acc_widget(self):
+        return {"t_s": self._rolling_sim_buf.t_s,
+                "y": [self._rolling_sim_buf.imu_out.acc_x,
+                      self._rolling_sim_buf.imu_out.acc_y,
+                      self._rolling_sim_buf.imu_out.acc_z]}
+
+    def _cb_imu_gyro_widget(self):
+        return {"t_s": self._rolling_sim_buf.t_s,
+                "y": [self._rolling_sim_buf.imu_out.ang_rate_x,
+                      self._rolling_sim_buf.imu_out.ang_rate_y,
+                      self._rolling_sim_buf.imu_out.ang_rate_z]}
+
+    def _cb_imu_mag_widget(self):
+        return {"t_s": self._rolling_sim_buf.t_s,
+                "y": [self._rolling_sim_buf.imu_out.mag_field_x,
+                      self._rolling_sim_buf.imu_out.mag_field_y,
+                      self._rolling_sim_buf.imu_out.mag_field_z]}
 
     def closeEvent(self, event):
         self._stop()
