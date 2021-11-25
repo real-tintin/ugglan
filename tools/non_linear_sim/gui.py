@@ -18,8 +18,6 @@ from non_linear_sim.subplot_widgets import SixDofWidget, LinePlotWidget
 from non_linear_sim.threaded_task import ThreadedTask
 
 # TODO: Gamepad logic class and use ref in sim.
-# TODO: Subplots to add: imu_out, pos and velocity.
-# TODO: Update the drone model.
 
 
 FORMAT_MENU_LABEL = "{key}: {val}"

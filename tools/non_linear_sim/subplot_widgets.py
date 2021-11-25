@@ -8,6 +8,9 @@ from PyQt5.QtGui import QMatrix4x4, QQuaternion, QFont, QColor
 from PyQt5.QtWidgets import QLabel
 from pyqtgraph.Qt import QtGui, QtCore
 
+from multi_body_sim.mb_drone import drone
+from multi_body_sim.meshed_multi_body import MeshedMultiBody
+
 DEFAULT_COLOR_ORDER = [QColor(31, 119, 180),
                        QColor(214, 39, 40),
                        QColor(255, 127, 14),
@@ -57,10 +60,11 @@ class SixDofWidget(SubplotWidget):
         super().__init__(data_cb)
 
     def _ini_base_widget(self):
-        self._mesh = gl.GLMeshItem(meshdata=self.get_meshed_drone(), smooth=True, drawEdges=True, shader='balloon')
-
         self._base_widget = gl.GLViewWidget()
-        self._base_widget.addItem(self._mesh)
+        self._meshed_drone = self.get_meshed_drone()
+
+        for mesh_item in self._meshed_drone.iter_mesh_items():
+            self._base_widget.addItem(mesh_item)
 
         self._text_label = QLabel(self._base_widget)
         self._text_label.setStyleSheet("QLabel { color : white; }")
@@ -81,7 +85,7 @@ class SixDofWidget(SubplotWidget):
         transform.translate(r_i[0], -r_i[1], -r_i[2])
         transform.rotate(QQuaternion(*q))
 
-        self._mesh.setTransform(transform)
+        self._meshed_drone.set_transform(transform)
 
         self._text_label.setText(self._format_text_label(r_i, v_i, a_i))
 
@@ -96,7 +100,7 @@ class SixDofWidget(SubplotWidget):
 
     @staticmethod
     def get_meshed_drone():
-        return gl.MeshData.cylinder(rows=10, cols=20, radius=[0.1, 0.2], length=0.05)  # TODO: Replace by actual drone.
+        return MeshedMultiBody(multi_body=drone)
 
 
 class LinePlotWidget(SubplotWidget):

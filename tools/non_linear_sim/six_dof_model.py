@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.integrate import ode
 
-from multi_body.euclidean_transform import rotation_matrix
+from multi_body_sim.euclidean_transform import rotation_matrix
 
 
 @dataclass

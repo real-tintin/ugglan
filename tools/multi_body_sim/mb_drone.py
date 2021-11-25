@@ -1,14 +1,18 @@
 import numpy as np
+from PyQt5.QtGui import QColor
 
-from .multi_body import Body, MultiBody
-from .shapes import *
-from .utils import duplicate_body, ROTATE_FOUR_EQUAL_DIST
+from multi_body_sim.multi_body import Body, MultiBody
+from multi_body_sim.shapes import *
+from multi_body_sim.utils import duplicate_body, ROTATE_FOUR_EQUAL_DIST
+
+OFF_WHITE = [249, 249, 249]
+DARK_RED = [139, 0, 0]
 
 frame_top = Body(
     name='Q450 V3 Glass Fiber Quadcopter Frame 450mm (Top center)',
     shape_m=Cuboid(0.12, 0.12, 0.001),
     mass_kg=0.026,
-    color='black'
+    color=QColor('black')
 )
 
 frame_bottom = Body(
@@ -16,7 +20,7 @@ frame_bottom = Body(
     shape_m=Cuboid(0.16, 0.12, 0.001),
     mass_kg=0.080,
     trans_i_frame_m=np.array([0, 0, -0.04]),
-    color='black'
+    color=QColor('black')
 )
 
 frame_arm_1 = Body(
@@ -42,7 +46,7 @@ battery = Body(
     shape_m=Cuboid(0.115, 0.034, 0.024),
     mass_kg=0.181,
     trans_i_frame_m=np.array([0, 0, -0.028]),
-    color='yellow'
+    color=QColor('yellow')
 )
 
 esc = Body(
@@ -50,7 +54,7 @@ esc = Body(
     shape_m=Cuboid(0.05, 0.04, 0.005),
     mass_kg=0.0265,
     trans_i_frame_m=np.array([0.14, 0, -0.014]),
-    color='green'
+    color=QColor('green')
 )
 
 motor = Body(
@@ -58,7 +62,7 @@ motor = Body(
     shape_m=Cylinder(0.014, 0.03),
     mass_kg=0.076,
     trans_i_frame_m=np.array([0.23, 0, 0.015]),
-    color=[0.2, 0.2, 0.2]
+    color=[51, 51, 51]
 )
 
 propeller = Body(
@@ -66,7 +70,7 @@ propeller = Body(
     shape_m=Cuboid(0.02, 0.228, 0.001),
     mass_kg=0.007,
     trans_i_frame_m=np.array([0.23, 0, 0.03]),
-    color='black'
+    color=QColor('black')
 )
 
 mounting_surface = Body(
@@ -74,7 +78,7 @@ mounting_surface = Body(
     shape_m=Cuboid(0.13, 0.13, 0.0017),
     mass_kg=0.040,
     trans_i_frame_m=np.array([0, 0, 0.02]),
-    color=[0.8, 0.8, 0.8]
+    color=[204, 204, 204]
 )
 
 mounting_spacers = Body(
@@ -82,7 +86,7 @@ mounting_spacers = Body(
     shape_m=Cylinder(0.003, 0.02),
     mass_kg=0.004,
     trans_i_frame_m=np.array([0.021, 0, 0.01]),
-    color=[0.8, 0.8, 0.8]
+    color=[204, 204, 204]
 )
 
 i2c_breadboard = Body(
@@ -90,7 +94,7 @@ i2c_breadboard = Body(
     shape_m=Cuboid(0.055, 0.04, 0.002),
     mass_kg=0.010,
     trans_i_frame_m=np.array([-0.008, 0, 0.01]),
-    color=[0, 0.5, 0]
+    color=[0, 128, 0]
 )
 
 raspberry_pi = Body(
@@ -98,7 +102,7 @@ raspberry_pi = Body(
     shape_m=Cuboid(0.065, 0.03, 0.0054),
     mass_kg=0.015,
     trans_i_frame_m=np.array([-0.02, -0.04, 0.0232]),
-    color=[0, 0.8, 0]
+    color=[0, 204, 0]
 )
 
 landing_gear_base = Body(
@@ -106,7 +110,7 @@ landing_gear_base = Body(
     shape_m=Cuboid(0.03, 0.02, 0.004),
     mass_kg=14 / 4 * 1e-3,
     trans_i_frame_m=np.array([0.045, 0, -0.042]),
-    color=[0.8, 0.8, 0.8]
+    color=[204, 204, 204]
 )
 
 landing_gear_leg = Body(
@@ -115,7 +119,7 @@ landing_gear_leg = Body(
     mass_kg=14 / 4 * 1e-3,
     trans_i_frame_m=np.array([0.045 + np.sin(np.pi / 8) * 0.1, 0, - 0.1 * np.cos(np.pi / 8) - 0.044]),
     rot_b_frame_rad=np.array([0, -np.pi / 8, 0]),
-    color=[0.8, 0.8, 0.8]
+    color=[64, 64, 64]
 )
 
 landing_gear_foot = Body(
@@ -123,7 +127,7 @@ landing_gear_foot = Body(
     shape_m=Sphere(0.008),
     mass_kg=5 / 4 * 1e-3,
     trans_i_frame_m=np.array([np.sin(np.pi / 8) * 0.2 + 0.045, 0, -np.cos(np.pi / 8) * 0.2 - 0.044]),
-    color=[0.8, 0.8, 0.8]
+    color=[204, 204, 204]
 )
 
 _bodies = [
@@ -131,13 +135,13 @@ _bodies = [
     frame_bottom,
     *duplicate_body(frame_arm_1, 4, ROTATE_FOUR_EQUAL_DIST,
                     np.tile(np.array([0.15, 0, -0.006]), (4, 1)),
-                    ['white', 'red', 'white', 'red']),
+                    [OFF_WHITE, DARK_RED, OFF_WHITE, DARK_RED]),
     *duplicate_body(frame_arm_2, 4, ROTATE_FOUR_EQUAL_DIST,
                     np.tile(np.array([0.055, 0, -0.02]), (4, 1)),
-                    ['white', 'red', 'white', 'red']),
+                    [OFF_WHITE, DARK_RED, OFF_WHITE, DARK_RED]),
     *duplicate_body(frame_arm_3, 4, ROTATE_FOUR_EQUAL_DIST,
                     np.tile(np.array([0.23, 0, -0.039]), (4, 1)),
-                    ['white', 'red', 'white', 'red']),
+                    [OFF_WHITE, DARK_RED, OFF_WHITE, DARK_RED]),
     battery,
     *duplicate_body(esc, 4, ROTATE_FOUR_EQUAL_DIST),
     *duplicate_body(motor, 4, ROTATE_FOUR_EQUAL_DIST),
