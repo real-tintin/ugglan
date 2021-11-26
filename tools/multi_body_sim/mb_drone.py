@@ -5,7 +5,7 @@ from multi_body_sim.multi_body import Body, MultiBody
 from multi_body_sim.shapes import *
 from multi_body_sim.utils import duplicate_body, ROTATE_FOUR_EQUAL_DIST
 
-OFF_WHITE = [249, 249, 249]
+OFF_WHITE = [240, 240, 240]
 DARK_RED = [139, 0, 0]
 
 frame_top = Body(

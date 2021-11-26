@@ -11,7 +11,7 @@ from multi_body_sim.shapes import *
 
 EDGE_COLOR = QColor("black")
 
-FACE_ALPHA = 128
+FACE_ALPHA = int(255 * 0.8)
 
 SPHERE_RES = 15
 CYLINDER_RES = 20
@@ -83,7 +83,8 @@ class MeshedMultiBody:
             raise ValueError("Invalid shape")
 
         self._mesh_data_transform(mesh_data, rot_b_rad, trans_i_m, rot_i_rad)
-        mesh_item = gl.GLMeshItem(meshdata=mesh_data, color=self._parse_color(color), drawEdges=True)
+        mesh_item = gl.GLMeshItem(meshdata=mesh_data, color=self._parse_color(color),
+                                  smooth=True, computeNormals=False, glOptions='translucent')
 
         return mesh_item
 

@@ -6,7 +6,7 @@ setup(
     entry_points={
         'console_scripts': [
             'plot-data-log=data_log.plot:main',
-            'plot-multi-body=multi_body.plot_drone:main',
+            'plot-multi-body=multi_body_sim.plot_drone:main',
             'plot-att-est=state_est.plot_att_est:main',
             'plot-hard-iron-offset=state_est.hard_iron_offset:main',
             'plot-motor-dyn=state_est.motor_dynamics:main',

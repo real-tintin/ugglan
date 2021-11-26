@@ -1,13 +1,11 @@
-import sys
-
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 from PyQt5.QtGui import QFont
 from pyqtgraph.Qt import QtGui
 
-from meshed_multi_body import MeshedMultiBody
 from multi_body_sim.mb_drone import drone
+from multi_body_sim.meshed_multi_body import MeshedMultiBody
 from multi_body_sim.multi_body import MultiBody
 from multi_body_sim.utils import update_inertia
 
@@ -25,12 +23,15 @@ def _plot_multi_body(mb: MultiBody):
     gl_widget = gl.GLViewWidget()
     gl_widget.setBackgroundColor([255, 255, 255])
 
-    gl_widget.addItem(gl.GLGridItem(size=QtGui.QVector3D(10, 10, 10), color=[0, 0, 0]))
-    gl_widget.addItem(gl.GLAxisItem(QtGui.QVector3D(0.5, 0.5, 0.5)))
+    grid = gl.GLGridItem(size=QtGui.QVector3D(10, 10, 10), color=[0, 0, 0])
+    grid.setSpacing(x=0.5, y=0.5, z=0.5)
 
-    gl_widget.addItem(gl.GLTextItem(pos=[0.5, 0, 0], text='x (m)', font=QFont('Helvetica', 7), color=[0, 0, 0]))
-    gl_widget.addItem(gl.GLTextItem(pos=[0, 0.5, 0], text='y (m)', font=QFont('Helvetica', 7), color=[0, 0, 0]))
-    gl_widget.addItem(gl.GLTextItem(pos=[0, 0, 0.5], text='z (m)', font=QFont('Helvetica', 7), color=[0, 0, 0]))
+    gl_widget.addItem(grid)
+    gl_widget.addItem(gl.GLAxisItem(QtGui.QVector3D(0.2, 0.2, 0.2)))
+
+    gl_widget.addItem(gl.GLTextItem(pos=[0.2, 0, 0], text='x (m)', font=QFont('Helvetica', 8), color=[0, 0, 0]))
+    gl_widget.addItem(gl.GLTextItem(pos=[0, 0.2, 0], text='y (m)', font=QFont('Helvetica', 8), color=[0, 0, 0]))
+    gl_widget.addItem(gl.GLTextItem(pos=[0, 0, 0.2], text='z (m)', font=QFont('Helvetica', 8), color=[0, 0, 0]))
 
     meshed_drone = MeshedMultiBody(multi_body=drone)
 
