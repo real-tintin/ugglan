@@ -1,7 +1,7 @@
 Modeling & Control
 *******************
 .. _drone_multi_body:
-.. figure:: figures/drone_multi_body.svg
+.. figure:: figures/drone_multi_body.png
     :width: 100%
 
     Multi body analysis of the drone.
