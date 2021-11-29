@@ -19,7 +19,6 @@ from non_linear_sim.threaded_task import ThreadedTask
 
 # TODO: Gamepad logic class and use ref in sim.
 
-
 FORMAT_MENU_LABEL = "{key}: {val}"
 
 
@@ -80,6 +79,12 @@ class ConfGamepad:
 
 
 class Gui(QtGui.QMainWindow):
+    """
+    Note, some tasks are run in threads without any locks. It is deemed that
+    this approach is fine (w.r.t race conditions) as long as we only read
+    (non-modifiable access) e.g., from the simulator.
+    """
+
     def __init__(self, parent=None):
         super(Gui, self).__init__(parent)
 
@@ -147,7 +152,7 @@ class Gui(QtGui.QMainWindow):
             setup_menu_conf()
             setup_menu_plots()
             setup_menu_input()
-            setup_action_run()
+            setup_action_start()
             setup_action_stop()
 
         def setup_menu_conf():
@@ -219,9 +224,9 @@ class Gui(QtGui.QMainWindow):
             self._action_input_gamepad.setChecked(False)
             self._action_input_gamepad.triggered.connect(self._cb_input_gamepad_checked)
 
-        def setup_action_run():
-            self._action_run = self._menu.addAction("Run")
-            self._action_run.triggered.connect(self._run)
+        def setup_action_start():
+            self._action_start = self._menu.addAction("Start")
+            self._action_start.triggered.connect(self._start)
 
         def setup_action_stop():
             self._action_stop = self._menu.addAction("Stop")
@@ -322,12 +327,13 @@ class Gui(QtGui.QMainWindow):
 
         return ConfGamepad(ref_input_scale=RefInput(f_z=-2 * mg, roll=0.0, pitch=0.0, yaw_rate=0.0))
 
-    def _run(self):
+    def _start(self):
         if self._gui_state != GuiState.RUNNING:
             self._init_simulator()
             self._init_rolling_sim_buf()
-            self._run_sim_in_thread()
-            self._run_gui_loop()
+            self._start_main_gui_loop()
+            self._start_rolling_buf_in_thread()
+            self._start_sim_in_thread()
 
             self._gui_state = GuiState.RUNNING
 
@@ -367,14 +373,11 @@ class Gui(QtGui.QMainWindow):
 
                 "motor_ang_rates": self._simulator.get_motor_ang_rates,
             },
-            n_samples=int(self._conf_gui.t_window_size_s / self._conf_gui.refresh_rate_s / 2))  # TODO: Why / 2?
+            n_samples=int(self._conf_gui.t_window_size_s / self._conf_gui.refresh_rate_s))
 
-    def _run_sim_in_thread(self):
-        """
-        Note, this approach is fine (w.r.t race conditions) as long as we
-        only read from the simulator i.e., non-modifiable access.
-        """
-        self._threaded_task_exec_sim = ThreadedTask(cb=self._exec_simulator, exec_period_s=self._conf_sim.dt_s)
+    def _start_sim_in_thread(self):
+        self._threaded_task_exec_sim = ThreadedTask(cb=self._exec_simulator,
+                                                    exec_period_s=self._conf_sim.dt_s)
         self._threaded_task_exec_sim.launch()
 
     def _exec_simulator(self):
@@ -383,28 +386,41 @@ class Gui(QtGui.QMainWindow):
         else:
             raise NotImplementedError
 
-    def _run_gui_loop(self):
+    def _start_rolling_buf_in_thread(self):
+        self._threaded_task_update_rolling_buf = ThreadedTask(cb=self._update_rolling_buf,
+                                                              exec_period_s=self._conf_gui.refresh_rate_s)
+        self._threaded_task_update_rolling_buf.launch()
+
+    def _update_rolling_buf(self):
+        self._rolling_sim_buf.update()
+
+    def _start_main_gui_loop(self):
         self._gui_timer = QtCore.QTimer()
-        self._gui_timer.timeout.connect(self._update_gui)
+        self._gui_timer.timeout.connect(self._update_main_gui)
         self._gui_timer.start(int(self._conf_gui.refresh_rate_s * 1e3))
 
-    def _update_gui(self):
-        self._rolling_sim_buf.update()
+    def _update_main_gui(self):
         self._update_subplots()
 
     def _update_subplots(self):
-        for subplot in self._subplot_widget_map.values():
-            subplot.update()
+        active_subplot_ids = self._grid_subplot_map.values()
+
+        for subplot_id in active_subplot_ids:
+            self._subplot_widget_map[subplot_id].update()
 
     def _stop(self):
         if self._gui_state == GuiState.RUNNING:
             self._stop_sim_in_thread()
+            self._stop_rolling_buf_in_thread()
             self._stop_gui_loop()
 
         self._gui_state = GuiState.STOPPED
 
     def _stop_sim_in_thread(self):
         self._threaded_task_exec_sim.teardown()
+
+    def _stop_rolling_buf_in_thread(self):
+        self._threaded_task_update_rolling_buf.teardown()
 
     def _stop_gui_loop(self):
         self._gui_timer.stop()
