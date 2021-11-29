@@ -22,7 +22,7 @@ build_doc: build_image
 			sphinx-build "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 build_live: build_image
-	docker run -v $(DOC_ROOT):$(DOC_ROOT_MNT) \
+	docker run -it -v $(DOC_ROOT):$(DOC_ROOT_MNT) \
 			-p 8000:8000 \
 			sphinx \
 			sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)" --host 0.0.0.0 $(SPHINXOPTS) $(O)
