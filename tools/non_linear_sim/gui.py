@@ -3,12 +3,14 @@ from dataclasses import dataclass, is_dataclass
 from enum import Enum
 from functools import partial
 
+import numpy as np
 from PyQt5.QtWidgets import QInputDialog, QStackedWidget
 from pyqtgraph.Qt import QtGui, QtCore
 from pyqtgraph.Qt import QtWidgets
 
 from non_linear_sim.att_estimator import DEFAULT_ATT_EST_PARAMS
 from non_linear_sim.drone_model import DEFAULT_DRONE_PARAMS, DEFAULT_ENV_PARAMS
+from non_linear_sim.gamepad import Gamepad
 from non_linear_sim.pilot_ctrl import DEFAULT_PILOT_CTRL_PARAMS, RefInput
 from non_linear_sim.rolling_buffer import RollingBuffer
 from non_linear_sim.simulator import DEFAULT_IMU_NOISE
@@ -16,8 +18,6 @@ from non_linear_sim.simulator import Simulator
 from non_linear_sim.six_dof_model import STATE_ZERO as SIX_DOF_STATE_ZERO
 from non_linear_sim.subplot_widgets import SixDofWidget, LinePlotWidget
 from non_linear_sim.threaded_task import ThreadedTask
-
-# TODO: Gamepad logic class and use ref in sim.
 
 FORMAT_MENU_LABEL = "{key}: {val}"
 
@@ -75,7 +75,8 @@ class ConfStepResponse:
 
 @dataclass
 class ConfGamepad:
-    ref_input_scale: RefInput
+    ref_scale: RefInput
+    refresh_rate_s: float
 
 
 class Gui(QtGui.QMainWindow):
@@ -314,8 +315,8 @@ class Gui(QtGui.QMainWindow):
         self._action_input_step.setChecked(False)
         self._action_input_gamepad.setChecked(True)
 
-    def _is_input_step_selected(self):
-        return self._action_input_step.isChecked()
+    def _is_input_gamepad_selected(self):
+        return self._action_input_gamepad.isChecked()
 
     def _get_default_conf_step_response(self):
         mg = self._drone_params.m * self._env_params.g
@@ -325,17 +326,25 @@ class Gui(QtGui.QMainWindow):
     def _get_default_conf_gamepad(self):
         mg = self._drone_params.m * self._env_params.g
 
-        return ConfGamepad(ref_input_scale=RefInput(f_z=-2 * mg, roll=0.0, pitch=0.0, yaw_rate=0.0))
+        return ConfGamepad(ref_scale=RefInput(f_z=2 * mg, roll=np.pi / 8, pitch=np.pi / 8, yaw_rate=np.pi),
+                           refresh_rate_s=0.02)
 
     def _start(self):
         if self._gui_state != GuiState.RUNNING:
+            self._setup_ref_input()
             self._init_simulator()
             self._init_rolling_sim_buf()
             self._start_main_gui_loop()
-            self._start_rolling_buf_in_thread()
-            self._start_sim_in_thread()
+            self._setup_and_launch_threaded_tasks()
 
             self._gui_state = GuiState.RUNNING
+
+    def _setup_ref_input(self):
+        if self._is_input_gamepad_selected():
+            self._gamepad = Gamepad(ref_scale=self._conf_gamepad.ref_scale)
+            self._ref_input = self._gamepad.get_ref_input()
+        else:
+            self._ref_input = self._conf_step_response.ref_input
 
     def _init_simulator(self):
         self._simulator = Simulator(
@@ -365,7 +374,7 @@ class Gui(QtGui.QMainWindow):
                 "yaw_rate": lambda: self._simulator.get_6dof_state().w_b[2],
                 "yaw_acc": lambda: self._simulator.get_6dof_state().wp_b[0],
 
-                "ref_input": lambda: self._conf_step_response.ref_input,
+                "ref_input": lambda: self._ref_input,
                 "ctrl_input": self._simulator.get_ctrl_input,
 
                 "att_est": self._simulator.get_att_estimate,
@@ -375,24 +384,21 @@ class Gui(QtGui.QMainWindow):
             },
             n_samples=int(self._conf_gui.t_window_size_s / self._conf_gui.refresh_rate_s))
 
-    def _start_sim_in_thread(self):
-        self._threaded_task_exec_sim = ThreadedTask(cb=self._exec_simulator,
-                                                    exec_period_s=self._conf_sim.dt_s)
-        self._threaded_task_exec_sim.launch()
+    def _setup_and_launch_threaded_tasks(self):
+        self._threaded_tasks = []
 
-    def _exec_simulator(self):
-        if self._is_input_step_selected():
-            self._simulator.step(ref_input=self._conf_step_response.ref_input)
-        else:
-            raise NotImplementedError
+        if self._is_input_gamepad_selected():
+            self._threaded_tasks.append(ThreadedTask(cb=self._gamepad.update,
+                                                     exec_period_s=self._conf_gamepad.refresh_rate_s))
 
-    def _start_rolling_buf_in_thread(self):
-        self._threaded_task_update_rolling_buf = ThreadedTask(cb=self._update_rolling_buf,
-                                                              exec_period_s=self._conf_gui.refresh_rate_s)
-        self._threaded_task_update_rolling_buf.launch()
+        self._threaded_tasks.append(ThreadedTask(cb=self._rolling_sim_buf.update,
+                                                 exec_period_s=self._conf_gui.refresh_rate_s))
 
-    def _update_rolling_buf(self):
-        self._rolling_sim_buf.update()
+        self._threaded_tasks.append(ThreadedTask(cb=partial(self._simulator.step, self._ref_input),
+                                                 exec_period_s=self._conf_sim.dt_s))
+
+        for task in self._threaded_tasks:
+            task.launch()
 
     def _start_main_gui_loop(self):
         self._gui_timer = QtCore.QTimer()
@@ -410,17 +416,14 @@ class Gui(QtGui.QMainWindow):
 
     def _stop(self):
         if self._gui_state == GuiState.RUNNING:
-            self._stop_sim_in_thread()
-            self._stop_rolling_buf_in_thread()
+            self._teardown_threaded_tasks()
             self._stop_gui_loop()
 
         self._gui_state = GuiState.STOPPED
 
-    def _stop_sim_in_thread(self):
-        self._threaded_task_exec_sim.teardown()
-
-    def _stop_rolling_buf_in_thread(self):
-        self._threaded_task_update_rolling_buf.teardown()
+    def _teardown_threaded_tasks(self):
+        for task in self._threaded_tasks:
+            task.teardown()
 
     def _stop_gui_loop(self):
         self._gui_timer.stop()
@@ -476,7 +479,7 @@ class Gui(QtGui.QMainWindow):
         return {"r_i": self._simulator.get_6dof_state().r_i,
                 "v_i": self._simulator.get_6dof_state().v_i,
                 "a_i": self._simulator.get_6dof_state().a_i,
-                "q": self._simulator.get_6dof_state().q}
+                "n_i": self._simulator.get_6dof_state().n_i}
 
     def _cb_roll_ref_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,

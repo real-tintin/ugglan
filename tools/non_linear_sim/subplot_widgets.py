@@ -4,7 +4,7 @@ from typing import Callable, List
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
-from PyQt5.QtGui import QMatrix4x4, QQuaternion, QFont, QColor
+from PyQt5.QtGui import QMatrix4x4, QFont, QColor
 from PyQt5.QtWidgets import QLabel
 from pyqtgraph.Qt import QtGui, QtCore
 
@@ -56,6 +56,10 @@ class SubplotWidget(ABC):
 
 
 class SixDofWidget(SubplotWidget):
+    """
+    Note, as the axis in the 6dof model is rotated with pi about x, we set -y and -z.
+    """
+
     def __init__(self, data_cb: Callable):
         super().__init__(data_cb)
 
@@ -71,7 +75,6 @@ class SixDofWidget(SubplotWidget):
         self._text_label.setText(self._format_text_label(np.zeros(3), np.zeros(3), np.zeros(3)))
         self._text_label.setFont(QFont("Consolas", 8))
 
-        #  Note, as the axis in the 6dof model is rotated with pi about x, we set -y and -z.
         self._base_widget.addItem(gl.GLGridItem(size=QtGui.QVector3D(10, 10, 10)))
         self._base_widget.addItem(gl.GLAxisItem(QtGui.QVector3D(1, -1, -1)))
 
@@ -79,11 +82,14 @@ class SixDofWidget(SubplotWidget):
         self._base_widget.addItem(gl.GLTextItem(pos=[0, -1, 0], text='y (m)', font=QFont('Helvetica', 7)))
         self._base_widget.addItem(gl.GLTextItem(pos=[0, 0, -1], text='z (m)', font=QFont('Helvetica', 7)))
 
-    def _update(self, r_i: np.ndarray, v_i: np.ndarray, a_i: np.ndarray, q: np.ndarray):
+    def _update(self, r_i: np.ndarray, v_i: np.ndarray, a_i: np.ndarray, n_i: np.ndarray):
         transform = QMatrix4x4()
 
         transform.translate(r_i[0], -r_i[1], -r_i[2])
-        transform.rotate(QQuaternion(*q))
+
+        transform.rotate(np.rad2deg(n_i[0]), 1, 0, 0)
+        transform.rotate(np.rad2deg(n_i[1]), 0, -1, 0)
+        transform.rotate(np.rad2deg(n_i[2]), 0, 0, -1)
 
         self._meshed_drone.set_transform(transform)
 

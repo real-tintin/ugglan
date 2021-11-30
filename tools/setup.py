@@ -24,6 +24,7 @@ setup(
         'pyqtgraph',
         'PyQt5',
         'PyOpenGL',
+        'inputs',
     ],
     python_requires='>=3.7'
 )
