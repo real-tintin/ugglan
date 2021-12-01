@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from non_linear_sim.drone_model import DroneModel, CtrlInput, DEFAULT_ENV_PARAMS, DEFAULT_DRONE_PARAMS
+from non_linear_sim.six_dof_model import STATE_ZERO
 
 TEST_DT = 0.1
 
@@ -10,7 +11,10 @@ MG = DEFAULT_DRONE_PARAMS.m * DEFAULT_ENV_PARAMS.g
 
 @pytest.fixture
 def drone_model():
-    yield DroneModel(dt=TEST_DT)
+    yield DroneModel(drone_params=DEFAULT_DRONE_PARAMS,
+                     env_params=DEFAULT_ENV_PARAMS,
+                     state=STATE_ZERO,
+                     dt=TEST_DT)
 
 
 class TestDroneModel:

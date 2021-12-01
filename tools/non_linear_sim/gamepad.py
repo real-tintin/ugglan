@@ -2,8 +2,6 @@ from inputs import InputEvent, UnpluggedError, WIN, devices
 
 from non_linear_sim.pilot_ctrl import RefInput
 
-# TODO: Add method to rumble (e.g., if below zero)?
-
 INIT_REF_INPUT = RefInput(f_z=0.0, roll=0.0, pitch=0.0, yaw_rate=0.0)
 
 SCALE_AXIS = 2 ** 15 - 1

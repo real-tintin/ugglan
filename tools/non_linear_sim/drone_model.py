@@ -71,10 +71,10 @@ class DroneModel:
     http://www.diva-portal.org/smash/get/diva2:857660/FULLTEXT01.pdf.
     """
 
-    def __init__(self, drone_params: DroneParams = DEFAULT_DRONE_PARAMS,
-                 env_params: EnvParams = DEFAULT_ENV_PARAMS,
-                 state: State = STATE_ZERO,
-                 dt: float = 0.01):
+    def __init__(self, drone_params: DroneParams,
+                 env_params: EnvParams,
+                 state: State,
+                 dt: float):
         self._drone_params = drone_params
         self._env_params = env_params
 
