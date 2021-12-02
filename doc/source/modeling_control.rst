@@ -529,8 +529,13 @@ Simulation
 =================
 The full non-linear 6-dof (degrees of freedom) model derived in
 `Design-Modeling-and-Control-of-an-Octocopter`_ is implemented and packaged in a simulator
-and made available via a gui, see :numref:`gui_6dof_sim`. The simulator also embeds the
-state estimator and state controller.
+and made available via a gui, see :numref:`gui_6dof_sim`. Summary of the simulation model:
+
+* Non-linear 6-dof rigid body model (using quaternions)
+* Modelling of the drone body forces and torques e.g., drag, persistance and motor dynamics
+* Modelling of the IMU (with sensor noise)
+* Integrated attitude estimator (Kalman filter)
+* Integrated state feedback controller
 
 With the gui, it becomes effortless to test and tune e.g., the control laws or the
 Kalman filter. The model, estimator, controller etc. are configurable via the gui.
@@ -543,4 +548,4 @@ selected and shown.
 .. figure:: figures/gui_6dof_sim.png
     :width: 100%
 
-    Non-linear 6-dof simulator gui, implemented using ``PyQt``.
+    Non-linear 6-dof simulator gui, implemented using ``PyQtGraph``.
