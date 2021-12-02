@@ -2,12 +2,12 @@ import argparse
 from enum import Enum
 from pathlib import Path
 
-import data_log.io as data_log_io
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from cycler import cycler
 
+import data_log.io as data_log_io
 from .task_ids import TaskId
 
 mpl.rcParams['axes.prop_cycle'] = cycler(color='bgrcmyk')
@@ -240,6 +240,7 @@ def _plot_state_ctrl_fz(data):
 
     _finish_subplots(fig)
 
+
 def _plot_state_ctrl_flags(data):
     fig, axs = plt.subplots(1, 1, sharex=True)
     fig.suptitle('State Ctrl: Flags')
@@ -247,6 +248,7 @@ def _plot_state_ctrl_flags(data):
     axs.plot(data.StateCtrl.Reset.t_s, data.StateCtrl.Reset.val, label='Reset')
 
     _finish_subplots(fig)
+
 
 def _plot_tasks(data):
     fig, axs = plt.subplots(3, 2, sharex=True)

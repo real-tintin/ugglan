@@ -2,8 +2,9 @@ from dataclasses import dataclass
 from typing import Union, List
 
 import numpy as np
+from PyQt5.QtGui import QColor
 
-from .shapes import Shapes
+from multi_body_sim.shapes import Shapes
 
 
 @dataclass()
@@ -12,7 +13,7 @@ class Body:
 
     shape_m: Shapes
     mass_kg: float
-    color: Union[str, List[float]] = None
+    color: Union[QColor, List[int]] = QColor('black')
 
     # Order of transformation: R_i * T_i * R_b
     rot_b_frame_rad: np.array = np.array([.0, .0, .0])

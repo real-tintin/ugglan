@@ -2,7 +2,7 @@ from enum import Enum
 
 import numpy as np
 
-from .physical_const import *
+from state_est.physical_const import *
 
 
 class State(Enum):

@@ -3,7 +3,6 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.integrate import solve_ivp
 
-from .physical_const import *
 from .state_space import State, get_state_space
 
 
@@ -36,7 +35,8 @@ def step_info(t: np.array, y: np.array, upsample_dt: float = 0.01) -> StepInfo:
 
 def closed_loop(state: State, L: np.array,
                 x_0: np.array, x_r: np.array,
-                t_end: float, add_intg_state: bool = False) -> (np.array, np.array, np.array, np.array, np.array):
+                t_end: float, add_intg_state: bool = False,
+                sample_time=0.02) -> (np.array, np.array, np.array, np.array, np.array):
     """
     Returns the step response of the closed-loop state feedback
     system i.e., u = -Lx.
@@ -48,7 +48,7 @@ def closed_loop(state: State, L: np.array,
 
     x_0_h = x_0 - x_r  # Change of variable to track reference
     sol = solve_ivp(lambda t, x: Ac.dot(x), t_span=[0, t_end], y0=x_0_h[:, 0],
-                    first_step=DT, max_step=DT)  # To use a fixed step size.
+                    first_step=sample_time, max_step=sample_time)  # To use a fixed step size.
     t = sol.t
     x = sol.y
 

@@ -6,12 +6,13 @@ setup(
     entry_points={
         'console_scripts': [
             'plot-data-log=data_log.plot:main',
-            'plot-multi-body=multi_body.plot_drone:main',
-            'plot-att-est=state_est.attitude:main',
+            'plot-multi-body=multi_body_sim.plot_drone:main',
+            'plot-att-est=state_est.plot_att_est:main',
             'plot-hard-iron-offset=state_est.hard_iron_offset:main',
             'plot-motor-dyn=state_est.motor_dynamics:main',
             'plot-motor-thrust=state_est.motor_thrust:main',
-            'gui-state-ctrl=state_ctrl.gui:main',
+            'gui-linear-sim=linear_sim.gui:main',
+            'gui-6dof-sim=non_linear_sim.gui:main',
         ]
     },
     install_requires=[
@@ -20,6 +21,10 @@ setup(
         'numpy',
         'pandas',
         'scipy',
+        'pyqtgraph',
+        'PyQt5',
+        'PyOpenGL',
+        'inputs',
     ],
     python_requires='>=3.7'
 )
