@@ -1,20 +1,23 @@
+
 name: ci
 on: [push]
+
 jobs:
   ci-pipeline:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-
-      #- uses: satackey/action-docker-layer-caching@v0.0.11
-      #  continue-on-error: true
-
-      - name: Build doc
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up docker buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build doc
         run: make -C ./doc
-
-      - name: Build & unit test tools
+      -
+        name: Build & unit test tools
         run: make -C ./tools
-
-      - name: Build & unit test raspi
+      -
+        name: Build & unit test raspi
         run: make -C ./raspi -f Makefile_tests
