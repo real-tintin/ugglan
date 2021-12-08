@@ -2,9 +2,18 @@
 name: ci
 on: [push]
 
+env:
+  artifact-path: ./raspi/ugglan.deb
+  artifact-name: ugglan.deb
+  artifact-mime-type: application/x-tar
+
+  release-name: Release latest
+  release-tag: latest
+
 jobs:
-  ci-pipeline:
+  build-test:
     runs-on: ubuntu-latest
+
     steps:
       -
         name: Checkout
@@ -29,3 +38,49 @@ jobs:
       -
         name: Compile (target) raspi & build dpkg
         run: make -C ./raspi -f Makefile_dpkg
+      -
+        name: Cache (upload) release artifact
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.artifact-path }}
+          key: ${{ runner.os }}-artifact-${{ github.sha }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build-test
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      -
+        name: Cache (download) release artifact
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.artifact-path }}
+          key: ${{ runner.os }}-artifact-${{ github.sha }}
+      -
+        name: Remove previous release
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: ${{ env.release-tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Create release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.release-tag }}
+          release_name: ${{ env.release-name }}
+      -
+        name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ${{ env.artifact-path }}
+          asset_name: ${{ env.artifact-name }}
+          asset_content_type: ${{ env.artifact-mime-type }}
