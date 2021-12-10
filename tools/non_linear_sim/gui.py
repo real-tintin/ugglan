@@ -9,11 +9,11 @@ from pyqtgraph.Qt import QtGui, QtCore
 from pyqtgraph.Qt import QtWidgets
 
 from non_linear_sim.att_estimator import DEFAULT_ATT_EST_PARAMS
-from non_linear_sim.drone_model import DEFAULT_DRONE_PARAMS, DEFAULT_ENV_PARAMS
+from non_linear_sim.drone_model import DEFAULT_DRONE_PARAMS, DEFAULT_ENV_PARAMS, DroneParams, EnvParams
 from non_linear_sim.gamepad import Gamepad
 from non_linear_sim.pilot_ctrl import DEFAULT_PILOT_CTRL_PARAMS, RefInput
 from non_linear_sim.rolling_buffer import RollingBuffer
-from non_linear_sim.simulator import DEFAULT_IMU_NOISE
+from non_linear_sim.simulator import DEFAULT_IMU_NOISE, ImuNoise
 from non_linear_sim.simulator import Simulator
 from non_linear_sim.six_dof_model import STATE_ZERO as SIX_DOF_STATE_ZERO
 from non_linear_sim.subplot_widgets import SixDofWidget, LinePlotWidget
@@ -52,8 +52,14 @@ class GuiState(Enum):
 
 @dataclass
 class ConfSim:
+    drone_params: DroneParams = DEFAULT_DRONE_PARAMS
+    env_params: EnvParams = DEFAULT_ENV_PARAMS
+
+    imu_noise: ImuNoise = DEFAULT_IMU_NOISE
     dt_s: float = 0.01
+
     standstill_calib_att_est: bool = True
+    init_motors_with_fz_mg: bool = True
 
 
 DEFAULT_CONF_SIM = ConfSim()
@@ -79,6 +85,12 @@ class ConfGamepad:
     refresh_rate_s: float
 
 
+@dataclass
+class ConfInput:
+    step_response: ConfStepResponse
+    gamepad: ConfGamepad
+
+
 class Gui(QtGui.QMainWindow):
     """
     Note, some tasks are run in threads without any locks. It is deemed that
@@ -92,15 +104,11 @@ class Gui(QtGui.QMainWindow):
         self._att_est_params = DEFAULT_ATT_EST_PARAMS
         self._pilot_ctrl_params = DEFAULT_PILOT_CTRL_PARAMS
 
-        self._env_params = DEFAULT_ENV_PARAMS
-        self._drone_params = DEFAULT_DRONE_PARAMS
-
-        self._imu_noise = DEFAULT_IMU_NOISE
         self._conf_sim = DEFAULT_CONF_SIM
         self._conf_gui = DEFAULT_CONF_GUI
 
-        self._conf_step_response = self._get_default_conf_step_response()
-        self._conf_gamepad = self._get_default_conf_gamepad()
+        self._conf_input = ConfInput(step_response=self._get_default_conf_step_response(),
+                                     gamepad=self._get_default_conf_gamepad())
 
         self._setup_gui()
 
@@ -158,29 +166,18 @@ class Gui(QtGui.QMainWindow):
 
         def setup_menu_conf():
             self._menu_conf = self._menu.addMenu("Config")
-            self._menu_conf_model = self._menu_conf.addMenu("Model")
-            self._menu_conf_input = self._menu_conf.addMenu("Input")
 
-            setup_menu_config_model()
+            setup_menu_config_input()
             setup_menu_conf_att_est()
             setup_menu_config_pilot_ctrl()
-            setup_menu_config_imu_noise()
-            setup_menu_config_gui()
             setup_menu_config_sim()
-            setup_menu_config_input()
-
-        def setup_menu_config_model():
-            self._add_menu_from_dataclass(self._menu_conf_model, self._env_params, label="Env")
-            self._add_menu_from_dataclass(self._menu_conf_model, self._drone_params, label="Drone")
+            setup_menu_config_gui()
 
         def setup_menu_conf_att_est():
             self._add_menu_from_dataclass(self._menu_conf, self._att_est_params, label="Attitude estimator")
 
         def setup_menu_config_pilot_ctrl():
             self._add_menu_from_dataclass(self._menu_conf, self._pilot_ctrl_params, label="Pilot controller")
-
-        def setup_menu_config_imu_noise():
-            self._add_menu_from_dataclass(self._menu_conf, self._imu_noise, label="Imu noise")
 
         def setup_menu_config_sim():
             self._add_menu_from_dataclass(self._menu_conf, self._conf_sim, label="Simulation")
@@ -189,8 +186,7 @@ class Gui(QtGui.QMainWindow):
             self._add_menu_from_dataclass(self._menu_conf, self._conf_gui, label="Gui")
 
         def setup_menu_config_input():
-            self._add_menu_from_dataclass(self._menu_conf_input, self._conf_step_response, label="Step response")
-            self._add_menu_from_dataclass(self._menu_conf_input, self._conf_gamepad, label="Gamepad")
+            self._add_menu_from_dataclass(self._menu_conf, self._conf_input, label="Input")
 
         def setup_menu_plots():
             self._menu_plots = self._menu.addMenu("Plots")
@@ -319,15 +315,14 @@ class Gui(QtGui.QMainWindow):
         return self._action_input_gamepad.isChecked()
 
     def _get_default_conf_step_response(self):
-        mg = self._drone_params.m * self._env_params.g
-
-        return ConfStepResponse(ref_input=RefInput(f_z=-mg, roll=0.0, pitch=0.0, yaw_rate=0.0))
+        return ConfStepResponse(ref_input=RefInput(f_z=-self._get_mg(), roll=0.0, pitch=0.0, yaw_rate=0.0))
 
     def _get_default_conf_gamepad(self):
-        mg = self._drone_params.m * self._env_params.g
-
-        return ConfGamepad(ref_scale=RefInput(f_z=2 * mg, roll=np.pi / 8, pitch=np.pi / 8, yaw_rate=np.pi),
+        return ConfGamepad(ref_scale=RefInput(f_z=2 * self._get_mg(), roll=np.pi / 8, pitch=np.pi / 8, yaw_rate=np.pi),
                            refresh_rate_s=0.02)
+
+    def _get_mg(self):
+        return self._conf_sim.drone_params.m * self._conf_sim.env_params.g
 
     def _start(self):
         if self._gui_state != GuiState.RUNNING:
@@ -341,20 +336,22 @@ class Gui(QtGui.QMainWindow):
 
     def _setup_ref_input(self):
         if self._is_input_gamepad_selected():
-            self._gamepad = Gamepad(ref_scale=self._conf_gamepad.ref_scale)
+            self._gamepad = Gamepad(ref_scale=self._conf_input.gamepad.ref_scale)
             self._ref_input = self._gamepad.get_ref_input()
         else:
-            self._ref_input = self._conf_step_response.ref_input
+            self._ref_input = self._conf_input.step_response.ref_input
 
     def _init_simulator(self):
         self._simulator = Simulator(
             att_est_params=self._att_est_params,
             pilot_ctrl_params=self._pilot_ctrl_params,
             six_dof_state=SIX_DOF_STATE_ZERO,
-            drone_params=self._drone_params,
-            env_params=self._env_params,
-            imu_noise=self._imu_noise,
+            drone_params=self._conf_sim.drone_params,
+            env_params=self._conf_sim.env_params,
+            imu_noise=self._conf_sim.imu_noise,
             dt=self._conf_sim.dt_s,
+            standstill_calib_att_est=self._conf_sim.standstill_calib_att_est,
+            init_motors_with_fz_mg=self._conf_sim.init_motors_with_fz_mg
         )
 
     def _init_rolling_sim_buf(self):

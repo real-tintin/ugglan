@@ -74,9 +74,11 @@ class DroneModel:
     def __init__(self, drone_params: DroneParams,
                  env_params: EnvParams,
                  state: State,
-                 dt: float):
+                 dt: float,
+                 init_motors_with_fz_mg: bool = True):
         self._drone_params = drone_params
         self._env_params = env_params
+        self._init_motors_with_fz_mg = init_motors_with_fz_mg
 
         self._init_H_and_H_inv()
         self._dt = dt
@@ -128,7 +130,11 @@ class DroneModel:
 
     def _init_motor_dyn(self):
         self._ode_motor_dyn = ode(self._f_motor_dyn).set_integrator('dopri5')
-        self._ode_motor_dyn.set_initial_value(y=np.zeros(4))
+
+        if self._init_motors_with_fz_mg:
+            self._ode_motor_dyn.set_initial_value(y=[-self._get_mg(), 0, 0, 0])
+        else:
+            self._ode_motor_dyn.set_initial_value(y=np.zeros(4))
 
     def _exec_motor_dyn(self, ctrl_input: CtrlInput) -> (np.ndarray, np.ndarray, np.ndarray):
         y_m = self._step_motor_dyn(ctrl_input)
@@ -192,11 +198,10 @@ class DroneModel:
         ])
 
     def _compute_F_g(self, n_i: np.ndarray) -> np.ndarray:
-        mg = self._drone_params.m * self._env_params.g
         R_i_to_b = rotation_matrix(*n_i).transpose()
         e_z = np.array([0, 0, 1])
 
-        return mg * R_i_to_b @ e_z
+        return self._get_mg() * R_i_to_b @ e_z
 
     def _compute_M_d(self, w_b: np.ndarray) -> np.ndarray:
         rho = self._env_params.rho_air
@@ -224,3 +229,6 @@ class DroneModel:
             M_p += float(-1) ** (i_m + 1) * np.cross(w_b, I_m @ e_z * w_m[i_m])
 
         return M_p
+
+    def _get_mg(self):
+        return self._drone_params.m * self._env_params.g

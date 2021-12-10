@@ -32,11 +32,14 @@ class Simulator:
                  env_params: EnvParams,
                  imu_noise: ImuNoise,
                  dt: float,
-                 standstill_calib_att_est: bool = True
+                 standstill_calib_att_est: bool = True,
+                 init_motors_with_fz_mg: bool = True
                  ):
         self._att_estimator = AttEstimator(params=att_est_params, dt=dt)
         self._pilot_ctrl = PilotCtrl(params=pilot_ctrl_params, dt=dt)
-        self._drone_model = DroneModel(state=six_dof_state, drone_params=drone_params, env_params=env_params, dt=dt)
+        self._drone_model = DroneModel(state=six_dof_state, drone_params=drone_params, env_params=env_params,
+                                       dt=dt, init_motors_with_fz_mg=init_motors_with_fz_mg)
+
         self._imu_noise = imu_noise
         self._g = env_params.g
         self._imu_out = ImuOut()
@@ -45,12 +48,12 @@ class Simulator:
             self._calib_att_est()
 
     def step(self, ref_input: RefInput):
-        self._drone_model.step(ctrl_input=self._pilot_ctrl.get_ctrl_input())
-
         self._imu_out = self._extract_imu_out(self._drone_model.get_6dof_state())
-        self._att_estimator.update(imu_out=self._imu_out)
 
+        self._att_estimator.update(imu_out=self._imu_out)
         self._pilot_ctrl.update(ref_input=ref_input, att_estimate=self._att_estimator.get_estimate())
+
+        self._drone_model.step(ctrl_input=self._pilot_ctrl.get_ctrl_input())
 
     def get_6dof_state(self):
         return self._drone_model.get_6dof_state()
