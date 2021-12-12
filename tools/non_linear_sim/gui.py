@@ -388,11 +388,11 @@ class Gui(QtGui.QMainWindow):
             self._threaded_tasks.append(ThreadedTask(cb=self._gamepad.update,
                                                      exec_period_s=self._conf_gamepad.refresh_rate_s))
 
-        self._threaded_tasks.append(ThreadedTask(cb=self._rolling_sim_buf.update,
-                                                 exec_period_s=self._conf_gui.refresh_rate_s))
-
         self._threaded_tasks.append(ThreadedTask(cb=partial(self._simulator.step, self._ref_input),
                                                  exec_period_s=self._conf_sim.dt_s))
+
+        self._threaded_tasks.append(ThreadedTask(cb=self._rolling_sim_buf.update,
+                                                 exec_period_s=self._conf_gui.refresh_rate_s))
 
         for task in self._threaded_tasks:
             task.launch()
