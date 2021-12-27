@@ -2,15 +2,16 @@ from setuptools import setup, find_packages
 
 setup(
     name="ugglan-tools",
+    version="0.0.1",
     packages=find_packages(),
     entry_points={
         'console_scripts': [
             'plot-data-log=data_log.plot:main',
             'plot-multi-body=multi_body_sim.plot_drone:main',
-            'plot-att-est=state_est.plot_att_est:main',
-            'plot-hard-iron-offset=state_est.hard_iron_offset:main',
-            'plot-motor-dyn=state_est.motor_dynamics:main',
-            'plot-motor-thrust=state_est.motor_thrust:main',
+            'plot-att-est=attitude_est.plot:main',
+            'plot-hard-iron-offset=misc_scripts.hard_iron_offset:main',
+            'plot-motor-dynamics=misc_scripts.motor_dynamics:main',
+            'plot-motor-thrust=misc_scripts.motor_thrust:main',
             'gui-linear-sim=linear_sim.gui:main',
             'gui-6dof-sim=non_linear_sim.gui:main',
             'gui-filter-design=filter_design.gui:main'

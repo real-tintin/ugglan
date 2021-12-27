@@ -2,7 +2,7 @@ from enum import Enum
 
 import numpy as np
 
-from state_est.physical_const import *
+from linear_sim.physical_const import TAU_M, MASS, I_XX, I_YY, I_ZZ
 
 
 class State(Enum):

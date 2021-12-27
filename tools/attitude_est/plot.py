@@ -5,7 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import data_log.io as data_log_io
-from state_est.att_estimators import *
+from attitude_est.estimators import *
 
 mpl.rcParams['lines.linewidth'] = 0.5
 
