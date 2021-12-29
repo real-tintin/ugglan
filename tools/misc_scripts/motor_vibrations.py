@@ -110,7 +110,7 @@ def _plot_vibrations(data: Signals):
         ax.plot(data.Imu.AccelerationY.t_s, data.Imu.AccelerationY.val, label=r'$a_y$')
         ax.plot(data.Imu.AccelerationZ.t_s, data.Imu.AccelerationZ.val, label=r'$a_z$')
 
-        ax.set(ylabel='Acceleration [m/s]', xlabel='Time [s]')
+        ax.set(ylabel='Acceleration [m/s^2]', xlabel='Time [s]')
         ax.grid()
         ax.legend(loc='upper left', fontsize=7)
 
@@ -119,7 +119,7 @@ def _plot_vibrations(data: Signals):
         ylim = ax.get_ylim()
 
         for chunk in chunks:
-            label = 'chunks' if add_label else None
+            label = 'found chunks' if add_label else None
             add_label = False
 
             ax.add_patch(Rectangle((x[chunk[0]], ylim[0]), x[chunk[-1]] - x[chunk[0]], ylim[1],
@@ -143,20 +143,20 @@ def _plot_vibrations(data: Signals):
         width = 0.2
         x_bar = np.arange(0, len(chunks))
 
-        acc_x = np.array(data.Imu.AccelerationX.val)
-        acc_y = np.array(data.Imu.AccelerationX.val)
-        acc_z = np.array(data.Imu.AccelerationX.val)
-        acc_norm = np.linalg.norm((acc_x, acc_y, acc_z), axis=0)
+        var_acc_x = _compute_var_in_chunks(np.array(data.Imu.AccelerationX.val), chunks)
+        var_acc_y = _compute_var_in_chunks(np.array(data.Imu.AccelerationY.val), chunks)
+        var_acc_z = _compute_var_in_chunks(np.array(data.Imu.AccelerationZ.val), chunks)
+        var_acc_norm = np.linalg.norm((var_acc_x, var_acc_y, var_acc_z), axis=0)
 
-        ax.bar(x_bar - width * 1.5, _compute_var_in_chunks(acc_x, chunks), width, label=r'$\sigma^2_{a_x}$')
-        ax.bar(x_bar - width * 0.5, _compute_var_in_chunks(acc_y, chunks), width, label=r'$\sigma^2_{a_y}$')
-        ax.bar(x_bar + width * 0.5, _compute_var_in_chunks(acc_z, chunks), width, label=r'$\sigma^2_{a_z}$')
-        ax.bar(x_bar + width * 1.5, _compute_var_in_chunks(acc_norm, chunks), width, label=r'$\sigma^2_{|a|}$')
+        ax.bar(x_bar - width * 1.5, var_acc_x, width, label=r'$\sigma^2_{a_x}$')
+        ax.bar(x_bar - width * 0.5, var_acc_y, width, label=r'$\sigma^2_{a_y}$')
+        ax.bar(x_bar + width * 0.5, var_acc_z, width, label=r'$\sigma^2_{a_z}$')
+        ax.bar(x_bar + width * 1.5, var_acc_norm, width, label=r'$\sigma^2_{|a|}$')
 
-        ax.set(xlabel='Chunk []', ylabel='Variance [m/s^2]')
+        ax.set(xlabel='Chunk n []', ylabel='Var[acceleration] [m/s^2]')
         ax.set_xticks(x_bar)
 
-        ax.legend()
+        ax.legend(loc='upper right', fontsize=7)
         ax.grid()
 
     plot_imu_acc(ax_top_left)
