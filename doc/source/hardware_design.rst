@@ -50,7 +50,6 @@ Wiring
 
     Wiring diagram.
 
-
 Single core vs. Multi core
 ============================
 During the project, the Raspberry Pi Zero single core processor was upgraded to a 2 W multi core
@@ -71,3 +70,25 @@ rates in time is shown. As one can see, the execution rates on the multi core pr
     :width: 100%
 
     Task execution rates on the multi core Raspberry Pi Zero 2 W.
+
+Vibrations & Attenuation
+=========================
+The rotating motor with propeller is a source for mechanical vibrations. Un-balanced motors and propellers
+will induce vibrations and can cause issue during state estimation e.g., the vibration will propagate thru
+the frame to the IMU and cause un-wanted noise.
+
+Motor & Propeller Balancing
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+To reduce vibrations the motor and propeller need to be balanced. To analyze and balance them the acceleration
+can be studied. In :numref:`vib_analysis_prop_balancing` the acceleration and its variance is shown for
+different runs where a pice of tape is positioned at different locations on a propeller.
+
+.. _vib_analysis_prop_balancing:
+.. figure:: figures/vib_analysis_prop_balancing.svg
+    :width: 100%
+
+    Each chunk corresponds to a separate run of the motors where the pice of tape is relocated. Note,
+    chunk 0 is without any tape, chunk 1-3 is tape on one blade and chunk 4-6 on the other blade.
+
+It can be seen that applying tape can significantly reduce vibrations compare to none. Hence,
+by doing this for every motor and propeller the overall level of vibrations will reduce.

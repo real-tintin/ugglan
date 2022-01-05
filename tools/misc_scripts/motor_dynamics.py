@@ -95,13 +95,10 @@ def _plot_motor_dynamics(data, motor_i):
     fig, ax = plt.subplots()
     t, u_cmd, y = _extract_signals(data, motor_i)
 
-    # debug_i = np.argwhere((yr >= YR_LIM_LOWER_MLSE) & (yr <= YR_LIM_UPPER_MLSE))
-
     for start, end in _find_step_indices(t, u_cmd,
                                          min_step_size=MIN_STEP_SIZE_RADPS,
                                          min_step_length_s=MIN_STEP_LEN_S):
-        # Estimate u from y (instead of using u
-        # directly due to potential discrepancies).
+        # Estimate u from y (instead of using u directly due to potential discrepancies).
         if u_0 is None:
             u_0 = np.median(y[:(start + 1)])
             u_1 = np.median(y[(start + 1):end])
@@ -131,7 +128,8 @@ def _plot_motor_dynamics(data, motor_i):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Plot motor step response and estimate its time constant.')
+    parser = argparse.ArgumentParser(description='Plot motor step response and estimate its time constant. '
+                                                 'Note, assumes data with step response of motor(s).')
     parser.add_argument('path', type=Path, help='Path to data log file')
     parser.add_argument('--motor_i', type=int, help='Select which motor (0,1,2,3)', default=0)
     args = parser.parse_args()
