@@ -15,10 +15,11 @@ LDFLAGS += -lz -li2c
 SRCDIR := ./src
 OBJDIR := ./build
 INCDIR := ./inc
+LIBDIR := ./lib
 TESTDIR := ./tests
 
 SOURCES := $(wildcard $(SRCDIR)/*.$(SRCEXT))
-INC := -I $(INCDIR)
+INC := -I $(INCDIR) -I $(LIBDIR)
 
 ifeq ($(BUILD_FOR_TEST), TRUE)
 	CXXFLAGS += -D UNIT_TEST
