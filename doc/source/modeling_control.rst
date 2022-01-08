@@ -222,8 +222,31 @@ and :math:`a_B` is the acceleration and :math:`B_B` is the earths magnetic field
 IMU in the body frame. Where :math:`B_{Ix}` and :math:`B_{Iy}` are the magnetic fields in the
 inertial frame.
 
-However, the estimates are noisy (see :numref:`ang_est`) and need to be enhanced
-e.g., by filtering.
+Note, these estimates can't be used alone as they are:
+
+* Sensitive to noise and disturbances
+* Only valid during zero translational acceleration, as this would affect the total acceleration
+
+To handle this, the estimates can be filtered and fused with other signals e.g., by using a
+Kalman filter.
+
+Pre-filtering
+^^^^^^^^^^^^^^
+The above raw accelerometer angle estimates are noisy and sensitive to disturbances e.g.,
+mechanically induced vibration by the rotating motors, see :ref:`vibrations_and_attenuation`.
+
+Pre-filtering can be applied to these estimates before letting them enter the sensor fusion. This
+will reduce noise and improve performance of the final estimation.
+
+To select and tune a (iir) filter, a design tool was created where logged data was analyzed, see
+:numref:`gui_filter_design`.
+
+.. _gui_filter_design:
+.. figure:: figures/gui_filter_design.png
+    :width: 100%
+
+    The filter design gui. In this case the :math:`a_{x}^{IMU}` is analyzed and filtered using a 3-order
+    lp-butter with :math:`c_{f} = 2` Hz. The corresponding bode plot is shown below.
 
 Kalman Filter
 ^^^^^^^^^^^^^^
@@ -265,6 +288,8 @@ with the selected covariance matrices
         0 & \kappa_{R_1}\sigma_{gyro}^2
     \end{bmatrix},
     \mathbf{P}_0= 0.
+
+TODO: Needs to be updated.
 
 Here :math:`\sigma_{acc|mag}^2` and :math:`\sigma_{gyro}^2` is the variance of the imu
 angle (accelerometer and magnetometer only) and gyro respectively. They are continuously

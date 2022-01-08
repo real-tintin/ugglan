@@ -71,6 +71,8 @@ rates in time is shown. As one can see, the execution rates on the multi core pr
 
     Task execution rates on the multi core Raspberry Pi Zero 2 W.
 
+.. _vibrations_and_attenuation:
+
 Vibrations & Attenuation
 =========================
 The rotating motor with propeller is a source for mechanical vibrations. Un-balanced motors and propellers

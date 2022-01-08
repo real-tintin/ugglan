@@ -5,6 +5,7 @@ from enum import Enum
 
 import numpy as np
 import pandas as pd
+from scipy import signal
 
 from data_log.io import Signals
 
@@ -79,29 +80,37 @@ class AttEst(ABC):
     TARGET_HARD_IRON_OFFSET_Y = 0.076
     TARGET_HARD_IRON_OFFSET_Z = 0.062
 
+    IMU_ACC_LP_BUTTER_FILTER_CF = 2.0  # Hz
+    IMU_ACC_LP_BUTTER_FILTER_ORDER = 3
+
     def __init__(self, dt: float):
         self._dt = dt
         self._state = State()
 
     def execute(self,
                 imu_out: ImuOut,
+                pre_filter_imu_acc=False,
                 modulo_of_angles=True,
                 static_gyro_offset_comp=False,
                 dynamic_gyro_offset_comp=True,
                 hard_iron_offset_comp=True):
 
         def pre_exec():
-            _imu_out = deepcopy(imu_out)
-            return self._imu_offset_comp(_imu_out,
-                                         static_gyro_offset_comp,
-                                         dynamic_gyro_offset_comp,
-                                         hard_iron_offset_comp)
+            self._imu_offset_comp(_imu_out,
+                                  static_gyro_offset_comp,
+                                  dynamic_gyro_offset_comp,
+                                  hard_iron_offset_comp)
+
+            if pre_filter_imu_acc:
+                self._filter_imu_acc(_imu_out)
 
         def post_exec():
             if modulo_of_angles:
                 self._modulo_of_angles()
 
-        _imu_out = pre_exec()
+        _imu_out = deepcopy(imu_out)
+
+        pre_exec()
         self._execute(_imu_out)
         post_exec()
 
@@ -125,6 +134,17 @@ class AttEst(ABC):
         b_y = mag_y * np.cos(phi) - mag_z * np.sin(phi)
 
         return np.arctan2(-b_y, b_x)
+
+    def _filter_imu_acc(self, imu_out: ImuOut):
+        sos_filter = signal.butter(N=self.IMU_ACC_LP_BUTTER_FILTER_ORDER,
+                                   Wn=self.IMU_ACC_LP_BUTTER_FILTER_CF,
+                                   btype='low',
+                                   fs=int(1 / self._dt),
+                                   output='sos')
+
+        imu_out.acc_x = signal.sosfilt(sos_filter, imu_out.acc_x)
+        imu_out.acc_y = signal.sosfilt(sos_filter, imu_out.acc_y)
+        imu_out.acc_z = signal.sosfilt(sos_filter, imu_out.acc_z)
 
     def _modulo_of_angles(self):
         self._state.phi = self._modulo_phi(self._state.phi)
@@ -248,7 +268,7 @@ class AttEstCf(AttEst):
     CUT_OFF_FREQ_THETA = 0.2  # [Hz]
     CUT_OFF_FREQ_PSI = 0.2  # [Hz]
 
-    def _execute(self, imu_out: ImuOut):
+    def _execute(self, imu_out: ImuOut, pre_filter_imu_acc=True):
         phi_acc = self._to_phi(imu_out.acc_y, imu_out.acc_z)
         self._state.phi = self._complementary_filter(phi_acc, imu_out.ang_rate_x, self.CUT_OFF_FREQ_PHI)
 
@@ -300,7 +320,7 @@ class AttEstKalman(AttEst):
             [0, 1, 0]
         ])
 
-    def _execute(self, imu_out: ImuOut):
+    def _execute(self, imu_out: ImuOut, pre_filter_imu_acc=True):
         phi_acc = self._to_phi(imu_out.acc_y, imu_out.acc_z)
         self._state.phi, self._state.phi_p, self._state.phi_pp = self._kalman_filter(phi_acc, imu_out.ang_rate_x)
 
