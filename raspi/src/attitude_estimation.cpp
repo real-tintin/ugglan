@@ -10,15 +10,7 @@ static const double STANDSTILL_RATE_VAR_LIM = 0.005; // [rad/s]
 static const double KALMAN_R_ALMOST_ZERO = 1e-6;
 
 AttitudeEstimation::AttitudeEstimation(double input_sample_rate_s) :
-    _dt(input_sample_rate_s),
-
-    _rolling_stats_roll_angle(ATT_EST_ROLLING_WINDOW_SIZE),
-    _rolling_stats_pitch_angle(ATT_EST_ROLLING_WINDOW_SIZE),
-    _rolling_stats_yaw_angle(ATT_EST_ROLLING_WINDOW_SIZE),
-
-    _rolling_stats_roll_rate(ATT_EST_ROLLING_WINDOW_SIZE),
-    _rolling_stats_pitch_rate(ATT_EST_ROLLING_WINDOW_SIZE),
-    _rolling_stats_yaw_rate(ATT_EST_ROLLING_WINDOW_SIZE)
+    _dt(input_sample_rate_s)
 {
     _Q = ATT_EST_KALMAN_Q_SCALE * Eigen::Matrix3d({
         {0.25 * pow(_dt, 4), 0.5 * pow(_dt, 3), 0.5 * pow(_dt, 2)},
@@ -32,6 +24,10 @@ AttitudeEstimation::AttitudeEstimation(double input_sample_rate_s) :
         {0, 0, 1}
         });
     _F_t = _F.transpose();
+
+    _lp_filter_acc_x.setup(1 / _dt, ATT_EST_LP_BUTTER_ACC_CF);
+    _lp_filter_acc_y.setup(1 / _dt, ATT_EST_LP_BUTTER_ACC_CF);
+    _lp_filter_acc_z.setup(1 / _dt, ATT_EST_LP_BUTTER_ACC_CF);
 }
 
 void AttitudeEstimation::update(AttEstInput input)
@@ -39,6 +35,7 @@ void AttitudeEstimation::update(AttEstInput input)
     _in = input;
 
     _hard_iron_offset_comp();
+    _lp_filter_acc();
 
     _update_imu_angles();
     _update_rolling_stats();
@@ -59,6 +56,11 @@ AttEstimate AttitudeEstimation::get_estimate()
     return _est;
 }
 
+AttEstPointSample AttitudeEstimation::get_lp_filtered_acc()
+{
+    return _lp_filtered_acc;
+}
+
 bool AttitudeEstimation::is_calibrated()
 {
     return _is_gyro_offset_comp;
@@ -69,15 +71,22 @@ bool AttitudeEstimation::is_standstill()
     return _is_standstill;
 }
 
+void AttitudeEstimation::_lp_filter_acc()
+{
+    _lp_filtered_acc.x = _lp_filter_acc_x.filter(_in.acc.x);
+    _lp_filtered_acc.y = _lp_filter_acc_y.filter(_in.acc.y);
+    _lp_filtered_acc.z = _lp_filter_acc_z.filter(_in.acc.z);
+}
+
 void AttitudeEstimation::_update_imu_angles()
 {
-    _imu_roll_angle = atan2(-_in.acc_y, -_in.acc_z);
-    _imu_pitch_angle = atan2(_in.acc_x, sqrt(pow(_in.acc_y, 2) + pow(_in.acc_z, 2)));
+    _imu_roll_angle = atan2(-_lp_filtered_acc.y, -_lp_filtered_acc.z);
+    _imu_pitch_angle = atan2(_lp_filtered_acc.x, sqrt(pow(_lp_filtered_acc.y, 2) + pow(_lp_filtered_acc.z, 2)));
 
-    double b_x = _in.mag_field_x * cos(_est.pitch.angle) +
-                  _in.mag_field_y * sin(_est.roll.angle) * sin(_est.pitch.angle) +
-                  _in.mag_field_z * sin(_est.pitch.angle) * cos(_est.roll.angle);
-    double b_y = _in.mag_field_y * cos(_est.roll.angle) - _in.mag_field_z * sin(_est.roll.angle);
+    double b_x = _in.mag_field.x * cos(_est.pitch.angle) +
+                  _in.mag_field.y * sin(_est.roll.angle) * sin(_est.pitch.angle) +
+                  _in.mag_field.z * sin(_est.pitch.angle) * cos(_est.roll.angle);
+    double b_y = _in.mag_field.y * cos(_est.roll.angle) - _in.mag_field.z * sin(_est.roll.angle);
 
     _imu_yaw_angle = atan2(-b_y, b_x);
 }
@@ -88,9 +97,9 @@ void AttitudeEstimation::_update_rolling_stats()
     _rolling_stats_pitch_angle.update(_imu_pitch_angle);
     _rolling_stats_yaw_angle.update(_imu_yaw_angle);
 
-    _rolling_stats_roll_rate.update(_in.ang_rate_x);
-    _rolling_stats_pitch_rate.update(_in.ang_rate_y);
-    _rolling_stats_yaw_rate.update(_in.ang_rate_z);
+    _rolling_stats_roll_rate.update(_in.ang_rate.x);
+    _rolling_stats_pitch_rate.update(_in.ang_rate.y);
+    _rolling_stats_yaw_rate.update(_in.ang_rate.z);
 }
 
 void AttitudeEstimation::_update_standstill_status()
@@ -125,7 +134,7 @@ void AttitudeEstimation::_update_roll()
 {
     _update_est(
         _imu_roll_angle,
-        _in.ang_rate_x,
+        _in.ang_rate.x,
         _rolling_stats_roll_angle.get_variance(),
         _rolling_stats_roll_rate.get_variance(),
         _kalman_roll,
@@ -138,7 +147,7 @@ void AttitudeEstimation::_update_pitch()
 {
     _update_est(
         _imu_pitch_angle,
-        _in.ang_rate_y,
+        _in.ang_rate.y,
         _rolling_stats_pitch_angle.get_variance(),
         _rolling_stats_pitch_rate.get_variance(),
         _kalman_pitch,
@@ -151,7 +160,7 @@ void AttitudeEstimation::_update_yaw()
 {
     _update_est(
         _imu_yaw_angle,
-        _in.ang_rate_z,
+        _in.ang_rate.z,
         _rolling_stats_yaw_angle.get_variance(),
         _rolling_stats_yaw_rate.get_variance(),
         _kalman_yaw,
@@ -207,9 +216,9 @@ void AttitudeEstimation::_gyro_offset_comp()
         _samples_gyro_offset_comp < ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP &&
         _is_standstill)
     {
-        _gyro_offset_x += _in.ang_rate_x;
-        _gyro_offset_y += _in.ang_rate_y;
-        _gyro_offset_z += _in.ang_rate_z;
+        _gyro_offset.x += _in.ang_rate.x;
+        _gyro_offset.y += _in.ang_rate.y;
+        _gyro_offset.z += _in.ang_rate.z;
 
         _samples_gyro_offset_comp++;
     }
@@ -217,24 +226,24 @@ void AttitudeEstimation::_gyro_offset_comp()
     if (!_is_gyro_offset_comp &&
         _samples_gyro_offset_comp == ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP)
     {
-        _gyro_offset_x /= ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP;
-        _gyro_offset_y /= ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP;
-        _gyro_offset_z /= ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP;
+        _gyro_offset.x /= ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP;
+        _gyro_offset.y /= ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP;
+        _gyro_offset.z /= ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP;
 
         _is_gyro_offset_comp = true;
     }
 
     if (_is_gyro_offset_comp)
     {
-        _in.ang_rate_x -= _gyro_offset_x;
-        _in.ang_rate_y -= _gyro_offset_y;
-        _in.ang_rate_z -= _gyro_offset_z;
+        _in.ang_rate.x -= _gyro_offset.x;
+        _in.ang_rate.y -= _gyro_offset.y;
+        _in.ang_rate.z -= _gyro_offset.z;
     }
 }
 
 void AttitudeEstimation::_hard_iron_offset_comp()
 {
-    _in.mag_field_x -= ATT_EST_HARD_IRON_OFFSET_X;
-    _in.mag_field_y -= ATT_EST_HARD_IRON_OFFSET_Y;
-    _in.mag_field_z -= ATT_EST_HARD_IRON_OFFSET_Z;
+    _in.mag_field.x -= ATT_EST_HARD_IRON_OFFSET_X;
+    _in.mag_field.y -= ATT_EST_HARD_IRON_OFFSET_Y;
+    _in.mag_field.z -= ATT_EST_HARD_IRON_OFFSET_Z;
 }

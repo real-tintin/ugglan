@@ -105,6 +105,10 @@ enum class DataLogSignal {
     StateEstPitchAcc,
     StateEstYawAcc,
 
+    StateEstLpFilteredAccX,
+    StateEstLpFilteredAccY,
+    StateEstLpFilteredAccZ,
+
     StateEstAttIsCalib,
     StateEstAttIsStandstill,
 
@@ -252,6 +256,10 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::StateEstRollAcc, {"RollAcc", DataLogGroup::StateEst, DataLogType::DOUBLE}},
     {DataLogSignal::StateEstPitchAcc, {"PitchAcc", DataLogGroup::StateEst, DataLogType::DOUBLE}},
     {DataLogSignal::StateEstYawAcc, {"YawAcc", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+
+    {DataLogSignal::StateEstLpFilteredAccX, {"LpFilteredAccX", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstLpFilteredAccY, {"LpFilteredAccX", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstLpFilteredAccZ, {"LpFilteredAccX", DataLogGroup::StateEst, DataLogType::DOUBLE}},
 
     {DataLogSignal::StateEstAttIsCalib, {"AttIsCalib", DataLogGroup::StateEst, DataLogType::BOOL}},
     {DataLogSignal::StateEstAttIsStandstill, {"AttIsStandstill", DataLogGroup::StateEst, DataLogType::BOOL}},

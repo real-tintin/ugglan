@@ -7,10 +7,14 @@
 #include <utils.h>
 #include <statistics.h>
 #include <eigen/Eigen>
+#include <iir1/Iir.h>
 
 inline const double ATT_EST_KALMAN_Q_SCALE = utils::get_env("ATT_EST_KALMAN_Q_SCALE", 1e2);
 inline const double ATT_EST_KALMAN_R_0_SCALE = utils::get_env("ATT_EST_KALMAN_R_0_SCALE", 1.0);
 inline const double ATT_EST_KALMAN_R_1_SCALE = utils::get_env("ATT_EST_KALMAN_R_1_SCALE", 1.0);
+
+inline const double ATT_EST_LP_BUTTER_ACC_CF = utils::get_env("ATT_EST_LP_BUTTER_ACC_CF", 2.0);
+inline const int ATT_EST_LP_BUTTER_ACC_ORDER = 3;
 
 inline const uint8_t ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP = 100;
 
@@ -20,18 +24,16 @@ inline const double ATT_EST_HARD_IRON_OFFSET_X = 0.104;
 inline const double ATT_EST_HARD_IRON_OFFSET_Y = 0.076;
 inline const double ATT_EST_HARD_IRON_OFFSET_Z = 0.062;
 
+struct AttEstPointSample {
+    double x;
+    double y;
+    double z;
+};
+
 struct AttEstInput {
-    double acc_x;       // [m/s^2]
-    double acc_y;       // [m/s^2]
-    double acc_z;       // [m/s^2]
-
-    double ang_rate_x;  // [rad/s]
-    double ang_rate_y;  // [rad/s]
-    double ang_rate_z;  // [rad/s]
-
-    double mag_field_x; // [gauss]
-    double mag_field_y; // [gauss]
-    double mag_field_z; // [gauss]
+    AttEstPointSample acc;       // [m/s^2]
+    AttEstPointSample ang_rate;  // [rad/s]
+    AttEstPointSample mag_field; // [gauss]
 };
 
 struct AttEstKalmanState {
@@ -62,6 +64,8 @@ public:
 
     AttEstimate get_estimate();
 
+    AttEstPointSample get_lp_filtered_acc();
+
     bool is_calibrated();
     bool is_standstill();
 private:
@@ -72,9 +76,8 @@ private:
 
     bool _is_standstill = false;
 
-    double _gyro_offset_x = 0;
-    double _gyro_offset_y = 0;
-    double _gyro_offset_z = 0;
+    AttEstPointSample _gyro_offset = {0, 0, 0};
+    AttEstPointSample _lp_filtered_acc = {0, 0, 0};
 
     double _imu_roll_angle = 0;
     double _imu_pitch_angle = 0;
@@ -103,13 +106,19 @@ private:
     AttEstKalmanState _kalman_pitch;
     AttEstKalmanState _kalman_yaw;
 
-    statistics::RollingStats _rolling_stats_roll_angle;
-    statistics::RollingStats _rolling_stats_pitch_angle;
-    statistics::RollingStats _rolling_stats_yaw_angle;
+    statistics::RollingStats _rolling_stats_roll_angle {ATT_EST_ROLLING_WINDOW_SIZE};
+    statistics::RollingStats _rolling_stats_pitch_angle {ATT_EST_ROLLING_WINDOW_SIZE};
+    statistics::RollingStats _rolling_stats_yaw_angle {ATT_EST_ROLLING_WINDOW_SIZE};
 
-    statistics::RollingStats _rolling_stats_roll_rate;
-    statistics::RollingStats _rolling_stats_pitch_rate;
-    statistics::RollingStats _rolling_stats_yaw_rate;
+    statistics::RollingStats _rolling_stats_roll_rate {ATT_EST_ROLLING_WINDOW_SIZE};
+    statistics::RollingStats _rolling_stats_pitch_rate {ATT_EST_ROLLING_WINDOW_SIZE};
+    statistics::RollingStats _rolling_stats_yaw_rate {ATT_EST_ROLLING_WINDOW_SIZE};
+
+    Iir::Butterworth::LowPass<ATT_EST_LP_BUTTER_ACC_ORDER> _lp_filter_acc_x;
+    Iir::Butterworth::LowPass<ATT_EST_LP_BUTTER_ACC_ORDER> _lp_filter_acc_y;
+    Iir::Butterworth::LowPass<ATT_EST_LP_BUTTER_ACC_ORDER> _lp_filter_acc_z;
+
+    void _lp_filter_acc();
 
     void _update_imu_angles();
     void _update_rolling_stats();

@@ -10,7 +10,7 @@ SRCEXT := cpp
 
 CXX = g++-10
 CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread -O3 $(EXTRA_CXXFLAGS)
-LDFLAGS += -lz -li2c
+LDFLAGS += -lz -li2c -liir_static
 
 SRCDIR := ./src
 OBJDIR := ./build

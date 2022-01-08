@@ -161,20 +161,22 @@ public:
 protected:
     void _execute()
     {
-        _data_log_queue.last_signal_data(&_att_in.acc_x, DataLogSignal::ImuAccelerationX);
-        _data_log_queue.last_signal_data(&_att_in.acc_y, DataLogSignal::ImuAccelerationY);
-        _data_log_queue.last_signal_data(&_att_in.acc_z, DataLogSignal::ImuAccelerationZ);
+        _data_log_queue.last_signal_data(&_att_in.acc.x, DataLogSignal::ImuAccelerationX);
+        _data_log_queue.last_signal_data(&_att_in.acc.y, DataLogSignal::ImuAccelerationY);
+        _data_log_queue.last_signal_data(&_att_in.acc.z, DataLogSignal::ImuAccelerationZ);
 
-        _data_log_queue.last_signal_data(&_att_in.ang_rate_x, DataLogSignal::ImuAngularRateX);
-        _data_log_queue.last_signal_data(&_att_in.ang_rate_y, DataLogSignal::ImuAngularRateY);
-        _data_log_queue.last_signal_data(&_att_in.ang_rate_z, DataLogSignal::ImuAngularRateZ);
+        _data_log_queue.last_signal_data(&_att_in.ang_rate.x, DataLogSignal::ImuAngularRateX);
+        _data_log_queue.last_signal_data(&_att_in.ang_rate.y, DataLogSignal::ImuAngularRateY);
+        _data_log_queue.last_signal_data(&_att_in.ang_rate.z, DataLogSignal::ImuAngularRateZ);
 
-        _data_log_queue.last_signal_data(&_att_in.mag_field_x, DataLogSignal::ImuMagneticFieldX);
-        _data_log_queue.last_signal_data(&_att_in.mag_field_y, DataLogSignal::ImuMagneticFieldY);
-        _data_log_queue.last_signal_data(&_att_in.mag_field_z, DataLogSignal::ImuMagneticFieldZ);
+        _data_log_queue.last_signal_data(&_att_in.mag_field.x, DataLogSignal::ImuMagneticFieldX);
+        _data_log_queue.last_signal_data(&_att_in.mag_field.y, DataLogSignal::ImuMagneticFieldY);
+        _data_log_queue.last_signal_data(&_att_in.mag_field.z, DataLogSignal::ImuMagneticFieldZ);
 
         _att.update(_att_in);
+
         _att_est = _att.get_estimate();
+        _lp_filtered_acc = _att.get_lp_filtered_acc();
 
         _data_log_queue.push(_att_est.roll.angle, DataLogSignal::StateEstRoll);
         _data_log_queue.push(_att_est.pitch.angle, DataLogSignal::StateEstPitch);
@@ -188,6 +190,10 @@ protected:
         _data_log_queue.push(_att_est.pitch.acc, DataLogSignal::StateEstPitchAcc);
         _data_log_queue.push(_att_est.yaw.acc, DataLogSignal::StateEstYawAcc);
 
+        _data_log_queue.push(_lp_filtered_acc.x, DataLogSignal::StateEstLpFilteredAccX);
+        _data_log_queue.push(_lp_filtered_acc.y, DataLogSignal::StateEstLpFilteredAccY);
+        _data_log_queue.push(_lp_filtered_acc.z, DataLogSignal::StateEstLpFilteredAccZ);
+
         _data_log_queue.push(_att.is_calibrated(), DataLogSignal::StateEstAttIsCalib);
         _data_log_queue.push(_att.is_standstill(), DataLogSignal::StateEstAttIsStandstill);
 
@@ -196,6 +202,8 @@ protected:
 private:
     AttEstInput _att_in;
     AttEstimate _att_est;
+    AttEstPointSample _lp_filtered_acc;
+
     AttitudeEstimation _att;
 
     DataLogQueue& _data_log_queue;
@@ -601,6 +609,7 @@ void print_env_vars()
     logger.debug("ATT_EST_KALMAN_Q_SCALE: " + std::to_string(ATT_EST_KALMAN_Q_SCALE));
     logger.debug("ATT_EST_KALMAN_R_0_SCALE: " + std::to_string(ATT_EST_KALMAN_R_0_SCALE));
     logger.debug("ATT_EST_KALMAN_R_1_SCALE: " + std::to_string(ATT_EST_KALMAN_R_1_SCALE));
+    logger.debug("ATT_EST_LP_BUTTER_ACC_CF: " + std::to_string(ATT_EST_LP_BUTTER_ACC_CF));
 
     logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_PHI: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_PHI));
     logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_THETA: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_THETA));

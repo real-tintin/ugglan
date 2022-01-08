@@ -4,7 +4,7 @@
 #include <attitude_estimation.h>
 
 static const double FLOAT_TOL = 1e-1;
-static const double SAMPLE_RATE_S = 1.0;
+static const double SAMPLE_RATE_S = 0.01;
 
 static const uint32_t EXEC_UNTIL_CALIB = ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP + ATT_EST_ROLLING_WINDOW_SIZE;
 
@@ -17,9 +17,9 @@ void execute_n_samples(AttitudeEstimation &att, AttEstInput &input, uint32_t n_s
 
 void add_gyro_offset(AttEstInput &input)
 {
-    input.ang_rate_x = 1.123;
-    input.ang_rate_y = -10.1;
-    input.ang_rate_z = 2.45;
+    input.ang_rate.x = 1.123;
+    input.ang_rate.y = -10.1;
+    input.ang_rate.z = 2.45;
 }
 
 TEST_CASE("attitude estimation")
@@ -32,11 +32,11 @@ TEST_CASE("attitude estimation")
 
     SECTION("standstill calibration")
     {
-        input.acc_z = -1;
+        input.acc.z = -1;
 
-        input.mag_field_x = ATT_EST_HARD_IRON_OFFSET_X;
-        input.mag_field_y = ATT_EST_HARD_IRON_OFFSET_Y;
-        input.mag_field_z = ATT_EST_HARD_IRON_OFFSET_Z;
+        input.mag_field.x = ATT_EST_HARD_IRON_OFFSET_X;
+        input.mag_field.y = ATT_EST_HARD_IRON_OFFSET_Y;
+        input.mag_field.z = ATT_EST_HARD_IRON_OFFSET_Z;
 
         REQUIRE(att.is_calibrated() == false);
         REQUIRE(att.is_standstill() == false);
@@ -55,8 +55,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("roll: 45 deg")
     {
-        input.acc_y = -sin(M_PI / 4);
-        input.acc_z = -cos(M_PI / 4);
+        input.acc.y = -sin(M_PI / 4);
+        input.acc.z = -cos(M_PI / 4);
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();
@@ -66,8 +66,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("roll: +/-180 deg")
     {
-        input.acc_y = 0.0;
-        input.acc_z = 1.0;
+        input.acc.y = 0.0;
+        input.acc.z = 1.0;
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();
@@ -77,8 +77,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("pitch: -45 deg")
     {
-        input.acc_x = sin(-M_PI / 4);
-        input.acc_z = -cos(-M_PI / 4);
+        input.acc.x = sin(-M_PI / 4);
+        input.acc.z = -cos(-M_PI / 4);
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();
@@ -88,8 +88,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("pitch: +/-90 deg")
     {
-        input.acc_x = 1.0;
-        input.acc_z = 0.0;
+        input.acc.x = 1.0;
+        input.acc.z = 0.0;
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();
@@ -99,8 +99,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("yaw: 45 deg")
     {
-        input.mag_field_x = 1.0 + ATT_EST_HARD_IRON_OFFSET_X;
-        input.mag_field_y = 1.0 + ATT_EST_HARD_IRON_OFFSET_Y;
+        input.mag_field.x = 1.0 + ATT_EST_HARD_IRON_OFFSET_X;
+        input.mag_field.y = 1.0 + ATT_EST_HARD_IRON_OFFSET_Y;
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();
@@ -110,8 +110,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("yaw: +/-180 deg")
     {
-        input.mag_field_x = -1.0 + ATT_EST_HARD_IRON_OFFSET_X;
-        input.mag_field_y = 0.0 + ATT_EST_HARD_IRON_OFFSET_Y;
+        input.mag_field.x = -1.0 + ATT_EST_HARD_IRON_OFFSET_X;
+        input.mag_field.y = 0.0 + ATT_EST_HARD_IRON_OFFSET_Y;
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();
