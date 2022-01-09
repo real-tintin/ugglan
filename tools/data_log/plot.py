@@ -168,7 +168,7 @@ def _plot_state_est(data):
 
     axs[1, 1].plot(data.StateEst.AttIsCalib.t_s, data.StateEst.AttIsCalib.val, label='AttIsCalibrated')
     axs[1, 1].plot(data.StateEst.AttIsStandstill.t_s, data.StateEst.AttIsStandstill.val, label='AttIsStandstill')
-    axs[1, 1].set(ylabel='Status [-]')
+    axs[1, 1].set(ylabel='Flags [-]')
 
     _finish_subplots(fig)
 
