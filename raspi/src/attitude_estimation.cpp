@@ -84,8 +84,8 @@ void AttitudeEstimation::_update_imu_angles()
     _imu_pitch_angle = atan2(_lp_filtered_acc.x, sqrt(pow(_lp_filtered_acc.y, 2) + pow(_lp_filtered_acc.z, 2)));
 
     double b_x = _in.mag_field.x * cos(_est.pitch.angle) +
-                  _in.mag_field.y * sin(_est.roll.angle) * sin(_est.pitch.angle) +
-                  _in.mag_field.z * sin(_est.pitch.angle) * cos(_est.roll.angle);
+                 _in.mag_field.y * sin(_est.roll.angle) * sin(_est.pitch.angle) +
+                 _in.mag_field.z * sin(_est.pitch.angle) * cos(_est.roll.angle);
     double b_y = _in.mag_field.y * cos(_est.roll.angle) - _in.mag_field.z * sin(_est.roll.angle);
 
     _imu_yaw_angle = atan2(-b_y, b_x);

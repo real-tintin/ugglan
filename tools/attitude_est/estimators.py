@@ -198,7 +198,7 @@ class AttEst(ABC):
 
 class AttEstAccMag(AttEst):
     """
-    Use the accelrometer and magnetometer to estimate angles (only).
+    Use the accelerometer and magnetometer to estimate angles (only).
     """
 
     def _execute(self, imu_out: ImuOut):
