@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from multi_body_sim.euclidean_transform import rotation_matrix
-from non_linear_sim.att_estimator import AttEstimator, ImuOut, AttEstimate
+from non_linear_sim.att_estimator import AttEstimator, ImuOut, AttEstimate, AttState
 from non_linear_sim.att_estimator import Params as AttEstParams
 from non_linear_sim.drone_model import DroneModel, DroneParams, EnvParams, CtrlInput, MotorAngRates
 from non_linear_sim.pilot_ctrl import Params as PilotCtrlParams
@@ -51,6 +51,12 @@ class Simulator:
         self._imu_out = self._extract_imu_out(self._drone_model.get_6dof_state())
 
         self._att_estimator.update(imu_out=self._imu_out)
+
+        s = self.get_6dof_state()
+        true_att_est = AttEstimate(roll=AttState(angle=s.n_i[0], rate=s.w_b[0], acc=s.wp_b[0]),
+                                   pitch=AttState(angle=s.n_i[1], rate=s.w_b[1], acc=s.wp_b[1]),
+                                   yaw=AttState(angle=s.n_i[2], rate=s.w_b[2], acc=s.wp_b[2]))
+
         self._pilot_ctrl.update(ref_input=ref_input, att_estimate=self._att_estimator.get_estimate())
 
         self._drone_model.step(ctrl_input=self._pilot_ctrl.get_ctrl_input())
@@ -75,6 +81,15 @@ class Simulator:
 
     def get_t(self) -> float:
         return self._drone_model.get_t()
+
+    def get_r_0(self):
+        return self._att_estimator.get_r_0()
+
+    def get_v(self):
+        return self._att_estimator.get_v()
+
+    def get_v_filt(self):
+        return self._att_estimator.get_v_filt()
 
     def reset(self, six_dof_state: SixDofState):
         self._att_est.reset()

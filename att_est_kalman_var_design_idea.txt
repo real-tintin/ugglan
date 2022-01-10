@@ -1,0 +1,13 @@
+What if we look at the norm of the acceleration and use the gyro to dynamically compute var(a)? 
+Cumsum which ramps up using the gyro?
+
+var(a) = R
+
+where
+
+R_k = {R_min, 			if R_{k-1} < R_min
+	  {c_0 * abs(gyro), if c * abs(gyro) > R_{k-1}
+	  {R_min + c_1 * v, else
+	  
+where v = lp(|g - ||a|||) and c_0 (scales the intial variance) and c_1 (the slope) 
+are constants. Should we use var instead of abs of the gyro - will add delay and smoothing?

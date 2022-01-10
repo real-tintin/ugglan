@@ -149,10 +149,10 @@ class Gui(QtGui.QMainWindow):
 
         def init_default_grid_subplot_map():
             self._grid_subplot_map = {
-                GridPos.TOP_LEFT: SubplotId.SIX_DOF,
+                GridPos.TOP_LEFT: SubplotId.IMU_MAG,
                 GridPos.TOP_RIGHT: SubplotId.ROLL_REF,
-                GridPos.BOTTOM_LEFT: SubplotId.PITCH_REF,
-                GridPos.BOTTOM_RIGHT: SubplotId.YAW_RATE_REF,
+                GridPos.BOTTOM_LEFT: SubplotId.IMU_GYRO,
+                GridPos.BOTTOM_RIGHT: SubplotId.IMU_ACC,
             }
 
         def setup_menu_and_actions():
@@ -315,7 +315,7 @@ class Gui(QtGui.QMainWindow):
         return self._action_input_gamepad.isChecked()
 
     def _get_default_conf_step_response(self):
-        return ConfStepResponse(ref_input=RefInput(f_z=-self._get_mg(), roll=0.0, pitch=0.0, yaw_rate=0.0))
+        return ConfStepResponse(ref_input=RefInput(f_z=-self._get_mg(), roll=np.pi / 8, pitch=0.0, yaw_rate=0.0))
 
     def _get_default_conf_gamepad(self):
         return ConfGamepad(ref_scale=RefInput(f_z=2 * self._get_mg(), roll=np.pi / 8, pitch=np.pi / 8, yaw_rate=np.pi),
@@ -373,6 +373,10 @@ class Gui(QtGui.QMainWindow):
 
                 "ref_input": lambda: self._ref_input,
                 "ctrl_input": self._simulator.get_ctrl_input,
+
+                "att_est_v_filt": self._simulator.get_v_filt,
+                "att_est_v": self._simulator.get_v,
+                "att_est_r_0": self._simulator.get_r_0,
 
                 "att_est": self._simulator.get_att_estimate,
                 "imu_out": self._simulator.get_imu_out,
@@ -459,7 +463,7 @@ class Gui(QtGui.QMainWindow):
 
     def _init_imu_acc_widget(self):
         return LinePlotWidget(data_cb=self._cb_imu_acc_widget,
-                              labels=["x", "y", "z"],
+                              labels=["|g - ||a|||", "lp(|g - ||a|||)"],
                               y_label="Imu accelerometer", y_unit="m/s<sub>2</sub>")
 
     def _init_imu_gyro_widget(self):
@@ -469,7 +473,7 @@ class Gui(QtGui.QMainWindow):
 
     def _init_imu_mag_widget(self):
         return LinePlotWidget(data_cb=self._cb_imu_mag_widget,
-                              labels=["x", "y", "z"],
+                              labels=["r_0"],
                               y_label="Imu magnetometer", y_unit="gauss")
 
     def _cb_6dof_widget(self):
@@ -511,9 +515,8 @@ class Gui(QtGui.QMainWindow):
 
     def _cb_imu_acc_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
-                "y": [self._rolling_sim_buf.imu_out.acc_x,
-                      self._rolling_sim_buf.imu_out.acc_y,
-                      self._rolling_sim_buf.imu_out.acc_z]}
+                "y": [self._rolling_sim_buf.att_est_v,
+                      self._rolling_sim_buf.att_est_v_filt]}
 
     def _cb_imu_gyro_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
@@ -523,9 +526,7 @@ class Gui(QtGui.QMainWindow):
 
     def _cb_imu_mag_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
-                "y": [self._rolling_sim_buf.imu_out.mag_field_x,
-                      self._rolling_sim_buf.imu_out.mag_field_y,
-                      self._rolling_sim_buf.imu_out.mag_field_z]}
+                "y": [self._rolling_sim_buf.att_est_r_0]}
 
     def closeEvent(self, event):
         self._stop()

@@ -26,12 +26,12 @@ class State:
 class Params:
     L_phi_0: float = 0.40
     L_phi_1: float = 3.85
-    L_phi_2: float = 0.55
+    L_phi_2: float = 0.3
     L_phi_3: float = 0.02
 
     L_theta_0: float = 0.40
     L_theta_1: float = 3.85
-    L_theta_2: float = 0.55
+    L_theta_2: float = 0.3
     L_theta_3: float = 0.02
 
     L_psi_0: float = 0.02

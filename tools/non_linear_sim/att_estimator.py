@@ -3,9 +3,10 @@
 #  Also, note that another python implementation exists under ./state_est/attitude_estimators (AttEstKalman).
 
 from collections import deque
+from dataclasses import dataclass, field
 
 import numpy as np
-from dataclasses import dataclass, field
+from scipy import signal
 
 MODULO_ROLL = np.pi
 MODULO_PITCH = np.pi / 2
@@ -62,8 +63,19 @@ class ImuAngleEst:
 class Params:
     scale_Q: float = 1e2
 
-    scale_R_0: float = 1.0
-    scale_R_1: float = 1.0
+    r_0_init: float = 1
+
+    r_0_min = 10
+    r_0_max = 1000
+
+    r_0_gyro_norm_T: float = 0.1
+    r_0_gyro_norm_i: float = 2
+
+    r_0_acc_norm_T: float = 0.1
+    r_0_acc_norm_pi: float = 1
+    r_0_acc_norm_ni: float = 1
+
+    scale_R_1: float = 1
 
     rolling_var_window_size: int = 20
 
@@ -102,6 +114,7 @@ class AttEstimator:
 
         self._update_imu_angle_est()
         self._update_rolling_var()
+        self._update_r_0()
 
         if self._is_rolling_var_ready:
             self._update_roll()
@@ -119,6 +132,14 @@ class AttEstimator:
         self._is_rolling_var_ready = False
         self._rolling_var_samples_in_buf = 0
 
+        self._v_filt = 0
+        self._v_filt_old = 0
+        self._v = 0
+        self._v_sos = signal.butter(N=3, Wn=1, btype='low', fs=int(1 / self._dt), output='sos')
+        self._v_z = np.zeros((2, 2))
+
+        self._r_0 = self._params.r_0_init
+
         self._rolling_var_roll_angle = deque(maxlen=self._params.rolling_var_window_size)
         self._rolling_var_pitch_angle = deque(maxlen=self._params.rolling_var_window_size)
         self._rolling_var_yaw_angle = deque(maxlen=self._params.rolling_var_window_size)
@@ -132,6 +153,41 @@ class AttEstimator:
 
     def is_calibrated(self) -> bool:
         return self._is_rolling_var_ready
+
+    def _update_r_0(self):
+        # TODO: Handle dip between. cumsum?
+        acc_xyz_norm = np.linalg.norm([self._imu_out.acc_x, self._imu_out.acc_y, self._imu_out.acc_z])
+        g = 9.82
+        self._v = np.abs(g - acc_xyz_norm)
+
+        v_filt, self._v_z = signal.sosfilt(self._v_sos, [self._v], zi=self._v_z)
+
+        self._v_filt_old = self._v_filt
+        self._v_filt = v_filt[0]
+
+        gyro_xy_norm = np.linalg.norm([self._imu_out.ang_rate_x, self._imu_out.ang_rate_y])
+
+        if gyro_xy_norm > self._params.r_0_gyro_norm_T:
+            self._r_0 += self._params.r_0_gyro_norm_i
+
+        elif (self._v_filt - self._v_filt_old) > 0:
+            self._r_0 += self._params.r_0_acc_norm_pi
+
+        else:
+            self._r_0 -= self._params.r_0_acc_norm_ni
+
+        self._r_0 = 100 * np.abs(self._imu_out.ang_rate_x) + 500 * self._v_filt
+
+        self._r_0 = min(max(self._r_0, self._params.r_0_min), self._params.r_0_max)
+
+    def get_r_0(self):
+        return self._r_0
+
+    def get_v(self):
+        return self._v
+
+    def get_v_filt(self):
+        return self._v_filt
 
     def _update_imu_angle_est(self):
         self._imu_ang_est.roll = np.arctan2(-self._imu_out.acc_y,
@@ -207,8 +263,8 @@ class AttEstimator:
         kalamn_state.z[0] = z_0
         kalamn_state.z[1] = z_1
 
-        kalamn_state.R[0, 0] = self._params.scale_R_0 * max(r_0, R_ALMOST_ZERO)
-        kalamn_state.R[1, 1] = self._params.scale_R_1 * max(r_1, R_ALMOST_ZERO)
+        kalamn_state.R[0, 0] = 100 * np.abs(z_1) + 200 * self._v_filt
+        kalamn_state.R[1, 1] = self._params.scale_R_1  # * max(r_1, R_ALMOST_ZERO)
 
         self._update_kalman_state(kalamn_state)
         self._kalman_state_to_att_(kalamn_state, att_state)
