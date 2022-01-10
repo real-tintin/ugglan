@@ -36,6 +36,10 @@ class SubplotId(Enum):
     IMU_GYRO = 'Imu gyro'
     IMU_MAG = 'Imu mag'
 
+    ATT_EST_ACC_FILTERED = 'AttEst acc filtered'
+    ATT_EST_ACC_RESIDUAL = 'AttEst acc residual'
+    ATT_EST_KALMAN_R = 'AttEst Kalman R'
+
 
 class GridPos(Enum):
     TOP_LEFT = 'Top left'
@@ -58,7 +62,6 @@ class ConfSim:
     imu_noise: ImuNoise = DEFAULT_IMU_NOISE
     dt_s: float = 0.01
 
-    standstill_calib_att_est: bool = True
     init_motors_with_fz_mg: bool = True
 
 
@@ -137,22 +140,29 @@ class Gui(QtGui.QMainWindow):
         def init_subplot_widget_map():
             self._subplot_widget_map = {
                 SubplotId.SIX_DOF: self._init_6dof_widget(),
+
                 SubplotId.ROLL_REF: self._init_roll_ref_widget(),
                 SubplotId.PITCH_REF: self._init_pitch_ref_widget(),
                 SubplotId.YAW_RATE_REF: self._init_yaw_rate_ref_widget(),
+
                 SubplotId.BODY_CTRL: self._init_body_ctrl_widget(),
                 SubplotId.MOTOR_CTRL: self._init_motor_ctrl_widget(),
+
                 SubplotId.IMU_ACC: self._init_imu_acc_widget(),
                 SubplotId.IMU_GYRO: self._init_imu_gyro_widget(),
                 SubplotId.IMU_MAG: self._init_imu_mag_widget(),
+
+                SubplotId.ATT_EST_ACC_FILTERED: self._init_att_est_acc_filtered(),
+                SubplotId.ATT_EST_ACC_RESIDUAL: self._init_att_est_acc_residual(),
+                SubplotId.ATT_EST_KALMAN_R: self._init_att_est_kalman_r(),
             }
 
         def init_default_grid_subplot_map():
             self._grid_subplot_map = {
-                GridPos.TOP_LEFT: SubplotId.IMU_MAG,
+                GridPos.TOP_LEFT: SubplotId.SIX_DOF,
                 GridPos.TOP_RIGHT: SubplotId.ROLL_REF,
-                GridPos.BOTTOM_LEFT: SubplotId.IMU_GYRO,
-                GridPos.BOTTOM_RIGHT: SubplotId.IMU_ACC,
+                GridPos.BOTTOM_LEFT: SubplotId.PITCH_REF,
+                GridPos.BOTTOM_RIGHT: SubplotId.YAW_RATE_REF,
             }
 
         def setup_menu_and_actions():
@@ -350,7 +360,6 @@ class Gui(QtGui.QMainWindow):
             env_params=self._conf_sim.env_params,
             imu_noise=self._conf_sim.imu_noise,
             dt=self._conf_sim.dt_s,
-            standstill_calib_att_est=self._conf_sim.standstill_calib_att_est,
             init_motors_with_fz_mg=self._conf_sim.init_motors_with_fz_mg
         )
 
@@ -374,11 +383,8 @@ class Gui(QtGui.QMainWindow):
                 "ref_input": lambda: self._ref_input,
                 "ctrl_input": self._simulator.get_ctrl_input,
 
-                "att_est_v_filt": self._simulator.get_v_filt,
-                "att_est_v": self._simulator.get_v,
-                "att_est_r_0": self._simulator.get_r_0,
-
                 "att_est": self._simulator.get_att_estimate,
+                "att_est_debug": self._simulator.get_att_est_debug,
                 "imu_out": self._simulator.get_imu_out,
 
                 "motor_ang_rates": self._simulator.get_motor_ang_rates,
@@ -390,7 +396,7 @@ class Gui(QtGui.QMainWindow):
 
         if self._is_input_gamepad_selected():
             self._threaded_tasks.append(ThreadedTask(cb=self._gamepad.update,
-                                                     exec_period_s=self._conf_gamepad.refresh_rate_s))
+                                                     exec_period_s=self._conf_input.gamepad.refresh_rate_s))
 
         self._threaded_tasks.append(ThreadedTask(cb=partial(self._simulator.step, self._ref_input),
                                                  exec_period_s=self._conf_sim.dt_s))
@@ -463,7 +469,7 @@ class Gui(QtGui.QMainWindow):
 
     def _init_imu_acc_widget(self):
         return LinePlotWidget(data_cb=self._cb_imu_acc_widget,
-                              labels=["|g - ||a|||", "lp(|g - ||a|||)"],
+                              labels=["x", "y", "z"],
                               y_label="Imu accelerometer", y_unit="m/s<sub>2</sub>")
 
     def _init_imu_gyro_widget(self):
@@ -473,8 +479,23 @@ class Gui(QtGui.QMainWindow):
 
     def _init_imu_mag_widget(self):
         return LinePlotWidget(data_cb=self._cb_imu_mag_widget,
-                              labels=["r_0"],
+                              labels=["x", "y", "z"],
                               y_label="Imu magnetometer", y_unit="gauss")
+
+    def _init_att_est_acc_filtered(self):
+        return LinePlotWidget(data_cb=self._cb_att_est_acc_filtered,
+                              labels=["x", "y", "z"],
+                              y_label="AttEst acc filtering", y_unit="m/s<sub>2</sub>")
+
+    def _init_att_est_acc_residual(self):
+        return LinePlotWidget(data_cb=self._cb_att_est_acc_residual,
+                              labels=["raw", "filtered"],
+                              y_label="AttEst acc residual", y_unit="m/s<sub>2</sub>")
+
+    def _init_att_est_kalman_r(self):
+        return LinePlotWidget(data_cb=self._cb_att_est_kalman_r,
+                              labels=["r_0_roll", "r_0_pitch", "r_0_yaw"],
+                              y_label="AttEst Kalman R", y_unit="-")
 
     def _cb_6dof_widget(self):
         return {"r_i": self._simulator.get_6dof_state().r_i,
@@ -515,8 +536,9 @@ class Gui(QtGui.QMainWindow):
 
     def _cb_imu_acc_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
-                "y": [self._rolling_sim_buf.att_est_v,
-                      self._rolling_sim_buf.att_est_v_filt]}
+                "y": [self._rolling_sim_buf.imu_out.acc_x,
+                      self._rolling_sim_buf.imu_out.acc_y,
+                      self._rolling_sim_buf.imu_out.acc_z]}
 
     def _cb_imu_gyro_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
@@ -526,7 +548,26 @@ class Gui(QtGui.QMainWindow):
 
     def _cb_imu_mag_widget(self):
         return {"t_s": self._rolling_sim_buf.t_s,
-                "y": [self._rolling_sim_buf.att_est_r_0]}
+                "y": [self._rolling_sim_buf.imu_out.mag_field_x,
+                      self._rolling_sim_buf.imu_out.mag_field_y,
+                      self._rolling_sim_buf.imu_out.mag_field_z]}
+
+    def _cb_att_est_acc_filtered(self):
+        return {"t_s": self._rolling_sim_buf.t_s,
+                "y": [self._rolling_sim_buf.att_est_debug.filtered_acc_x,
+                      self._rolling_sim_buf.att_est_debug.filtered_acc_y,
+                      self._rolling_sim_buf.att_est_debug.filtered_acc_z]}
+
+    def _cb_att_est_acc_residual(self):
+        return {"t_s": self._rolling_sim_buf.t_s,
+                "y": [self._rolling_sim_buf.att_est_debug.raw_acc_residual,
+                      self._rolling_sim_buf.att_est_debug.filtered_acc_residual]}
+
+    def _cb_att_est_kalman_r(self):
+        return {"t_s": self._rolling_sim_buf.t_s,
+                "y": [self._rolling_sim_buf.att_est_debug.kalman_r_0_roll,
+                      self._rolling_sim_buf.att_est_debug.kalman_r_0_pitch,
+                      self._rolling_sim_buf.att_est_debug.kalman_r_0_yaw]}
 
     def closeEvent(self, event):
         self._stop()

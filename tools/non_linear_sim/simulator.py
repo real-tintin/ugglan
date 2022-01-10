@@ -3,8 +3,8 @@ from dataclasses import dataclass
 import numpy as np
 
 from multi_body_sim.euclidean_transform import rotation_matrix
-from non_linear_sim.att_estimator import AttEstimator, ImuOut, AttEstimate, AttState
-from non_linear_sim.att_estimator import Params as AttEstParams
+from non_linear_sim.att_estimator import AttEstimator, ImuOut, AttEstimate
+from non_linear_sim.att_estimator import Params as AttEstParams, AttEstDebug
 from non_linear_sim.drone_model import DroneModel, DroneParams, EnvParams, CtrlInput, MotorAngRates
 from non_linear_sim.pilot_ctrl import Params as PilotCtrlParams
 from non_linear_sim.pilot_ctrl import RefInput, PilotCtrl
@@ -14,9 +14,9 @@ from non_linear_sim.six_dof_model import State as SixDofState
 
 @dataclass
 class ImuNoise:
-    acc_std: float = 0.015
-    gyro_std: float = 0.0015
-    mag_std: float = 0.0007
+    acc_std: float = 0.8
+    gyro_std: float = 0.02
+    mag_std: float = 0.002
 
 
 DEFAULT_IMU_NOISE = ImuNoise()
@@ -32,10 +32,9 @@ class Simulator:
                  env_params: EnvParams,
                  imu_noise: ImuNoise,
                  dt: float,
-                 standstill_calib_att_est: bool = True,
                  init_motors_with_fz_mg: bool = True
                  ):
-        self._att_estimator = AttEstimator(params=att_est_params, dt=dt)
+        self._att_estimator = AttEstimator(params=att_est_params, g=env_params.g, dt=dt)
         self._pilot_ctrl = PilotCtrl(params=pilot_ctrl_params, dt=dt)
         self._drone_model = DroneModel(state=six_dof_state, drone_params=drone_params, env_params=env_params,
                                        dt=dt, init_motors_with_fz_mg=init_motors_with_fz_mg)
@@ -44,19 +43,10 @@ class Simulator:
         self._g = env_params.g
         self._imu_out = ImuOut()
 
-        if standstill_calib_att_est:
-            self._calib_att_est()
-
     def step(self, ref_input: RefInput):
         self._imu_out = self._extract_imu_out(self._drone_model.get_6dof_state())
 
         self._att_estimator.update(imu_out=self._imu_out)
-
-        s = self.get_6dof_state()
-        true_att_est = AttEstimate(roll=AttState(angle=s.n_i[0], rate=s.w_b[0], acc=s.wp_b[0]),
-                                   pitch=AttState(angle=s.n_i[1], rate=s.w_b[1], acc=s.wp_b[1]),
-                                   yaw=AttState(angle=s.n_i[2], rate=s.w_b[2], acc=s.wp_b[2]))
-
         self._pilot_ctrl.update(ref_input=ref_input, att_estimate=self._att_estimator.get_estimate())
 
         self._drone_model.step(ctrl_input=self._pilot_ctrl.get_ctrl_input())
@@ -66,6 +56,9 @@ class Simulator:
 
     def get_att_estimate(self) -> AttEstimate:
         return self._att_estimator.get_estimate()
+
+    def get_att_est_debug(self) -> AttEstDebug:
+        return self._att_estimator.get_debug()
 
     def get_ctrl_input(self) -> CtrlInput:
         return self._pilot_ctrl.get_ctrl_input()
@@ -82,23 +75,10 @@ class Simulator:
     def get_t(self) -> float:
         return self._drone_model.get_t()
 
-    def get_r_0(self):
-        return self._att_estimator.get_r_0()
-
-    def get_v(self):
-        return self._att_estimator.get_v()
-
-    def get_v_filt(self):
-        return self._att_estimator.get_v_filt()
-
     def reset(self, six_dof_state: SixDofState):
         self._att_est.reset()
         self._pilot_ctrl.reset()
         self._drone_model.reset(six_dof_state)
-
-    def _calib_att_est(self):
-        while not self._att_estimator.is_calibrated():
-            self._att_estimator.update(imu_out=self._extract_imu_out(self._drone_model.get_6dof_state()))
 
     def _extract_imu_out(self, state: SixDofState) -> ImuOut:
         imu_acc = self._body_acc_to_imu_acc(state.a_b, state.n_i, self._g)

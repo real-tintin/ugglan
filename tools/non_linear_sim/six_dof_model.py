@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 from scipy.integrate import ode
@@ -19,21 +19,21 @@ class BodyInput:
 
 @dataclass
 class State:
-    r_i: np.ndarray = np.zeros(3)  # translational position inertial-frame
-    v_i: np.ndarray = np.zeros(3)  # translational velocity inertial-frame
-    a_i: np.ndarray = np.zeros(3)  # translational acceleration inertial-frame
+    r_i: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational position inertial-frame
+    v_i: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational velocity inertial-frame
+    a_i: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational acceleration inertial-frame
 
-    v_b: np.ndarray = np.zeros(3)  # translational velocity body-frame
-    a_b: np.ndarray = np.zeros(3)  # translational acceleration body-frame
+    v_b: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational velocity body-frame
+    a_b: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational acceleration body-frame
 
-    n_i: np.ndarray = np.zeros(3)  # rotational position (euler angles) inertial-frame
-    w_b: np.ndarray = np.zeros(3)  # rotational velocity body-frame
-    wp_b: np.ndarray = np.zeros(3)  # rotational acceleration body-frame
+    n_i: np.ndarray = field(default_factory=lambda: np.zeros(3))  # rotational position (euler angles) inertial-frame
+    w_b: np.ndarray = field(default_factory=lambda: np.zeros(3))  # rotational velocity body-frame
+    wp_b: np.ndarray = field(default_factory=lambda: np.zeros(3))  # rotational acceleration body-frame
 
-    q: np.ndarray = np.zeros(4)  # rotation as an quaternion (yaw -> pitch -> roll)
+    q: np.ndarray = field(default_factory=lambda: np.zeros(3))  # rotation as an quaternion (yaw -> pitch -> roll)
 
 
-STATE_ZERO = State()
+STATE_ZERO = State() # TODO: Should be a factory!!!
 
 
 class SixDofModel:

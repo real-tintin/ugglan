@@ -1,8 +1,10 @@
 # TODO: This is basically a copy of the target implementation (pilot_controller.cpp). In would be beneficial
 #  if the target implementation could be used instead (DRY), see https://github.com/real-tintin/ugglan/issues/13.
 
+from dataclasses import dataclass, field
+
 import numpy as np
-from dataclasses import dataclass
+
 from non_linear_sim.att_estimator import AttEstimate
 from non_linear_sim.drone_model import CtrlInput
 
@@ -17,21 +19,21 @@ class RefInput:
 
 @dataclass
 class State:
-    x_phi: np.ndarray = np.zeros(4)
-    x_theta: np.ndarray = np.zeros(4)
-    x_psi: np.ndarray = np.zeros(3)
+    x_phi: np.ndarray = field(default_factory=lambda: np.zeros(4))
+    x_theta: np.ndarray = field(default_factory=lambda: np.zeros(4))
+    x_psi: np.ndarray = field(default_factory=lambda: np.zeros(3))
 
 
 @dataclass
 class Params:
     L_phi_0: float = 0.40
     L_phi_1: float = 3.85
-    L_phi_2: float = 0.3
+    L_phi_2: float = 0.40
     L_phi_3: float = 0.02
 
     L_theta_0: float = 0.40
     L_theta_1: float = 3.85
-    L_theta_2: float = 0.3
+    L_theta_2: float = 0.40
     L_theta_3: float = 0.02
 
     L_psi_0: float = 0.02
@@ -63,7 +65,7 @@ class PilotCtrl:
         self._change_of_variable(ref_input)
         self._integrate_with_antiwindup()
 
-        self._update_ctrl(ref_input.f_z)
+        self._update_ctrl(ref_input.f_z, att_estimate)
 
     def reset(self):
         self._state = State()
@@ -101,8 +103,8 @@ class PilotCtrl:
         self._state.x_theta[0] = self._range_sat(self._state.x_theta[0], self._params.anti_windup_sat_theta)
         self._state.x_psi[0] = self._range_sat(self._state.x_psi[0], self._params.anti_windup_sat_psi)
 
-    def _update_ctrl(self, ref_f_z):
-        self._ctrl_input.f_z = ref_f_z
+    def _update_ctrl(self, ref_f_z, est: AttEstimate):
+        self._ctrl_input.f_z = ref_f_z / np.cos(max(est.roll.angle, est.pitch.angle))
 
         self._ctrl_input.m_x = -np.dot(self._L_phi, self._state.x_phi)
         self._ctrl_input.m_y = -np.dot(self._L_theta, self._state.x_theta)

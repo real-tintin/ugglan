@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 
 import numpy as np
@@ -57,17 +57,17 @@ def extract_imu_out(data: Signals) -> ImuOut:
 
 @dataclass
 class State:
-    phi: np.ndarray = np.array([])
-    theta: np.ndarray = np.array([])
-    psi: np.ndarray = np.array([])
+    phi: np.ndarray = field(default_factory=lambda: np.array([]))
+    theta: np.ndarray = field(default_factory=lambda: np.array([]))
+    psi: np.ndarray = field(default_factory=lambda: np.array([]))
 
-    phi_p: np.ndarray = np.array([])
-    theta_p: np.ndarray = np.array([])
-    psi_p: np.ndarray = np.array([])
+    phi_p: np.ndarray = field(default_factory=lambda: np.array([]))
+    theta_p: np.ndarray = field(default_factory=lambda: np.array([]))
+    psi_p: np.ndarray = field(default_factory=lambda: np.array([]))
 
-    phi_pp: np.ndarray = np.array([])
-    theta_pp: np.ndarray = np.array([])
-    psi_pp: np.ndarray = np.array([])
+    phi_pp: np.ndarray = field(default_factory=lambda: np.array([]))
+    theta_pp: np.ndarray = field(default_factory=lambda: np.array([]))
+    psi_pp: np.ndarray = field(default_factory=lambda: np.array([]))
 
 
 class AttEst(ABC):

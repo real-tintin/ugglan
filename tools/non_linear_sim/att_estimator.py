@@ -2,11 +2,11 @@
 #  if the target implementation could be used instead (DRY), see https://github.com/real-tintin/ugglan/issues/13.
 #  Also, note that another python implementation exists under ./state_est/attitude_estimators (AttEstKalman).
 
-from collections import deque
 from dataclasses import dataclass, field
 
 import numpy as np
-from scipy import signal
+
+from non_linear_sim.real_time_filter import FilterConfig, RealTimeFilter, FilterName, FilterType
 
 MODULO_ROLL = np.pi
 MODULO_PITCH = np.pi / 2
@@ -46,10 +46,10 @@ class AttEstimate:
 
 @dataclass
 class KalmanState:
-    x: np.ndarray = np.zeros(3)
-    z: np.ndarray = np.zeros(2)
-    P: np.ndarray = np.zeros((3, 3))
-    R: np.ndarray = np.zeros((2, 2))
+    x: np.ndarray = field(default_factory=lambda: np.zeros(3))
+    z: np.ndarray = field(default_factory=lambda: np.zeros(2))
+    P: np.ndarray = field(default_factory=lambda: np.zeros((3, 3)))
+    R: np.ndarray = field(default_factory=lambda: np.zeros((2, 2)))
 
 
 @dataclass
@@ -60,33 +60,40 @@ class ImuAngleEst:
 
 
 @dataclass
+class AttEstDebug:
+    kalman_r_0_roll: float
+    kalman_r_0_pitch: float
+    kalman_r_0_yaw: float
+
+    raw_acc_residual: float
+    filtered_acc_residual: float
+
+    filtered_acc_x: float
+    filtered_acc_y: float
+    filtered_acc_z: float
+
+
+@dataclass
 class Params:
     scale_Q: float = 1e2
 
-    r_0_init: float = 1
+    r_0_min: float = 10
+    r_0_max: float = 1000
 
-    r_0_min = 10
-    r_0_max = 1000
+    r_0_acc_res_scale: float = 1000
+    r_0_gyro_scale: float = 100
 
-    r_0_gyro_norm_T: float = 0.1
-    r_0_gyro_norm_i: float = 2
-
-    r_0_acc_norm_T: float = 0.1
-    r_0_acc_norm_pi: float = 1
-    r_0_acc_norm_ni: float = 1
-
-    scale_R_1: float = 1
-
-    rolling_var_window_size: int = 20
+    r_1: float = 1
 
 
 DEFAULT_ATT_EST_PARAMS = Params()
 
 
 class AttEstimator:
-    def __init__(self, params: Params, dt: float):
+    def __init__(self, params: Params, g: float, dt: float):
         self._params = params
         self._dt = dt
+        self._g = g
 
         self._Q = params.scale_Q * np.array([
             [0.25 * dt ** 4, 0.5 * dt ** 3, 0.5 * dt ** 2],
@@ -112,14 +119,13 @@ class AttEstimator:
     def update(self, imu_out: ImuOut):
         self._imu_out = imu_out
 
+        self._lp_filter_acc()
         self._update_imu_angle_est()
-        self._update_rolling_var()
-        self._update_r_0()
+        self._update_acc_residual()
 
-        if self._is_rolling_var_ready:
-            self._update_roll()
-            self._update_pitch()
-            self._update_yaw()
+        self._update_roll()
+        self._update_pitch()
+        self._update_yaw()
 
     def reset(self):
         self._att_est = AttEstimate()
@@ -129,72 +135,58 @@ class AttEstimator:
         self._kalman_pitch = KalmanState()
         self._kalman_yaw = KalmanState()
 
-        self._is_rolling_var_ready = False
-        self._rolling_var_samples_in_buf = 0
+        self._raw_acc_residual = 0.0
+        self._filtered_acc_residual = 0.0
 
-        self._v_filt = 0
-        self._v_filt_old = 0
-        self._v = 0
-        self._v_sos = signal.butter(N=3, Wn=1, btype='low', fs=int(1 / self._dt), output='sos')
-        self._v_z = np.zeros((2, 2))
+        self._filter_acc_res = RealTimeFilter(config=FilterConfig(name=FilterName.BUTTER,
+                                                                  type=FilterType.LOW_PASS,
+                                                                  n_order=3,
+                                                                  low_cut_off=1.0,
+                                                                  ), fs=int(1 / self._dt))
 
-        self._r_0 = self._params.r_0_init
+        acc_filter_config = FilterConfig(name=FilterName.BUTTER, type=FilterType.LOW_PASS, n_order=3, low_cut_off=1.0)
 
-        self._rolling_var_roll_angle = deque(maxlen=self._params.rolling_var_window_size)
-        self._rolling_var_pitch_angle = deque(maxlen=self._params.rolling_var_window_size)
-        self._rolling_var_yaw_angle = deque(maxlen=self._params.rolling_var_window_size)
-
-        self._rolling_var_roll_rate = deque(maxlen=self._params.rolling_var_window_size)
-        self._rolling_var_pitch_rate = deque(maxlen=self._params.rolling_var_window_size)
-        self._rolling_var_yaw_rate = deque(maxlen=self._params.rolling_var_window_size)
+        self._lp_filter_acc_x = RealTimeFilter(config=acc_filter_config, fs=int(1 / self._dt))
+        self._lp_filter_acc_y = RealTimeFilter(config=acc_filter_config, fs=int(1 / self._dt))
+        self._lp_filter_acc_z = RealTimeFilter(config=acc_filter_config, fs=int(1 / self._dt))
 
     def get_estimate(self) -> AttEstimate:
         return self._att_est
 
-    def is_calibrated(self) -> bool:
-        return self._is_rolling_var_ready
+    def get_debug(self) -> AttEstDebug:
+        return AttEstDebug(
+            raw_acc_residual=self._raw_acc_residual,
+            filtered_acc_residual=self._filter_acc_res.get(),
 
-    def _update_r_0(self):
-        # TODO: Handle dip between. cumsum?
-        acc_xyz_norm = np.linalg.norm([self._imu_out.acc_x, self._imu_out.acc_y, self._imu_out.acc_z])
-        g = 9.82
-        self._v = np.abs(g - acc_xyz_norm)
+            kalman_r_0_roll=self._kalman_roll.R[0, 0],
+            kalman_r_0_pitch=self._kalman_pitch.R[0, 0],
+            kalman_r_0_yaw=self._kalman_yaw.R[0, 0],
 
-        v_filt, self._v_z = signal.sosfilt(self._v_sos, [self._v], zi=self._v_z)
+            filtered_acc_x=self._lp_filter_acc_x.get(),
+            filtered_acc_y=self._lp_filter_acc_y.get(),
+            filtered_acc_z=self._lp_filter_acc_z.get(),
+        )
 
-        self._v_filt_old = self._v_filt
-        self._v_filt = v_filt[0]
+    def _lp_filter_acc(self):
+        self._lp_filter_acc_x.update(self._imu_out.acc_x)
+        self._lp_filter_acc_y.update(self._imu_out.acc_y)
+        self._lp_filter_acc_z.update(self._imu_out.acc_z)
 
-        gyro_xy_norm = np.linalg.norm([self._imu_out.ang_rate_x, self._imu_out.ang_rate_y])
+    def _update_acc_residual(self):
+        acc_xyz_norm = np.linalg.norm([self._lp_filter_acc_x.get(),
+                                       self._lp_filter_acc_y.get(),
+                                       self._lp_filter_acc_z.get()])
 
-        if gyro_xy_norm > self._params.r_0_gyro_norm_T:
-            self._r_0 += self._params.r_0_gyro_norm_i
-
-        elif (self._v_filt - self._v_filt_old) > 0:
-            self._r_0 += self._params.r_0_acc_norm_pi
-
-        else:
-            self._r_0 -= self._params.r_0_acc_norm_ni
-
-        self._r_0 = 100 * np.abs(self._imu_out.ang_rate_x) + 500 * self._v_filt
-
-        self._r_0 = min(max(self._r_0, self._params.r_0_min), self._params.r_0_max)
-
-    def get_r_0(self):
-        return self._r_0
-
-    def get_v(self):
-        return self._v
-
-    def get_v_filt(self):
-        return self._v_filt
+        self._raw_acc_residual = np.abs(self._g - acc_xyz_norm)
+        self._filter_acc_res.update(self._raw_acc_residual)
 
     def _update_imu_angle_est(self):
-        self._imu_ang_est.roll = np.arctan2(-self._imu_out.acc_y,
-                                            -self._imu_out.acc_z)
+        self._imu_ang_est.roll = np.arctan2(-self._lp_filter_acc_y.get(),
+                                            -self._lp_filter_acc_z.get())
 
-        self._imu_ang_est.pitch = np.arctan2(self._imu_out.acc_x,
-                                             np.sqrt(self._imu_out.acc_y ** 2 + self._imu_out.acc_z ** 2))
+        self._imu_ang_est.pitch = np.arctan2(self._lp_filter_acc_x.get(),
+                                             np.sqrt(self._lp_filter_acc_y.get() ** 2 +
+                                                     self._lp_filter_acc_z.get() ** 2))
 
         b_x = self._imu_out.mag_field_x * np.cos(self._att_est.pitch.angle) + \
               self._imu_out.mag_field_y * np.sin(self._att_est.roll.angle) * np.sin(self._att_est.pitch.angle) + \
@@ -205,28 +197,10 @@ class AttEstimator:
 
         self._imu_ang_est.yaw = np.arctan2(-b_y, b_x)
 
-    def _update_rolling_var(self):
-        self._rolling_var_roll_angle.append(self._imu_ang_est.roll)
-        self._rolling_var_pitch_angle.append(self._imu_ang_est.pitch)
-        self._rolling_var_yaw_angle.append(self._imu_ang_est.yaw)
-
-        self._rolling_var_roll_rate.append(self._imu_out.ang_rate_x)
-        self._rolling_var_pitch_rate.append(self._imu_out.ang_rate_y)
-        self._rolling_var_yaw_rate.append(self._imu_out.ang_rate_z)
-
-        self._rolling_var_samples_in_buf += 1
-
-        if self._rolling_var_samples_in_buf >= self._params.rolling_var_window_size:
-            self._is_rolling_var_ready = True
-        else:
-            self._is_rolling_var_ready = False
-
     def _update_roll(self):
         self._update_est(
             self._imu_ang_est.roll,
             self._imu_out.ang_rate_x,
-            np.var(self._rolling_var_roll_angle),
-            np.var(self._rolling_var_roll_rate),
             self._kalman_roll,
             self._att_est.roll,
             MODULO_ROLL,
@@ -236,8 +210,6 @@ class AttEstimator:
         self._update_est(
             self._imu_ang_est.pitch,
             self._imu_out.ang_rate_y,
-            np.var(self._rolling_var_pitch_angle),
-            np.var(self._rolling_var_pitch_rate),
             self._kalman_pitch,
             self._att_est.pitch,
             MODULO_PITCH,
@@ -247,8 +219,6 @@ class AttEstimator:
         self._update_est(
             self._imu_ang_est.yaw,
             self._imu_out.ang_rate_z,
-            np.var(self._rolling_var_yaw_angle),
-            np.var(self._rolling_var_yaw_rate),
             self._kalman_yaw,
             self._att_est.yaw,
             MODULO_YAW,
@@ -256,18 +226,20 @@ class AttEstimator:
 
     def _update_est(self,
                     z_0: float, z_1: float,
-                    r_0: float, r_1: float,
-                    kalamn_state: KalmanState,
+                    kalman_state: KalmanState,
                     att_state: AttState,
                     modulo_lim: float):
-        kalamn_state.z[0] = z_0
-        kalamn_state.z[1] = z_1
+        kalman_state.z[0] = z_0
+        kalman_state.z[1] = z_1
 
-        kalamn_state.R[0, 0] = 100 * np.abs(z_1) + 200 * self._v_filt
-        kalamn_state.R[1, 1] = self._params.scale_R_1  # * max(r_1, R_ALMOST_ZERO)
+        r_0 = self._params.r_0_gyro_scale * np.abs(z_1) + self._params.r_0_acc_res_scale * self._raw_acc_residual
+        r_0 = min(max(r_0, self._params.r_0_min), self._params.r_0_max)
 
-        self._update_kalman_state(kalamn_state)
-        self._kalman_state_to_att_(kalamn_state, att_state)
+        kalman_state.R[0, 0] = r_0
+        kalman_state.R[1, 1] = self._params.r_1
+
+        self._update_kalman_state(kalman_state)
+        self._kalman_state_to_att_(kalman_state, att_state)
 
         att_state.angle = self._modulo_angle(att_state.angle, modulo_lim)
 
