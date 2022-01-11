@@ -15,7 +15,6 @@ from non_linear_sim.pilot_ctrl import DEFAULT_PILOT_CTRL_PARAMS, RefInput
 from non_linear_sim.rolling_buffer import RollingBuffer
 from non_linear_sim.simulator import DEFAULT_IMU_NOISE, ImuNoise
 from non_linear_sim.simulator import Simulator
-from non_linear_sim.six_dof_model import STATE_ZERO as SIX_DOF_STATE_ZERO
 from non_linear_sim.subplot_widgets import SixDofWidget, LinePlotWidget
 from non_linear_sim.threaded_task import ThreadedTask
 
@@ -315,7 +314,7 @@ class Gui(QtGui.QMainWindow):
         return self._action_input_gamepad.isChecked()
 
     def _get_default_conf_step_response(self):
-        return ConfStepResponse(ref_input=RefInput(f_z=-self._get_mg(), roll=0.0, pitch=0.0, yaw_rate=0.0))
+        return ConfStepResponse(ref_input=RefInput(f_z=-self._get_mg(), roll=np.pi / 8, pitch=0.0, yaw_rate=0.0))
 
     def _get_default_conf_gamepad(self):
         return ConfGamepad(ref_scale=RefInput(f_z=2 * self._get_mg(), roll=np.pi / 8, pitch=np.pi / 8, yaw_rate=np.pi),
@@ -345,7 +344,6 @@ class Gui(QtGui.QMainWindow):
         self._simulator = Simulator(
             att_est_params=self._att_est_params,
             pilot_ctrl_params=self._pilot_ctrl_params,
-            six_dof_state=SIX_DOF_STATE_ZERO,
             drone_params=self._conf_sim.drone_params,
             env_params=self._conf_sim.env_params,
             imu_noise=self._conf_sim.imu_noise,
@@ -386,7 +384,7 @@ class Gui(QtGui.QMainWindow):
 
         if self._is_input_gamepad_selected():
             self._threaded_tasks.append(ThreadedTask(cb=self._gamepad.update,
-                                                     exec_period_s=self._conf_gamepad.refresh_rate_s))
+                                                     exec_period_s=self._conf_input.gamepad.refresh_rate_s))
 
         self._threaded_tasks.append(ThreadedTask(cb=partial(self._simulator.step, self._ref_input),
                                                  exec_period_s=self._conf_sim.dt_s))

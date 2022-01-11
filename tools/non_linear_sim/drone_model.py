@@ -5,7 +5,7 @@ from scipy.integrate import ode
 
 from linear_sim.physical_const import MASS, TAU_M, I_XX, I_YY, I_ZZ
 from multi_body_sim.euclidean_transform import rotation_matrix
-from non_linear_sim.six_dof_model import SixDofModel, State, STATE_ZERO, BodyInput
+from non_linear_sim.six_dof_model import SixDofModel, State, BodyInput, get_zero_initialized_state
 
 
 @dataclass
@@ -73,8 +73,8 @@ class DroneModel:
 
     def __init__(self, drone_params: DroneParams,
                  env_params: EnvParams,
-                 state: State,
                  dt: float,
+                 init_state: State = get_zero_initialized_state(),
                  init_motors_with_fz_mg: bool = True):
         self._drone_params = drone_params
         self._env_params = env_params
@@ -90,11 +90,10 @@ class DroneModel:
                                        moment_of_inertia=np.diag([drone_params.I_drone_xx,
                                                                   drone_params.I_drone_yy,
                                                                   drone_params.I_drone_zz]),
-                                       state=state,
+                                       init_state=init_state,
                                        dt=dt)
 
     def step(self, ctrl_input: CtrlInput):
-        # TODO: Model motor vibrations.
         self._t += self._dt
 
         state_6dof = self._6dof_model.get_state()
@@ -115,7 +114,7 @@ class DroneModel:
             mx=M_b[0], my=M_b[1], mz=M_b[2])
         )
 
-    def reset(self, state: State = STATE_ZERO):
+    def reset(self, state: State = State()):
         self._6dof_model.reset(state)
         self._init_motor_dyn()
 

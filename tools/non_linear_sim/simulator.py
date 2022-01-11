@@ -10,13 +10,14 @@ from non_linear_sim.pilot_ctrl import Params as PilotCtrlParams
 from non_linear_sim.pilot_ctrl import RefInput, PilotCtrl
 from non_linear_sim.pilot_ctrl import State as PilotCtrlState
 from non_linear_sim.six_dof_model import State as SixDofState
+from non_linear_sim.six_dof_model import get_zero_initialized_state
 
 
 @dataclass
 class ImuNoise:
-    acc_std: float = 0.015
-    gyro_std: float = 0.0015
-    mag_std: float = 0.0007
+    acc_std: float = 0.8
+    gyro_std: float = 0.02
+    mag_std: float = 0.002
 
 
 DEFAULT_IMU_NOISE = ImuNoise()
@@ -27,17 +28,17 @@ class Simulator:
     def __init__(self,
                  att_est_params: AttEstParams,
                  pilot_ctrl_params: PilotCtrlParams,
-                 six_dof_state: SixDofState,
                  drone_params: DroneParams,
                  env_params: EnvParams,
                  imu_noise: ImuNoise,
                  dt: float,
+                 init_state: SixDofState = get_zero_initialized_state(),
                  standstill_calib_att_est: bool = True,
                  init_motors_with_fz_mg: bool = True
                  ):
         self._att_estimator = AttEstimator(params=att_est_params, dt=dt)
         self._pilot_ctrl = PilotCtrl(params=pilot_ctrl_params, dt=dt)
-        self._drone_model = DroneModel(state=six_dof_state, drone_params=drone_params, env_params=env_params,
+        self._drone_model = DroneModel(init_state=init_state, drone_params=drone_params, env_params=env_params,
                                        dt=dt, init_motors_with_fz_mg=init_motors_with_fz_mg)
 
         self._imu_noise = imu_noise

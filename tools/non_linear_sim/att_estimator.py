@@ -3,9 +3,9 @@
 #  Also, note that another python implementation exists under ./state_est/attitude_estimators (AttEstKalman).
 
 from collections import deque
+from dataclasses import dataclass, field
 
 import numpy as np
-from dataclasses import dataclass, field
 
 MODULO_ROLL = np.pi
 MODULO_PITCH = np.pi / 2
@@ -45,10 +45,10 @@ class AttEstimate:
 
 @dataclass
 class KalmanState:
-    x: np.ndarray = np.zeros(3)
-    z: np.ndarray = np.zeros(2)
-    P: np.ndarray = np.zeros((3, 3))
-    R: np.ndarray = np.zeros((2, 2))
+    x: np.ndarray = field(default_factory=lambda: np.zeros(3))
+    z: np.ndarray = field(default_factory=lambda: np.zeros(2))
+    P: np.ndarray = field(default_factory=lambda: np.zeros((3, 3)))
+    R: np.ndarray = field(default_factory=lambda: np.zeros((2, 2)))
 
 
 @dataclass

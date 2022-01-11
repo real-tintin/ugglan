@@ -1,8 +1,10 @@
 # TODO: This is basically a copy of the target implementation (pilot_controller.cpp). In would be beneficial
 #  if the target implementation could be used instead (DRY), see https://github.com/real-tintin/ugglan/issues/13.
 
+from dataclasses import dataclass, field
+
 import numpy as np
-from dataclasses import dataclass
+
 from non_linear_sim.att_estimator import AttEstimate
 from non_linear_sim.drone_model import CtrlInput
 
@@ -17,9 +19,9 @@ class RefInput:
 
 @dataclass
 class State:
-    x_phi: np.ndarray = np.zeros(4)
-    x_theta: np.ndarray = np.zeros(4)
-    x_psi: np.ndarray = np.zeros(3)
+    x_phi: np.ndarray = field(default_factory=lambda: np.zeros(4))
+    x_theta: np.ndarray = field(default_factory=lambda: np.zeros(4))
+    x_psi: np.ndarray = field(default_factory=lambda: np.zeros(3))
 
 
 @dataclass

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from non_linear_sim.six_dof_model import State, STATE_ZERO, SixDofModel, BodyInput
+from non_linear_sim.six_dof_model import State, SixDofModel, BodyInput, get_zero_initialized_state
 
 STATE_NON_ZERO = State(
     r_i=np.random.rand(3),
@@ -16,11 +16,12 @@ STATE_NON_ZERO = State(
 )
 
 TEST_DT = 0.01
+STATE_ZERO = get_zero_initialized_state()
 
 
 class UnitSixDofModel(SixDofModel):
-    def __init__(self, state: State = STATE_ZERO):
-        super().__init__(mass=1.0, moment_of_inertia=np.eye(3), dt=TEST_DT, state=state)
+    def __init__(self):
+        super().__init__(mass=1.0, moment_of_inertia=np.eye(3), dt=TEST_DT)
 
 
 @pytest.fixture

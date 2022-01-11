@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 from scipy.integrate import ode
@@ -19,21 +19,22 @@ class BodyInput:
 
 @dataclass
 class State:
-    r_i: np.ndarray = np.zeros(3)  # translational position inertial-frame
-    v_i: np.ndarray = np.zeros(3)  # translational velocity inertial-frame
-    a_i: np.ndarray = np.zeros(3)  # translational acceleration inertial-frame
+    r_i: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational position inertial-frame
+    v_i: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational velocity inertial-frame
+    a_i: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational acceleration inertial-frame
 
-    v_b: np.ndarray = np.zeros(3)  # translational velocity body-frame
-    a_b: np.ndarray = np.zeros(3)  # translational acceleration body-frame
+    v_b: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational velocity body-frame
+    a_b: np.ndarray = field(default_factory=lambda: np.zeros(3))  # translational acceleration body-frame
 
-    n_i: np.ndarray = np.zeros(3)  # rotational position (euler angles) inertial-frame
-    w_b: np.ndarray = np.zeros(3)  # rotational velocity body-frame
-    wp_b: np.ndarray = np.zeros(3)  # rotational acceleration body-frame
+    n_i: np.ndarray = field(default_factory=lambda: np.zeros(3))  # rotational position (euler angles) inertial-frame
+    w_b: np.ndarray = field(default_factory=lambda: np.zeros(3))  # rotational velocity body-frame
+    wp_b: np.ndarray = field(default_factory=lambda: np.zeros(3))  # rotational acceleration body-frame
 
-    q: np.ndarray = np.zeros(4)  # rotation as an quaternion (yaw -> pitch -> roll)
+    q: np.ndarray = field(default_factory=lambda: np.zeros(4))  # rotation as an quaternion (yaw -> pitch -> roll)
 
 
-STATE_ZERO = State()
+def get_zero_initialized_state():
+    return State()
 
 
 class SixDofModel:
@@ -44,12 +45,12 @@ class SixDofModel:
     """
 
     def __init__(self, mass: float, moment_of_inertia: np.ndarray,
-                 dt: float, state: State = STATE_ZERO):
+                 dt: float, init_state: State = get_zero_initialized_state()):
         self._m = mass
         self._I_b = moment_of_inertia
         self._I_b_inv = np.linalg.inv(self._I_b)
 
-        self._state = state
+        self._state = init_state
         self._dt = dt
         self._t = 0.0
 
@@ -83,7 +84,7 @@ class SixDofModel:
             q=q,
         )
 
-    def reset(self, state: State = STATE_ZERO):
+    def reset(self, state: State = State()):
         self._state = state
         self._init_odes()
 
