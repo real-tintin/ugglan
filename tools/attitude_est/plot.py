@@ -63,9 +63,9 @@ class PlotAttEst:
             axs.plot(t_s, v, color=color, label=label)
 
 
-def _create_and_exec_att_est(att_est_type: AttEst, imu_out: ImuOut):
+def _create_and_exec_att_est(att_est_type: AttEst, imu_out: ImuOut, exec_opt: {}):
     att_est = att_est_type(dt=TARGET_IMU_SAMPLE_RATE_S)
-    att_est.execute(imu_out)
+    att_est.execute(imu_out, **exec_opt)
 
     return att_est
 
@@ -74,34 +74,57 @@ def _get_imu_t_s(data: Signals):
     return data.Imu.AccelerationX.t_s
 
 
+def _parse_bool_arg(str_val: str) -> bool:
+    if str_val.lower() == 'true':
+        return True
+    elif str_val.lower() == 'false':
+        return False
+    else:
+        raise ValueError('Invalid bool string.')
+
+
+def _pack_exec_opt_from_args(args):
+    return {
+        'modulo_of_angles': args.modulo_of_angles,
+        'static_gyro_offset_comp': args.static_gyro_offset_comp,
+        'dynamic_gyro_offset_comp': args.dynamic_gyro_offset_comp,
+        'hard_iron_offset_comp': args.hard_iron_offset_comp,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description='Attitude estimation of data log file.')
     parser.add_argument('path', type=Path, help='Path to data log file')
     parser.add_argument('--estimator', type=Estimator, nargs='+', choices=list(Estimator),
                         default=list(Estimator), help='Selected estimator(s)')
+    parser.add_argument('--modulo_of_angles', default=True, choices=[True, False], type=_parse_bool_arg)
+    parser.add_argument('--static_gyro_offset_comp', default=False, choices=[True, False], type=_parse_bool_arg)
+    parser.add_argument('--dynamic_gyro_offset_comp', default=True, choices=[True, False], type=_parse_bool_arg)
+    parser.add_argument('--hard_iron_offset_comp', default=True, choices=[True, False], type=_parse_bool_arg)
     args = parser.parse_args()
 
     data = data_log_io.read(args.path, resample_to_fixed_rate_s=TARGET_IMU_SAMPLE_RATE_S)
     imu_out = extract_imu_out(data)
     plot_att_est = PlotAttEst(t_s=_get_imu_t_s(data))
+    exec_opt = _pack_exec_opt_from_args(args)
 
     if Estimator.ACC_MAG in args.estimator:
-        plot_att_est.add(_create_and_exec_att_est(AttEstAccMag, imu_out), name=Estimator.ACC_MAG, color='c')
+        plot_att_est.add(_create_and_exec_att_est(AttEstAccMag, imu_out, exec_opt), name=Estimator.ACC_MAG, color='c')
 
     if Estimator.GYRO in args.estimator:
-        plot_att_est.add(_create_and_exec_att_est(AttEstGyro, imu_out), name=Estimator.GYRO, color='r')
+        plot_att_est.add(_create_and_exec_att_est(AttEstGyro, imu_out, exec_opt), name=Estimator.GYRO, color='r')
 
     if Estimator.GYRO_LP in args.estimator:
-        plot_att_est.add(_create_and_exec_att_est(AttEstGyroLp, imu_out), name=Estimator.GYRO_LP, color='m')
+        plot_att_est.add(_create_and_exec_att_est(AttEstGyroLp, imu_out, exec_opt), name=Estimator.GYRO_LP, color='m')
 
     if Estimator.CF in args.estimator:
-        plot_att_est.add(_create_and_exec_att_est(AttEstCf, imu_out), name=Estimator.CF, color='b')
+        plot_att_est.add(_create_and_exec_att_est(AttEstCf, imu_out, exec_opt), name=Estimator.CF, color='b')
 
     if Estimator.KALMAN in args.estimator:
-        plot_att_est.add(_create_and_exec_att_est(AttEstKalman, imu_out), name=Estimator.KALMAN, color='g')
+        plot_att_est.add(_create_and_exec_att_est(AttEstKalman, imu_out, exec_opt), name=Estimator.KALMAN, color='g')
 
     if Estimator.TARGET in args.estimator:
-        att_est_target = _create_and_exec_att_est(AttEstTarget, imu_out)
+        att_est_target = _create_and_exec_att_est(AttEstTarget, imu_out, exec_opt)
         att_est_target.extract_target_data(data)
 
         plot_att_est.add(att_est_target, name=Estimator.TARGET, color='k')

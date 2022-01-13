@@ -85,10 +85,10 @@ class AttEst(ABC):
 
     def execute(self,
                 imu_out: ImuOut,
-                modulo_of_angles=True,
-                static_gyro_offset_comp=False,
-                dynamic_gyro_offset_comp=True,
-                hard_iron_offset_comp=True):
+                modulo_of_angles: bool,
+                static_gyro_offset_comp: bool,
+                dynamic_gyro_offset_comp: bool,
+                hard_iron_offset_comp: bool):
 
         def pre_exec():
             _imu_out = deepcopy(imu_out)
