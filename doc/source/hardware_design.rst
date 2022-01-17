@@ -79,9 +79,9 @@ the frame to the IMU and cause un-wanted noise.
 
 Motor & Propeller Balancing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To reduce vibrations the motor and propeller need to be balanced. To analyze and balance them the acceleration
-can be studied. In :numref:`vib_analysis_prop_balancing` the acceleration and its variance is shown for
-different runs where a pice of tape is positioned at different locations on a propeller.
+To reduce vibrations the motor and propeller need to be balanced. To analyze and balance them the IMU acceleration
+can be studied. In :numref:`vib_analysis_prop_balancing` the IMU acceleration in time, its variance and psd (power
+spectral density) is shown for different runs where a pice of tape is positioned at different locations on a propeller.
 
 .. _vib_analysis_prop_balancing:
 .. figure:: figures/vib_analysis_prop_balancing.svg
@@ -90,5 +90,8 @@ different runs where a pice of tape is positioned at different locations on a pr
     Each chunk corresponds to a separate run of the motors where the pice of tape is relocated. Note,
     chunk 0 is without any tape, chunk 1-3 is tape on one blade and chunk 4-6 on the other blade.
 
-It can be seen that applying tape can significantly reduce vibrations compare to none. Hence,
-by doing this for every motor and propeller the overall level of vibrations will reduce.
+It can be seen that applying tape on a certain location can significantly reduce vibrations i.e., becoming
+"better" balanced.
+
+Also note the frequency components of the psd. The content at ~20 Hz could correspond to the frequency of
+the motors but folded (due to aliasing as the sample rate 100/2 Hz < 81 Hz, hence at folded at 19 Hz).

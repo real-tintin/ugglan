@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from cycler import cycler
 from matplotlib.patches import Rectangle
+from scipy.fft import fft, fftfreq
 
 import data_log.io as data_log_io
 from data_log.io import Signals
@@ -95,22 +96,53 @@ def _compute_var_in_chunks(x: np.ndarray, chunks: ChunkedIndices) -> np.ndarray:
     return var
 
 
+def _compute_psd(x: np.ndarray, dt_s: float, n: float = None) -> (np.ndarray, np.ndarray):
+    fft_amp = fft(x, n)
+    psd_amp = np.abs(fft_amp) ** 2
+
+    fft_freq = fftfreq(len(fft_amp), dt_s)
+    pos_freq_indices = fft_freq > 0
+
+    return fft_freq[pos_freq_indices], 10 * np.log10(psd_amp[pos_freq_indices])
+
+
+def _compute_psd_in_chunks(x: np.ndarray, dt_s: float, chunks: ChunkedIndices) -> (np.ndarray, np.ndarray):
+    nfft = min([len(chunk) for chunk in chunks])
+    psd_amp = np.zeros((len(chunks), int(np.ceil(nfft / 2 - 1))))
+
+    for chunk_i, chunk in enumerate(chunks):
+        psd_freq, psd_amp[chunk_i, :] = _compute_psd(x=x[chunk], dt_s=dt_s, n=nfft)
+
+    return psd_freq, np.mean(psd_amp, axis=0)
+
+
 def _plot_vibrations(data: Signals):
-    fig, axs = plt.subplots(2, 1)
+    fig, axs = plt.subplot_mosaic([['upper', 'upper'],
+                                   ['lower left', 'lower right']],
+                                  figsize=(5.5, 3.5), constrained_layout=True)
+
     fig.suptitle('Motor induces vibration analysis')
 
-    ax_top_left = axs[0]
-    ax_top_right = axs[0].twinx()
-    ax_bottom = axs[1]
+    ax_upper_left = axs['upper']
+    ax_upper_right = axs['upper'].twinx()
+    ax_lower_left = axs['lower left']
+    ax_lower_right = axs['lower right']
+
+    t_s = np.array(data.Imu.AccelerationX.t_s)
+    acc_x = np.array(data.Imu.AccelerationX.val)
+    acc_y = np.array(data.Imu.AccelerationY.val)
+    acc_z = np.array(data.Imu.AccelerationZ.val)
+
+    dt_s = t_s[1] - t_s[0]
 
     chunks, is_motor_active = _get_chunked_motor_ang_rate_indices(data)
 
     def plot_imu_acc(ax):
-        ax.plot(data.Imu.AccelerationX.t_s, data.Imu.AccelerationX.val, label=r'$a_x$')
-        ax.plot(data.Imu.AccelerationY.t_s, data.Imu.AccelerationY.val, label=r'$a_y$')
-        ax.plot(data.Imu.AccelerationZ.t_s, data.Imu.AccelerationZ.val, label=r'$a_z$')
+        ax.plot(t_s, acc_x, label=r'$a_x$')
+        ax.plot(t_s, acc_y, label=r'$a_y$')
+        ax.plot(t_s, acc_z, label=r'$a_z$')
 
-        ax.set(ylabel='Acceleration [m/s^2]', xlabel='Time [s]')
+        ax.set(ylabel='$\mathregular{IMU_{acc}}$ [m/s^2]', xlabel='Time [s]')
         ax.grid()
         ax.legend(loc='upper left', fontsize=7)
 
@@ -136,16 +168,16 @@ def _plot_vibrations(data: Signals):
 
         add_chunks_to_ax(ax, x=ang_rate.t_s)
 
-        ax.set(ylabel='Angular-rate [rad/s]')
+        ax.set(ylabel='$\mathregular{ESC_{speed}}$ [rad/s]')
         ax.legend(loc='upper right', fontsize=7)
 
     def plot_vibrations_bar(ax):
         width = 0.2
         x_bar = np.arange(0, len(chunks))
 
-        var_acc_x = _compute_var_in_chunks(np.array(data.Imu.AccelerationX.val), chunks)
-        var_acc_y = _compute_var_in_chunks(np.array(data.Imu.AccelerationY.val), chunks)
-        var_acc_z = _compute_var_in_chunks(np.array(data.Imu.AccelerationZ.val), chunks)
+        var_acc_x = _compute_var_in_chunks(acc_x, chunks)
+        var_acc_y = _compute_var_in_chunks(acc_y, chunks)
+        var_acc_z = _compute_var_in_chunks(acc_z, chunks)
         var_acc_norm = np.linalg.norm((var_acc_x, var_acc_y, var_acc_z), axis=0)
 
         ax.bar(x_bar - width * 1.5, var_acc_x, width, label=r'$\sigma^2_{a_x}$')
@@ -153,15 +185,25 @@ def _plot_vibrations(data: Signals):
         ax.bar(x_bar + width * 0.5, var_acc_z, width, label=r'$\sigma^2_{a_z}$')
         ax.bar(x_bar + width * 1.5, var_acc_norm, width, label=r'$\sigma^2_{|a|}$')
 
-        ax.set(xlabel='Chunk n []', ylabel='Var[acceleration] [m/s^2]')
+        ax.set(xlabel='Chunk n []', ylabel='Var[$\mathregular{IMU_{acc}}$] [m^2/s^4]')
         ax.set_xticks(x_bar)
 
         ax.legend(loc='upper right', fontsize=7)
         ax.grid()
 
-    plot_imu_acc(ax_top_left)
-    plot_motor_ang_rates(ax_top_right)
-    plot_vibrations_bar(ax_bottom)
+    def plot_imu_acc_psd(ax):
+        ax.plot(*_compute_psd_in_chunks(acc_x, dt_s, chunks), label='$a_x$')
+        ax.plot(*_compute_psd_in_chunks(acc_y, dt_s, chunks), label='$a_y$')
+        ax.plot(*_compute_psd_in_chunks(acc_z, dt_s, chunks), label='$a_z$')
+
+        ax.set(xlabel='Frequency [Hz]', ylabel='Psd[$\mathregular{IMU_{acc}}$] [dB]')
+        ax.legend(loc='upper right', fontsize=7)
+        ax.grid()
+
+    plot_imu_acc(ax_upper_left)
+    plot_motor_ang_rates(ax_upper_right)
+    plot_vibrations_bar(ax_lower_left)
+    plot_imu_acc_psd(ax_lower_right)
 
 
 def main():
