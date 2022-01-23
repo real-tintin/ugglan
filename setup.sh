@@ -10,7 +10,12 @@ PY_VENV_ROOT="./venv"
 PY_VENV_REQ="./tools/requirements.txt"
 
 python -m venv "${PY_VENV_ROOT}"
-source "${PY_VENV_ROOT}/Scripts/activate"
+
+if [ "$(uname)" == "Linux" ]; then
+    source "${PY_VENV_ROOT}/bin/activate"
+else # Assume windows
+    source "${PY_VENV_ROOT}/Scripts/activate"
+fi
 
 pip install --upgrade pip
 pip install -r "${PY_VENV_REQ}"
