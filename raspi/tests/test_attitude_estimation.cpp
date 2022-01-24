@@ -6,7 +6,9 @@
 static const double FLOAT_TOL = 1e-1;
 static const double SAMPLE_RATE_S = 1.0;
 
-static const uint32_t EXEC_UNTIL_CALIB = ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP + ATT_EST_ROLLING_WINDOW_SIZE;
+static const AttEstConfig CONFIG = {10, 10, 1, 1, 1, 0.1, -0.1, 3.1};
+
+static const uint32_t EXEC_UNTIL_CALIB = CONFIG.n_samples_gyro_offset_comp + CONFIG.rolling_var_window_size;
 
 static const uint32_t EXEC_UNTIL_CONVERGENCE = 10 * EXEC_UNTIL_CALIB;
 
@@ -24,7 +26,7 @@ void add_gyro_offset(AttEstInput &input)
 
 TEST_CASE("attitude estimation")
 {
-    AttitudeEstimation att(SAMPLE_RATE_S);
+    AttitudeEstimation att(SAMPLE_RATE_S, CONFIG);
     AttEstInput input = {0};
     AttEstimate est;
 
@@ -34,9 +36,9 @@ TEST_CASE("attitude estimation")
     {
         input.acc_z = -1;
 
-        input.mag_field_x = ATT_EST_HARD_IRON_OFFSET_X;
-        input.mag_field_y = ATT_EST_HARD_IRON_OFFSET_Y;
-        input.mag_field_z = ATT_EST_HARD_IRON_OFFSET_Z;
+        input.mag_field_x = CONFIG.hard_iron_offset_x;
+        input.mag_field_y = CONFIG.hard_iron_offset_y;
+        input.mag_field_z = CONFIG.hard_iron_offset_z;
 
         REQUIRE(att.is_calibrated() == false);
         REQUIRE(att.is_standstill() == false);
@@ -99,8 +101,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("yaw: 45 deg")
     {
-        input.mag_field_x = 1.0 + ATT_EST_HARD_IRON_OFFSET_X;
-        input.mag_field_y = 1.0 + ATT_EST_HARD_IRON_OFFSET_Y;
+        input.mag_field_x = 1.0 + CONFIG.hard_iron_offset_x;
+        input.mag_field_y = 1.0 + CONFIG.hard_iron_offset_y;
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();
@@ -110,8 +112,8 @@ TEST_CASE("attitude estimation")
 
     SECTION("yaw: +/-180 deg")
     {
-        input.mag_field_x = -1.0 + ATT_EST_HARD_IRON_OFFSET_X;
-        input.mag_field_y = 0.0 + ATT_EST_HARD_IRON_OFFSET_Y;
+        input.mag_field_x = -1.0 + CONFIG.hard_iron_offset_x;
+        input.mag_field_y = 0.0 + CONFIG.hard_iron_offset_y;
 
         execute_n_samples(att, input, EXEC_UNTIL_CONVERGENCE);
         est = att.get_estimate();

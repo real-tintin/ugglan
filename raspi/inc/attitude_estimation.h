@@ -8,18 +8,6 @@
 #include <statistics.h>
 #include <eigen/Eigen>
 
-inline const double ATT_EST_KALMAN_Q_SCALE = utils::get_env("ATT_EST_KALMAN_Q_SCALE", 1e2);
-inline const double ATT_EST_KALMAN_R_0_SCALE = utils::get_env("ATT_EST_KALMAN_R_0_SCALE", 1.0);
-inline const double ATT_EST_KALMAN_R_1_SCALE = utils::get_env("ATT_EST_KALMAN_R_1_SCALE", 1.0);
-
-inline const uint8_t ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP = 100;
-
-inline const uint32_t ATT_EST_ROLLING_WINDOW_SIZE = 20;
-
-inline const double ATT_EST_HARD_IRON_OFFSET_X = 0.104;
-inline const double ATT_EST_HARD_IRON_OFFSET_Y = 0.076;
-inline const double ATT_EST_HARD_IRON_OFFSET_Z = 0.062;
-
 struct AttEstInput {
     double acc_x;       // [m/s^2]
     double acc_y;       // [m/s^2]
@@ -53,10 +41,24 @@ struct AttEstimate {
     AttEstState yaw;
 };
 
+struct AttEstConfig {
+    uint8_t n_samples_gyro_offset_comp;
+    uint32_t rolling_var_window_size;
+
+    double kalman_q_scale;
+
+    double kalman_r_0_scale;
+    double kalman_r_1_scale;
+
+    double hard_iron_offset_x;
+    double hard_iron_offset_y;
+    double hard_iron_offset_z;
+};
+
 class AttitudeEstimation
 {
 public:
-    AttitudeEstimation(double input_sample_rate_s);
+    AttitudeEstimation(double input_sample_rate_s, AttEstConfig config);
 
     void update(AttEstInput input);
 
@@ -66,6 +68,7 @@ public:
     bool is_standstill();
 private:
     const double _dt;
+    const AttEstConfig _config;
 
     AttEstInput _in = {0};
     AttEstimate _est = {0};

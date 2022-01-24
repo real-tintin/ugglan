@@ -16,33 +16,6 @@ inline const double PILOT_CTRL_ABS_MAX_REF_PITCH = M_PI / 8; // [rad]
 inline const double PILOT_CTRL_ABS_MAX_REF_YAW_RATE = M_PI; // [rad/s]
 inline const double PILOT_CTRL_ABS_MAX_REF_F_Z = 20.0; // [N]
 
-inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PHI = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_PHI", 0.3);
-inline const double PILOT_CTRL_ANTI_WINDUP_SAT_THETA = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_THETA", 0.3);
-inline const double PILOT_CTRL_ANTI_WINDUP_SAT_PSI = utils::get_env("PILOT_CTRL_ANTI_WINDUP_SAT_PSI", 2.4);
-
-inline const Eigen::RowVector4d PILOT_CTRL_L_ROLL
-    {{
-    utils::get_env("PILOT_CTRL_L_ROLL_0", 0.40),
-    utils::get_env("PILOT_CTRL_L_ROLL_1", 3.85),
-    utils::get_env("PILOT_CTRL_L_ROLL_2", 0.55),
-    utils::get_env("PILOT_CTRL_L_ROLL_3", 0.02)
-    }}; // Feedback matrice for roll.
-
-inline const Eigen::RowVector4d PILOT_CTRL_L_PITCH
-    {{
-    utils::get_env("PILOT_CTRL_L_PITCH_0", 0.40),
-    utils::get_env("PILOT_CTRL_L_PITCH_1", 3.85),
-    utils::get_env("PILOT_CTRL_L_PITCH_2", 0.55),
-    utils::get_env("PILOT_CTRL_L_PITCH_3", 0.02)
-    }}; // Feedback matrice for pitch.
-
-inline const Eigen::RowVector3d PILOT_CTRL_L_YAW_RATE
-    {{
-    utils::get_env("PILOT_CTRL_L_YAW_RATE_0", 0.02),
-    utils::get_env("PILOT_CTRL_L_YAW_RATE_1", 0.04),
-    utils::get_env("PILOT_CTRL_L_YAW_RATE_2", 0.00)
-    }}; // Feedback matrice for yaw-rate.
-
 enum class PilotCtrlState {
     Phi0,   // [rads]
     Phi1,   // [rad]
@@ -59,12 +32,21 @@ enum class PilotCtrlState {
     Psi2,   // [rad/s^2]
 };
 
-struct PilotCtrlRef
-{
+struct PilotCtrlRef {
     double roll;     // [rad]
     double pitch;    // [rad]
     double yaw_rate; // [rad/s]
     double f_z;      // [N]
+};
+
+struct PilotCtrlConfig {
+    double anti_windup_sat_phi;
+    double anti_windup_sat_theta;
+    double anti_windup_sat_psi;
+
+    Eigen::RowVector4d L_roll;     // Feedback matrice for roll.
+    Eigen::RowVector4d L_pitch;    // Feedback matrice for pitch.
+    Eigen::RowVector3d L_yaw_rate; // Feedback matrice for yaw-rate.
 };
 
 PilotCtrlRef tgyia6c_to_pilot_ctrl_ref(double gimbal_left_x, double gimbal_left_y,
@@ -73,7 +55,7 @@ PilotCtrlRef tgyia6c_to_pilot_ctrl_ref(double gimbal_left_x, double gimbal_left_
 class PilotControl
 {
 public:
-    PilotControl(double input_sample_rate_s);
+    PilotControl(double input_sample_rate_s, PilotCtrlConfig config);
 
     void update(AttEstimate est, PilotCtrlRef ref);
     void reset();
@@ -83,6 +65,7 @@ public:
     double get_state(PilotCtrlState state);
 private:
     const double _sample_rate_s;
+    const PilotCtrlConfig _config;
 
     BodyControl _ctrl = {0};
 

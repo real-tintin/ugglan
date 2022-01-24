@@ -31,8 +31,9 @@ PilotCtrlRef tgyia6c_to_pilot_ctrl_ref(double gimbal_left_x,  /* [0.0-1.0] */
     return ref;
 }
 
-PilotControl::PilotControl(double input_sample_rate_s) :
-    _sample_rate_s(input_sample_rate_s)
+PilotControl::PilotControl(double input_sample_rate_s, PilotCtrlConfig config) :
+    _sample_rate_s(input_sample_rate_s),
+    _config(config)
 {}
 
 void PilotControl::update(AttEstimate att_est, PilotCtrlRef ref)
@@ -122,24 +123,24 @@ void PilotControl::_integrate_with_antiwindup()
     _x_theta(0) += _x_theta(1) * _sample_rate_s;
     _x_psi(0) += _x_psi(1) * _sample_rate_s;
 
-    _x_phi(0) = _range_sat(_x_phi(0), PILOT_CTRL_ANTI_WINDUP_SAT_PHI);
-    _x_theta(0) = _range_sat(_x_theta(0), PILOT_CTRL_ANTI_WINDUP_SAT_THETA);
-    _x_psi(0) = _range_sat(_x_psi(0), PILOT_CTRL_ANTI_WINDUP_SAT_PSI);
+    _x_phi(0) = _range_sat(_x_phi(0), _config.anti_windup_sat_phi);
+    _x_theta(0) = _range_sat(_x_theta(0), _config.anti_windup_sat_theta);
+    _x_psi(0) = _range_sat(_x_psi(0), _config.anti_windup_sat_psi);
 }
 
 void PilotControl::_update_ctrl_mx()
 {
-    _ctrl.m_x = _feedback_ctrl(_x_phi, PILOT_CTRL_L_ROLL);
+    _ctrl.m_x = _feedback_ctrl(_x_phi, _config.L_roll);
 }
 
 void PilotControl::_update_ctrl_my()
 {
-    _ctrl.m_y = _feedback_ctrl(_x_theta, PILOT_CTRL_L_PITCH);
+    _ctrl.m_y = _feedback_ctrl(_x_theta, _config.L_pitch);
 }
 
 void PilotControl::_update_ctrl_mz()
 {
-    _ctrl.m_z = _feedback_ctrl(_x_psi, PILOT_CTRL_L_YAW_RATE);
+    _ctrl.m_z = _feedback_ctrl(_x_psi, _config.L_yaw_rate);
 }
 
 void PilotControl::_update_ctrl_fz(PilotCtrlRef& ref)

@@ -15,11 +15,9 @@
 #include <motor_control.h>
 #include <pilot_control.h>
 #include <drone_props.h>
+#include <config.h>
 
 #if !defined(UNIT_TEST)
-
-static const std::filesystem::path DATA_LOG_ROOT = utils::get_env("DATA_LOG_ROOT", std::string(""));
-static const std::string LOGGER_LEVEL = utils::get_env("LOGGER_LEVEL", std::string(""));
 
 static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 10;   // 100 Hz.
 static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 10;   // 100 Hz.
@@ -41,11 +39,6 @@ static const uint8_t I2C_ADDRESS_ESC_2 = 0x2c;
 static const uint8_t I2C_ADDRESS_ESC_3 = 0x2d;
 
 static const uint8_t N_ESC = droneprops::N_MOTORS;
-
-static const std::string SERIAL_DEVICE_RC_RECEIVER = utils::get_env("SERIAL_DEV_GPIO", std::string(""));
-
-static const std::string I2C_DEVICE_IMU = utils::get_env("I2C_DEV_HW_FAST_MODE", std::string(""));
-static const std::string I2C_DEVICE_ESC = utils::get_env("I2C_DEV_SW_NORMAL_MODE", std::string(""));
 
 static const uint32_t MAIN_SLEEP_MS = 1000;
 
@@ -74,9 +67,10 @@ class TaskAccMag : public Task
 public:
     TaskAccMag(uint32_t exec_period_ms, std::string name,
                std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
-         Task(exec_period_ms, name),
-              _i2c_conn(i2c_device, i2c_address), _acc_mag(_i2c_conn),
-              _data_log_queue(data_log_queue) {}
+        Task(exec_period_ms, name),
+        _i2c_conn(i2c_device, i2c_address),
+        _acc_mag(_i2c_conn),
+        _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -105,8 +99,9 @@ public:
     TaskGyro(uint32_t exec_period_ms, std::string name,
              std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
         Task(exec_period_ms, name),
-             _i2c_conn(i2c_device, i2c_address), _gyro(_i2c_conn),
-             _data_log_queue(data_log_queue) {}
+        _i2c_conn(i2c_device, i2c_address),
+        _gyro(_i2c_conn),
+        _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -130,9 +125,10 @@ class TaskBarometer : public Task
 public:
     TaskBarometer(uint32_t exec_period_ms, std::string name,
                   std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
-             Task(exec_period_ms, name),
-                  _i2c_conn(i2c_device, i2c_address), _barometer(_i2c_conn),
-                  _data_log_queue(data_log_queue) {}
+        Task(exec_period_ms, name),
+        _i2c_conn(i2c_device, i2c_address),
+        _barometer(_i2c_conn),
+        _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -154,10 +150,11 @@ class TaskStateEst : public Task
 {
 public:
     TaskStateEst(uint32_t exec_period_ms, std::string name,
-                        double input_sample_rate_s, DataLogQueue& data_log_queue) :
-                   Task(exec_period_ms, name),
-                        _att(input_sample_rate_s),
-                        _data_log_queue(data_log_queue) {}
+                 double input_sample_rate_s, AttEstConfig config,
+                 DataLogQueue& data_log_queue) :
+        Task(exec_period_ms, name),
+        _att(input_sample_rate_s, config),
+        _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -205,10 +202,11 @@ class TaskStateCtrl : public Task
 {
 public:
     TaskStateCtrl(uint32_t exec_period_ms, std::string name,
-                        double input_sample_rate_s, DataLogQueue& data_log_queue) :
-                   Task(exec_period_ms, name),
-                        _pilot_ctrl(input_sample_rate_s),
-                        _data_log_queue(data_log_queue) {}
+                  double input_sample_rate_s, PilotCtrlConfig config,
+                  DataLogQueue& data_log_queue) :
+        Task(exec_period_ms, name),
+        _pilot_ctrl(input_sample_rate_s, config),
+        _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -313,8 +311,9 @@ class TaskEscRead : public Task
 public:
     TaskEscRead(uint32_t exec_period_ms, std::string name,
                 AfroEsc (&esc)[N_ESC], DataLogQueue& data_log_queue) :
-           Task(exec_period_ms / N_ESC, name),
-                _esc(esc), _data_log_queue(data_log_queue) {}
+        Task(exec_period_ms / N_ESC, name),
+        _esc(esc),
+        _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -370,8 +369,9 @@ class TaskEscWrite : public Task
 public:
     TaskEscWrite(uint32_t exec_period_ms, std::string name,
                  AfroEsc (&esc)[N_ESC], DataLogQueue& data_log_queue) :
-            Task(exec_period_ms, name),
-                 _esc(esc), _data_log_queue(data_log_queue) {}
+        Task(exec_period_ms, name),
+        _esc(esc),
+        _data_log_queue(data_log_queue) {}
 protected:
     void _setup()
     {
@@ -521,9 +521,10 @@ class TaskRcReceiver : public Task
 public:
     TaskRcReceiver(uint32_t exec_period_ms, std::string name,
                    std::string serial_device, DataLogQueue& data_log_queue) :
-              Task(exec_period_ms, name),
-                   _serial_conn(serial_device), _rc(_serial_conn),
-                   _data_log_queue(data_log_queue) {}
+        Task(exec_period_ms, name),
+        _serial_conn(serial_device),
+        _rc(_serial_conn),
+        _data_log_queue(data_log_queue) {}
 protected:
     void _execute()
     {
@@ -554,9 +555,9 @@ class TaskDataLogger : public Task
 public:
     TaskDataLogger(uint32_t exec_period_ms, std::string name,
                    std::filesystem::path root_path, DataLogQueue& data_log_queue) :
-              Task(exec_period_ms, name),
-                   _data_logger(data_log_queue, root_path),
-                   _data_log_queue(data_log_queue) {}
+        Task(exec_period_ms, name),
+        _data_logger(data_log_queue, root_path),
+        _data_log_queue(data_log_queue) {}
 protected:
     void _setup()
     {
@@ -577,49 +578,6 @@ private:
     DataLogger _data_logger;
     DataLogQueue& _data_log_queue;
 };
-
-void set_logger_level()
-{
-    if      (LOGGER_LEVEL == "DEBUG") { logger.set_level(LogLevel::debug); }
-    else if (LOGGER_LEVEL == "INFO")  { logger.set_level(LogLevel::info); }
-    else if (LOGGER_LEVEL == "WARN")  { logger.set_level(LogLevel::warn); }
-    else if (LOGGER_LEVEL == "ERROR") { logger.set_level(LogLevel::error); }
-    else if (LOGGER_LEVEL == "OFF")   { logger.set_level(LogLevel::off); }
-    else                              { /* Keep default. */ }
-}
-
-void print_env_vars()
-{
-    logger.debug("DATA_LOG_ROOT: " + DATA_LOG_ROOT.string());
-    logger.debug("LOGGER_LEVEL: " + LOGGER_LEVEL);
-
-    logger.debug("SERIAL_DEVICE_RC_RECEIVER: " + SERIAL_DEVICE_RC_RECEIVER);
-
-    logger.debug("I2C_DEVICE_IMU: " + I2C_DEVICE_IMU);
-    logger.debug("I2C_DEVICE_ESC: " + I2C_DEVICE_IMU);
-
-    logger.debug("ATT_EST_KALMAN_Q_SCALE: " + std::to_string(ATT_EST_KALMAN_Q_SCALE));
-    logger.debug("ATT_EST_KALMAN_R_0_SCALE: " + std::to_string(ATT_EST_KALMAN_R_0_SCALE));
-    logger.debug("ATT_EST_KALMAN_R_1_SCALE: " + std::to_string(ATT_EST_KALMAN_R_1_SCALE));
-
-    logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_PHI: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_PHI));
-    logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_THETA: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_THETA));
-    logger.debug("PILOT_CTRL_ANTI_WINDUP_SAT_PSI: " + std::to_string(PILOT_CTRL_ANTI_WINDUP_SAT_PSI));
-
-    logger.debug("PILOT_CTRL_L_ROLL_0: " + std::to_string(PILOT_CTRL_L_ROLL(0)));
-    logger.debug("PILOT_CTRL_L_ROLL_1: " + std::to_string(PILOT_CTRL_L_ROLL(1)));
-    logger.debug("PILOT_CTRL_L_ROLL_2: " + std::to_string(PILOT_CTRL_L_ROLL(2)));
-    logger.debug("PILOT_CTRL_L_ROLL_3: " + std::to_string(PILOT_CTRL_L_ROLL(3)));
-
-    logger.debug("PILOT_CTRL_L_PITCH_0: " + std::to_string(PILOT_CTRL_L_PITCH(0)));
-    logger.debug("PILOT_CTRL_L_PITCH_1: " + std::to_string(PILOT_CTRL_L_PITCH(1)));
-    logger.debug("PILOT_CTRL_L_PITCH_2: " + std::to_string(PILOT_CTRL_L_PITCH(2)));
-    logger.debug("PILOT_CTRL_L_PITCH_3: " + std::to_string(PILOT_CTRL_L_PITCH(3)));
-
-    logger.debug("PILOT_CTRL_L_YAW_RATE_0: " + std::to_string(PILOT_CTRL_L_YAW_RATE(0)));
-    logger.debug("PILOT_CTRL_L_YAW_RATE_1: " + std::to_string(PILOT_CTRL_L_YAW_RATE(1)));
-    logger.debug("PILOT_CTRL_L_YAW_RATE_2: " + std::to_string(PILOT_CTRL_L_YAW_RATE(2)));
-}
 
 bool is_shutdown_ready(DataLogQueue& data_log_queue)
 {
@@ -644,24 +602,29 @@ void wait_for_shutdown(DataLogQueue& data_log_queue)
 
 int main()
 {
-    set_logger_level();
-    print_env_vars();
+    config::Config config;
+    config.load();
+
+    logger.set_level(config.get_logger_level());
+    config.print_to_debug();
 
     DataLogQueue data_log_queue;
     std::vector<std::unique_ptr<Task>> tasks;
 
-    I2cConn esc_conn_0(I2C_DEVICE_ESC, I2C_ADDRESS_ESC_0), esc_conn_1(I2C_DEVICE_ESC, I2C_ADDRESS_ESC_1),
-            esc_conn_2(I2C_DEVICE_ESC, I2C_ADDRESS_ESC_2), esc_conn_3(I2C_DEVICE_ESC, I2C_ADDRESS_ESC_3);
+    I2cConn esc_conn_0(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_0),
+            esc_conn_1(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_1),
+            esc_conn_2(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_2),
+            esc_conn_3(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_3);
     AfroEsc esc[N_ESC] = {esc_conn_0, esc_conn_1, esc_conn_2, esc_conn_3};
 
     tasks.emplace_back(new TaskAccMag(TASK_ACC_MAG_EXEC_PERIOD_MS, "ImuAccMag",
-                                      I2C_DEVICE_IMU, I2C_ADDRESS_ACC_MAG, data_log_queue));
+                                      config.get_i2c_device_imu(), I2C_ADDRESS_ACC_MAG, data_log_queue));
 
     tasks.emplace_back(new TaskGyro(TASK_GYRO_EXEC_PERIOD_MS, "ImuGyro",
-                                    I2C_DEVICE_IMU, I2C_ADDRESS_GYRO, data_log_queue));
+                                    config.get_i2c_device_imu(), I2C_ADDRESS_GYRO, data_log_queue));
 
     tasks.emplace_back(new TaskBarometer(TASK_BAROMETER_EXEC_PERIOD_MS, "ImuBarometer",
-                                         I2C_DEVICE_IMU, I2C_ADDRESS_BAROMETER, data_log_queue));
+                                         config.get_i2c_device_imu(), I2C_ADDRESS_BAROMETER, data_log_queue));
 
     tasks.emplace_back(new TaskEscWrite(TASK_ESC_WRITE_EXEC_PERIOD_MS, "EscWrite",
                                         esc, data_log_queue));
@@ -670,16 +633,16 @@ int main()
                                        esc, data_log_queue));
 
     tasks.emplace_back(new TaskRcReceiver(TASK_RC_RECEIVER_EXEC_PERIOD_MS, "RcReceiver",
-                                          SERIAL_DEVICE_RC_RECEIVER, data_log_queue));
+                                          config.get_serial_device(), data_log_queue));
 
     tasks.emplace_back(new TaskStateEst(TASK_STATE_EST_EXEC_PERIOD_MS, "StateEst",
-                                               ATT_EST_INPUT_SAMPLE_RATE_S, data_log_queue));
+                                        ATT_EST_INPUT_SAMPLE_RATE_S, config.get_att_est(), data_log_queue));
 
     tasks.emplace_back(new TaskStateCtrl(TASK_STATE_CTRL_EXEC_PERIOD_MS, "StateCtrl",
-                                               ATT_EST_INPUT_SAMPLE_RATE_S, data_log_queue));
+                                         ATT_EST_INPUT_SAMPLE_RATE_S, config.get_pilot_ctrl(), data_log_queue));
 
     tasks.emplace_back(new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, "DataLogger",
-                                          DATA_LOG_ROOT, data_log_queue));
+                                          config.get_data_log_root(), data_log_queue));
 
     for(auto const& task: tasks) { task->launch(); }
     wait_for_shutdown(data_log_queue);

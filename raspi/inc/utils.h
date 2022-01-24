@@ -8,31 +8,40 @@
 #include <type_traits>
 #include <ios>
 #include <bitset>
-#include "logger.h"
+#include <logger.h>
 
 namespace utils
 {
     template <typename T>
-    T get_env(std::string env, T default_val)
+    void read_env(T &dst, std::string name)
     {
-        const char* val = std::getenv(env.c_str());
+        const char* val_as_str = std::getenv(name.c_str());
 
-        if (val == NULL)
+        if (val_as_str == NULL)
         {
-            return default_val;
+            throw std::runtime_error("Environmental variable doesn't exist: " + name);
         }
 
         if constexpr (std::is_same<T, std::string>::value)
         {
-            return std::string(val);
+            dst = std::string(val_as_str);
         }
-
-        if constexpr (std::is_same<T, double>::value)
+        else if constexpr (std::is_same<T, double>::value)
         {
-            return std::stod(val);
+            dst = std::stod(val_as_str);
         }
-
-        throw std::runtime_error("Unsupported data type");
+        else if constexpr (std::is_same<T, uint8_t>::value)
+        {
+            dst = static_cast<uint8_t>(std::stoul(val_as_str));
+        }
+        else if constexpr (std::is_same<T, uint32_t>::value)
+        {
+            dst = static_cast<uint32_t>(std::stoul(val_as_str));
+        }
+        else
+        {
+            throw std::runtime_error("Unsupported data type");
+        }
     }
 
     std::string byte_to_hex_str(uint8_t byte);

@@ -9,28 +9,46 @@ using namespace utils;
 
 static const double FLOAT_TOL = 1e-3;
 
-TEST_CASE("get_env")
+TEST_CASE("read_env")
 {
     SECTION("non existing env")
     {
-        std::string default_val = "not_so_fancy";
+        double env;
 
-        std::string env = get_env("NON_EXISTING_CATCH_ENV", default_val);
-        REQUIRE(env.compare(default_val) == 0);
+        REQUIRE_THROWS_WITH(read_env(env, "NON_EXISTING_CATCH_ENV"),
+                            "Environmental variable doesn't exist: NON_EXISTING_CATCH_ENV");
     }
     SECTION("string")
     {
+        std::string env;
         catchutils::set_env("CATCH_TEST_GETENV", "whats_up");
 
-        std::string env = get_env("CATCH_TEST_GETENV", std::string(""));
+        read_env(env, "CATCH_TEST_GETENV");
         REQUIRE(env.compare("whats_up") == 0);
     }
     SECTION("double")
     {
+        double env;
         catchutils::set_env("CATCH_TEST_GETENV", "3.14");
 
-        double env = get_env("CATCH_TEST_GETENV", double(0.0));
+        read_env(env, "CATCH_TEST_GETENV");
         REQUIRE(fabs(env - 3.14) <= FLOAT_TOL);
+    }
+    SECTION("uint8_t")
+    {
+        uint8_t env;
+        catchutils::set_env("CATCH_TEST_GETENV", "255");
+
+        read_env(env, "CATCH_TEST_GETENV");
+        REQUIRE(env == 255);
+    }
+    SECTION("uint32_t")
+    {
+        uint32_t env;
+        catchutils::set_env("CATCH_TEST_GETENV", "4294967295");
+
+        read_env(env, "CATCH_TEST_GETENV");
+        REQUIRE(env == 4294967295);
     }
 }
 

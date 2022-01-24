@@ -140,11 +140,11 @@ enum class DataLogSignal {
 };
 #endif
 
-struct DataLogGroupInfo{
+struct DataLogGroupInfo {
     std::string name;
 };
 
-struct DataLogSignalInfo{
+struct DataLogSignalInfo {
     std::string name;
     DataLogGroup group;
     DataLogType type;

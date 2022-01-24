@@ -9,18 +9,19 @@ static const double STANDSTILL_RATE_VAR_LIM = 0.005; // [rad/s]
 
 static const double KALMAN_R_ALMOST_ZERO = 1e-6;
 
-AttitudeEstimation::AttitudeEstimation(double input_sample_rate_s) :
+AttitudeEstimation::AttitudeEstimation(double input_sample_rate_s, AttEstConfig config) :
     _dt(input_sample_rate_s),
+    _config(config),
 
-    _rolling_stats_roll_angle(ATT_EST_ROLLING_WINDOW_SIZE),
-    _rolling_stats_pitch_angle(ATT_EST_ROLLING_WINDOW_SIZE),
-    _rolling_stats_yaw_angle(ATT_EST_ROLLING_WINDOW_SIZE),
+    _rolling_stats_roll_angle(config.rolling_var_window_size),
+    _rolling_stats_pitch_angle(config.rolling_var_window_size),
+    _rolling_stats_yaw_angle(config.rolling_var_window_size),
 
-    _rolling_stats_roll_rate(ATT_EST_ROLLING_WINDOW_SIZE),
-    _rolling_stats_pitch_rate(ATT_EST_ROLLING_WINDOW_SIZE),
-    _rolling_stats_yaw_rate(ATT_EST_ROLLING_WINDOW_SIZE)
+    _rolling_stats_roll_rate(config.rolling_var_window_size),
+    _rolling_stats_pitch_rate(config.rolling_var_window_size),
+    _rolling_stats_yaw_rate(config.rolling_var_window_size)
 {
-    _Q = ATT_EST_KALMAN_Q_SCALE * Eigen::Matrix3d({
+    _Q = _config.kalman_q_scale * Eigen::Matrix3d({
         {0.25 * pow(_dt, 4), 0.5 * pow(_dt, 3), 0.5 * pow(_dt, 2)},
         {0.5 * pow(_dt, 3), pow(_dt, 2), _dt},
         {0.5 * pow(_dt, 2), _dt, 1}
@@ -169,8 +170,8 @@ void AttitudeEstimation::_update_est(double z_0, double z_1,
     kalman_state.z(0) = z_0;
     kalman_state.z(1) = z_1;
 
-    kalman_state.R(0, 0) = ATT_EST_KALMAN_R_0_SCALE * std::max(r_0, KALMAN_R_ALMOST_ZERO);
-    kalman_state.R(1, 1) = ATT_EST_KALMAN_R_1_SCALE * std::max(r_1, KALMAN_R_ALMOST_ZERO);
+    kalman_state.R(0, 0) = _config.kalman_r_0_scale * std::max(r_0, KALMAN_R_ALMOST_ZERO);
+    kalman_state.R(1, 1) = _config.kalman_r_1_scale * std::max(r_1, KALMAN_R_ALMOST_ZERO);
 
     _update_kalman_state(kalman_state);
     _kalman_state_to_att_state(kalman_state, att_state);
@@ -204,7 +205,7 @@ void AttitudeEstimation::_modulo_angle(double* angle, double limit)
 void AttitudeEstimation::_gyro_offset_comp()
 {
     if (!_is_gyro_offset_comp &&
-        _samples_gyro_offset_comp < ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP &&
+        _samples_gyro_offset_comp < _config.n_samples_gyro_offset_comp &&
         _is_standstill)
     {
         _gyro_offset_x += _in.ang_rate_x;
@@ -215,11 +216,11 @@ void AttitudeEstimation::_gyro_offset_comp()
     }
 
     if (!_is_gyro_offset_comp &&
-        _samples_gyro_offset_comp == ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP)
+        _samples_gyro_offset_comp == _config.n_samples_gyro_offset_comp)
     {
-        _gyro_offset_x /= ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP;
-        _gyro_offset_y /= ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP;
-        _gyro_offset_z /= ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP;
+        _gyro_offset_x /= _config.n_samples_gyro_offset_comp;
+        _gyro_offset_y /= _config.n_samples_gyro_offset_comp;
+        _gyro_offset_z /= _config.n_samples_gyro_offset_comp;
 
         _is_gyro_offset_comp = true;
     }
@@ -234,7 +235,7 @@ void AttitudeEstimation::_gyro_offset_comp()
 
 void AttitudeEstimation::_hard_iron_offset_comp()
 {
-    _in.mag_field_x -= ATT_EST_HARD_IRON_OFFSET_X;
-    _in.mag_field_y -= ATT_EST_HARD_IRON_OFFSET_Y;
-    _in.mag_field_z -= ATT_EST_HARD_IRON_OFFSET_Z;
+    _in.mag_field_x -= _config.hard_iron_offset_x;
+    _in.mag_field_y -= _config.hard_iron_offset_y;
+    _in.mag_field_z -= _config.hard_iron_offset_z;
 }

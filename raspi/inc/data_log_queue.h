@@ -14,7 +14,7 @@
 
 inline const uint32_t DATA_LOG_QUEUE_WARN_LARGE = 1e4;
 
-struct DataLogSample{
+struct DataLogSample {
     uint64_t data;
     uint8_t rel_timestamp_ms;
     DataLogType type;
