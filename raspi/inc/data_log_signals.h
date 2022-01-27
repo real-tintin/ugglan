@@ -8,12 +8,24 @@
 #if defined(UNIT_TEST)
 enum class DataLogGroup {
     Imu,
-    Esc
+    Esc,
+    Type
 };
 
 enum class DataLogSignal {
     ImuAccelerationX,
-    EscStatus0
+
+    EscStatus0,
+
+    Bool,
+    Uint8,
+    Uint16,
+    Uint32,
+    Sint8,
+    Sint16,
+    Sint32,
+    Float,
+    Double
 };
 #else
 enum class DataLogGroup {
@@ -156,12 +168,24 @@ typedef std::map<DataLogSignal, DataLogSignalInfo> DataLogSignalMap;
 #if defined(UNIT_TEST)
 inline const DataLogGroupMap DATA_LOG_GROUP_MAP = {
     {DataLogGroup::Imu, {"IMU"}},
-    {DataLogGroup::Esc, {"ESC"}}
+    {DataLogGroup::Esc, {"ESC"}},
+    {DataLogGroup::Type, {"TYPE"}}
     };
 
 inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::ImuAccelerationX, {"AccelerationX", DataLogGroup::Imu, DataLogType::DOUBLE}},
-    {DataLogSignal::EscStatus0, {"Status0", DataLogGroup::Esc, DataLogType::UINT8}}
+
+    {DataLogSignal::EscStatus0, {"Status0", DataLogGroup::Esc, DataLogType::UINT8}},
+
+    {DataLogSignal::Bool, {"Bool", DataLogGroup::Type, DataLogType::BOOL}},
+    {DataLogSignal::Uint8, {"Uint8", DataLogGroup::Type, DataLogType::UINT8}},
+    {DataLogSignal::Uint16, {"Uint16", DataLogGroup::Type, DataLogType::UINT16}},
+    {DataLogSignal::Uint32, {"Uint32", DataLogGroup::Type, DataLogType::UINT32}},
+    {DataLogSignal::Sint8, {"Sint8", DataLogGroup::Type, DataLogType::SINT8}},
+    {DataLogSignal::Sint16, {"Sint16", DataLogGroup::Type, DataLogType::SINT16}},
+    {DataLogSignal::Sint32, {"Sint32", DataLogGroup::Type, DataLogType::SINT32}},
+    {DataLogSignal::Float, {"Float", DataLogGroup::Type, DataLogType::FLOAT}},
+    {DataLogSignal::Double, {"Double", DataLogGroup::Type, DataLogType::DOUBLE}},
     };
 #else
 inline const DataLogGroupMap DATA_LOG_GROUP_MAP = {

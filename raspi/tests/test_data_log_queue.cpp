@@ -6,6 +6,19 @@
 #include <wall_time.h>
 #include <data_log_queue.h>
 
+#define TEST_CASE_DATA_LOG_TYPES(name) TEMPLATE_TEST_CASE_SIG(name, "", \
+    ((typename TestType, DataLogSignal data_log_signal, DataLogType data_log_type), \
+        TestType, data_log_signal, data_log_type), \
+    (bool, DataLogSignal::Bool, DataLogType::BOOL), \
+    (uint8_t, DataLogSignal::Uint8, DataLogType::UINT8), \
+    (uint16_t, DataLogSignal::Uint16, DataLogType::UINT16), \
+    (uint32_t, DataLogSignal::Uint32, DataLogType::UINT32), \
+    (int8_t, DataLogSignal::Sint8, DataLogType::SINT8), \
+    (int16_t, DataLogSignal::Sint16, DataLogType::SINT16), \
+    (int32_t, DataLogSignal::Sint32, DataLogType::SINT32), \
+    (float, DataLogSignal::Float, DataLogType::FLOAT), \
+    (double, DataLogSignal::Double, DataLogType::DOUBLE))
+
 static const double FLOAT_TOL = 1e-4;
 
 DataLogQueue data_log_queue_multi;
@@ -26,7 +39,7 @@ protected:
     void _execute() { data_log_queue_multi.push(uint8_t(0x02), DataLogSignal::EscStatus0); }
 };
 
-TEST_CASE("data_log_queue: single thread")
+TEST_CASE_DATA_LOG_TYPES("data_log_queue: push and pop single thread")
 {
     DataLogQueue data_log_queue;
 
@@ -36,22 +49,22 @@ TEST_CASE("data_log_queue: single thread")
     }
     SECTION("push and pop")
     {
-        double data = -3.14;
+        TestType data = 1;
 
-        data_log_queue.push(data, DataLogSignal::ImuAccelerationX);
+        data_log_queue.push(data, data_log_signal);
         REQUIRE(data_log_queue.is_empty() == false);
 
         DataLogSample sample = data_log_queue.pop();
         REQUIRE(data_log_queue.is_empty() == true);
 
-        REQUIRE(std::memcmp(&data, &sample.data, sizeof(double)) == 0);
+        REQUIRE(std::memcmp(&data, &sample.data, sizeof(TestType)) == 0);
         REQUIRE(sample.rel_timestamp_ms == 0);
-        REQUIRE(sample.type == DataLogType::DOUBLE);
-        REQUIRE(sample.signal == DataLogSignal::ImuAccelerationX);
+        REQUIRE(sample.type == data_log_type);
+        REQUIRE(sample.signal == data_log_signal);
     }
 }
 
-TEST_CASE("data_log_queue: multi thread")
+TEST_CASE("data_log_queue: push and pop multi thread")
 {
     TestTaskOne task_one(10); // Runs at 100 Hz
     TestTaskTwo task_two(20); // Runs at 50 Hz
@@ -96,67 +109,67 @@ TEST_CASE("data_log_queue: multi thread")
     REQUIRE(n_act_two_samples >= 5);
 }
 
-TEST_CASE("last_signal_data")
+TEST_CASE_DATA_LOG_TYPES("data_log_queue: last_signal_data")
 {
     DataLogQueue data_log_queue;
 
     SECTION("empty queue - implicit (zero) default data")
     {
-        double act_data;
-        double exp_data = 0;
-        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX);
+        TestType act_data;
+        TestType exp_data = 0;
+        data_log_queue.last_signal_data(&act_data, data_log_signal);
 
-        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
     }
     SECTION("empty queue - explicit default data")
     {
-        double act_data;
-        double exp_data = -3.14;
-        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX, -3.14);
+        TestType act_data;
+        TestType exp_data = 1;
+        data_log_queue.last_signal_data(&act_data, data_log_signal, TestType(1));
 
-        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
     }
     SECTION("non empty queue")
     {
         /* Push a first sample */
-        double act_data;
-        double exp_data = 1.1;
+        TestType act_data;
+        TestType exp_data = 0;
 
-        data_log_queue.push(double(1.1), DataLogSignal::ImuAccelerationX);
-        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX);
+        data_log_queue.push(TestType(0), data_log_signal);
+        data_log_queue.last_signal_data(&act_data, data_log_signal);
 
-        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
 
         /* Push a second sample */
-        exp_data = 2.2;
-        data_log_queue.push(double(2.2), DataLogSignal::ImuAccelerationX);
-        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX);
+        exp_data = 1;
+        data_log_queue.push(TestType(1), data_log_signal);
+        data_log_queue.last_signal_data(&act_data, data_log_signal);
 
-        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
 
         /* Empty queue */
         while (!data_log_queue.is_empty()) { data_log_queue.pop(); };
-        data_log_queue.last_signal_data(&act_data, DataLogSignal::ImuAccelerationX);
+        data_log_queue.last_signal_data(&act_data, data_log_signal);
 
-        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(double)) == 0);
+        REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
     }
 }
 
 TEST_CASE("data_log_queue: error handling")
 {
-    struct NewType {bool data; };
+    struct NewType { bool data; };
     DataLogQueue data_log_queue;
 
     SECTION("unsupported type")
     {
         NewType data;
-        REQUIRE_THROWS_WITH(data_log_queue.push(data, DataLogSignal::ImuAccelerationX),
+        REQUIRE_THROWS_WITH(data_log_queue.push(data, DataLogSignal::Float),
                             "Unsupported data type");
     }
     SECTION("signal type missmatch")
     {
         uint8_t data = 0;
-        REQUIRE_THROWS_WITH(data_log_queue.push(data, DataLogSignal::ImuAccelerationX),
+        REQUIRE_THROWS_WITH(data_log_queue.push(data, DataLogSignal::Double),
                             "Data log signal type missmatch");
     }
 }

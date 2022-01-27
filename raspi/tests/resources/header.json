@@ -13,7 +13,8 @@
     },
     "groups": {
         "0": "IMU",
-        "1": "ESC"
+        "1": "ESC",
+        "2": "TYPE"
     },
     "signals": {
         "0": {
@@ -25,6 +26,51 @@
             "name": "Status0",
             "group": 1,
             "type": 1
+        },
+        "2": {
+            "name": "Bool",
+            "group": 2,
+            "type": 0
+        },
+        "3": {
+            "name": "Uint8",
+            "group": 2,
+            "type": 1
+        },
+        "4": {
+            "name": "Uint16",
+            "group": 2,
+            "type": 2
+        },
+        "5": {
+            "name": "Uint32",
+            "group": 2,
+            "type": 3
+        },
+        "6": {
+            "name": "Sint8",
+            "group": 2,
+            "type": 4
+        },
+        "7": {
+            "name": "Sint16",
+            "group": 2,
+            "type": 5
+        },
+        "8": {
+            "name": "Sint32",
+            "group": 2,
+            "type": 6
+        },
+        "9": {
+            "name": "Float",
+            "group": 2,
+            "type": 7
+        },
+        "10": {
+            "name": "Double",
+            "group": 2,
+            "type": 8
         }
     }
 }
