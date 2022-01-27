@@ -2,6 +2,18 @@
 
 namespace utils
 {
+    std::string get_env(std::string name)
+    {
+        const char* value = std::getenv(name.c_str());
+
+        if (value == NULL)
+        {
+            throw std::runtime_error("Environmental variable doesn't exist: " + name);
+        }
+
+        return std::string(value);
+    }
+
     std::string byte_to_hex_str(uint8_t byte)
     {
         std::stringstream buf;

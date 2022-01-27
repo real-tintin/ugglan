@@ -12,19 +12,16 @@
 
 namespace utils
 {
-    template <typename T>
-    void read_env(T &dst, std::string name)
-    {
-        const char* val_as_str = std::getenv(name.c_str());
+    std::string get_env(std::string);
 
-        if (val_as_str == NULL)
-        {
-            throw std::runtime_error("Environmental variable doesn't exist: " + name);
-        }
+    template <typename T>
+    void read_and_cast_env(T &dst, std::string name)
+    {
+        std::string val_as_str = get_env(name);
 
         if constexpr (std::is_same<T, std::string>::value)
         {
-            dst = std::string(val_as_str);
+            dst = val_as_str;
         }
         else if constexpr (std::is_same<T, double>::value)
         {

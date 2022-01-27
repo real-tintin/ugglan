@@ -8,7 +8,3 @@ RUN apt-get install -y libz-dev libi2c-dev build-essential
 ENV ROOT /raspi
 WORKDIR ${ROOT}
 COPY . ${ROOT}
-
-# Make entry shell scripts executable
-RUN chmod +x ./run_tests.sh
-RUN chmod +x ./build_dpkg.sh

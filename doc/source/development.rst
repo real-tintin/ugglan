@@ -20,6 +20,17 @@ To run all unit tests in docker::
 
     make -C ./raspi -f Makefile_tests
 
+C++ Debugging
+==============
+To debug the C++ application the env variable ``GDB_DEBUG`` can be used
+e.g.,::
+
+    export TARGET_NAME=ugglan
+    export BUILD_FOR_TEST=TRUE
+    export GDB_DEBUG=TRUE
+
+    make -C ./raspi
+
 ESC Compile & Flash
 =====================
 The drone uses the Afro ESC (Electronic Speed Controllers) to control the

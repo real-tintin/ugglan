@@ -57,7 +57,7 @@ namespace config
         void _read_env(T &dst, std::string name)
         {
             std::string _env_line = name + ": ";
-            utils::read_env(dst, name);
+            utils::read_and_cast_env(dst, name);
 
             if constexpr (!std::is_same<T, std::string>::value)
             {

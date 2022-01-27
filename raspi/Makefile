@@ -2,6 +2,7 @@
 # code for target - a Raspberry Pi Zero 2 W.
 #   TARGET_NAME    : Set target name.
 #   BUILD_FOR_TEST : Set to TRUE, to build for testing.
+#   GDB_DEBUG      : Set to TRUE, to build for gdb debugging (disables optimization).
 #   EXTRA_CXXFLAGS : Use to add extra CXXFLAGS.
 #
 
@@ -9,7 +10,7 @@ TARGET := $(TARGET_NAME)
 SRCEXT := cpp
 
 CXX = g++-10
-CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread -O3 $(EXTRA_CXXFLAGS)
+CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread $(EXTRA_CXXFLAGS)
 LDFLAGS += -lz -li2c
 
 SRCDIR := ./src
@@ -20,6 +21,12 @@ TESTDIR := ./tests
 
 SOURCES := $(wildcard $(SRCDIR)/*.$(SRCEXT))
 INC := -I $(INCDIR) -I $(LIBDIR)
+
+ifeq ($(GDB_DEBUG), TRUE)
+	CXXFLAGS += -ggdb
+else
+	CXXFLAGS += -O3
+endif
 
 ifeq ($(BUILD_FOR_TEST), TRUE)
 	CXXFLAGS += -D UNIT_TEST

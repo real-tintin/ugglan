@@ -9,45 +9,54 @@ using namespace utils;
 
 static const double FLOAT_TOL = 1e-3;
 
-TEST_CASE("read_env")
+TEST_CASE("get_env")
 {
+    SECTION("existing env")
+    {
+        catchutils::set_env("CATCH_TEST_GET_ENV", "whats_up");
+
+        std::string value = get_env("CATCH_TEST_GET_ENV");
+        REQUIRE(value.compare("whats_up") == 0);
+    }
     SECTION("non existing env")
     {
-        double env;
-
-        REQUIRE_THROWS_WITH(read_env(env, "NON_EXISTING_CATCH_ENV"),
-                            "Environmental variable doesn't exist: NON_EXISTING_CATCH_ENV");
+        REQUIRE_THROWS_WITH(get_env("NON_EXISTING_GET_ENV"),
+                            "Environmental variable doesn't exist: NON_EXISTING_GET_ENV");
     }
+}
+
+TEST_CASE("read_and_cast_env")
+{
     SECTION("string")
     {
         std::string env;
-        catchutils::set_env("CATCH_TEST_GETENV", "whats_up");
+        catchutils::set_env("CATCH_READ_AND_CAST_ENV", "whats_up");
 
-        read_env(env, "CATCH_TEST_GETENV");
+        read_and_cast_env(env, "CATCH_READ_AND_CAST_ENV");
         REQUIRE(env.compare("whats_up") == 0);
     }
     SECTION("double")
     {
         double env;
-        catchutils::set_env("CATCH_TEST_GETENV", "3.14");
+        catchutils::set_env("CATCH_READ_AND_CAST_ENV", "3.14");
 
-        read_env(env, "CATCH_TEST_GETENV");
+        read_and_cast_env(env, "CATCH_READ_AND_CAST_ENV");
         REQUIRE(fabs(env - 3.14) <= FLOAT_TOL);
     }
     SECTION("uint8_t")
     {
         uint8_t env;
-        catchutils::set_env("CATCH_TEST_GETENV", "255");
+        catchutils::set_env("CATCH_READ_AND_CAST_ENV", "255");
 
-        read_env(env, "CATCH_TEST_GETENV");
+        read_and_cast_env(env, "CATCH_READ_AND_CAST_ENV");
         REQUIRE(env == 255);
     }
     SECTION("uint32_t")
     {
         uint32_t env;
-        catchutils::set_env("CATCH_TEST_GETENV", "4294967295");
+        catchutils::set_env("CATCH_READ_AND_CAST_ENV", "4294967295");
 
-        read_env(env, "CATCH_TEST_GETENV");
+        read_and_cast_env(env, "CATCH_READ_AND_CAST_ENV");
         REQUIRE(env == 4294967295);
     }
 }

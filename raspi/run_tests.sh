@@ -2,9 +2,12 @@
 # Compiles and runs catch C++ tests.
 #
 
-# Setup env for make.
+# Setup env.
 export BUILD_FOR_TEST="TRUE"
 export TARGET_NAME="catch"
+
+export TEST_ROOT="${PWD}/tests"
+export RESOURCES_ROOT="${TEST_ROOT}/resources"
 
 # Compile and run tests.
 TARGET_PATH="./build/${TARGET_NAME}"

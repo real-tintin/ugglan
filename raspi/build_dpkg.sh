@@ -3,18 +3,8 @@
 # a Debian package (dpkg).
 #
 
-# Parse options.
-while getopts ":c:" opt; do
-  case $opt in
-    c)
-      EXTRA_CXXFLAGS=$OPTARG
-      ;;
-  esac
-done
-
 # Setup env for make and compile.
 export TARGET_NAME="ugglan"
-export EXTRA_CXXFLAGS
 make clean all -j8
 
 # Build dpkg.

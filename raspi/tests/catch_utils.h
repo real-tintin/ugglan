@@ -6,11 +6,12 @@
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
+#include <utils.h>
 
 namespace catchutils
 {
-    inline const std::filesystem::path TEST_ROOT = "./tests";
-    inline const std::filesystem::path RESOURCES_ROOT = "./tests/resources";
+    inline const std::filesystem::path TEST_ROOT = utils::get_env("TEST_ROOT");
+    inline const std::filesystem::path RESOURCES_ROOT = utils::get_env("RESOURCES_ROOT");
 
     std::string read_file(std::filesystem::path path);
 
