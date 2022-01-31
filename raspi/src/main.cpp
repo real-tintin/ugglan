@@ -17,8 +17,6 @@
 #include <drone_props.h>
 #include <config.h>
 
-#if !defined(UNIT_TEST)
-
 static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 10;   // 100 Hz.
 static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 10;   // 100 Hz.
 static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS   = 100;  // 10 Hz.
@@ -650,5 +648,3 @@ int main()
 
     return 0;
 }
-
-#endif /* !defined(UNIT_TEST) */

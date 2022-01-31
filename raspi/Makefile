@@ -31,7 +31,9 @@ endif
 ifeq ($(BUILD_FOR_TEST), TRUE)
 	CXXFLAGS += -D UNIT_TEST
 
+	SOURCES := $(filter-out $(SRCDIR)/main.cpp, $(SOURCES))
 	SOURCES += $(wildcard $(TESTDIR)/*.$(SRCEXT))
+
 	INC += -I $(TESTDIR)
 endif
 
