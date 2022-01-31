@@ -28,7 +28,7 @@ class TestTaskOne : public Task
 public:
     using Task::Task;
 protected:
-    void _execute() { data_log_queue_multi.push(double(1.0), DataLogSignal::ImuAccelerationX); }
+    void _execute() override { data_log_queue_multi.push(double(1.0), DataLogSignal::ImuAccelerationX); }
 };
 
 class TestTaskTwo : public Task
@@ -36,7 +36,7 @@ class TestTaskTwo : public Task
 public:
     using Task::Task;
 protected:
-    void _execute() { data_log_queue_multi.push(uint8_t(0x02), DataLogSignal::EscStatus0); }
+    void _execute() override { data_log_queue_multi.push(uint8_t(0x02), DataLogSignal::EscStatus0); }
 };
 
 TEST_CASE_DATA_LOG_TYPES("data_log_queue: push and pop single thread")

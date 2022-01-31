@@ -18,10 +18,10 @@ public:
 
     void set_read_buf(uint8_t* buf, uint32_t size);
 
-    bool open(Mode mode, ControlFlags flags);
+    bool open(Mode mode, ControlFlags flags) override;
 
-    uint32_t bytes_available();
-    uint32_t read(uint8_t* buf, uint32_t size);
+    uint32_t bytes_available() override;
+    uint32_t read(uint8_t* buf, uint32_t size) override;
 private:
     uint8_t _read_buf[MAX_BUF_SIZE] = {0};
     uint32_t _read_buf_size = 0;

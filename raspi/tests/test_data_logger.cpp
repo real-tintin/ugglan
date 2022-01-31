@@ -34,7 +34,7 @@ class TestTaskImu : public Task
 public:
     using Task::Task;
 protected:
-    void _execute()
+    void _execute() override
     {
         if (i_push_imu < IMU_N_PUSH_TO_QUEUE)
         {
@@ -49,7 +49,7 @@ class TestTaskEsc : public Task
 public:
     using Task::Task;
 protected:
-    void _execute()
+    void _execute() override
     {
         if (i_push_esc < ESC_N_PUSH_TO_QUEUE)
         {
@@ -64,9 +64,9 @@ class TestTaskLogger : public Task
 public:
     using Task::Task;
 protected:
-    void _setup() {  data_logger.start(); }
-    void _execute() {  data_logger.pack(); }
-    void _finish() {  data_logger.stop(); }
+    void _setup() override {  data_logger.start(); }
+    void _execute() override {  data_logger.pack(); }
+    void _finish() override {  data_logger.stop(); }
 };
 
 void split_raw_into_header_and_data(std::string& raw,

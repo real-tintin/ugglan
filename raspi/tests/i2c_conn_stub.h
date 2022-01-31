@@ -22,13 +22,13 @@ public:
     void set_read_block_map(I2cReadBlockMap read_block_map);
     void set_write_map(I2cWriteMap write_map);
 
-    bool open();
+    bool open() override;
 
-    bool read_byte_data(uint8_t reg, uint8_t* data);
-    bool read_block_data(uint8_t reg, uint8_t size, uint8_t* buf);
+    bool read_byte_data(uint8_t reg, uint8_t* data) override;
+    bool read_block_data(uint8_t reg, uint8_t size, uint8_t* buf) override;
 
-    bool write_byte_data(uint8_t reg, uint8_t data);
-    bool write_block_data(uint8_t reg, uint8_t size, uint8_t* buf);
+    bool write_byte_data(uint8_t reg, uint8_t data) override;
+    bool write_block_data(uint8_t reg, uint8_t size, uint8_t* buf) override;
 
     uint32_t get_n_calls_read_byte_data() { return _n_calls_read_byte_data; }
     uint32_t get_n_calls_read_block_data() { return _n_calls_read_block_data; }

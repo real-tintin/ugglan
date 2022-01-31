@@ -17,16 +17,16 @@ class TestTask : public Task
 public:
     using Task::Task;
 protected:
-    void _setup()
+    void _setup() override
     {
         n_calls_setup++;
     }
-    void _execute()
+    void _execute() override
     {
         n_calls_execute++;
         std::this_thread::sleep_for(std::chrono::milliseconds(EXEC_SLEEP_MS));
     }
-    void _finish()
+    void _finish() override
     {
         n_calls_finish++;
     }

@@ -72,7 +72,7 @@ public:
         _acc_mag(_i2c_conn),
         _data_log_queue(data_log_queue) {}
 protected:
-    void _execute()
+    void _execute() override
     {
         _acc_mag.update();
 
@@ -103,7 +103,7 @@ public:
         _gyro(_i2c_conn),
         _data_log_queue(data_log_queue) {}
 protected:
-    void _execute()
+    void _execute() override
     {
         _gyro.update();
 
@@ -130,7 +130,7 @@ public:
         _barometer(_i2c_conn),
         _data_log_queue(data_log_queue) {}
 protected:
-    void _execute()
+    void _execute() override
     {
         _barometer.update();
 
@@ -156,7 +156,7 @@ public:
         _att(input_sample_rate_s, config),
         _data_log_queue(data_log_queue) {}
 protected:
-    void _execute()
+    void _execute() override
     {
         _data_log_queue.last_signal_data(&_att_in.acc_x, DataLogSignal::ImuAccelerationX);
         _data_log_queue.last_signal_data(&_att_in.acc_y, DataLogSignal::ImuAccelerationY);
@@ -208,7 +208,7 @@ public:
         _pilot_ctrl(input_sample_rate_s, config),
         _data_log_queue(data_log_queue) {}
 protected:
-    void _execute()
+    void _execute() override
     {
         _exec_pilot_ctrl();
         _exec_motor_ctrl();
@@ -315,7 +315,7 @@ public:
         _esc(esc),
         _data_log_queue(data_log_queue) {}
 protected:
-    void _execute()
+    void _execute() override
     {
         uint8_t i_esc = _load_balance_step;
         _esc[i_esc].read();
@@ -373,13 +373,13 @@ public:
         _esc(esc),
         _data_log_queue(data_log_queue) {}
 protected:
-    void _setup()
+    void _setup() override
     {
         _arm_escs();
         _push_task_state_to_data_log(DataLogSignal::TaskSetup);
     }
 
-    void _execute()
+    void _execute() override
     {
         EscState user_reqeusted_esc_state = _get_user_requested_esc_state();
         EscState limited_esc_state = _limit_change_of_esc_state(user_reqeusted_esc_state, _old_esc_state);
@@ -390,7 +390,7 @@ protected:
         _push_task_state_to_data_log(DataLogSignal::TaskExecute);
     }
 
-    void _finish()
+    void _finish() override
     {
         _halt_escs();
         _push_task_state_to_data_log(DataLogSignal::TaskFinish);
@@ -526,7 +526,7 @@ public:
         _rc(_serial_conn),
         _data_log_queue(data_log_queue) {}
 protected:
-    void _execute()
+    void _execute() override
     {
         _rc.update();
 
@@ -559,17 +559,17 @@ public:
         _data_logger(data_log_queue, root_path),
         _data_log_queue(data_log_queue) {}
 protected:
-    void _setup()
+    void _setup() override
     {
         _data_logger.start();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskSetup);
     }
-    void _execute()
+    void _execute() override
     {
         _data_logger.pack();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskExecute);
     }
-    void _finish()
+    void _finish() override
     {
         _data_logger.stop();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskFinish);
