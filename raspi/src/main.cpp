@@ -16,6 +16,7 @@
 #include <pilot_control.h>
 #include <drone_props.h>
 #include <config.h>
+#include <graceful_killer.h>
 
 static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 10;   // 100 Hz.
 static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 10;   // 100 Hz.
@@ -577,7 +578,7 @@ private:
     DataLogQueue& _data_log_queue;
 };
 
-bool is_shutdown_ready(DataLogQueue& data_log_queue)
+bool user_requested_shutdown(DataLogQueue& data_log_queue)
 {
     SwitchLr switch_left = SwitchLr::Low;
     SwitchM switch_middle = SwitchM::High;
@@ -590,12 +591,14 @@ bool is_shutdown_ready(DataLogQueue& data_log_queue)
 
 void wait_for_shutdown(DataLogQueue& data_log_queue)
 {
-    while (!is_shutdown_ready(data_log_queue))
+    GracefulKiller killer;
+
+    while (!user_requested_shutdown(data_log_queue) && !killer.kill())
     {
-        logger.debug("Shutdown not ready. Keep running.");
+        logger.debug("Shutdown not requested. Keep running.");
         std::this_thread::sleep_for(std::chrono::milliseconds(MAIN_SLEEP_MS));
     }
-    logger.info("Shutdown is ready. Will shutdown.");
+    logger.info("Shutdown requested. Will shutdown.");
 }
 
 int main()
