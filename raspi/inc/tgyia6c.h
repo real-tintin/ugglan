@@ -81,10 +81,10 @@ inline const uint8_t TGYIA6C_BUF_SIZE = 255;
 inline const Mode TGYIA6C_SERIAL_MODE = (O_RDWR | O_NOCTTY | O_NDELAY);
 inline const ControlFlags TGYIA6C_SERIAL_OPT =
 {
-    (B115200 | CS8 | CLOCAL | CREAD), // 115200 bps
-    IGNPAR,
-    0,
-    0
+    .c_cflag = (B115200 | CS8 | CLOCAL | CREAD), // 115200 bps
+    .c_iflag = IGNPAR,
+    .c_oflag = 0,
+    .c_lflag = 0
 };
 
 class Tgyia6c

@@ -6,7 +6,19 @@
 static const double FLOAT_TOL = 1e-1;
 static const double SAMPLE_RATE_S = 1.0;
 
-static const AttEstConfig CONFIG = {10, 10, 1, 1, 1, 0.1, -0.1, 3.1};
+static const AttEstConfig CONFIG = {
+    .n_samples_gyro_offset_comp = 10,
+    .rolling_var_window_size = 10,
+
+    .kalman_q_scale = 1,
+
+    .kalman_r_0_scale = 1,
+    .kalman_r_1_scale = 1,
+
+    .hard_iron_offset_x = 0.1,
+    .hard_iron_offset_y = -0.1,
+    .hard_iron_offset_z = 3.1
+};
 
 static const uint32_t EXEC_UNTIL_CALIB = CONFIG.n_samples_gyro_offset_comp + CONFIG.rolling_var_window_size;
 
