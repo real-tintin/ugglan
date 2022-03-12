@@ -10,7 +10,8 @@ export TEST_ROOT="${PWD}/tests"
 export RESOURCES_ROOT="${TEST_ROOT}/resources"
 
 # Compile and run tests.
-TARGET_PATH="./build/${TARGET_NAME}"
+export BUILD_SUFFIX="tests"
+TARGET_PATH="./build_${BUILD_SUFFIX}/${TARGET_NAME}"
 
 make all -j8
 exit_code=$?

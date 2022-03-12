@@ -1,11 +1,17 @@
 # Makefile for compiling and running C++ catch
-# tests in docker container.
+# tests in a Docker container.
 #
+
+RASPI_ROOT = $(shell pwd)
+IMAGE_ROOT = /raspi
 
 IMAGE_NAME = raspi_host
 
 .PHONY: build_and_run_tests
 
 build_and_run_tests:
-	docker build -f Dockerfile . -t ${IMAGE_NAME}
-	docker run ${IMAGE_NAME} ./run_tests.sh
+	docker build -f Dockerfile . -t ${IMAGE_NAME} \
+		--build-arg IMAGE_ROOT=${IMAGE_ROOT}
+
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		${IMAGE_NAME} ./run_tests.sh

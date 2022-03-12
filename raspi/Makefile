@@ -1,20 +1,23 @@
 # Makefile for compilation of the drone C++ source
 # code for target - a Raspberry Pi Zero 2 W.
 #   TARGET_NAME    : Set target name.
+#
+# Optional
 #   BUILD_FOR_TEST : Set to TRUE, to build for testing.
 #   GDB_DEBUG      : Set to TRUE, to build for gdb debugging (disables optimization).
 #   EXTRA_CXXFLAGS : Use to add extra CXXFLAGS.
+#   BUILD_SUFFIX   : Suffix the build dir name.
 #
 
 TARGET := $(TARGET_NAME)
 SRCEXT := cpp
 
 CXX = g++-10
-CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread $(EXTRA_CXXFLAGS)
+CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread -MD $(EXTRA_CXXFLAGS)
 LDFLAGS += -lz -li2c
 
 SRCDIR := ./src
-OBJDIR := ./build
+OBJDIR := ./build_$(BUILD_SUFFIX)
 INCDIR := ./inc
 LIBDIR := ./lib
 TESTDIR := ./tests
@@ -40,6 +43,8 @@ endif
 OBJECTS := $(SOURCES:.$(SRCEXT)=.o)
 OBJECTS := $(addprefix $(OBJDIR),$(OBJECTS:.%=%))
 
+DEPENDENCIES := $(OBJECTS:.o=.d)
+
 .PHONY: all clean
 
 all: $(TARGET)
@@ -56,3 +61,5 @@ $(OBJECTS): $(OBJDIR)/%.o: %.$(SRCEXT)
 clean:
 	@echo "Cleaning...";
 	$(RM) -r $(OBJDIR) $(TARGET)
+
+-include $(wildcard $(DEPENDENCIES))

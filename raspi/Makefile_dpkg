@@ -1,9 +1,10 @@
-# Makefile for cross compiling of Ugglan for target
-# (Raspberry Pi Zero 2 W) and creating a Debian package.
+# Makefile for cross compiling (using Docker) of Ugglan
+# for target (Raspberry Pi Zero 2 W) and building a
+# Debian package.
 #
 
-RASPI_ROOT = /$(shell pwd)/
-RASPI_ROOT_MOUNTED = /raspi_mount
+RASPI_ROOT = $(shell pwd)
+IMAGE_ROOT = /raspi
 
 IMAGE_NAME = raspi_target
 
@@ -13,14 +14,13 @@ IMAGE_NAME = raspi_target
 
 build_image:
 	docker build --platform linux/arm/v7 \
-				 -f Dockerfile . -t ${IMAGE_NAME}
+		-f Dockerfile . -t ${IMAGE_NAME} \
+		--build-arg IMAGE_ROOT=${IMAGE_ROOT}
 
 build_dpkg: build_image
-	docker run -v $(RASPI_ROOT):${RASPI_ROOT_MOUNTED} \
-	           -e ROOT_MOUNTED=${RASPI_ROOT_MOUNTED} \
-			    ${IMAGE_NAME} /raspi/build_dpkg.sh
+	docker run -v $(RASPI_ROOT):${IMAGE_ROOT} \
+		${IMAGE_NAME} ./build_dpkg.sh
 
 build_dpkg_for_profiling: build_image
-	docker run -v $(RASPI_ROOT):${RASPI_ROOT_MOUNTED} \
-	           -e ROOT_MOUNTED=${RASPI_ROOT_MOUNTED} \
-			    ${IMAGE_NAME} /raspi/build_dpkg.sh -c -pg
+	docker run -v $(RASPI_ROOT):${IMAGE_ROOT} \
+		${IMAGE_NAME} ./build_dpkg.sh -c -pg
