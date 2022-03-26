@@ -95,3 +95,31 @@ It can be seen that applying tape on a certain location can significantly reduce
 
 Also note the frequency components of the psd. The content at ~20 Hz could correspond to the frequency of
 the motors but folded (due to aliasing as the sample rate 100/2 Hz < 81 Hz, hence at folded at 19 Hz).
+
+Vibration Dampers
+^^^^^^^^^^^^^^^^^^
+The vibrations experienced by the IMU can be further reduced by installing vibrations dampers between
+the frame and the custom mounting plate, see :numref:`ugglan_in_person`.
+
+Different rubber dampers were tested (varying stiffness, mass and size), see :numref:`table_vibration_dampers`
+for results.
+
+.. _table_vibration_dampers:
+
+.. table:: * See `data sheet <https://www.tme.eu/Document/3783353bba387d7e09757c85b47027b3/DVA1-3-EN.pdf>`_ for details.
+
+    ====================    ================    ========    ===================     ===================
+    Name*                   Stiffness [N/mm]    Mass [g]    Eigenfrequency [Hz]     Variance [m^2/s^4]
+    ====================    ================    ========    ===================     ===================
+    DVA.1-15-15-M4-10-55    39                  10          314                     1.12
+    DVA.1-15-15-M4-10-70    118                 10          537                     0.85
+    DVA.1-15-20-M4-10-40    20                  12          206                     2.40
+    DVA.1-15-20-M4-10-55    25                  12          230                     1.30
+    ====================    ================    ========    ===================     ===================
+
+The above results are rather concise - increasing eigenfrequency will result in less experienced vibrations
+by the IMU. This is most likely due the fact that the plate is vibrating about the motor rotational frequency
+(~160 Hz). Hence, it would be interesting to test a damper with an eigenfrequency << 160 Hz.
+
+Note, the eigenfrequency is estimated by assuming a classic second order mass-spring system i.e.,
+:math:`f_n = \tfrac{1}{2\pi}\sqrt{\tfrac{k}{m}}` (SI-units).
