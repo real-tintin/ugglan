@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-import multi_body_sim.euclidean_transform as et
+import ugglan_tools.multi_body_sim.euclidean_transform as et
 
 
 @pytest.mark.parametrize("v, x_t, y_t, z_t, exp_t", [

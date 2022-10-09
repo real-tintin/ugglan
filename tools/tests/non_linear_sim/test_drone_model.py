@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from non_linear_sim.drone_model import DroneModel, CtrlInput, DEFAULT_ENV_PARAMS, DEFAULT_DRONE_PARAMS
+from ugglan_tools.non_linear_sim.drone_model import DroneModel, CtrlInput, DEFAULT_ENV_PARAMS, DEFAULT_DRONE_PARAMS
 
 TEST_DT = 0.1
 

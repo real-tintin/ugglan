@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
-from non_linear_sim.att_estimator import AttEstimator, DEFAULT_ATT_EST_PARAMS, ImuOut
+
+from ugglan_tools.non_linear_sim.att_estimator import AttEstimator, DEFAULT_ATT_EST_PARAMS, ImuOut
 
 TEST_DT = 0.01
 

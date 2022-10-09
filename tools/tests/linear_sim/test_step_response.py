@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.testing as npt
 
-import linear_sim.step_response as step_response
+import ugglan_tools.linear_sim.step_response as step_response
 
 
 def test_step_info():

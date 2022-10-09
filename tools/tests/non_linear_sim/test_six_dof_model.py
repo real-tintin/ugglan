@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from non_linear_sim.six_dof_model import State, SixDofModel, BodyInput, get_zero_initialized_state
+from ugglan_tools.non_linear_sim.six_dof_model import State, SixDofModel, BodyInput, get_zero_initialized_state
 
 STATE_NON_ZERO = State(
     r_i=np.random.rand(3),

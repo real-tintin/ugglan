@@ -1,7 +1,7 @@
 import numpy as np
 
-from multi_body_sim.multi_body import Body, MultiBody
-from multi_body_sim.shapes import Cuboid, Cylinder, Sphere
+from ugglan_tools.multi_body_sim.multi_body import Body, MultiBody
+from ugglan_tools.multi_body_sim.shapes import Cuboid, Cylinder, Sphere
 
 UNIT_CYLINDER = MultiBody(
     name='one_unit_cylinder',

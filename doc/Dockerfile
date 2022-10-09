@@ -1,9 +1,8 @@
-FROM python:3.7.9
+FROM python:3.9.5
 
-# Setup sphinx env
-ENV ROOT /doc
+ARG IMAGE_ROOT
+ENV ROOT ${IMAGE_ROOT}
 WORKDIR ${ROOT}
-COPY ./requirements.txt ${ROOT}
 
 RUN pip install --upgrade pip
-RUN pip install -r "requirements.txt"
+RUN pip install sphinx sphinx-autobuild sphinxcontrib-mermaid

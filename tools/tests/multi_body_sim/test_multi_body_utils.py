@@ -1,11 +1,10 @@
-from copy import deepcopy
-
 import numpy as np
 import pytest
+from copy import deepcopy
 
-import multi_body_sim.utils as mb_utils
-from multi_body_sim.multi_body import Body, MultiBody
-from multi_body_sim.shapes import Cuboid, Sphere
+import ugglan_tools.multi_body_sim.utils as mb_utils
+from ugglan_tools.multi_body_sim.multi_body import Body, MultiBody
+from ugglan_tools.multi_body_sim.shapes import Cuboid, Sphere
 from unit_bodies import UNIT_CYLINDER, UNIT_CUBOID, UNIT_SPHERE
 
 MAGIC_BOX = MultiBody(

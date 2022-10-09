@@ -3,11 +3,8 @@
 # and run from the repo root.
 #
 
-REPO_ROOT="$(pwd)"
-
 # Setup python using venv.
 PY_VENV_ROOT="./venv"
-PY_VENV_REQ="./tools/requirements.txt"
 
 python -m venv "${PY_VENV_ROOT}"
 
@@ -18,7 +15,7 @@ else # Assume windows
 fi
 
 pip install --upgrade pip
-pip install -r "${PY_VENV_REQ}"
+pip install ./tools
 
 # Init and update submodules.
 git submodule init

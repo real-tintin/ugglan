@@ -5,13 +5,17 @@
 RASPI_ROOT = $(shell pwd)
 IMAGE_ROOT = /raspi
 
+UID = $(shell id -u)
+GID = $(shell id -u)
+
 IMAGE_NAME = raspi_host
 
 .PHONY: build_and_run_tests
 
 build_and_run_tests:
-	docker build -f Dockerfile . -t ${IMAGE_NAME} \
+	docker build . -t ${IMAGE_NAME} \
 		--build-arg IMAGE_ROOT=${IMAGE_ROOT}
 
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
 		${IMAGE_NAME} ./run_tests.sh

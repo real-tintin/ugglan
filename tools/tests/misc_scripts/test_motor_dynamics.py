@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-import misc_scripts.motor_dynamics as md
+import ugglan_tools.misc_scripts.motor_dynamics as md
 
 
 @pytest.mark.parametrize("min_step_size, min_step_length_s, x, exp_indices",

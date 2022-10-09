@@ -1,7 +1,7 @@
 import pyqtgraph.opengl as gl
 import pytest
 
-from multi_body_sim.meshed_multi_body import MeshedMultiBody
+from ugglan_tools.multi_body_sim.meshed_multi_body import MeshedMultiBody
 from unit_bodies import UNIT_CUBOID, UNIT_SPHERE, UNIT_CYLINDER
 
 

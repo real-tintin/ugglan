@@ -1,8 +1,8 @@
+import numpy as np
 from pathlib import Path
 from typing import List, Union
 
-import data_log.io as data_log_io
-import numpy as np
+import ugglan_tools.data_log.io as data_log_io
 
 ROOT_PATH = Path(__file__).parent.absolute()
 DATA_LOG_PATH = ROOT_PATH / 'resources' / '20200904193108.dat'
