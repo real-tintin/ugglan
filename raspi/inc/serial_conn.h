@@ -24,9 +24,8 @@ class SerialConn
 public:
     SerialConn(std::string device);
 
-    ~SerialConn();
-
     virtual bool open(Mode mode, ControlFlags flags);
+    virtual bool close();
 
     virtual uint32_t bytes_available();
     virtual uint32_t read(uint8_t* buf, uint32_t size);

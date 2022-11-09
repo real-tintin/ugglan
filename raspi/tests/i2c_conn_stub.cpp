@@ -20,6 +20,11 @@ bool I2cConnStub::open()
     return true;
 }
 
+bool I2cConnStub::close()
+{
+    return true;
+}
+
 bool I2cConnStub::read_byte_data(uint8_t reg, uint8_t* data)
 {
     auto it = _read_byte_map.find(reg);

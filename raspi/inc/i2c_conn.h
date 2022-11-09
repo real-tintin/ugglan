@@ -20,9 +20,8 @@ class I2cConn
 public:
     I2cConn(std::string device, uint8_t address);
 
-    ~I2cConn();
-
     virtual bool open();
+    virtual bool close();
 
     virtual bool read_byte_data(uint8_t reg, uint8_t* data);
     virtual bool read_block_data(uint8_t reg, uint8_t size, uint8_t* buf);

@@ -7,6 +7,11 @@ Tgyia6c::Tgyia6c(SerialConn& serial_conn) :
     _set_init_values();
 }
 
+Tgyia6c::~Tgyia6c()
+{
+    _close_serial_conn();
+}
+
 void Tgyia6c::update()
 {
     _read_to_buffer();
@@ -77,6 +82,11 @@ void Tgyia6c::_open_serial_conn()
     {
         _status = TGYIA6C_STATUS_ERR_INIT;
     }
+}
+
+void Tgyia6c::_close_serial_conn()
+{
+    _serial_conn.close();
 }
 
 void Tgyia6c::_set_init_values()

@@ -23,6 +23,7 @@ public:
     void set_write_map(I2cWriteMap write_map);
 
     bool open() override;
+    bool close() override;
 
     bool read_byte_data(uint8_t reg, uint8_t* data) override;
     bool read_block_data(uint8_t reg, uint8_t size, uint8_t* buf) override;

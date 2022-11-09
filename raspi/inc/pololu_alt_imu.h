@@ -31,6 +31,7 @@ public:
     uint8_t get_status();
 protected:
     void _open_i2c_conn();
+    void _close_i2c_conn();
 
     void _setup(ConfigMap config_map, ReadMap read_map);
 

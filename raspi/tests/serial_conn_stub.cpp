@@ -13,6 +13,11 @@ bool SerialConnStub::open(Mode mode, ControlFlags flags)
     return true;
 }
 
+bool SerialConnStub::close()
+{
+    return true;
+}
+
 uint32_t SerialConnStub::bytes_available()
 {
     return _read_buf_size;

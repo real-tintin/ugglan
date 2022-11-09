@@ -10,6 +10,7 @@ PololuAltImu::PololuAltImu(I2cConn& i2c_conn, std::string sensor_name) :
 PololuAltImu::~PololuAltImu()
 {
     _deallocate_buffer();
+    _close_i2c_conn();
 }
 
 void PololuAltImu::update()
@@ -45,6 +46,11 @@ void PololuAltImu::_open_i2c_conn()
     {
         _status = POLOLU_STATUS_ERR_INIT;
     }
+}
+
+void PololuAltImu::_close_i2c_conn()
+{
+    _i2c_conn.close();
 }
 
 void PololuAltImu::_setup(ConfigMap config_map, ReadMap read_map)

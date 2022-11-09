@@ -19,6 +19,7 @@ public:
     void set_read_buf(uint8_t* buf, uint32_t size);
 
     bool open(Mode mode, ControlFlags flags) override;
+    bool close() override;
 
     uint32_t bytes_available() override;
     uint32_t read(uint8_t* buf, uint32_t size) override;

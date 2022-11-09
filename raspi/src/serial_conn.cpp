@@ -5,11 +5,6 @@ SerialConn::SerialConn(std::string device) :
 {
 }
 
-SerialConn::~SerialConn()
-{
-    ::close(_fd);
-}
-
 bool SerialConn::open(Mode mode, ControlFlags flags)
 {
     if ((_fd = ::open(_device.c_str(), mode)) != -1)
@@ -32,6 +27,20 @@ bool SerialConn::open(Mode mode, ControlFlags flags)
     else
     {
         logger.error("Failed to open serial connection at: " + _device);
+        return false;
+    }
+}
+
+bool SerialConn::close()
+{
+    if (::close(_fd) != -1)
+    {
+        logger.debug("Successfully closed serial connection at: " + _device);
+        return true;
+    }
+    else
+    {
+        logger.error("Failed to close serial connection at: " + _device);
         return false;
     }
 }

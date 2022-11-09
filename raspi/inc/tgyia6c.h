@@ -92,6 +92,8 @@ class Tgyia6c
 public:
     Tgyia6c(SerialConn& serial_conn);
 
+    ~Tgyia6c();
+
     void update();
 
     double get_gimbal_left_x();
@@ -127,6 +129,7 @@ private:
     SerialConn& _serial_conn;
 
     void _open_serial_conn();
+    void _close_serial_conn();
     void _set_init_values();
     void _read_to_buffer();
     void _parse_buffer();
