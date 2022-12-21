@@ -12,7 +12,6 @@ state space estimation and control.
 ## Setup
 
 ### Prerequisites
-* linux/windows
 * python >=3.9
 * docker
 * make

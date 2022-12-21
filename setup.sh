@@ -8,10 +8,21 @@ PY_VENV_ROOT="./venv"
 
 python -m venv "${PY_VENV_ROOT}"
 
-if [ "$(uname)" == "Linux" ]; then
-    source "${PY_VENV_ROOT}/bin/activate"
-else # Assume windows
+is_windows() {
+  case "$(uname -sr)" in
+    CYGWIN*|MINGW*|MINGW32*|MSYS*)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+if is_windows; then
     source "${PY_VENV_ROOT}/Scripts/activate"
+else
+    source "${PY_VENV_ROOT}/bin/activate"
 fi
 
 pip install --upgrade pip
