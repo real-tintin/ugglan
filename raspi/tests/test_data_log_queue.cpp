@@ -104,12 +104,8 @@ TEST_CASE("data_log_queue: push and pop multi thread")
             FAIL("Unexpected sample");
         }
     }
-    // TODO: Fix flaky test.
-    std::cout << int(n_act_one_samples) << std::endl; // Returns 9 on my M2
-    std::cout << int(n_act_two_samples) << std::endl; // Returns 5 on my M2
-
-    REQUIRE(n_act_one_samples >= 10);
-    REQUIRE(n_act_two_samples >= 5);
+    REQUIRE(abs(n_act_one_samples - 10) <= 1);
+    REQUIRE(abs(n_act_two_samples - 5) <= 1);
 }
 
 TEST_CASE_DATA_LOG_TYPES("data_log_queue: last_signal_data")

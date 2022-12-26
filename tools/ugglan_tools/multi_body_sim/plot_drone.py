@@ -4,7 +4,7 @@ import sys
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
-from PyQt5.QtGui import QFont
+from PyQt6.QtGui import QFont
 from pyqtgraph.Qt import QtGui
 
 from ugglan_tools.multi_body_sim.mb_drone import drone
@@ -50,7 +50,7 @@ def _plot_multi_body(mb: MultiBody):
     view.setCameraPosition(distance=1)
     view.show()
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 def _print_mb_inertia(mb: MultiBody):

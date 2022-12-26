@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Union, List
 
 import numpy as np
-from PyQt5.QtGui import QColor
+from PyQt6.QtGui import QColor
 
 from ugglan_tools.multi_body_sim.shapes import Shapes
 

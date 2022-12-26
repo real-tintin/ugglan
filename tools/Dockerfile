@@ -1,7 +1,7 @@
-FROM python:3.9.5
+FROM python:3.10.9
 
 RUN apt-get update
-RUN apt-get install ffmpeg libsm6 libxext6 -y
+RUN apt-get install ffmpeg libsm6 libxext6 libegl1-mesa libegl1 -y
 
 RUN pip install --upgrade pip
 

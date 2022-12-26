@@ -78,7 +78,7 @@ class Simulator:
         return self._drone_model.get_t()
 
     def reset(self, six_dof_state: SixDofState):
-        self._att_est.reset()
+        self._att_estimator.reset()
         self._pilot_ctrl.reset()
         self._drone_model.reset(six_dof_state)
 
