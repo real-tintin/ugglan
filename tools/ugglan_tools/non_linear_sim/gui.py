@@ -339,6 +339,7 @@ class Gui(QtWidgets.QMainWindow):
 
     def _reset(self):
         self._reset_simulator()
+        self._reset_rolling_sim_buf()
 
         if self._gui_state != GuiState.RUNNING:
             self._update_main_gui()
@@ -391,6 +392,9 @@ class Gui(QtWidgets.QMainWindow):
                 "motor_ang_rates": self._simulator.get_motor_ang_rates,
             },
             n_samples=int(self._conf_gui.t_window_size_s / self._conf_gui.refresh_rate_s))
+
+    def _reset_rolling_sim_buf(self):
+        self._rolling_sim_buf.reset()
 
     def _setup_and_launch_threaded_tasks(self):
         self._threaded_tasks = []
