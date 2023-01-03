@@ -5,8 +5,8 @@ from enum import Enum
 from functools import partial
 
 import numpy as np
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QInputDialog, QStackedWidget
+from PyQt6 import QtCore, QtWidgets
+from PyQt6.QtWidgets import QInputDialog, QStackedWidget
 
 from ugglan_tools.non_linear_sim.att_estimator import DEFAULT_ATT_EST_PARAMS
 from ugglan_tools.non_linear_sim.drone_model import DEFAULT_DRONE_PARAMS, DEFAULT_ENV_PARAMS, DroneParams, EnvParams
@@ -17,6 +17,7 @@ from ugglan_tools.non_linear_sim.simulator import DEFAULT_IMU_NOISE, ImuNoise
 from ugglan_tools.non_linear_sim.simulator import Simulator
 from ugglan_tools.non_linear_sim.subplot_widgets import SixDofWidget, LinePlotWidget
 from ugglan_tools.non_linear_sim.threaded_task import ThreadedTask
+from ugglan_tools.non_linear_sim.six_dof_model import get_zero_initialized_state
 
 FORMAT_MENU_LABEL = "{key}: {val}"
 
@@ -160,8 +161,7 @@ class Gui(QtWidgets.QMainWindow):
             setup_menu_conf()
             setup_menu_plots()
             setup_menu_input()
-            setup_action_start()
-            setup_action_stop()
+            setup_menu_action()
 
         def setup_menu_conf():
             self._menu_conf = self._menu.addMenu("Config")
@@ -220,12 +220,16 @@ class Gui(QtWidgets.QMainWindow):
             self._action_input_gamepad.setChecked(False)
             self._action_input_gamepad.triggered.connect(self._cb_input_gamepad_checked)
 
-        def setup_action_start():
-            self._action_start = self._menu.addAction("Start")
+        def setup_menu_action():
+            self._menu_action = self._menu.addMenu("Action")
+
+            self._action_start = self._menu_action.addAction("Start")
             self._action_start.triggered.connect(self._start)
 
-        def setup_action_stop():
-            self._action_stop = self._menu.addAction("Stop")
+            self._action_start = self._menu_action.addAction("Reset")
+            self._action_start.triggered.connect(self._reset)
+
+            self._action_stop = self._menu_action.addAction("Stop")
             self._action_stop.triggered.connect(self._stop)
 
         conf_main_window()
@@ -333,6 +337,13 @@ class Gui(QtWidgets.QMainWindow):
 
             self._gui_state = GuiState.RUNNING
 
+    def _reset(self):
+        self._reset_simulator()
+        self._reset_rolling_sim_buf()
+
+        if self._gui_state != GuiState.RUNNING:
+            self._update_main_gui()
+
     def _setup_ref_input(self):
         if self._is_input_gamepad_selected():
             self._gamepad = Gamepad(ref_scale=self._conf_input.gamepad.ref_scale)
@@ -351,6 +362,9 @@ class Gui(QtWidgets.QMainWindow):
             standstill_calib_att_est=self._conf_sim.standstill_calib_att_est,
             init_motors_with_fz_mg=self._conf_sim.init_motors_with_fz_mg
         )
+
+    def _reset_simulator(self):
+        self._simulator.reset(state=get_zero_initialized_state())
 
     def _init_rolling_sim_buf(self):
         self._rolling_sim_buf = RollingBuffer(
@@ -378,6 +392,9 @@ class Gui(QtWidgets.QMainWindow):
                 "motor_ang_rates": self._simulator.get_motor_ang_rates,
             },
             n_samples=int(self._conf_gui.t_window_size_s / self._conf_gui.refresh_rate_s))
+
+    def _reset_rolling_sim_buf(self):
+        self._rolling_sim_buf.reset()
 
     def _setup_and_launch_threaded_tasks(self):
         self._threaded_tasks = []
@@ -429,19 +446,31 @@ class Gui(QtWidgets.QMainWindow):
     def _init_roll_ref_widget(self):
         return LinePlotWidget(data_cb=self._cb_roll_ref_widget,
                               labels=["act", "est", "ref"],
-                              line_styles=[QtCore.Qt.SolidLine, QtCore.Qt.SolidLine, QtCore.Qt.DashLine],
+                              line_styles=[
+                                QtCore.Qt.PenStyle.SolidLine,
+                                QtCore.Qt.PenStyle.SolidLine,
+                                QtCore.Qt.PenStyle.DashLine
+                                ],
                               y_label="Roll", y_unit="rad")
 
     def _init_pitch_ref_widget(self):
         return LinePlotWidget(data_cb=self._cb_pitch_ref_widget,
                               labels=["act", "est", "ref"],
-                              line_styles=[QtCore.Qt.SolidLine, QtCore.Qt.SolidLine, QtCore.Qt.DashLine],
+                              line_styles=[
+                                QtCore.Qt.PenStyle.SolidLine,
+                                QtCore.Qt.PenStyle.SolidLine,
+                                QtCore.Qt.PenStyle.DashLine
+                                ],
                               y_label="Pitch", y_unit="rad")
 
     def _init_yaw_rate_ref_widget(self):
         return LinePlotWidget(data_cb=self._cb_yaw_rate_ref_widget,
                               labels=["act", "est", "ref"],
-                              line_styles=[QtCore.Qt.SolidLine, QtCore.Qt.SolidLine, QtCore.Qt.DashLine],
+                              line_styles=[
+                                QtCore.Qt.PenStyle.SolidLine,
+                                QtCore.Qt.PenStyle.SolidLine,
+                                QtCore.Qt.PenStyle.DashLine
+                                ],
                               y_label="Yaw-rate", y_unit="rad/s")
 
     def _init_body_ctrl_widget(self):
@@ -536,7 +565,7 @@ def main():
     qt_app = QtWidgets.QApplication(sys.argv)
     gui = Gui()
     gui.show()
-    sys.exit(qt_app.exec_())
+    sys.exit(qt_app.exec())
 
 
 if __name__ == '__main__':

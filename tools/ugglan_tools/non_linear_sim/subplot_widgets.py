@@ -4,8 +4,8 @@ from typing import Callable, List
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
-from PyQt5.QtGui import QMatrix4x4, QFont, QColor
-from PyQt5.QtWidgets import QLabel
+from PyQt6.QtGui import QMatrix4x4, QFont, QColor
+from PyQt6.QtWidgets import QLabel
 from pyqtgraph.Qt import QtGui, QtCore
 
 from ugglan_tools.multi_body_sim.mb_drone import drone
@@ -51,8 +51,8 @@ class SubplotWidget(ABC):
 
         Note, for some reason the size policy of PlotWidget doesn't work as well as QLabel.
         """
-        self._base_widget.sizeHint = lambda: QtGui.QLabel().sizeHint()
-        self._base_widget.setSizePolicy(QtGui.QLabel().sizePolicy())
+        self._base_widget.sizeHint = lambda: QLabel().sizeHint()
+        self._base_widget.setSizePolicy(QLabel().sizePolicy())
 
 
 class SixDofWidget(SubplotWidget):
@@ -135,7 +135,7 @@ class LinePlotWidget(SubplotWidget):
             color_order = DEFAULT_COLOR_ORDER
 
         if styles is None:
-            styles = [QtCore.Qt.SolidLine for _ in range(n_lines)]
+            styles = [QtCore.Qt.PenStyle.SolidLine for _ in range(n_lines)]
 
         for i_line in range(n_lines):
             line_plot = pg.PlotDataItem(pen=pg.mkPen(color=color_order[i_line],

@@ -3,8 +3,8 @@ from typing import List, Union
 
 import numpy as np
 import pyqtgraph.opengl as gl
-from PyQt5.QtGui import QColor
-from PyQt5.QtGui import QMatrix4x4
+from PyQt6.QtGui import QColor
+from PyQt6.QtGui import QMatrix4x4
 
 import ugglan_tools.multi_body_sim.euclidean_transform as euc_trans
 from ugglan_tools.multi_body_sim.multi_body import MultiBody

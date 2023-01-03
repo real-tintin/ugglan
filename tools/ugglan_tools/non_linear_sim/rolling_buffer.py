@@ -1,8 +1,8 @@
 from collections import deque
 from copy import deepcopy
-from dataclasses import dataclass, is_dataclass
+from dataclasses import is_dataclass
 from operator import attrgetter
-from typing import Callable
+from typing import Callable, Optional
 
 
 class RollingBuffer:
@@ -14,17 +14,23 @@ class RollingBuffer:
         Note, the data can be an int, float or a nested dataclass.
         """
         self._n_samples = n_samples
+
+        self._bufs = []
         self._buf_cbs = []
 
         for member, cb in member_cb_map.items():
             data_type = deepcopy(cb())
             setattr(self, member, self._create_nested_deque(parent=data_type, cb=cb))
 
+    def reset(self):
+        for buf in self._bufs:
+            buf.clear()
+
     def update(self):
         for buf_cb in self._buf_cbs:
             buf_cb()
 
-    def _create_nested_deque(self, parent: dataclass, cb: Callable, ancestors_without_me: [str] = None) -> dataclass:
+    def _create_nested_deque(self, parent: object, cb: Callable, ancestors_without_me: Optional[str] = None) -> object:
         if is_dataclass(parent):
             for child_name in parent.__annotations__:
                 child = getattr(parent, child_name)
@@ -44,6 +50,8 @@ class RollingBuffer:
                 self._buf_cbs.append(lambda: buf.append(cb()))
             else:
                 self._buf_cbs.append(lambda: buf.append(attrgetter('.'.join(ancestors_without_me))(cb())))
+
+            self._bufs.append(buf)
 
             return buf
 

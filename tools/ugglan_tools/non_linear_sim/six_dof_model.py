@@ -49,12 +49,9 @@ class SixDofModel:
         self._m = mass
         self._I_b = moment_of_inertia
         self._I_b_inv = np.linalg.inv(self._I_b)
-
-        self._state = init_state
         self._dt = dt
-        self._t = 0.0
 
-        self._init_odes()
+        self.reset(state=init_state)
 
     def step(self, body_input: BodyInput):
         self._t += self._dt
@@ -86,6 +83,8 @@ class SixDofModel:
 
     def reset(self, state: State = State()):
         self._state = state
+        self._t = 0.0
+
         self._init_odes()
 
     def get_state(self) -> State:

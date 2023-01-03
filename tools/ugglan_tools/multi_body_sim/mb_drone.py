@@ -1,5 +1,5 @@
 import numpy as np
-from PyQt5.QtGui import QColor
+from PyQt6.QtGui import QColor
 
 from ugglan_tools.multi_body_sim.multi_body import Body, MultiBody
 from ugglan_tools.multi_body_sim.shapes import Cuboid, Cylinder, Sphere

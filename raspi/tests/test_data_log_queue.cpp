@@ -21,6 +21,8 @@
 
 static const double FLOAT_TOL = 1e-4;
 
+static const uint8_t TASK_EXEC_SAMPLES_TOL = 1;
+
 DataLogQueue data_log_queue_multi;
 
 class TestTaskOne : public Task
@@ -104,9 +106,8 @@ TEST_CASE("data_log_queue: push and pop multi thread")
             FAIL("Unexpected sample");
         }
     }
-
-    REQUIRE(n_act_one_samples >= 10);
-    REQUIRE(n_act_two_samples >= 5);
+    REQUIRE(abs(n_act_one_samples - 10) <= TASK_EXEC_SAMPLES_TOL);
+    REQUIRE(abs(n_act_two_samples - 5) <= TASK_EXEC_SAMPLES_TOL);
 }
 
 TEST_CASE_DATA_LOG_TYPES("data_log_queue: last_signal_data")

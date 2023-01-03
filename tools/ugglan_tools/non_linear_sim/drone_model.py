@@ -79,19 +79,16 @@ class DroneModel:
         self._drone_params = drone_params
         self._env_params = env_params
         self._init_motors_with_fz_mg = init_motors_with_fz_mg
-
         self._init_H_and_H_inv()
         self._dt = dt
-        self._t = 0.0
-        self._w_m = np.zeros(4)
 
-        self._init_motor_dyn()
         self._6dof_model = SixDofModel(mass=drone_params.m,
                                        moment_of_inertia=np.diag([drone_params.I_drone_xx,
                                                                   drone_params.I_drone_yy,
                                                                   drone_params.I_drone_zz]),
-                                       init_state=init_state,
                                        dt=dt)
+
+        self.reset(state=init_state)
 
     def step(self, ctrl_input: CtrlInput):
         self._t += self._dt
@@ -115,7 +112,10 @@ class DroneModel:
         )
 
     def reset(self, state: State = State()):
-        self._6dof_model.reset(state)
+        self._t = 0.0
+        self._w_m = np.zeros(4)
+
+        self._6dof_model.reset(state=state)
         self._init_motor_dyn()
 
     def get_6dof_state(self) -> State:

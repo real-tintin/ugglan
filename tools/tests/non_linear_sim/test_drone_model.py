@@ -3,7 +3,7 @@ import pytest
 
 from ugglan_tools.non_linear_sim.drone_model import DroneModel, CtrlInput, DEFAULT_ENV_PARAMS, DEFAULT_DRONE_PARAMS
 
-TEST_DT = 0.1
+TEST_DT = 0.01
 
 MG = DEFAULT_DRONE_PARAMS.m * DEFAULT_ENV_PARAMS.g
 
@@ -18,7 +18,7 @@ def drone_model():
 class TestDroneModel:
 
     def test_hover(self, drone_model):
-        self.step_to_t_end(drone_model, CtrlInput(f_z=-MG, m_x=0, m_y=0, m_z=0), 100)
+        self.step_to_t_end(drone_model, CtrlInput(f_z=-MG, m_x=0, m_y=0, m_z=0), 10)
         state = drone_model.get_6dof_state()
 
         assert np.all(np.abs(state.a_b) < 1e-3)
