@@ -5,6 +5,7 @@ import numpy as np
 from ugglan_tools.multi_body_sim.euclidean_transform import rotation_matrix
 from ugglan_tools.non_linear_sim.att_estimator import AttEstimator, ImuOut, AttEstimate
 from ugglan_tools.non_linear_sim.att_estimator import Params as AttEstParams
+from ugglan_tools.non_linear_sim.att_estimator import AttState
 from ugglan_tools.non_linear_sim.drone_model import DroneModel, DroneParams, EnvParams, CtrlInput, MotorAngRates
 from ugglan_tools.non_linear_sim.pilot_ctrl import Params as PilotCtrlParams
 from ugglan_tools.non_linear_sim.pilot_ctrl import RefInput, PilotCtrl
@@ -38,15 +39,14 @@ class Simulator:
                  ):
         self._att_estimator = AttEstimator(params=att_est_params, dt=dt)
         self._pilot_ctrl = PilotCtrl(params=pilot_ctrl_params, dt=dt)
-        self._drone_model = DroneModel(init_state=init_state, drone_params=drone_params, env_params=env_params,
+        self._drone_model = DroneModel(drone_params=drone_params, env_params=env_params,
                                        dt=dt, init_motors_with_fz_mg=init_motors_with_fz_mg)
 
         self._imu_noise = imu_noise
         self._g = env_params.g
-        self._imu_out = ImuOut()
+        self._standstill_calib_att_est = standstill_calib_att_est
 
-        if standstill_calib_att_est:
-            self._calib_att_est()
+        self.reset(state=init_state)
 
     def step(self, ref_input: RefInput):
         self._imu_out = self._extract_imu_out(self._drone_model.get_6dof_state())
@@ -77,10 +77,15 @@ class Simulator:
     def get_t(self) -> float:
         return self._drone_model.get_t()
 
-    def reset(self, six_dof_state: SixDofState):
+    def reset(self, state: SixDofState):
+        self._imu_out = ImuOut()
+
         self._att_estimator.reset()
         self._pilot_ctrl.reset()
-        self._drone_model.reset(six_dof_state)
+        self._drone_model.reset(state=state)
+
+        if self._standstill_calib_att_est:
+            self._calib_att_est()
 
     def _calib_att_est(self):
         while not self._att_estimator.is_calibrated():

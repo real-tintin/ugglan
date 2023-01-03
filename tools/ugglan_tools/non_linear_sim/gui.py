@@ -340,6 +340,9 @@ class Gui(QtWidgets.QMainWindow):
     def _reset(self):
         self._reset_simulator()
 
+        if self._gui_state != GuiState.RUNNING:
+            self._update_main_gui()
+
     def _setup_ref_input(self):
         if self._is_input_gamepad_selected():
             self._gamepad = Gamepad(ref_scale=self._conf_input.gamepad.ref_scale)
@@ -360,8 +363,7 @@ class Gui(QtWidgets.QMainWindow):
         )
 
     def _reset_simulator(self):
-        zero_six_dof_state = get_zero_initialized_state()
-        self._simulator.reset(six_dof_state=zero_six_dof_state)
+        self._simulator.reset(state=get_zero_initialized_state())
 
     def _init_rolling_sim_buf(self):
         self._rolling_sim_buf = RollingBuffer(
