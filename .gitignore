@@ -1,0 +1,19 @@
+# Common
+build*/
+
+# C/C++
+*.deb
+
+# Python
+__pycache__/
+venv/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Pycharm
+.idea/
