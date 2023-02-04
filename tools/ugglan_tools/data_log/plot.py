@@ -274,6 +274,7 @@ def _plot_tasks(data):
     _plot_task_sample_rate(axs[2, 0], data.Task.Execute, TaskId.StateCtrl, 'StateCtrl')
 
     _plot_task_sample_rate(axs[2, 1], data.Task.Execute, TaskId.DataLogger, 'DataLogger')
+    _plot_task_sample_rate(axs[2, 1], data.Task.Execute, TaskId.StreamerServer, 'StreamerServer')
 
     _finish_subplots(fig)
 
@@ -285,7 +286,7 @@ def main():
                         help='Selected figure(s)')
     args = parser.parse_args()
 
-    data = data_log_io.read(args.path)
+    data = data_log_io.read(path=args.path)
 
     if Figure.IMU in args.figure:
         _plot_imu(data)

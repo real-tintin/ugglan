@@ -13,7 +13,7 @@ extern "C"
 #include <i2c/smbus.h>
 }
 #include <logger.h>
-#include <utils.h>
+#include <common_utils.h>
 
 class I2cConn
 {

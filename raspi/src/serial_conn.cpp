@@ -45,7 +45,7 @@ bool SerialConn::close()
     }
 }
 
-uint32_t SerialConn::bytes_available()
+size_t SerialConn::bytes_available()
 {
     uint32_t bytes_available;
     ioctl(_fd, FIONREAD, &bytes_available);
@@ -53,7 +53,7 @@ uint32_t SerialConn::bytes_available()
     return bytes_available;
 }
 
-uint32_t SerialConn::read(uint8_t* buf, uint32_t size)
+size_t SerialConn::read(uint8_t* buf, size_t size)
 {
     ssize_t n_bytes = -1;
     if (_fd != -1) { n_bytes = ::read(_fd, buf, size); }

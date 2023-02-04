@@ -1,6 +1,7 @@
-import numpy as np
 from pathlib import Path
 from typing import List, Union
+
+import numpy as np
 
 import ugglan_tools.data_log.io as data_log_io
 
@@ -19,7 +20,7 @@ def _list_all_equal_to(l: List, v: Union[int, float]):
 
 
 def test_read():
-    data = data_log_io.read(DATA_LOG_PATH)
+    data = data_log_io.read(path=DATA_LOG_PATH)
 
     assert len(data.IMU.AccelerationX.val) == EXP_LEN_IMU_ACC_X
     assert len(data.IMU.AccelerationX.t_s) == EXP_LEN_IMU_ACC_X
@@ -30,8 +31,8 @@ def test_read():
     assert _list_all_equal_to(data.ESC.Status0.val, EXP_VAL_ESC_STATUS_0)
 
 
-def test_read_resample():
+def test_resample():
     sample_rate = 0.01
-    data = data_log_io.read(DATA_LOG_PATH, resample_to_fixed_rate_s=sample_rate)
+    data = data_log_io.read(path=DATA_LOG_PATH, resample_to_fixed_rate_s=sample_rate)
 
     assert np.all(np.isclose(np.diff(data.IMU.AccelerationX.t_s), sample_rate))

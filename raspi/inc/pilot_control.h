@@ -8,7 +8,6 @@
 #include <attitude_estimation.h>
 #include <motor_control.h>
 #include <drone_props.h>
-#include <utils.h>
 #include <eigen/Eigen>
 
 inline const double PILOT_CTRL_ABS_MAX_REF_ROLL = M_PI / 8; // [rad]

@@ -38,6 +38,7 @@ the consumers, see :numref:`drone_sw_design`.
         DataLogQueue -- last value 100 Hz --> StateEst
         DataLogQueue -- last value 100 Hz --> StateCtrl
         DataLogQueue -- last value 100 Hz --> EscWrite
+        DataLogQueue -- last value 100 Hz --> StreamerServer
         DataLogQueue -- pack 10 Hz --> DataLogger
 
         subgraph Producers
@@ -53,6 +54,7 @@ the consumers, see :numref:`drone_sw_design`.
         StateCtrl
         EscWrite
         DataLogger
+        StreamerServer
         end
 
 As one can see, the ``DataLogQueue`` maintains a thread safe queue for the producers to
@@ -61,6 +63,8 @@ push to and the ``DataLogger`` to pack (pop until empty) from. But it also store
 rate i.e., to simplify the signal processing. Note, other tasks than producers may populate
 the queue e.g., estimated states which are used by the ``StateCtrl`` or for offline
 tuning of control laws.
+
+.. _data_logging:
 
 Data Logging
 =================
@@ -73,7 +77,7 @@ for an illustration of the data-log protocol.
 .. figure:: figures/data_log_protocol.svg
     :width: 100%
 
-    The data logging protocol. The **SIGNAL ID** is an unique identifer for each signal/package
+    The data logging protocol. The **SIGNAL ID** is an unique identifier for each signal/package
     and of type ``uint16``. The **REL TIMESTAMP** is the relative timestamp in ms
     between each **PACKAGE** and of type ``uint8``.
 
@@ -130,3 +134,44 @@ User Operator
         Armed --> Alive: LS Lo
         Alive --> Armed: LS Mid
         Disarmed --> [*]: MS Lo
+
+Wireless Streaming
+===================
+There exists support for wireless data streaming from the drone. The streaming is build
+on top of the open-source message library `ZeroMQ <https://zeromq.org>`_. In
+:numref:`wireless_streaming_seq_diagram` the communication sequence between the client
+(e.g., Laptop) and the server (drone) is illustrated.
+
+.. _wireless_streaming_seq_diagram:
+.. mermaid::
+    :caption: Communication sequence between the client and the server. Note, only a subset of all available requests are shown.
+
+    sequenceDiagram
+        Client->>Server: Request[method: Get_DataLogMetadata<0>, data:{}]
+        Server-->>Client: Response[code: Ok<0>, data:<DataLogMetadata as JSON>]
+        Client->>Server: Request[method: Set_SelectedDataLogSignals<4>, data:[0,1,2,3]]
+        Server-->>Client: Response[code: Ok<0>, data:{}]
+        Client->>Server: Request[method: Set_StartStream<2>, data:{}]
+        Server-->>Client: Response[code: Ok<0>, data:{}]
+        loop
+            Server-->>Client: Pushing[Selected data log signal package]
+        end
+        Client->>Server: Request[method: Set_StopStream<3>, data:{}]
+        Server-->>Client: Response[code: Ok, data:{}]
+
+The requests/responses are sent on a socket using the ``REQUEST-REPLY`` pattern, while
+the actual selected data log signal bytes are sent on separate socket using the ``PUSH-PULL``
+pattern. This to improve performance.
+
+The data sent back and forth via requests/responses are JSON, while the data log signal
+package is packed as following::
+
+    <ABS_TIMESTAMP><DATA_LOG_SIGNALS>
+
+and the data log signals are packed as::
+
+    <ID_0><BYTES_0>...<ID_N><BYTES_N>
+
+Note, they are packed somewhat differently compared to the data log signals in
+:ref:`data_logging`. This since we can't really unsure that relative timestamps will be
+continuous between sent packages.

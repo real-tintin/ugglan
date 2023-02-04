@@ -1,5 +1,8 @@
 #include <cstdlib>
 
+#ifndef GZIP_UTILS_HPP
+#define GZIP_UTILS_HPP
+
 namespace gzip {
 
 // These live in gzip.hpp because it doesnt need to use deps.
@@ -20,3 +23,5 @@ inline bool is_compressed(const char* data, std::size_t size)
                (static_cast<uint8_t>(data[0]) == 0x1F && static_cast<uint8_t>(data[1]) == 0x8B));
 }
 } // namespace gzip
+
+#endif /* GZIP_UTILS_HPP */

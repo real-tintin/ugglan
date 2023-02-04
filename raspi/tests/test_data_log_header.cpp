@@ -8,11 +8,11 @@
 #include <data_log_header.h>
 
 static const std::time_t HEADER_TIME = 0;
-static const std::filesystem::path HEADER_PATH = catchutils::RESOURCES_ROOT / "header.json";
+static const std::filesystem::path HEADER_PATH = catch_utils::RESOURCES_ROOT / "header.json";
 
 TEST_CASE("data_log_header")
 {
-    std::string exp_header = catchutils::read_file(HEADER_PATH);
+    std::string exp_header = catch_utils::read_file(HEADER_PATH);
     std::string act_header = generate_header(HEADER_TIME);
 
     REQUIRE(act_header.size() > 0);

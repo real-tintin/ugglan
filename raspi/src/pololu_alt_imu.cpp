@@ -90,8 +90,8 @@ void PololuAltImu::_write_config()
 
 void PololuAltImu::_write_config_log_msg(uint8_t reg, uint8_t exp_data, uint8_t act_data)
 {
-    logger.debug(_sensor_name + " updating config: " + utils::byte_to_hex_str(reg) + ": " +
-        utils::byte_to_bit_str(act_data) + " -> " + utils::byte_to_bit_str(exp_data));
+    logger.debug(_sensor_name + " updating config: " + common_utils::byte_to_hex_str(reg) + ": " +
+        common_utils::byte_to_bit_str(act_data) + " -> " + common_utils::byte_to_bit_str(exp_data));
 }
 
 void PololuAltImu::_allocate_buffer()

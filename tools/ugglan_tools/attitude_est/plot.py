@@ -108,7 +108,7 @@ def main():
     parser.add_argument('--hard_iron_offset_comp', default=True, choices=[True, False], type=_parse_bool_arg)
     args = parser.parse_args()
 
-    data = data_log_io.read(args.path, resample_to_fixed_rate_s=TARGET_IMU_SAMPLE_RATE_S)
+    data = data_log_io.read(path=args.path, resample_to_fixed_rate_s=TARGET_IMU_SAMPLE_RATE_S)
     imu_out = extract_imu_out(data)
     plot_att_est = PlotAttEst(t_s=_get_imu_t_s(data))
     exec_opt = _pack_exec_opt_from_args(args)

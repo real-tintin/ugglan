@@ -256,7 +256,8 @@ class FilterDesign(tk.Frame):
         self._update_plot_widget()
 
     def _reload_data_log(self):
-        self._data_log = data_log_io.read(path=self._data_path, resample_to_fixed_rate_s=self._dt)
+        self._data_log = data_log_io.read(path=self._data_path,
+                                          resample_to_fixed_rate_s=self._dt)
 
     def _update_spin_box_states(self):
         filter_config = self._get_sel_filter_config()

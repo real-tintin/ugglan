@@ -11,6 +11,7 @@ to header only and removed no needed methods. Assumes C++17.
 
 #include <string>
 #include <string_view>
+#include <stdexcept>
 
 inline const char* base64_chars[2] = {
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -34,7 +35,7 @@ inline unsigned int pos_of_char(const unsigned char chr) {
     else if (chr == '+' || chr == '-') return 62; // Be liberal with input and accept both url ('-') and non-url ('+') base 64 characters (
     else if (chr == '/' || chr == '_') return 63; // Ditto for '/' and '_'
 
-    throw "If input is correct, this line should never be reached.";
+    throw std::runtime_error("If input is correct, this line should never be reached.");
 }
 
 inline std::string base64_encode(const char* bytes_to_encode, size_t in_len, bool url = false) {
@@ -88,7 +89,7 @@ inline std::string base64_encode(const char* bytes_to_encode, size_t in_len, boo
     return ret;
 }
 
-inline std::string base64_decode(std::string encoded_string, bool remove_linebreaks = false) {
+inline std::string base64_decode(std::string encoded_string, bool remove_linebreaks = true) {
  //
  // decode(…) is templated so that it can be used with String = const std::string&
  // or std::string_view (requires at least C++17)

@@ -9,6 +9,7 @@
 #include <gzip/compress.hpp>
 #include <base64/base64.hpp>
 #include <logger.h>
+#include <common_utils.h>
 #include <data_log_header.h>
 #include <data_log_queue.h>
 #include <data_log_signals.h>
@@ -39,7 +40,7 @@ private:
     void _pack_queue_until_empty();
 
     void _open();
-    void _write(const char* buf, uint32_t size);
+    void _write(uint8_t* buf, size_t size);
     void _close();
 };
 

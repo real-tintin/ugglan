@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <algorithm>
 #include <math.h>
-#include <utils.h>
 #include <statistics.h>
 #include <eigen/Eigen>
 

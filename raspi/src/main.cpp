@@ -2,10 +2,12 @@
 #include <string>
 #include <vector>
 #include <thread>
+#include <i2c_conn.h>
+#include <serial_conn.h>
+#include <zmq_conn.h>
 #include <data_log_queue.h>
 #include <data_logger.h>
 #include <task.h>
-#include <utils.h>
 #include <lsm303d.h>
 #include <l3gd20h.h>
 #include <lps25h.h>
@@ -14,19 +16,21 @@
 #include <attitude_estimation.h>
 #include <motor_control.h>
 #include <pilot_control.h>
+#include <streamer_server.h>
 #include <drone_props.h>
 #include <config.h>
 #include <graceful_killer.h>
 
-static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS     = 10;   // 100 Hz.
-static const uint32_t TASK_GYRO_EXEC_PERIOD_MS        = 10;   // 100 Hz.
-static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS   = 100;  // 10 Hz.
-static const uint32_t TASK_STATE_EST_EXEC_PERIOD_MS   = 10;   // 100 Hz.
-static const uint32_t TASK_STATE_CTRL_EXEC_PERIOD_MS  = 10;   // 100 Hz.
-static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS    = 1000; // 1 Hz.
-static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS   = 10;   // 100 Hz.
-static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 10;   // 100 Hz.
-static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 100;  // 10 Hz.
+static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS         = 10;   // 100 Hz.
+static const uint32_t TASK_GYRO_EXEC_PERIOD_MS            = 10;   // 100 Hz.
+static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS       = 100;  // 10 Hz.
+static const uint32_t TASK_STATE_EST_EXEC_PERIOD_MS       = 10;   // 100 Hz.
+static const uint32_t TASK_STATE_CTRL_EXEC_PERIOD_MS      = 10;   // 100 Hz.
+static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS        = 1000; // 1 Hz.
+static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS       = 10;   // 100 Hz.
+static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS     = 10;   // 100 Hz.
+static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS     = 100;  // 10 Hz.
+static const uint32_t TASK_STREAMER_SERVER_EXEC_PERIOD_MS = 10;   // 100 Hz.
 
 static const uint8_t I2C_ADDRESS_ACC_MAG   = LSM303D_I2C_ADDRESS;
 static const uint8_t I2C_ADDRESS_GYRO      = L3GD20H_I2C_ADDRESS;
@@ -58,7 +62,8 @@ enum class TaskId {
     RcReceiver,
     StateEst,
     StateCtrl,
-    DataLogger
+    DataLogger,
+    StreamerServer
 };
 
 class TaskAccMag : public Task
@@ -578,6 +583,43 @@ private:
     DataLogQueue& _data_log_queue;
 };
 
+class TaskStreamerServer : public Task
+{
+public:
+    TaskStreamerServer(uint32_t exec_period_ms, std::string name,
+                       std::string zmq_address_request,
+                       std::string zmq_address_stream,
+                       DataLogQueue& data_log_queue) :
+        Task(exec_period_ms, name),
+        _request(zmq_address_request),
+        _stream(zmq_address_stream),
+        _server(_request, _stream, data_log_queue),
+        _data_log_queue(data_log_queue) {}
+protected:
+    void _setup() override
+    {
+        _server.connect();
+        _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskSetup);
+    }
+    void _execute() override
+    {
+        _server.execute();
+        _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskExecute);
+    }
+    void _finish() override
+    {
+        _server.disconnect();
+        _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskFinish);
+    }
+private:
+    ZmqRep _request;
+    ZmqPush _stream;
+
+    streamer::Server _server;
+
+    DataLogQueue& _data_log_queue;
+};
+
 bool user_requested_shutdown(DataLogQueue& data_log_queue)
 {
     SwitchLr switch_left = SwitchLr::Low;
@@ -644,6 +686,11 @@ int main()
 
     tasks.emplace_back(new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, "DataLogger",
                                           config.get_data_log_root(), data_log_queue));
+
+    tasks.emplace_back(new TaskStreamerServer(TASK_STREAMER_SERVER_EXEC_PERIOD_MS, "StreamerServer",
+                                              config.get_zmq_address_request(),
+                                              config.get_zmq_address_stream(),
+                                              data_log_queue));
 
     for(auto const& task: tasks) { task->launch(); }
     wait_for_shutdown(data_log_queue);

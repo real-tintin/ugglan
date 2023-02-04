@@ -8,6 +8,9 @@
 #include <stdexcept>
 #include <string>
 
+#ifndef GZIP_COMPRESS_HPP
+#define GZIP_COMPRESS_HPP
+
 namespace gzip {
 
 class Compressor
@@ -111,3 +114,5 @@ inline std::string compress(const char* data,
 }
 
 } // namespace gzip
+
+#endif /* GZIP_COMPRESS_HPP */

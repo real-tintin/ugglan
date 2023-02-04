@@ -8,9 +8,9 @@
 #include <map>
 #include <type_traits>
 #include <wall_time.h>
-#include <utils.h>
 #include <logger.h>
 #include <data_log_signals.h>
+#include <data_log_utils.h>
 
 inline const uint32_t DATA_LOG_QUEUE_WARN_LARGE = 1e4;
 

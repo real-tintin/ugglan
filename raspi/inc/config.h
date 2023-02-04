@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <vector>
 #include <logger.h>
-#include <utils.h>
+#include <common_utils.h>
 #include <attitude_estimation.h>
 #include <pilot_control.h>
 
@@ -26,6 +26,9 @@ namespace config
         std::string get_i2c_device_imu() { return _i2c_device_imu; }
         std::string get_i2c_device_esc() { return _i2c_device_esc; }
 
+        std::string get_zmq_address_request() { return _zmq_address_request; }
+        std::string get_zmq_address_stream() { return _zmq_address_stream; }
+
         AttEstConfig get_att_est() { return _att_est; }
 
         PilotCtrlConfig get_pilot_ctrl() { return _pilot_ctrl; }
@@ -41,6 +44,9 @@ namespace config
         std::string _i2c_device_imu;
         std::string _i2c_device_esc;
 
+        std::string _zmq_address_request;
+        std::string _zmq_address_stream;
+
         AttEstConfig _att_est;
 
         PilotCtrlConfig _pilot_ctrl;
@@ -48,6 +54,7 @@ namespace config
         void _load_data_log_root();
         void _load_logger_level();
         void _load_bus_devices();
+        void _load_zmq_addresses();
         void _load_att_est();
         void _load_pilot_ctrl();
 
@@ -57,7 +64,7 @@ namespace config
         void _read_env(T &dst, std::string name)
         {
             std::string _env_line = name + ": ";
-            utils::read_and_cast_env(dst, name);
+            common_utils::read_and_cast_env(dst, name);
 
             if constexpr (!std::is_same<T, std::string>::value)
             {
@@ -71,6 +78,6 @@ namespace config
             _env_lines.push_back(_env_line);
         }
     };
-}
+} /* config */
 
 #endif /* CONFIG_H */

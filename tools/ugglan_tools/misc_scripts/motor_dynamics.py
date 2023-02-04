@@ -134,7 +134,7 @@ def main():
     parser.add_argument('--motor_i', type=int, help='Select which motor (0,1,2,3)', default=0)
     args = parser.parse_args()
 
-    data = data_log_io.read(args.path)
+    data = data_log_io.read(path=args.path)
     _plot_motor_dynamics(data, args.motor_i)
     plt.show()
 

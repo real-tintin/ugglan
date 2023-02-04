@@ -27,8 +27,8 @@ public:
     virtual bool open(Mode mode, ControlFlags flags);
     virtual bool close();
 
-    virtual uint32_t bytes_available();
-    virtual uint32_t read(uint8_t* buf, uint32_t size);
+    virtual size_t bytes_available();
+    virtual size_t read(uint8_t* buf, size_t size);
 private:
     int8_t _fd;
     std::string _device;

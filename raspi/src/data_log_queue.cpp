@@ -44,19 +44,10 @@ uint32_t DataLogQueue::_get_rel_timestamp()
 
 void DataLogQueue::_check_signal_type(DataLogSignal signal, DataLogType type)
 {
-    auto it = DATA_LOG_SIGNAL_MAP.find(signal);
+    DataLogSignalInfo info = data_log::utils::get_data_log_signal_info(signal);
 
-    if (it != DATA_LOG_SIGNAL_MAP.end())
+    if (info.type != type)
     {
-        DataLogSignalInfo signal_info = it->second;
-
-        if (signal_info.type != type)
-        {
-            throw std::runtime_error("Data log signal type missmatch");
-        }
-    }
-    else
-    {
-        throw std::runtime_error("Unknown signal type");
+        throw std::runtime_error("Data log signal type missmatch");
     }
 }

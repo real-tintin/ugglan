@@ -9,6 +9,7 @@ namespace config
         _load_data_log_root();
         _load_logger_level();
         _load_bus_devices();
+        _load_zmq_addresses();
         _load_att_est();
         _load_pilot_ctrl();
     }
@@ -40,6 +41,12 @@ namespace config
 
         _read_env(_i2c_device_imu, "I2C_DEV_HW_FAST_MODE");
         _read_env(_i2c_device_esc, "I2C_DEV_SW_NORMAL_MODE");
+    }
+
+    void Config::_load_zmq_addresses()
+    {
+        _read_env(_zmq_address_request, "ZMQ_ADDRESS_REQUEST");
+        _read_env(_zmq_address_stream, "ZMQ_ADDRESS_STREAM");
     }
 
     void Config::_load_att_est()
@@ -86,4 +93,4 @@ namespace config
         else if (log_level == "OFF")   { return LogLevel::off; }
         else                           { return logger.get_level(); }
     }
-}
+} /* config */

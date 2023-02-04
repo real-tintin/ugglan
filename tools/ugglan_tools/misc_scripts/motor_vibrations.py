@@ -212,7 +212,7 @@ def main():
     parser.add_argument('path', type=Path, help='Path to data log file')
     args = parser.parse_args()
 
-    data = data_log_io.read(args.path, resample_to_fixed_rate_s=RESAMPLE_RATE_S)
+    data = data_log_io.read(path=args.path, resample_to_fixed_rate_s=RESAMPLE_RATE_S)
     _plot_vibrations(data)
     plt.show()
 

@@ -17,5 +17,6 @@ make all -j8
 exit_code=$?
 
 if [ $exit_code -eq 0 ]; then
+    echo "Running tests..."
     ${TARGET_PATH}
 fi

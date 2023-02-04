@@ -4,7 +4,7 @@ import json
 import struct
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Union, List
+from typing import Dict, Union, List, Tuple
 
 import numpy as np
 
@@ -27,7 +27,8 @@ class Signal:
     t_s: List[float]
 
 
-def read(path: Path, resample_to_fixed_rate_s=False) -> Signals:
+def read(path: Path,
+         resample_to_fixed_rate_s=False) -> Signals:
     with open(path, mode='rb') as f:
         header_bytes = f.readline()
         packages_bytes = f.read()
@@ -49,7 +50,7 @@ def _unpack_header(h_bytes: bytes) -> Dict:
     return h_dict
 
 
-def _unpack_packages(header: Dict, packages: bytes) -> Signals:
+def _unpack_packages(header: Dict, packages: bytes) -> Tuple[Signals, float]:
     """
     Assumes little endian, Raspberry Pi (ARM) and Intel.
     """

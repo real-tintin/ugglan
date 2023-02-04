@@ -8,6 +8,9 @@
 #include <stdexcept>
 #include <string>
 
+#ifndef GZIP_DECOMPRESS_HPP
+#define GZIP_DECOMPRESS_HPP
+
 namespace gzip {
 
 class Decompressor
@@ -25,6 +28,11 @@ class Decompressor
                     const char* data,
                     std::size_t size) const
     {
+        if (size <= 0)
+        {
+            throw std::runtime_error("size <= 0, can't decompress data");
+        }
+
         z_stream inflate_s;
 
         inflate_s.zalloc = Z_NULL;
@@ -103,3 +111,5 @@ inline std::string decompress(const char* data, std::size_t size)
 }
 
 } // namespace gzip
+
+#endif /* GZIP_DECOMPRESS_HPP */

@@ -35,12 +35,11 @@ void DataLogger::_create_and_write_header()
 {
     std::time_t now_time = std::time(nullptr);
 
-    std::string header_json = generate_header(now_time);
-    std::string header_gzip = gzip::compress(header_json.c_str(), header_json.size());
-    std::string header_base64 = base64_encode(header_gzip.c_str(), header_gzip.size());
+    std::string header_unpacked = generate_header(now_time);
+    std::string header_packed = common_utils::pack_gzip_base64(header_unpacked);
 
-    _write(header_base64.c_str(), header_base64.size());
-    _write(DATA_LOG_ENDL.c_str(), DATA_LOG_ENDL.size());
+    _write((uint8_t*) header_packed.c_str(), header_packed.size());
+    _write((uint8_t*) DATA_LOG_ENDL.c_str(), DATA_LOG_ENDL.size());
 }
 
 void DataLogger::_create_file_path()
@@ -57,56 +56,27 @@ void DataLogger::_create_file_path()
 void DataLogger::_pack_queue_until_empty()
 {
     DataLogSample sample;
+    size_t size;
 
     while (!_queue.is_empty())
     {
         sample = _queue.pop();
+        size = data_log::utils::get_data_log_type_size(sample.type);
 
-        _write((const char*) &sample.signal, sizeof(uint16_t));
-
-        switch(sample.type)
-        {
-            case DataLogType::BOOL:
-                _write((const char*) &sample.data, sizeof(bool));
-                break;
-            case DataLogType::UINT8:
-                _write((const char*) &sample.data, sizeof(uint8_t));
-                break;
-            case DataLogType::UINT16:
-                 _write((const char*) &sample.data, sizeof(uint16_t));
-                break;
-            case DataLogType::UINT32:
-                _write((const char*) &sample.data, sizeof(uint32_t));
-                break;
-            case DataLogType::SINT8:
-                _write((const char*) &sample.data, sizeof(int8_t));
-                break;
-            case DataLogType::SINT16:
-                _write((const char*) &sample.data, sizeof(int16_t));
-                break;
-            case DataLogType::SINT32:
-                _write((const char*) &sample.data, sizeof(int32_t));
-                break;
-            case DataLogType::FLOAT:
-                _write((const char*) &sample.data, sizeof(float));
-                break;
-            case DataLogType::DOUBLE:
-                _write((const char*) &sample.data, sizeof(double));
-                break;
-        }
-
-        _write((const char*) &sample.rel_timestamp_ms, sizeof(uint8_t));
+        _write((uint8_t*) &sample.signal, sizeof(uint16_t));
+        _write((uint8_t*) &sample.data, size);
+        _write((uint8_t*) &sample.rel_timestamp_ms, sizeof(uint8_t));
     }
 }
 
 void DataLogger::_open()
 {
-    _ofs = std::ofstream(_file_path, std::ios::binary);
+    _ofs = std::ofstream(_file_path, std::ios_base::out | std::ios_base::binary);
 }
 
-void DataLogger::_write(const char* buf, uint32_t size)
+void DataLogger::_write(uint8_t* buf, size_t size)
 {
-    _ofs.write(buf, size);
+    _ofs.write((char*) buf, size);
 }
 
 void DataLogger::_close()

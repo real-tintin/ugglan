@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <sstream>
 #include <nlohmann/json.hpp>
-#include <data_log_signals.h>
+#include <data_log_utils.h>
 
 std::string generate_header(std::time_t start_time);
 

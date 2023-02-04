@@ -11,14 +11,14 @@ bool I2cConn::open()
     if (((_fd = ::open(_device.c_str(), O_RDWR)) != -1) && (ioctl(_fd, I2C_SLAVE, _address) != -1))
     {
         logger.debug("Successfully opened i2c connection at: " + _device + " (" +
-            utils::byte_to_hex_str(_address) + ")");
+            common_utils::byte_to_hex_str(_address) + ")");
 
         return true;
     }
     else
     {
         logger.error("Failed to open i2c connection at: " + _device + " (" +
-            utils::byte_to_hex_str(_address) + ")");
+            common_utils::byte_to_hex_str(_address) + ")");
 
         return false;
     }

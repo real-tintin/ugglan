@@ -25,3 +25,4 @@ class TaskId(AutoNumber):
     StateEst = ()
     StateCtrl = ()
     DataLogger = ()
+    StreamerServer = ()
