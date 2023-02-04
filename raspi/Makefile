@@ -13,7 +13,7 @@ TARGET := $(TARGET_NAME)
 SRCEXT := cpp
 
 CXX = g++-10
-CXXFLAGS += -Wall -Wno-psabi -std=c++17 -pthread -MD $(EXTRA_CXXFLAGS)
+CXXFLAGS += -Wall -Werror -Wno-psabi -std=c++17 -pthread -MD $(EXTRA_CXXFLAGS)
 LDFLAGS += -lz -li2c -lzmq
 
 SRCDIR := ./src
@@ -59,7 +59,7 @@ $(OBJECTS): $(OBJDIR)/%.o: %.$(SRCEXT)
 	$(LINK.cc) $(INC) -c -o $@ $<
 
 clean:
-	@echo "Cleaning...";
+	@echo "Cleaning..."
 	$(RM) -r $(OBJDIR) $(TARGET)
 
 -include $(wildcard $(DEPENDENCIES))

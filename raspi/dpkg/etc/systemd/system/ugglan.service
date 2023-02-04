@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 EnvironmentFile=/usr/local/bin/ugglan/env
 ExecStartPre=/bin/mkdir -p ${DATA_LOG_ROOT}
-ExecStart=/usr/local/bin/ugglan/ugglan
+ExecStart=/usr/local/bin/ugglan/ugglan_app
 WorkingDirectory=/usr/local/bin/ugglan
 
 [Install]

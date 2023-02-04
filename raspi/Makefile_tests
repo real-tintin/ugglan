@@ -10,12 +10,53 @@ GID = $(shell id -u)
 
 IMAGE_NAME = raspi_host
 
-.PHONY: build_and_run_tests
+TARGET_NAME = ugglan_tests
+BUILD_FOR_TEST = TRUE
+BUILD_SUFFIX = tests
 
-build_and_run_tests:
+TEST_ROOT= ${IMAGE_ROOT}/tests
+RESOURCES_ROOT = ${TEST_ROOT}/resources
+
+TARGET_PATH = ./build_${BUILD_SUFFIX}/${TARGET_NAME}
+
+.DEFAULT_GOAL := build_and_run_tests
+
+.PHONY: build_image build_tests build_tests_for_debug \
+build_and_run_tests clean
+
+build_image:
 	docker build . -t ${IMAGE_NAME} \
 		--build-arg IMAGE_ROOT=${IMAGE_ROOT}
 
+build_tests: build_image
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
-		${IMAGE_NAME} ./run_tests.sh
+		--env BUILD_FOR_TEST=${BUILD_FOR_TEST} \
+		--env TARGET_NAME=${TARGET_NAME} \
+		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
+		${IMAGE_NAME} make all -j8
+
+build_tests_for_debug: build_image
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		--env BUILD_FOR_TEST=${BUILD_FOR_TEST} \
+		--env TARGET_NAME=${TARGET_NAME} \
+		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
+		--env GDB_DEBUG=TRUE \
+		${IMAGE_NAME} make all -j8
+
+build_and_run_tests: build_tests
+	@echo "Running tests..."
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		--env TEST_ROOT=${TEST_ROOT} \
+		--env RESOURCES_ROOT=${RESOURCES_ROOT} \
+		${IMAGE_NAME} ${TARGET_PATH}
+
+clean:
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		--env BUILD_FOR_TEST=${BUILD_FOR_TEST} \
+		--env TARGET_NAME=${TARGET_NAME} \
+		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
+		${IMAGE_NAME} make clean

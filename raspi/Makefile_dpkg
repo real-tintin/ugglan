@@ -1,6 +1,6 @@
-# Makefile for cross compiling (using Docker) of Ugglan
-# for target (Raspberry Pi Zero 2 W) and building a
-# Debian package.
+# Makefile for cross compiling (using Docker) of the Ugglan
+# application for target (Raspberry Pi Zero 2 W) and
+# building a Debian package.
 #
 
 RASPI_ROOT = $(shell pwd)
@@ -11,21 +11,53 @@ GID = $(shell id -u)
 
 IMAGE_NAME = raspi_target
 
+TARGET_NAME = ugglan_app
+BUILD_SUFFIX = dpkg
+
+PROFILE_CXXFLAGS = -pg
+
 .DEFAULT_GOAL := build_dpkg
 
-.PHONY: build_image build_dpkg build_dpkg_for_profiling
+.PHONY: build_image build_app build_dpkg build_app_for_profiling \
+build_dpkg_for_profiling clean
 
 build_image:
 	docker build --platform linux/arm/v7 \
 		-f Dockerfile . -t ${IMAGE_NAME} \
 		--build-arg IMAGE_ROOT=${IMAGE_ROOT}
 
-build_dpkg: build_image
-	docker run -v $(RASPI_ROOT):${IMAGE_ROOT} \
+build_app: build_image
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
+		--env TARGET_NAME=${TARGET_NAME} \
+		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
+		${IMAGE_NAME} make all -j8
+
+build_dpkg: build_app
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		--env TARGET_NAME=${TARGET_NAME} \
+		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
 		${IMAGE_NAME} ./build_dpkg.sh
 
-build_dpkg_for_profiling: build_image
-	docker run -v $(RASPI_ROOT):${IMAGE_ROOT} \
+build_app_for_profiling: build_image
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
-		${IMAGE_NAME} ./build_dpkg.sh -c -pg
+		--env TARGET_NAME=${TARGET_NAME} \
+		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
+		--env EXTRA_CXXFLAGS=${PROFILE_CXXFLAGS} \
+		${IMAGE_NAME} make all -j8
+
+build_dpkg_for_profiling: build_app_for_profiling
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		--env TARGET_NAME=${TARGET_NAME} \
+		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
+		${IMAGE_NAME} ./build_dpkg.sh
+
+clean:
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		--env TARGET_NAME=${TARGET_NAME} \
+		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
+		${IMAGE_NAME} make clean

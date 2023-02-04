@@ -79,6 +79,8 @@ size_t get_data_log_type_size(DataLogType type)
             return sizeof(float);
         case DataLogType::DOUBLE:
             return sizeof(double);
+        default:
+            throw std::runtime_error("Unknown signal type");
     }
 }
 

@@ -22,14 +22,12 @@ To run all unit tests in docker::
 
 C++ Debugging
 ==============
-To debug the C++ application the env variable ``GDB_DEBUG`` can be used
-e.g.,::
+To build the C++ application for debug::
 
-    export TARGET_NAME=ugglan
-    export BUILD_FOR_TEST=TRUE
-    export GDB_DEBUG=TRUE
+    make -C ./raspi -f Makefile_tests build_tests_for_debug
 
-    make -C ./raspi
+Note, this requires a setup of the env, see *raspi/Dockerfile* and
+*raspi/Makefile_tests*.
 
 ESC Compile & Flash
 =====================

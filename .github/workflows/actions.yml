@@ -3,7 +3,7 @@ name: ci
 on: [push]
 
 env:
-  artifact-path: ./raspi/ugglan.deb
+  artifact-path: ./raspi/build_dpkg/ugglan.deb
   artifact-name: ugglan.deb
   artifact-mime-type: application/x-tar
 

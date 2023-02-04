@@ -2,6 +2,7 @@
 #define DATA_LOG_UTILS_H
 
 #include <string>
+#include <stdexcept>
 #include <nlohmann/json.hpp>
 #include <data_log_signals.h>
 
