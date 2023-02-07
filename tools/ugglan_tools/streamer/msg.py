@@ -71,7 +71,7 @@ class Base(ABC):
             self._data = unpacked[self._get_data_key()]
             self._valid = True
         except:
-            logger.error("Unable to unpack bytes")
+            logger.error("Unable to unpack_bytes.py bytes")
             self._valid = False
 
     def _as_dict(self) -> Dict:

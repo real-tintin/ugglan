@@ -1,12 +1,14 @@
 import base64
 import gzip
 import json
-import struct
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Union, List, Tuple
 
 import numpy as np
+
+from ugglan_tools.data_log import unpack_bytes
+from ugglan_tools.data_log.unpack_bytes import PackedBytes, TypeName
 
 S_IN_MS = 0.001
 
@@ -31,10 +33,10 @@ def read(path: Path,
          resample_to_fixed_rate_s=False) -> Signals:
     with open(path, mode='rb') as f:
         header_bytes = f.readline()
-        packages_bytes = f.read()
+        packages = PackedBytes(buf=f.read())
 
     header = _unpack_header(header_bytes)
-    data, last_timestamp_s = _unpack_packages(header, packages_bytes)
+    data, last_timestamp_s = _unpack_packages(header, packages)
 
     if resample_to_fixed_rate_s:
         _resample_to_fixed_rate(data, resample_to_fixed_rate_s, last_timestamp_s)
@@ -50,16 +52,15 @@ def _unpack_header(h_bytes: bytes) -> Dict:
     return h_dict
 
 
-def _unpack_packages(header: Dict, packages: bytes) -> Tuple[Signals, float]:
+def _unpack_packages(header: Dict, packages: PackedBytes) -> Tuple[Signals, float]:
     """
     Assumes little endian, Raspberry Pi (ARM) and Intel.
     """
     data = Signals()
     abs_timestamp_s = 0
-    offset = 0
 
-    while offset < len(packages):
-        offset, signal_id = _get_signal_id(packages, offset)
+    while packages.offset < len(packages.buf):
+        signal_id = unpack_bytes.signal_id(packages)
 
         signal_name = header['signals'][str(signal_id)]['name']
         type_id = header['signals'][str(signal_id)]['type']
@@ -67,8 +68,8 @@ def _unpack_packages(header: Dict, packages: bytes) -> Tuple[Signals, float]:
         group_id = header['signals'][str(signal_id)]['group']
         group_name = header['groups'][str(group_id)]
 
-        offset, value = _get_signal_value(packages, offset, type_name)
-        offset, rel_timestamp_ms = _get_rel_timestamp_ms(packages, offset)
+        value = unpack_bytes.signal_value(packed=packages, type_name=TypeName(type_name))
+        rel_timestamp_ms = unpack_bytes.rel_timestamp_ms(packed=packages)
         abs_timestamp_s += rel_timestamp_ms * S_IN_MS
 
         if not hasattr(data, group_name):
@@ -87,54 +88,6 @@ def _unpack_packages(header: Dict, packages: bytes) -> Tuple[Signals, float]:
         signal.t_s.append(abs_timestamp_s)
 
     return data, abs_timestamp_s
-
-
-def _get_signal_id(packages, offset):
-    signal_id = struct.unpack_from('<H', packages, offset)[0]
-    offset += 2  # uint16
-
-    return offset, signal_id
-
-
-def _get_signal_value(packages, offset, type_name):
-    if type_name == 'BOOL':
-        value = struct.unpack_from('<B', packages, offset)[0]
-        offset += 1
-    elif type_name == 'UINT8':
-        value = struct.unpack_from('<B', packages, offset)[0]
-        offset += 1
-    elif type_name == 'UINT16':
-        value = struct.unpack_from('<H', packages, offset)[0]
-        offset += 2
-    elif type_name == 'UINT32':
-        value = struct.unpack_from('<I', packages, offset)[0]
-        offset += 4
-    elif type_name == 'SINT8':
-        value = struct.unpack_from('<b', packages, offset)[0]
-        offset += 1
-    elif type_name == 'SINT16':
-        value = struct.unpack_from('<h', packages, offset)[0]
-        offset += 2
-    elif type_name == 'SINT32':
-        value = struct.unpack_from('<i', packages, offset)[0]
-        offset += 4
-    elif type_name == 'FLOAT':
-        value = struct.unpack_from('<f', packages, offset)[0]
-        offset += 4
-    elif type_name == 'DOUBLE':
-        value = struct.unpack_from('<d', packages, offset)[0]
-        offset += 8
-    else:
-        raise ValueError
-
-    return offset, value
-
-
-def _get_rel_timestamp_ms(packages, offset):
-    rel_timestamp_ms = struct.unpack_from('<B', packages, offset)[0]
-    offset += 1  # uint8
-
-    return offset, rel_timestamp_ms
 
 
 def _resample_to_fixed_rate(data, sample_rate_s, last_timestamp_s):

@@ -1,63 +1,34 @@
-import struct
 import time
 
-from ugglan_tools.streamer.client import Client
-from ugglan_tools.streamer.msg import Request, Method
+from ugglan_tools.streamer.client import Client, Package
+
+SELECTED_SIGNAL_IDS = [0, 1, 2]
+
+
+def recv_on_stream_cb(package: Package) -> None:
+    acc_x = package.signal_id_value_map[0]
+    acc_y = package.signal_id_value_map[1]
+    acc_z = package.signal_id_value_map[2]
+
+    print(f"{package.abs_timestamp_ms} [ms]: IMU acceleration: ({acc_x}, {acc_y}, {acc_z}) m/s")
 
 
 def main():
-    with Client() as client:
-        req = Request(method=Method.Get_DataLogMetadata)
-        print(f"Sending request: {req}")
-        res = client.send_on_request(req)
-        print(f"Received response: {res}")
+    with Client(recv_on_stream_cb=recv_on_stream_cb) as client:
+        available_signals = client.get_available_signals()
+        print(f"Available signals: {available_signals}")
 
-        req = Request(method=Method.Get_SelectedDataLogSignals)
-        print(f"Sending request: {req}")
-        res = client.send_on_request(req)
-        print(f"Received response: {res}")
+        selected_signals = [signal for signal in available_signals if signal.id in SELECTED_SIGNAL_IDS]
+        print(f"Selected signals: {SELECTED_SIGNAL_IDS}")
+        client.set_selected_signals(selected_signals)
 
-        req = Request(method=Method.Set_SelectedDataLogSignals, data=[0, 1, 2, 3])
-        print(f"Sending request: {req}")
-        res = client.send_on_request(req)
-        print(f"Received response: {res}")
+        client.start_recv_on_stream()
+        print(f"Started recv on stream")
 
-        req = Request(method=Method.Get_SelectedDataLogSignals)
-        print(f"Sending request: {req}")
-        res = client.send_on_request(req)
-        print(f"Received response: {res}")
+        time.sleep(10)
 
-        req = Request(method=Method.Set_StartStream)
-        print(f"Sending request: {req}")
-        res = client.send_on_request(req)
-        print(f"Received response: {res}")
-
-        n_calls = 1000
-        n_bytes = 0
-        start = time.time()
-
-        for _ in range(n_calls):
-            packed_bytes = client.recv_on_stream()
-
-            offset = 0
-            abs_timestamp_ms = struct.unpack_from('<I', packed_bytes, offset)[0]
-            offset += 4
-            signal_id = struct.unpack_from('<H', packed_bytes, offset)[0]
-            offset += 2
-            imu_acceleration_x = struct.unpack_from('<d', packed_bytes, offset)[0]
-
-            print(f"{abs_timestamp_ms} [ms]: {signal_id}: {imu_acceleration_x} [m/s]")
-
-            n_bytes += len(packed_bytes)
-
-        dt = time.time() - start
-        print(f"Took: {dt} s")
-        print(f"Client received {n_bytes} bytes, at {n_bytes / dt} bytes/s")
-
-        req = Request(method=Method.Set_StopStream)
-        print(f"Sending request: {req}")
-        res = client.send_on_request(req)
-        print(f"Received response: {res}")
+        client.stop_recv_on_stream()
+        print(f"Stopped recv on stream")
 
 
 if __name__ == "__main__":
