@@ -25,7 +25,7 @@ def main():
         client.start_recv_on_stream()
         print(f"Started recv on stream")
 
-        time.sleep(10)
+        time.sleep(1)
 
         client.stop_recv_on_stream()
         print(f"Stopped recv on stream")

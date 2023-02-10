@@ -28,7 +28,7 @@ class Group:
 class Signal:
     name: str
     id: int
-    type: Type
+    type_name: TypeName
     group: Group
 
 
@@ -49,15 +49,15 @@ class Client:
 
         self._context = zmq.Context()
 
-        self._socket_request = self._context.socket(zmq.REQ)
-        self._socket_stream = self._context.socket(zmq.PULL)
+        self._socket_request = None
+        self._socket_stream = None
 
-        self._socket_request.setsockopt(zmq.RCVTIMEO, RECV_TIMEOUT_MS)
-        self._socket_stream.setsockopt(zmq.RCVTIMEO, RECV_TIMEOUT_MS)
+        self._recv_on_stream_cb = recv_on_stream_cb
+
+        self._is_connected = False
 
         self._is_recv_on_stream = False
-        self._recv_on_stream_cb = recv_on_stream_cb
-        self._recv_stream_thread = Thread(target=self._recv_on_stream)
+        self._recv_stream_thread = None
 
         self._group_id_to_name_map = None
         self._type_id_to_name_map = None
@@ -73,17 +73,30 @@ class Client:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        self._recv_stream_thread.join()
         self.disconnect()
 
     def connect(self):
+        self._socket_request = self._context.socket(zmq.REQ)
+        self._socket_stream = self._context.socket(zmq.PULL)
+
+        self._socket_request.setsockopt(zmq.RCVTIMEO, RECV_TIMEOUT_MS)
+        self._socket_stream.setsockopt(zmq.RCVTIMEO, RECV_TIMEOUT_MS)
+
         self._socket_request.connect(addr=self._addr_request)
         self._socket_stream.connect(addr=self._addr_stream)
 
         self._update_metadata_maps()
 
+        self._is_connected = True
+
     def disconnect(self):
+        self.stop_recv_on_stream()
+
         self._socket_request.close()
         self._socket_stream.close()
+
+        self._is_connected = False
 
     def get_available_signals(self) -> List[Signal]:
         signals = []
@@ -96,6 +109,9 @@ class Client:
     def get_selected_signals(self) -> List[Signal]:
         signals = []
 
+        res = self.send_on_request(req=Request(method=Method.Get_SelectedDataLogSignals))
+        self._selected_signal_ids = res.data()
+
         for signal_id in self._selected_signal_ids:
             signals.append(self._create_signal_from_id(signal_id))
 
@@ -107,19 +123,16 @@ class Client:
         self.send_on_request(req=Request(method=Method.Set_SelectedDataLogSignals,
                                          data=self._selected_signal_ids))
 
-        res = self.send_on_request(req=Request(method=Method.Get_SelectedDataLogSignals))
-
-        if self._selected_signal_ids != res.data():
-            raise RuntimeError("Missmatch between set and get selected signals")
-
     def start_recv_on_stream(self):
-        self.send_on_request(req=Request(method=Method.Set_StartStream))
-        self._start_recv_stream_in_thread()
+        if not self._is_recv_on_stream:
+            self.send_on_request(req=Request(method=Method.Set_StartStream))
+            self._start_recv_stream_thread()
 
     def stop_recv_on_stream(self):
-        self._stop_recv_stream_in_thread()
-        self.send_on_request(req=Request(method=Method.Set_StopStream))
-        self._flush_stream_socket_recv()
+        if self._is_recv_on_stream:
+            self._stop_recv_stream_thread()
+            self.send_on_request(req=Request(method=Method.Set_StopStream))
+            self._flush_stream_socket_recv()
 
     def send_on_request(self, req: Request) -> Response:
         self._socket_request.send(req.to_packed_bytes())
@@ -132,6 +145,12 @@ class Client:
 
         return res
 
+    def is_connected(self) -> bool:
+        return self._is_connected
+
+    def is_recv_on_stream(self) -> bool:
+        return self._is_recv_on_stream
+
     def _update_metadata_maps(self):
         req = self.send_on_request(req=Request(method=Method.Get_DataLogMetadata))
         metadata = req.data()
@@ -140,11 +159,12 @@ class Client:
         self._type_id_to_name_map = self._dict_keys_str_to_int(metadata["types"])
         self._signal_id_to_info_map = self._dict_keys_str_to_int(metadata["signals"])
 
-    def _start_recv_stream_in_thread(self):
+    def _start_recv_stream_thread(self):
         self._is_recv_on_stream = True
+        self._recv_stream_thread = Thread(target=self._recv_on_stream)
         self._recv_stream_thread.start()
 
-    def _stop_recv_stream_in_thread(self):
+    def _stop_recv_stream_thread(self):
         self._is_recv_on_stream = False
         self._recv_stream_thread.join()
 
@@ -157,7 +177,7 @@ class Client:
             while package.offset < len(package.buf):
                 signal_id = unpack_bytes.signal_id(packed=package)
                 type_id = self._signal_id_to_info_map[signal_id]["type"]
-                type_name = self._type_id_to_name_map['types'][type_id]
+                type_name = self._type_id_to_name_map[type_id]
 
                 value = unpack_bytes.signal_value(packed=package, type_name=TypeName(type_name))
                 signal_id_value_map.update({signal_id: value})
@@ -178,6 +198,7 @@ class Client:
 
         signal_name = signal_info["name"]
         signal_type_id = signal_info["type"]
+        signal_type_name = self._type_id_to_name_map[signal_type_id]
 
         group_id = signal_info["group"]
         group_name = self._group_id_to_name_map[group_id]
@@ -185,7 +206,7 @@ class Client:
         return Signal(
             name=signal_name,
             id=signal_id,
-            type=Type(signal_type_id),
+            type_name=TypeName(signal_type_name),
             group=Group(name=group_name, id=group_id)
         )
 
