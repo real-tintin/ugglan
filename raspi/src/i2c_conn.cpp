@@ -41,7 +41,7 @@ bool I2cConn::close()
 bool I2cConn::read_byte_data(uint8_t reg, uint8_t* data)
 {
     int32_t status = i2c_smbus_read_byte_data(_fd, reg);
-    *data = (uint8_t) status;
+    *data = static_cast<uint8_t>(status);
     return status >= 0;
 }
 

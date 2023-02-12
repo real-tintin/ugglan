@@ -80,21 +80,21 @@ bool AfroEsc::get_is_alive()
 double AfroEsc::get_voltage()
 {
     uint16_t raw_voltage = (_buf_read[AFRO_READ_BUF_VBAT_H] << 8) | _buf_read[AFRO_READ_BUF_VBAT_L];
-    return double(raw_voltage) * AFRO_VOLTAGE_SCALE / AFRO_VOLTAGE_RESOLUTION;
+    return static_cast<double>(raw_voltage) * AFRO_VOLTAGE_SCALE / AFRO_VOLTAGE_RESOLUTION;
 }
 
 // Returns current [A]
 double AfroEsc::get_current()
 {
     uint16_t raw_current = (_buf_read[AFRO_READ_BUF_CURRENT_H] << 8) | _buf_read[AFRO_READ_BUF_CURRENT_L];
-    return (double(raw_current) + AFRO_CURRENT_OFFSET) * AFRO_CURRENT_SCALE / AFRO_CURRENT_RESOLUTION;
+    return (static_cast<double>(raw_current) + AFRO_CURRENT_OFFSET) * AFRO_CURRENT_SCALE / AFRO_CURRENT_RESOLUTION;
 }
 
 // Returns temperature [C]
 double AfroEsc::get_temperature()
 {
     uint16_t raw_temperature = (_buf_read[AFRO_READ_BUF_TEMP_H] << 8) | _buf_read[AFRO_READ_BUF_TEMP_L];
-    double resistance = SERIES_RESISTOR / (65535 / double(raw_temperature) - 1);
+    double resistance = SERIES_RESISTOR / (65535 / static_cast<double>(raw_temperature) - 1);
 
     double steinhart;
     steinhart = resistance / THERMISTOR_NOMINAL;       // (R/Ro)
@@ -115,7 +115,8 @@ double AfroEsc::get_angular_rate()
 
     if (_rev_dt_ms > 0)
     {
-        angular_rate = (double(raw_rev) * MS_IN_S * 2.0 * M_PI) / (double(_rev_dt_ms) * double(AFRO_MOTOR_POLES));
+        angular_rate = (static_cast<double>(raw_rev) * MS_IN_S * 2.0 * M_PI) /
+            (static_cast<double>(_rev_dt_ms) * static_cast<double>(AFRO_MOTOR_POLES));
     }
 
     return angular_rate;

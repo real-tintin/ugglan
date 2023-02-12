@@ -45,7 +45,7 @@ static const uint8_t N_ESC = droneprops::N_MOTORS;
 
 static const uint32_t MAIN_SLEEP_MS = 1000;
 
-static const double ATT_EST_INPUT_SAMPLE_RATE_S = double(TASK_STATE_EST_EXEC_PERIOD_MS) / 1e3;
+static const double ATT_EST_INPUT_SAMPLE_RATE_S = 0.01; // 100 Hz (assumes IMU acc & gyro at 100 Hz)
 
 enum class TaskId {
     AccMag,

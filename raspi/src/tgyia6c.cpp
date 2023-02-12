@@ -22,35 +22,35 @@ void Tgyia6c::update()
 double Tgyia6c::get_gimbal_left_x()
 {
     return (TGYIA6C_GIMBAL_SCALE *
-        (double(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_X]) + TGYIA6C_GIMBAL_OFFSET));
+        (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_X]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns gimbal left Y [0.0-1.0]
 double Tgyia6c::get_gimbal_left_y()
 {
     return (TGYIA6C_GIMBAL_SCALE *
-        (double(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_Y]) + TGYIA6C_GIMBAL_OFFSET));
+        (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_Y]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns gimbal right X [0.0-1.0]
 double Tgyia6c::get_gimbal_right_x()
 {
     return (TGYIA6C_GIMBAL_SCALE *
-        (double(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_X]) + TGYIA6C_GIMBAL_OFFSET));
+        (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_X]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns gimbal right Y [0.0-1.0]
 double Tgyia6c::get_gimbal_right_y()
 {
     return (TGYIA6C_GIMBAL_SCALE *
-        (double(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_Y]) + TGYIA6C_GIMBAL_OFFSET));
+        (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_Y]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns knob [0.0-1.0]
 double Tgyia6c::get_knob()
 {
     return (TGYIA6C_KNOB_SCALE *
-        (double(_channel[TGYIA6C_CHANNEL_KNOB]) + TGYIA6C_KNOB_OFFSET));
+        (static_cast<double>(_channel[TGYIA6C_CHANNEL_KNOB]) + TGYIA6C_KNOB_OFFSET));
 }
 
 // Returns switch left [low, mid, high]
