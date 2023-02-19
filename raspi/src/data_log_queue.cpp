@@ -48,6 +48,6 @@ void DataLogQueue::_check_signal_type(DataLogSignal signal, DataLogType type)
 
     if (info.type != type)
     {
-        throw std::runtime_error("Data log signal type missmatch");
+        throw std::runtime_error("Data log signal type mismatch");
     }
 }

@@ -167,10 +167,10 @@ TEST_CASE("data_log_queue: error handling")
         REQUIRE_THROWS_WITH(data_log_queue.push(data, DataLogSignal::Float),
                             "Unsupported data type");
     }
-    SECTION("signal type missmatch")
+    SECTION("signal type mismatch")
     {
         uint8_t data = 0;
         REQUIRE_THROWS_WITH(data_log_queue.push(data, DataLogSignal::Double),
-                            "Data log signal type missmatch");
+                            "Data log signal type mismatch");
     }
 }
