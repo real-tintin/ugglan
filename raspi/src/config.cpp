@@ -60,7 +60,7 @@ namespace config
 
         _read_env(_att_est.acc_error_s_x, "ATT_EST_ACC_ERROR_S_X");
         _read_env(_att_est.acc_error_s_y, "ATT_EST_ACC_ERROR_S_Y");
-        _read_env(_att_est.acc_error_s_z, "ATT_EST_ACC_ERROR_S_Y");
+        _read_env(_att_est.acc_error_s_z, "ATT_EST_ACC_ERROR_S_Z");
 
         _read_env(_att_est.acc_error_m_x_y, "ATT_EST_ACC_ERROR_M_X_Y");
         _read_env(_att_est.acc_error_m_x_z, "ATT_EST_ACC_ERROR_M_X_Z");

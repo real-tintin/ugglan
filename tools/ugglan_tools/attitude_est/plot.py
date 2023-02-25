@@ -91,9 +91,10 @@ def _parse_bool_arg(str_val: str) -> bool:
 def _pack_exec_opt_from_args(args):
     return {
         'modulo_of_angles': args.modulo_of_angles,
-        'static_gyro_offset_comp': args.static_gyro_offset_comp,
-        'dynamic_gyro_offset_comp': args.dynamic_gyro_offset_comp,
-        'hard_iron_offset_comp': args.hard_iron_offset_comp,
+        'static_acc_error_comp': args.static_gyro_bias_comp,
+        'static_gyro_bias_comp': args.static_gyro_bias_comp,
+        'dynamic_gyro_bias_comp': args.dynamic_gyro_bias_comp,
+        'hard_iron_bias_comp': args.hard_iron_bias_comp,
     }
 
 
@@ -103,9 +104,10 @@ def main():
     parser.add_argument('--estimator', type=Estimator, nargs='+', choices=list(Estimator),
                         default=list(Estimator), help='Selected estimator(s)')
     parser.add_argument('--modulo_of_angles', default=True, choices=[True, False], type=_parse_bool_arg)
-    parser.add_argument('--static_gyro_offset_comp', default=False, choices=[True, False], type=_parse_bool_arg)
-    parser.add_argument('--dynamic_gyro_offset_comp', default=True, choices=[True, False], type=_parse_bool_arg)
-    parser.add_argument('--hard_iron_offset_comp', default=True, choices=[True, False], type=_parse_bool_arg)
+    parser.add_argument('--static_acc_error_comp', default=True, choices=[True, False], type=_parse_bool_arg)
+    parser.add_argument('--static_gyro_bias_comp', default=False, choices=[True, False], type=_parse_bool_arg)
+    parser.add_argument('--dynamic_gyro_bias_comp', default=True, choices=[True, False], type=_parse_bool_arg)
+    parser.add_argument('--hard_iron_bias_comp', default=True, choices=[True, False], type=_parse_bool_arg)
     args = parser.parse_args()
 
     data = data_log_io.read(path=args.path, resample_to_fixed_rate_s=TARGET_IMU_SAMPLE_RATE_S)

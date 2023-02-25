@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 import numpy as np
-import pandas as pd
 
 from ugglan_tools.data_log.io import Signals
 
@@ -70,14 +69,29 @@ class State:
 
 
 class AttEst(ABC):
-    STATIC_GYRO_OFFSET_COMP_SAMPLES = 100
+    STATIC_GYRO_BIAS_COMP_SAMPLES = 100
 
-    DYNAMIC_GYRO_OFFSET_COMP_SAMPLES = 100
-    DYNAMIC_GYRO_OFFSET_COMP_ABS_ACC_LIM = 0.2  # [rad/s^2]
+    DYNAMIC_GYRO_BIAS_COMP_SAMPLES = 100
+    DYNAMIC_GYRO_BIAS_COMP_ABS_ACC_LIM = 0.2  # [rad/s^2]
 
-    TARGET_HARD_IRON_OFFSET_X = 0.104
-    TARGET_HARD_IRON_OFFSET_Y = 0.076
-    TARGET_HARD_IRON_OFFSET_Z = 0.062
+    TARGET_ACC_ERROR_S_X = 1.0121
+    TARGET_ACC_ERROR_S_Y = 1.0073
+    TARGET_ACC_ERROR_S_Z = 0.9958
+
+    TARGET_ACC_ERROR_M_X_Y = -0.0153
+    TARGET_ACC_ERROR_M_X_Z = 0.0165
+    TARGET_ACC_ERROR_M_Y_X = 0.0141
+    TARGET_ACC_ERROR_M_Y_Z = 0.0024
+    TARGET_ACC_ERROR_M_Z_X = -0.0135
+    TARGET_ACC_ERROR_M_Z_Y = -0.0039
+
+    TARGET_ACC_ERROR_B_X = -0.1477
+    TARGET_ACC_ERROR_B_Y = 0.0013
+    TARGET_ACC_ERROR_B_Z = -0.4554
+
+    TARGET_HARD_IRON_BIAS_X = 0.104
+    TARGET_HARD_IRON_BIAS_Y = 0.076
+    TARGET_HARD_IRON_BIAS_Z = 0.062
 
     def __init__(self, dt: float):
         self._dt = dt
@@ -86,16 +100,18 @@ class AttEst(ABC):
     def execute(self,
                 imu_out: ImuOut,
                 modulo_of_angles: bool,
-                static_gyro_offset_comp: bool,
-                dynamic_gyro_offset_comp: bool,
-                hard_iron_offset_comp: bool):
+                static_acc_error_comp: bool,
+                static_gyro_bias_comp: bool,
+                dynamic_gyro_bias_comp: bool,
+                hard_iron_bias_comp: bool):
 
         def pre_exec():
             _imu_out = deepcopy(imu_out)
-            return self._imu_offset_comp(_imu_out,
-                                         static_gyro_offset_comp,
-                                         dynamic_gyro_offset_comp,
-                                         hard_iron_offset_comp)
+            return self._imu_error_comp(_imu_out,
+                                        static_acc_error_comp,
+                                        static_gyro_bias_comp,
+                                        dynamic_gyro_bias_comp,
+                                        hard_iron_bias_comp)
 
         def post_exec():
             if modulo_of_angles:
@@ -131,37 +147,55 @@ class AttEst(ABC):
         self._state.theta = self._modulo_phi(self._state.theta)
         self._state.psi = self._modulo_phi(self._state.psi)
 
-    def _imu_offset_comp(self, imu_out: ImuOut,
-                         static_gyro_offset_comp,
-                         dynamic_gyro_offset_comp,
-                         hard_iron_offset_comp) -> ImuOut:
+    def _imu_error_comp(self,
+                        imu_out: ImuOut,
+                        static_acc_error_comp: bool,
+                        static_gyro_bias_comp: bool,
+                        dynamic_gyro_bias_comp: bool,
+                        hard_iron_bias_comp) -> ImuOut:
 
-        if static_gyro_offset_comp:
-            imu_out.ang_rate_x = self._stat_gyro_offset_comp(imu_out.ang_rate_x)
-            imu_out.ang_rate_y = self._stat_gyro_offset_comp(imu_out.ang_rate_y)
-            imu_out.ang_rate_z = self._stat_gyro_offset_comp(imu_out.ang_rate_z)
+        if static_acc_error_comp:
+            imu_out.acc_x = self.TARGET_ACC_ERROR_S_X * imu_out.acc_x + \
+                            self.TARGET_ACC_ERROR_M_X_Y * imu_out.acc_y + \
+                            self.TARGET_ACC_ERROR_M_X_Z * imu_out.acc_z + \
+                            self.TARGET_ACC_ERROR_B_X
 
-        if dynamic_gyro_offset_comp:
-            imu_out.ang_rate_x = self._dyn_gyro_offset_comp(imu_out.ang_rate_x)
-            imu_out.ang_rate_y = self._dyn_gyro_offset_comp(imu_out.ang_rate_y)
-            imu_out.ang_rate_z = self._dyn_gyro_offset_comp(imu_out.ang_rate_z)
+            imu_out.acc_y = self.TARGET_ACC_ERROR_S_Y * imu_out.acc_y + \
+                            self.TARGET_ACC_ERROR_M_Y_X * imu_out.acc_x + \
+                            self.TARGET_ACC_ERROR_M_Y_Z * imu_out.acc_z + \
+                            self.TARGET_ACC_ERROR_B_Y
 
-        if hard_iron_offset_comp:
-            imu_out.mag_x -= self.TARGET_HARD_IRON_OFFSET_X
-            imu_out.mag_y -= self.TARGET_HARD_IRON_OFFSET_Y
-            imu_out.mag_z -= self.TARGET_HARD_IRON_OFFSET_Z
+            imu_out.acc_z = self.TARGET_ACC_ERROR_S_Z * imu_out.acc_z + \
+                            self.TARGET_ACC_ERROR_M_Z_X * imu_out.acc_x + \
+                            self.TARGET_ACC_ERROR_M_Z_Y * imu_out.acc_y + \
+                            self.TARGET_ACC_ERROR_B_Z
+
+        if static_gyro_bias_comp:
+            imu_out.ang_rate_x = self._stat_gyro_bias_comp(imu_out.ang_rate_x)
+            imu_out.ang_rate_y = self._stat_gyro_bias_comp(imu_out.ang_rate_y)
+            imu_out.ang_rate_z = self._stat_gyro_bias_comp(imu_out.ang_rate_z)
+
+        if dynamic_gyro_bias_comp:
+            imu_out.ang_rate_x = self._dyn_gyro_bias_comp(imu_out.ang_rate_x)
+            imu_out.ang_rate_y = self._dyn_gyro_bias_comp(imu_out.ang_rate_y)
+            imu_out.ang_rate_z = self._dyn_gyro_bias_comp(imu_out.ang_rate_z)
+
+        if hard_iron_bias_comp:
+            imu_out.mag_x -= self.TARGET_HARD_IRON_BIAS_X
+            imu_out.mag_y -= self.TARGET_HARD_IRON_BIAS_Y
+            imu_out.mag_z -= self.TARGET_HARD_IRON_BIAS_Z
 
         return imu_out
 
-    def _stat_gyro_offset_comp(self, v):
-        return v - np.mean(v[0:self.STATIC_GYRO_OFFSET_COMP_SAMPLES])
+    def _stat_gyro_bias_comp(self, v):
+        return v - np.mean(v[0:self.STATIC_GYRO_BIAS_COMP_SAMPLES])
 
-    def _dyn_gyro_offset_comp(self, v):
+    def _dyn_gyro_bias_comp(self, v):
         vp = np.diff(v, prepend=0) / self._dt
-        indices = np.argwhere(np.abs(vp) < self.DYNAMIC_GYRO_OFFSET_COMP_ABS_ACC_LIM)
-        offset = np.mean(v[indices[0:self.DYNAMIC_GYRO_OFFSET_COMP_SAMPLES]])
+        indices = np.argwhere(np.abs(vp) < self.DYNAMIC_GYRO_BIAS_COMP_ABS_ACC_LIM)
+        bias = np.mean(v[indices[0:self.DYNAMIC_GYRO_BIAS_COMP_SAMPLES]])
 
-        return v - offset
+        return v - bias
 
     @staticmethod
     def _modulo_phi(x):
@@ -275,11 +309,8 @@ class AttEstKalman(AttEst):
     """
     Q_SCALE = 1e2
 
-    R_0_SCALE = 1
-    R_1_SCALE = 1
-
-    R_ALMOST_ZERO = 1e-9
-    R_WINDOW_SIZE = 20
+    R_0 = 1
+    R_1 = 0.1
 
     def __init__(self, dt: float):
         super().__init__(dt)
@@ -300,6 +331,8 @@ class AttEstKalman(AttEst):
             [0, 1, 0]
         ])
 
+        self.R = np.diag([self.R_0, self.R_1])
+
     def _execute(self, imu_out: ImuOut):
         phi_acc = self._to_phi(imu_out.acc_y, imu_out.acc_z)
         self._state.phi, self._state.phi_p, self._state.phi_pp = self._kalman_filter(phi_acc, imu_out.ang_rate_x)
@@ -313,34 +346,19 @@ class AttEstKalman(AttEst):
 
     def _kalman_filter(self, z, z_p):
         x = np.zeros((3, len(z)))
-        P_pre = self.P_0
-
-        z_var = pd.Series(z).rolling(window=self.R_WINDOW_SIZE).var()
-        z_p_var = pd.Series(z_p).rolling(window=self.R_WINDOW_SIZE).var()
+        P = self.P_0
 
         for k in range(1, len(z)):
             x_pri = self.F @ x[:, k - 1]
-            P_pri = self.F @ P_pre @ np.transpose(self.F) + self.Q
+            P_pri = self.F @ P @ np.transpose(self.F) + self.Q
 
-            R = self._get_R(z_var[k], z_p_var[k])
-
-            S = self.H @ P_pri @ np.transpose(self.H) + R
+            S = self.H @ P_pri @ np.transpose(self.H) + self.R
             K = P_pri @ np.transpose(self.H) @ np.linalg.inv(S)
 
             x[:, k] = x_pri + K @ (np.array([z[k], z_p[k]]) - self.H @ x_pri)
-            P_pre = (np.eye(3) - K @ self.H) @ P_pri
+            P = (np.eye(3) - K @ self.H) @ P_pri
 
         return x[0, :], x[1, :], x[2, :]
-
-    def _get_R(self, z_var, z_p_var):
-        def _check_if_almost_zero_or_nan(x):
-            if np.isnan(x) or x < self.R_ALMOST_ZERO:
-                return self.R_ALMOST_ZERO
-            else:
-                return x
-
-        return np.diag([self.R_0_SCALE * _check_if_almost_zero_or_nan(z_var),
-                        self.R_1_SCALE * _check_if_almost_zero_or_nan(z_p_var)])
 
 
 class AttEstTarget(AttEst):
