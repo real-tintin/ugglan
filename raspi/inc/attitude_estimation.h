@@ -7,7 +7,9 @@
 #include <statistics.h>
 #include <eigen/Eigen>
 
-struct AttEstInput {
+namespace att_est
+{
+struct Imu {
     double acc_x;       // [m/s^2]
     double acc_y;       // [m/s^2]
     double acc_z;       // [m/s^2]
@@ -21,69 +23,86 @@ struct AttEstInput {
     double mag_field_z; // [gauss]
 };
 
-struct AttEstKalmanState {
+struct KalmanState {
     Eigen::Vector3d x {{0}, {0}, {0}};
     Eigen::Vector2d z {{0}, {0}};
     Eigen::Matrix3d P {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-    Eigen::Matrix2d R {{0, 0}, {0, 0}};
 };
 
-struct AttEstState {
+struct AttState {
     double angle; // [rad]
     double rate;  // [rad/s]
     double acc;   // [rad/s^2]
 };
 
-struct AttEstimate {
-    AttEstState roll;
-    AttEstState pitch;
-    AttEstState yaw;
+struct Attitude {
+    AttState roll;
+    AttState pitch;
+    AttState yaw;
 };
 
-struct AttEstConfig {
-    uint8_t n_samples_gyro_offset_comp;
+struct Config {
+    uint8_t n_samples_gyro_bias_compensation;
     uint32_t rolling_var_window_size;
 
     double kalman_q_scale;
 
-    double kalman_r_0_scale;
-    double kalman_r_1_scale;
+    double kalman_r_0;
+    double kalman_r_1;
 
-    double hard_iron_offset_x;
-    double hard_iron_offset_y;
-    double hard_iron_offset_z;
+    double acc_error_s_x;
+    double acc_error_s_y;
+    double acc_error_s_z;
+
+    double acc_error_m_x_y;
+    double acc_error_m_x_z;
+    double acc_error_m_y_x;
+    double acc_error_m_y_z;
+    double acc_error_m_z_x;
+    double acc_error_m_z_y;
+
+    double acc_error_b_x;
+    double acc_error_b_y;
+    double acc_error_b_z;
+
+    double hard_iron_bias_x;
+    double hard_iron_bias_y;
+    double hard_iron_bias_z;
 };
 
-class AttitudeEstimation
+class Estimator
 {
 public:
-    AttitudeEstimation(double input_sample_rate_s, AttEstConfig config);
+    Estimator(double input_sample_rate_s, Config config);
 
-    void update(AttEstInput input);
+    void update(Imu imu_uncompensated);
 
-    AttEstimate get_estimate();
+    Attitude get_attitude();
+    Imu get_imu_compensated();
 
     bool is_calibrated();
     bool is_standstill();
 private:
     const double _dt;
-    const AttEstConfig _config;
+    const Config _config;
 
-    AttEstInput _in = {0};
-    AttEstimate _est = {0};
+    Imu _imu_uncompensated = {0};
+    Imu _imu_compensated = {0};
+
+    Attitude _attitude = {0};
 
     bool _is_standstill = false;
 
-    double _gyro_offset_x = 0;
-    double _gyro_offset_y = 0;
-    double _gyro_offset_z = 0;
+    double _gyro_bias_x = 0;
+    double _gyro_bias_y = 0;
+    double _gyro_bias_z = 0;
 
     double _imu_roll_angle = 0;
     double _imu_pitch_angle = 0;
     double _imu_yaw_angle = 0;
 
-    bool _is_gyro_offset_comp = false;
-    uint8_t _samples_gyro_offset_comp = 0;
+    bool _is_gyro_bias_compensated = false;
+    uint8_t _n_samples_gyro_bias_compensated = 0;
 
     Eigen::Matrix<double, 2, 3> _H {{1, 0, 0}, {0, 1, 0}};
     Eigen::Matrix<double, 3, 2> _H_t = _H.transpose();
@@ -91,6 +110,7 @@ private:
     Eigen::Matrix3d _I {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
 
     Eigen::Matrix3d _Q;
+    Eigen::Matrix2d _R;
 
     Eigen::Matrix3d _F;
     Eigen::Matrix3d _F_t;
@@ -101,9 +121,9 @@ private:
     Eigen::Matrix2d _S;
     Eigen::Matrix<double, 3, 2> _K;
 
-    AttEstKalmanState _kalman_roll;
-    AttEstKalmanState _kalman_pitch;
-    AttEstKalmanState _kalman_yaw;
+    KalmanState _kalman_roll;
+    KalmanState _kalman_pitch;
+    KalmanState _kalman_yaw;
 
     statistics::RollingStats _rolling_stats_roll_angle;
     statistics::RollingStats _rolling_stats_pitch_angle;
@@ -117,22 +137,23 @@ private:
     void _update_rolling_stats();
     void _update_standstill_status();
 
-    void _gyro_offset_comp();
-    void _hard_iron_offset_comp();
+    void _acc_static_compensation();
+    void _gyro_dynamic_bias_compensation();
+    void _hard_iron_bias_compensation();
 
     void _update_roll();
     void _update_pitch();
     void _update_yaw();
 
-    void _update_est(double z_0, double z_1,
-                     double r_0, double r_1,
-                     AttEstKalmanState& kalman_state,
-                     AttEstState& att_state,
-                     double modulo_lim);
+    void _update_att_state(double z_0, double z_1,
+                           KalmanState& kalman_state,
+                           AttState& att_state,
+                           double modulo_lim);
 
-    void _update_kalman_state(AttEstKalmanState& state);
-    void _kalman_state_to_att_state(AttEstKalmanState& kalman, AttEstState& att);
+    void _update_kalman_state(KalmanState& state);
+    void _kalman_state_to_att_state(KalmanState& kalman, AttState& att);
     void _modulo_angle(double* angle, double limit);
 };
+} /* namespace att_est */
 
 #endif /* ATTITUDE_ESTIMATION_H */

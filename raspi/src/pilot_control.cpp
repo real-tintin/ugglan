@@ -36,9 +36,9 @@ PilotControl::PilotControl(double input_sample_rate_s, PilotCtrlConfig config) :
     _config(config)
 {}
 
-void PilotControl::update(AttEstimate att_est, PilotCtrlRef ref)
+void PilotControl::update(att_est::Attitude attitude, PilotCtrlRef ref)
 {
-    _extract_states(att_est);
+    _extract_states(attitude);
     _change_of_variable(ref);
     _integrate_with_antiwindup();
 
@@ -96,18 +96,18 @@ double PilotControl::get_state(PilotCtrlState state)
     }
 }
 
-void PilotControl::_extract_states(AttEstimate& att_est)
+void PilotControl::_extract_states(att_est::Attitude& attitude)
 {
-    _x_phi(1) = att_est.roll.angle;
-    _x_phi(2) = att_est.roll.rate;
-    _x_phi(3) = att_est.roll.acc;
+    _x_phi(1) = attitude.roll.angle;
+    _x_phi(2) = attitude.roll.rate;
+    _x_phi(3) = attitude.roll.acc;
 
-    _x_theta(1) = att_est.pitch.angle;
-    _x_theta(2) = att_est.pitch.rate;
-    _x_theta(3) = att_est.pitch.acc;
+    _x_theta(1) = attitude.pitch.angle;
+    _x_theta(2) = attitude.pitch.rate;
+    _x_theta(3) = attitude.pitch.acc;
 
-    _x_psi(1) = att_est.yaw.rate;
-    _x_psi(2) = att_est.yaw.acc;
+    _x_psi(1) = attitude.yaw.rate;
+    _x_psi(2) = attitude.yaw.acc;
 }
 
 void PilotControl::_change_of_variable(PilotCtrlRef& ref)

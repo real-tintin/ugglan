@@ -117,7 +117,19 @@ enum class DataLogSignal {
     StateEstPitchAcc,
     StateEstYawAcc,
 
-    StateEstAttIsCalib,
+    StateEstCompAccX,
+    StateEstCompAccY,
+    StateEstCompAccZ,
+
+    StateEstCompAngRateX,
+    StateEstCompAngRateY,
+    StateEstCompAngRateZ,
+
+    StateEstCompMagFieldX,
+    StateEstCompMagFieldY,
+    StateEstCompMagFieldZ,
+
+    StateEstAttIsCalibrated,
     StateEstAttIsStandstill,
 
     StateCtrlRollRef,
@@ -277,7 +289,19 @@ inline const DataLogSignalMap DATA_LOG_SIGNAL_MAP = {
     {DataLogSignal::StateEstPitchAcc, {"PitchAcc", DataLogGroup::StateEst, DataLogType::DOUBLE}},
     {DataLogSignal::StateEstYawAcc, {"YawAcc", DataLogGroup::StateEst, DataLogType::DOUBLE}},
 
-    {DataLogSignal::StateEstAttIsCalib, {"AttIsCalib", DataLogGroup::StateEst, DataLogType::BOOL}},
+    {DataLogSignal::StateEstCompAccX, {"CompAccX", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstCompAccY, {"CompAccY", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstCompAccZ, {"CompAccZ", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+
+    {DataLogSignal::StateEstCompAngRateX, {"CompAngRateX", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstCompAngRateY, {"CompAngRateY", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstCompAngRateZ, {"CompAngRateZ", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+
+    {DataLogSignal::StateEstCompMagFieldX, {"CompMagFieldX", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstCompMagFieldY, {"CompMagFieldY", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+    {DataLogSignal::StateEstCompMagFieldZ, {"CompMagFieldZ", DataLogGroup::StateEst, DataLogType::DOUBLE}},
+
+    {DataLogSignal::StateEstAttIsCalibrated, {"AttIsCalib", DataLogGroup::StateEst, DataLogType::BOOL}},
     {DataLogSignal::StateEstAttIsStandstill, {"AttIsStandstill", DataLogGroup::StateEst, DataLogType::BOOL}},
 
     {DataLogSignal::StateCtrlRollRef, {"RollRef", DataLogGroup::StateCtrl, DataLogType::DOUBLE}},

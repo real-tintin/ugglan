@@ -19,11 +19,11 @@ static const PilotCtrlConfig CONFIG =
     Eigen::RowVector3d {1.0, 5.0, 0.5}
 };
 
-void update_until_saturated(PilotControl& pilot_ctrl, AttEstimate est, PilotCtrlRef ref)
+void update_until_saturated(PilotControl& pilot_ctrl, att_est::Attitude attitude, PilotCtrlRef ref)
 {
     for (uint16_t x = 0; x < N_UPDATES_TO_SAT; x++)
     {
-        pilot_ctrl.update(est, ref);
+        pilot_ctrl.update(attitude, ref);
     }
 }
 
@@ -32,13 +32,13 @@ TEST_CASE("pilot control")
 
     PilotControl pilot_ctrl(SAMPLE_RATE_S, CONFIG);
 
-    AttEstimate est = {0};
+    att_est::Attitude attitude = {0};
     PilotCtrlRef ref = {0};
     BodyControl ctrl = {0};
 
     SECTION("initialized")
     {
-        pilot_ctrl.update(est, ref);
+        pilot_ctrl.update(attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(fabs(ctrl.m_x - 0.0) <= FLOAT_TOL);
@@ -51,7 +51,7 @@ TEST_CASE("pilot control")
     {
         ref.f_z = -PILOT_CTRL_ABS_MAX_REF_F_Z;
 
-        pilot_ctrl.update(est, ref);
+        pilot_ctrl.update(attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(fabs(ctrl.m_x - 0.0) <= FLOAT_TOL);
@@ -63,7 +63,7 @@ TEST_CASE("pilot control")
     {
         ref.roll = PILOT_CTRL_ABS_MAX_REF_ROLL;
 
-        pilot_ctrl.update(est, ref);
+        pilot_ctrl.update(attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(ctrl.m_x > FLOAT_TOL);
@@ -75,7 +75,7 @@ TEST_CASE("pilot control")
     {
         ref.roll = -PILOT_CTRL_ABS_MAX_REF_ROLL;
 
-        pilot_ctrl.update(est, ref);
+        pilot_ctrl.update(attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(ctrl.m_x < FLOAT_TOL);
@@ -87,7 +87,7 @@ TEST_CASE("pilot control")
     {
         ref.pitch = PILOT_CTRL_ABS_MAX_REF_PITCH;
 
-        pilot_ctrl.update(est, ref);
+        pilot_ctrl.update(attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(fabs(ctrl.m_x - 0.0) <= FLOAT_TOL);
@@ -99,7 +99,7 @@ TEST_CASE("pilot control")
     {
         ref.pitch = -PILOT_CTRL_ABS_MAX_REF_PITCH;
 
-        pilot_ctrl.update(est, ref);
+        pilot_ctrl.update(attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(fabs(ctrl.m_x - 0.0) <= FLOAT_TOL);
@@ -111,7 +111,7 @@ TEST_CASE("pilot control")
     {
         ref.yaw_rate = PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
 
-        pilot_ctrl.update(est, ref);
+        pilot_ctrl.update(attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(fabs(ctrl.m_x - 0.0) <= FLOAT_TOL);
@@ -123,7 +123,7 @@ TEST_CASE("pilot control")
     {
         ref.yaw_rate = -PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
 
-        pilot_ctrl.update(est, ref);
+        pilot_ctrl.update(attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(fabs(ctrl.m_x - 0.0) <= FLOAT_TOL);
@@ -137,10 +137,10 @@ TEST_CASE("pilot control")
         ref.pitch = PILOT_CTRL_ABS_MAX_REF_PITCH;
         ref.yaw_rate = PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
 
-        update_until_saturated(pilot_ctrl, est, ref);
+        update_until_saturated(pilot_ctrl, attitude, ref);
         BodyControl saturated_ctrl = pilot_ctrl.get_ctrl();
 
-        update_until_saturated(pilot_ctrl, est, ref);
+        update_until_saturated(pilot_ctrl, attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(fabs(ctrl.m_x - saturated_ctrl.m_x) <= FLOAT_TOL);
@@ -153,7 +153,7 @@ TEST_CASE("pilot control")
         ref.pitch = PILOT_CTRL_ABS_MAX_REF_PITCH;
         ref.yaw_rate = PILOT_CTRL_ABS_MAX_REF_YAW_RATE;
 
-        update_until_saturated(pilot_ctrl, est, ref);
+        update_until_saturated(pilot_ctrl, attitude, ref);
         ctrl = pilot_ctrl.get_ctrl();
 
         REQUIRE(fabs(ctrl.m_x) >= FLOAT_TOL);

@@ -1,15 +1,18 @@
 #include <attitude_estimation.h>
 
+namespace att_est
+{
+namespace
+{
 static const double MODULO_ROLL = M_PI;
 static const double MODULO_PITCH = M_PI / 2;
 static const double MODULO_YAW = M_PI;
 
 static const double STANDSTILL_ANG_VAR_LIM = 0.02; // [rad]
 static const double STANDSTILL_RATE_VAR_LIM = 0.005; // [rad/s]
+} /* namespace anonymous */
 
-static const double KALMAN_R_ALMOST_ZERO = 1e-6;
-
-AttitudeEstimation::AttitudeEstimation(double input_sample_rate_s, AttEstConfig config) :
+Estimator::Estimator(double input_sample_rate_s, Config config) :
     _dt(input_sample_rate_s),
     _config(config),
 
@@ -27,25 +30,30 @@ AttitudeEstimation::AttitudeEstimation(double input_sample_rate_s, AttEstConfig 
         {0.5 * pow(_dt, 2), _dt, 1}
         });
 
+    _R = Eigen::Matrix2d({
+        {_config.kalman_r_0, 0.0},
+        {0.0, _config.kalman_r_1}
+        });
+
     _F = Eigen::Matrix3d({
-        {1, _dt, 0.5 * pow(_dt, 2)},
-        {0, 1, _dt},
-        {0, 0, 1}
+        {1.0, _dt, 0.5 * pow(_dt, 2)},
+        {0.0, 1.0, _dt},
+        {0.0, 0.0, 1.0}
         });
     _F_t = _F.transpose();
 }
 
-void AttitudeEstimation::update(AttEstInput input)
+void Estimator::update(Imu imu_uncompensated)
 {
-    _in = input;
+    _imu_uncompensated = imu_uncompensated;
 
-    _hard_iron_offset_comp();
+    _acc_static_compensation();
+    _gyro_dynamic_bias_compensation();
+    _hard_iron_bias_compensation();
 
     _update_imu_angles();
     _update_rolling_stats();
     _update_standstill_status();
-
-    _gyro_offset_comp();
 
     if (is_calibrated())
     {
@@ -55,46 +63,51 @@ void AttitudeEstimation::update(AttEstInput input)
     }
 }
 
-AttEstimate AttitudeEstimation::get_estimate()
+Attitude Estimator::get_attitude()
 {
-    return _est;
+    return _attitude;
 }
 
-bool AttitudeEstimation::is_calibrated()
+Imu Estimator::get_imu_compensated()
 {
-    return _is_gyro_offset_comp;
+    return _imu_compensated;
 }
 
-bool AttitudeEstimation::is_standstill()
+bool Estimator::is_calibrated()
+{
+    return _is_gyro_bias_compensated;
+}
+
+bool Estimator::is_standstill()
 {
     return _is_standstill;
 }
 
-void AttitudeEstimation::_update_imu_angles()
+void Estimator::_update_imu_angles()
 {
-    _imu_roll_angle = atan2(-_in.acc_y, -_in.acc_z);
-    _imu_pitch_angle = atan2(_in.acc_x, sqrt(pow(_in.acc_y, 2) + pow(_in.acc_z, 2)));
+    _imu_roll_angle = atan2(-_imu_compensated.acc_y, -_imu_compensated.acc_z);
+    _imu_pitch_angle = atan2(_imu_compensated.acc_x, sqrt(pow(_imu_compensated.acc_y, 2) + pow(_imu_compensated.acc_z, 2)));
 
-    double b_x = _in.mag_field_x * cos(_est.pitch.angle) +
-                  _in.mag_field_y * sin(_est.roll.angle) * sin(_est.pitch.angle) +
-                  _in.mag_field_z * sin(_est.pitch.angle) * cos(_est.roll.angle);
-    double b_y = _in.mag_field_y * cos(_est.roll.angle) - _in.mag_field_z * sin(_est.roll.angle);
+    double b_x = _imu_compensated.mag_field_x * cos(_attitude.pitch.angle) +
+                  _imu_compensated.mag_field_y * sin(_attitude.roll.angle) * sin(_attitude.pitch.angle) +
+                  _imu_compensated.mag_field_z * sin(_attitude.pitch.angle) * cos(_attitude.roll.angle);
+    double b_y = _imu_compensated.mag_field_y * cos(_attitude.roll.angle) - _imu_compensated.mag_field_z * sin(_attitude.roll.angle);
 
     _imu_yaw_angle = atan2(-b_y, b_x);
 }
 
-void AttitudeEstimation::_update_rolling_stats()
+void Estimator::_update_rolling_stats()
 {
     _rolling_stats_roll_angle.update(_imu_roll_angle);
     _rolling_stats_pitch_angle.update(_imu_pitch_angle);
     _rolling_stats_yaw_angle.update(_imu_yaw_angle);
 
-    _rolling_stats_roll_rate.update(_in.ang_rate_x);
-    _rolling_stats_pitch_rate.update(_in.ang_rate_y);
-    _rolling_stats_yaw_rate.update(_in.ang_rate_z);
+    _rolling_stats_roll_rate.update(_imu_compensated.ang_rate_x);
+    _rolling_stats_pitch_rate.update(_imu_compensated.ang_rate_y);
+    _rolling_stats_yaw_rate.update(_imu_compensated.ang_rate_z);
 }
 
-void AttitudeEstimation::_update_standstill_status()
+void Estimator::_update_standstill_status()
 {
     if
     (
@@ -122,120 +135,129 @@ void AttitudeEstimation::_update_standstill_status()
     }
 }
 
-void AttitudeEstimation::_update_roll()
+void Estimator::_update_roll()
 {
-    _update_est(
+    _update_att_state(
         _imu_roll_angle,
-        _in.ang_rate_x,
-        _rolling_stats_roll_angle.get_variance(),
-        _rolling_stats_roll_rate.get_variance(),
+        _imu_compensated.ang_rate_x,
         _kalman_roll,
-        _est.roll,
+        _attitude.roll,
         MODULO_ROLL
         );
 }
 
-void AttitudeEstimation::_update_pitch()
+void Estimator::_update_pitch()
 {
-    _update_est(
+    _update_att_state(
         _imu_pitch_angle,
-        _in.ang_rate_y,
-        _rolling_stats_pitch_angle.get_variance(),
-        _rolling_stats_pitch_rate.get_variance(),
+        _imu_compensated.ang_rate_y,
         _kalman_pitch,
-        _est.pitch,
+        _attitude.pitch,
         MODULO_PITCH
         );
 }
 
-void AttitudeEstimation::_update_yaw()
+void Estimator::_update_yaw()
 {
-    _update_est(
+    _update_att_state(
         _imu_yaw_angle,
-        _in.ang_rate_z,
-        _rolling_stats_yaw_angle.get_variance(),
-        _rolling_stats_yaw_rate.get_variance(),
+        _imu_compensated.ang_rate_z,
         _kalman_yaw,
-        _est.yaw,
+        _attitude.yaw,
         MODULO_YAW
         );
 }
 
-void AttitudeEstimation::_update_est(double z_0, double z_1,
-                                     double r_0, double r_1,
-                                     AttEstKalmanState& kalman_state,
-                                     AttEstState& att_state,
-                                     double modulo_lim)
+void Estimator::_update_att_state(double z_0, double z_1,
+                                  KalmanState& kalman_state,
+                                  AttState& att_state,
+                                  double modulo_lim)
 {
     kalman_state.z(0) = z_0;
     kalman_state.z(1) = z_1;
-
-    kalman_state.R(0, 0) = _config.kalman_r_0_scale * std::max(r_0, KALMAN_R_ALMOST_ZERO);
-    kalman_state.R(1, 1) = _config.kalman_r_1_scale * std::max(r_1, KALMAN_R_ALMOST_ZERO);
 
     _update_kalman_state(kalman_state);
     _kalman_state_to_att_state(kalman_state, att_state);
     _modulo_angle(&att_state.angle, modulo_lim);
 }
 
-void AttitudeEstimation::_update_kalman_state(AttEstKalmanState& state)
+void Estimator::_update_kalman_state(KalmanState& state)
 {
     _x_pri.noalias() = _F * state.x;
     _P_pri.noalias() = _F * state.P * _F_t + _Q;
 
-    _S.noalias() = _H * _P_pri * _H_t + state.R;
+    _S.noalias() = _H * _P_pri * _H_t + _R;
     _K.noalias() = _P_pri * _H_t * _S.inverse();
 
     state.x.noalias() = _x_pri + _K * (state.z - _H * _x_pri);
     state.P.noalias() = (_I - _K * _H) * _P_pri;
 }
 
-void AttitudeEstimation::_kalman_state_to_att_state(AttEstKalmanState& kalman, AttEstState& att)
+void Estimator::_kalman_state_to_att_state(KalmanState& kalman, AttState& att)
 {
     att.angle = kalman.x(0);
     att.rate = kalman.x(1);
     att.acc = kalman.x(2);
 }
 
-void AttitudeEstimation::_modulo_angle(double* angle, double limit)
+void Estimator::_modulo_angle(double* angle, double limit)
 {
     *angle = fmod(*angle + limit, 2.0 * limit) - limit;
 }
 
-void AttitudeEstimation::_gyro_offset_comp()
+void Estimator::_acc_static_compensation()
 {
-    if (!_is_gyro_offset_comp &&
-        _samples_gyro_offset_comp < _config.n_samples_gyro_offset_comp &&
+    _imu_compensated.acc_x = _config.acc_error_s_x * _imu_uncompensated.acc_x +
+        _config.acc_error_m_x_y * _imu_uncompensated.acc_y +
+        _config.acc_error_m_x_z * _imu_uncompensated.acc_z +
+        _config.acc_error_b_x;
+
+    _imu_compensated.acc_y = _config.acc_error_m_y_x * _imu_uncompensated.acc_x +
+        _config.acc_error_s_y * _imu_uncompensated.acc_y +
+        _config.acc_error_m_y_z * _imu_uncompensated.acc_z +
+        _config.acc_error_b_y;
+
+    _imu_compensated.acc_z = _config.acc_error_m_z_x * _imu_uncompensated.acc_x +
+        _config.acc_error_m_z_y * _imu_uncompensated.acc_y +
+        _config.acc_error_s_z * _imu_uncompensated.acc_z +
+        _config.acc_error_b_z;
+}
+
+void Estimator::_gyro_dynamic_bias_compensation()
+{
+    if (!_is_gyro_bias_compensated &&
+        _n_samples_gyro_bias_compensated < _config.n_samples_gyro_bias_compensation &&
         _is_standstill)
     {
-        _gyro_offset_x += _in.ang_rate_x;
-        _gyro_offset_y += _in.ang_rate_y;
-        _gyro_offset_z += _in.ang_rate_z;
+        _gyro_bias_x += _imu_uncompensated.ang_rate_x;
+        _gyro_bias_y += _imu_uncompensated.ang_rate_y;
+        _gyro_bias_z += _imu_uncompensated.ang_rate_z;
 
-        _samples_gyro_offset_comp++;
+        _n_samples_gyro_bias_compensated++;
     }
 
-    if (!_is_gyro_offset_comp &&
-        _samples_gyro_offset_comp == _config.n_samples_gyro_offset_comp)
+    if (!_is_gyro_bias_compensated &&
+        _n_samples_gyro_bias_compensated == _config.n_samples_gyro_bias_compensation)
     {
-        _gyro_offset_x /= _config.n_samples_gyro_offset_comp;
-        _gyro_offset_y /= _config.n_samples_gyro_offset_comp;
-        _gyro_offset_z /= _config.n_samples_gyro_offset_comp;
+        _gyro_bias_x /= _config.n_samples_gyro_bias_compensation;
+        _gyro_bias_y /= _config.n_samples_gyro_bias_compensation;
+        _gyro_bias_z /= _config.n_samples_gyro_bias_compensation;
 
-        _is_gyro_offset_comp = true;
+        _is_gyro_bias_compensated = true;
     }
 
-    if (_is_gyro_offset_comp)
+    if (_is_gyro_bias_compensated)
     {
-        _in.ang_rate_x -= _gyro_offset_x;
-        _in.ang_rate_y -= _gyro_offset_y;
-        _in.ang_rate_z -= _gyro_offset_z;
+        _imu_compensated.ang_rate_x = _imu_uncompensated.ang_rate_x - _gyro_bias_x;
+        _imu_compensated.ang_rate_y = _imu_uncompensated.ang_rate_y - _gyro_bias_y;
+        _imu_compensated.ang_rate_z = _imu_uncompensated.ang_rate_z - _gyro_bias_z;
     }
 }
 
-void AttitudeEstimation::_hard_iron_offset_comp()
+void Estimator::_hard_iron_bias_compensation()
 {
-    _in.mag_field_x -= _config.hard_iron_offset_x;
-    _in.mag_field_y -= _config.hard_iron_offset_y;
-    _in.mag_field_z -= _config.hard_iron_offset_z;
+    _imu_compensated.mag_field_x = _imu_uncompensated.mag_field_x - _config.hard_iron_bias_x;
+    _imu_compensated.mag_field_y = _imu_uncompensated.mag_field_y - _config.hard_iron_bias_y;
+    _imu_compensated.mag_field_z = _imu_uncompensated.mag_field_z - _config.hard_iron_bias_z;
 }
+} /* namespace att_est */

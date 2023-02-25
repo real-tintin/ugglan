@@ -51,16 +51,31 @@ namespace config
 
     void Config::_load_att_est()
     {
-        _read_env(_att_est.n_samples_gyro_offset_comp, "ATT_EST_N_SAMPLES_GYRO_OFFSET_COMP");
+        _read_env(_att_est.n_samples_gyro_bias_compensation, "ATT_EST_N_SAMPLES_GYRO_BIAS_COMPENSATION");
         _read_env(_att_est.rolling_var_window_size, "ATT_EST_ROLLING_WINDOW_SIZE");
 
         _read_env(_att_est.kalman_q_scale, "ATT_EST_KALMAN_Q_SCALE");
-        _read_env(_att_est.kalman_r_0_scale, "ATT_EST_KALMAN_R_0_SCALE");
-        _read_env(_att_est.kalman_r_1_scale, "ATT_EST_KALMAN_R_1_SCALE");
+        _read_env(_att_est.kalman_r_0, "ATT_EST_KALMAN_R_0");
+        _read_env(_att_est.kalman_r_1, "ATT_EST_KALMAN_R_1");
 
-        _read_env(_att_est.hard_iron_offset_x, "ATT_EST_HARD_IRON_OFFSET_X");
-        _read_env(_att_est.hard_iron_offset_y, "ATT_EST_HARD_IRON_OFFSET_Y");
-        _read_env(_att_est.hard_iron_offset_z, "ATT_EST_HARD_IRON_OFFSET_Z");
+        _read_env(_att_est.acc_error_s_x, "ATT_EST_ACC_ERROR_S_X");
+        _read_env(_att_est.acc_error_s_y, "ATT_EST_ACC_ERROR_S_Y");
+        _read_env(_att_est.acc_error_s_z, "ATT_EST_ACC_ERROR_S_Y");
+
+        _read_env(_att_est.acc_error_m_x_y, "ATT_EST_ACC_ERROR_M_X_Y");
+        _read_env(_att_est.acc_error_m_x_z, "ATT_EST_ACC_ERROR_M_X_Z");
+        _read_env(_att_est.acc_error_m_y_x, "ATT_EST_ACC_ERROR_M_Y_X");
+        _read_env(_att_est.acc_error_m_y_z, "ATT_EST_ACC_ERROR_M_Y_Z");
+        _read_env(_att_est.acc_error_m_z_x, "ATT_EST_ACC_ERROR_M_Z_X");
+        _read_env(_att_est.acc_error_m_z_y, "ATT_EST_ACC_ERROR_M_Z_Y");
+
+        _read_env(_att_est.acc_error_b_x, "ATT_EST_ACC_ERROR_B_X");
+        _read_env(_att_est.acc_error_b_y, "ATT_EST_ACC_ERROR_B_Y");
+        _read_env(_att_est.acc_error_b_z, "ATT_EST_ACC_ERROR_B_Z");
+
+        _read_env(_att_est.hard_iron_bias_x, "ATT_EST_HARD_IRON_BIAS_X");
+        _read_env(_att_est.hard_iron_bias_y, "ATT_EST_HARD_IRON_BIAS_Y");
+        _read_env(_att_est.hard_iron_bias_z, "ATT_EST_HARD_IRON_BIAS_Z");
     }
 
     void Config::_load_pilot_ctrl()
@@ -93,4 +108,4 @@ namespace config
         else if (log_level == "OFF")   { return LogLevel::off; }
         else                           { return logger.get_level(); }
     }
-} /* config */
+} /* namespace config */

@@ -29,7 +29,7 @@ namespace config
         std::string get_zmq_address_request() { return _zmq_address_request; }
         std::string get_zmq_address_stream() { return _zmq_address_stream; }
 
-        AttEstConfig get_att_est() { return _att_est; }
+        att_est::Config get_att_est() { return _att_est; }
 
         PilotCtrlConfig get_pilot_ctrl() { return _pilot_ctrl; }
     private:
@@ -47,7 +47,7 @@ namespace config
         std::string _zmq_address_request;
         std::string _zmq_address_stream;
 
-        AttEstConfig _att_est;
+        att_est::Config _att_est;
 
         PilotCtrlConfig _pilot_ctrl;
 
@@ -78,6 +78,6 @@ namespace config
             _env_lines.push_back(_env_line);
         }
     };
-} /* config */
+} /* namespace config */
 
 #endif /* CONFIG_H */

@@ -46,6 +46,7 @@ static const uint8_t N_ESC = droneprops::N_MOTORS;
 static const uint32_t MAIN_SLEEP_MS = 1000;
 
 static const double ATT_EST_INPUT_SAMPLE_RATE_S = 0.01; // 100 Hz (assumes IMU acc & gyro at 100 Hz)
+static const double PILOT_CTRL_INPUT_SAMPLE_RATE_S = ATT_EST_INPUT_SAMPLE_RATE_S;
 
 enum class TaskId {
     AccMag,
@@ -154,50 +155,65 @@ class TaskStateEst : public Task
 {
 public:
     TaskStateEst(uint32_t exec_period_ms, std::string name,
-                 double input_sample_rate_s, AttEstConfig config,
+                 double input_sample_rate_s, att_est::Config config,
                  DataLogQueue& data_log_queue) :
         Task(exec_period_ms, name),
-        _att(input_sample_rate_s, config),
+        _estimator(input_sample_rate_s, config),
         _data_log_queue(data_log_queue) {}
 protected:
     void _execute() override
     {
-        _data_log_queue.last_signal_data(&_att_in.acc_x, DataLogSignal::ImuAccelerationX);
-        _data_log_queue.last_signal_data(&_att_in.acc_y, DataLogSignal::ImuAccelerationY);
-        _data_log_queue.last_signal_data(&_att_in.acc_z, DataLogSignal::ImuAccelerationZ);
+        _data_log_queue.last_signal_data(&_imu_uncompensated.acc_x, DataLogSignal::ImuAccelerationX);
+        _data_log_queue.last_signal_data(&_imu_uncompensated.acc_y, DataLogSignal::ImuAccelerationY);
+        _data_log_queue.last_signal_data(&_imu_uncompensated.acc_z, DataLogSignal::ImuAccelerationZ);
 
-        _data_log_queue.last_signal_data(&_att_in.ang_rate_x, DataLogSignal::ImuAngularRateX);
-        _data_log_queue.last_signal_data(&_att_in.ang_rate_y, DataLogSignal::ImuAngularRateY);
-        _data_log_queue.last_signal_data(&_att_in.ang_rate_z, DataLogSignal::ImuAngularRateZ);
+        _data_log_queue.last_signal_data(&_imu_uncompensated.ang_rate_x, DataLogSignal::ImuAngularRateX);
+        _data_log_queue.last_signal_data(&_imu_uncompensated.ang_rate_y, DataLogSignal::ImuAngularRateY);
+        _data_log_queue.last_signal_data(&_imu_uncompensated.ang_rate_z, DataLogSignal::ImuAngularRateZ);
 
-        _data_log_queue.last_signal_data(&_att_in.mag_field_x, DataLogSignal::ImuMagneticFieldX);
-        _data_log_queue.last_signal_data(&_att_in.mag_field_y, DataLogSignal::ImuMagneticFieldY);
-        _data_log_queue.last_signal_data(&_att_in.mag_field_z, DataLogSignal::ImuMagneticFieldZ);
+        _data_log_queue.last_signal_data(&_imu_uncompensated.mag_field_x, DataLogSignal::ImuMagneticFieldX);
+        _data_log_queue.last_signal_data(&_imu_uncompensated.mag_field_y, DataLogSignal::ImuMagneticFieldY);
+        _data_log_queue.last_signal_data(&_imu_uncompensated.mag_field_z, DataLogSignal::ImuMagneticFieldZ);
 
-        _att.update(_att_in);
-        _att_est = _att.get_estimate();
+        _estimator.update(_imu_uncompensated);
 
-        _data_log_queue.push(_att_est.roll.angle, DataLogSignal::StateEstRoll);
-        _data_log_queue.push(_att_est.pitch.angle, DataLogSignal::StateEstPitch);
-        _data_log_queue.push(_att_est.yaw.angle, DataLogSignal::StateEstYaw);
+        _attitude = _estimator.get_attitude();
+        _imu_compensated = _estimator.get_imu_compensated();
 
-        _data_log_queue.push(_att_est.roll.rate, DataLogSignal::StateEstRollRate);
-        _data_log_queue.push(_att_est.pitch.rate, DataLogSignal::StateEstPitchRate);
-        _data_log_queue.push(_att_est.yaw.rate, DataLogSignal::StateEstYawRate);
+        _data_log_queue.push(_attitude.roll.angle, DataLogSignal::StateEstRoll);
+        _data_log_queue.push(_attitude.pitch.angle, DataLogSignal::StateEstPitch);
+        _data_log_queue.push(_attitude.yaw.angle, DataLogSignal::StateEstYaw);
 
-        _data_log_queue.push(_att_est.roll.acc, DataLogSignal::StateEstRollAcc);
-        _data_log_queue.push(_att_est.pitch.acc, DataLogSignal::StateEstPitchAcc);
-        _data_log_queue.push(_att_est.yaw.acc, DataLogSignal::StateEstYawAcc);
+        _data_log_queue.push(_attitude.roll.rate, DataLogSignal::StateEstRollRate);
+        _data_log_queue.push(_attitude.pitch.rate, DataLogSignal::StateEstPitchRate);
+        _data_log_queue.push(_attitude.yaw.rate, DataLogSignal::StateEstYawRate);
 
-        _data_log_queue.push(_att.is_calibrated(), DataLogSignal::StateEstAttIsCalib);
-        _data_log_queue.push(_att.is_standstill(), DataLogSignal::StateEstAttIsStandstill);
+        _data_log_queue.push(_attitude.roll.acc, DataLogSignal::StateEstRollAcc);
+        _data_log_queue.push(_attitude.pitch.acc, DataLogSignal::StateEstPitchAcc);
+        _data_log_queue.push(_attitude.yaw.acc, DataLogSignal::StateEstYawAcc);
+
+        _data_log_queue.push(_imu_compensated.acc_x, DataLogSignal::StateEstCompAccX);
+        _data_log_queue.push(_imu_compensated.acc_y, DataLogSignal::StateEstCompAccY);
+        _data_log_queue.push(_imu_compensated.acc_z, DataLogSignal::StateEstCompAccZ);
+
+        _data_log_queue.push(_imu_compensated.ang_rate_x, DataLogSignal::StateEstCompAngRateX);
+        _data_log_queue.push(_imu_compensated.ang_rate_y, DataLogSignal::StateEstCompAngRateY);
+        _data_log_queue.push(_imu_compensated.ang_rate_z, DataLogSignal::StateEstCompAngRateZ);
+
+        _data_log_queue.push(_imu_compensated.mag_field_x, DataLogSignal::StateEstCompMagFieldX);
+        _data_log_queue.push(_imu_compensated.mag_field_y, DataLogSignal::StateEstCompMagFieldY);
+        _data_log_queue.push(_imu_compensated.mag_field_z, DataLogSignal::StateEstCompMagFieldZ);
+
+        _data_log_queue.push(_estimator.is_calibrated(), DataLogSignal::StateEstAttIsCalibrated);
+        _data_log_queue.push(_estimator.is_standstill(), DataLogSignal::StateEstAttIsStandstill);
 
         _data_log_queue.push(uint8_t(TaskId::StateEst), DataLogSignal::TaskExecute);
     }
 private:
-    AttEstInput _att_in;
-    AttEstimate _att_est;
-    AttitudeEstimation _att;
+    att_est::Imu _imu_uncompensated;
+    att_est::Imu _imu_compensated;
+    att_est::Attitude _attitude;
+    att_est::Estimator _estimator;
 
     DataLogQueue& _data_log_queue;
 };
@@ -222,7 +238,7 @@ protected:
 private:
     bool _att_est_is_calibrated;
     bool _state_ctrl_reset;
-    AttEstimate _att_est;
+    att_est::Attitude _attitude;
 
     double _gimbal_left_x, _gimbal_left_y, _gimbal_right_x, _gimbal_right_y;
 
@@ -240,7 +256,7 @@ private:
 
     void _exec_pilot_ctrl()
     {
-        _data_log_queue.last_signal_data(&_att_est_is_calibrated, DataLogSignal::StateEstAttIsCalib, false);
+        _data_log_queue.last_signal_data(&_att_est_is_calibrated, DataLogSignal::StateEstAttIsCalibrated, false);
         _data_log_queue.last_signal_data(&_state_ctrl_reset, DataLogSignal::StateCtrlReset, true);
 
         if (_state_ctrl_reset)
@@ -249,17 +265,17 @@ private:
         }
         else if (_att_est_is_calibrated && !_state_ctrl_reset)
         {
-            _data_log_queue.last_signal_data(&_att_est.roll.angle, DataLogSignal::StateEstRoll);
-            _data_log_queue.last_signal_data(&_att_est.pitch.angle, DataLogSignal::StateEstPitch);
-            _data_log_queue.last_signal_data(&_att_est.yaw.angle, DataLogSignal::StateEstYaw);
+            _data_log_queue.last_signal_data(&_attitude.roll.angle, DataLogSignal::StateEstRoll);
+            _data_log_queue.last_signal_data(&_attitude.pitch.angle, DataLogSignal::StateEstPitch);
+            _data_log_queue.last_signal_data(&_attitude.yaw.angle, DataLogSignal::StateEstYaw);
 
-            _data_log_queue.last_signal_data(&_att_est.roll.rate, DataLogSignal::StateEstRollRate);
-            _data_log_queue.last_signal_data(&_att_est.pitch.rate, DataLogSignal::StateEstPitchRate);
-            _data_log_queue.last_signal_data(&_att_est.yaw.rate, DataLogSignal::StateEstYawRate);
+            _data_log_queue.last_signal_data(&_attitude.roll.rate, DataLogSignal::StateEstRollRate);
+            _data_log_queue.last_signal_data(&_attitude.pitch.rate, DataLogSignal::StateEstPitchRate);
+            _data_log_queue.last_signal_data(&_attitude.yaw.rate, DataLogSignal::StateEstYawRate);
 
-            _data_log_queue.last_signal_data(&_att_est.roll.acc, DataLogSignal::StateEstRollAcc);
-            _data_log_queue.last_signal_data(&_att_est.pitch.acc, DataLogSignal::StateEstPitchAcc);
-            _data_log_queue.last_signal_data(&_att_est.yaw.acc, DataLogSignal::StateEstYawAcc);
+            _data_log_queue.last_signal_data(&_attitude.roll.acc, DataLogSignal::StateEstRollAcc);
+            _data_log_queue.last_signal_data(&_attitude.pitch.acc, DataLogSignal::StateEstPitchAcc);
+            _data_log_queue.last_signal_data(&_attitude.yaw.acc, DataLogSignal::StateEstYawAcc);
 
             _data_log_queue.last_signal_data(&_gimbal_left_x, DataLogSignal::RcGimbalLeftX);
             _data_log_queue.last_signal_data(&_gimbal_left_y, DataLogSignal::RcGimbalLeftY);
@@ -269,7 +285,7 @@ private:
             _ctrl_ref = tgyia6c_to_pilot_ctrl_ref(_gimbal_left_x, _gimbal_left_y,
                                                 _gimbal_right_x, _gimbal_right_y);
 
-            _pilot_ctrl.update(_att_est, _ctrl_ref);
+            _pilot_ctrl.update(_attitude, _ctrl_ref);
         }
 
         _body_ctrl = _pilot_ctrl.get_ctrl();
@@ -682,7 +698,7 @@ int main()
                                         ATT_EST_INPUT_SAMPLE_RATE_S, config.get_att_est(), data_log_queue));
 
     tasks.emplace_back(new TaskStateCtrl(TASK_STATE_CTRL_EXEC_PERIOD_MS, "StateCtrl",
-                                         ATT_EST_INPUT_SAMPLE_RATE_S, config.get_pilot_ctrl(), data_log_queue));
+                                         PILOT_CTRL_INPUT_SAMPLE_RATE_S, config.get_pilot_ctrl(), data_log_queue));
 
     tasks.emplace_back(new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, "DataLogger",
                                           config.get_data_log_root(), data_log_queue));

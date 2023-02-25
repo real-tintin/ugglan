@@ -56,7 +56,7 @@ class PilotControl
 public:
     PilotControl(double input_sample_rate_s, PilotCtrlConfig config);
 
-    void update(AttEstimate est, PilotCtrlRef ref);
+    void update(att_est::Attitude attitude, PilotCtrlRef ref);
     void reset();
 
     BodyControl get_ctrl();
@@ -74,7 +74,7 @@ private:
 
     Eigen::Vector<double, 1> _u;
 
-    void _extract_states(AttEstimate& att_est);
+    void _extract_states(att_est::Attitude& attitude);
     void _change_of_variable(PilotCtrlRef& ref);
     void _integrate_with_antiwindup();
 

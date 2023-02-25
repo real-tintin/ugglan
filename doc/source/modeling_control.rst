@@ -261,14 +261,12 @@ with the selected covariance matrices
     \end{bmatrix},
     \mathbf{R}=
     \begin{bmatrix}
-        \kappa_{R_0}\sigma_{acc|mag}^2 & 0 \\
-        0 & \kappa_{R_1}\sigma_{gyro}^2
+        \kappa_{R_0} & 0 \\
+        0 & \kappa_{R_1}
     \end{bmatrix},
     \mathbf{P}_0= 0.
 
-Here :math:`\sigma_{acc|mag}^2` and :math:`\sigma_{gyro}^2` is the variance of the imu
-angle (accelerometer and magnetometer only) and gyro respectively. They are continuously
-computed using a rolling variance. :math:`\kappa` is a scaling factor and used for tuning.
+The :math:`\kappa` are tunable parameters of the filter.
 
 See :ref:`estimator-performance` for the final performance
 and comparison w.r.t to other filtering methods.
@@ -330,38 +328,99 @@ Kalman Filter
 In order to solve for the optimal Kalman gain, matrix operations (e.g., inverse) have
 to be performed. For this `Eigen <https://eigen.tuxfamily.org/>`_ is used.
 
-Gyro offset
-""""""""""""
-The gyro output contains an offset/bias which needs to be compensated for. This
-can simply be estimated during the standstill of the drone.
-
 Range Limit
 """""""""""""""
 The estimates need to be range limited i.e., modulo of the euler angles e.g.,
 :math:`\theta \in [-\pi, \pi]`.
 
-Hard Iron Offset
-"""""""""""""""""
+Accelerometer Static Errors
+"""""""""""""""""""""""""""
+The accelerometer output is typically polluted with static errors which need
+to be compensated for. These errors can split into scaling errors, misalignment
+errors and biases (offset errors). The relation between the raw sensor output
+:math:`\tilde{V}` and the true (compensated) output :math:`V` can be expressed
+as following
+
+.. math::
+
+    \underbrace{
+        \begin{bmatrix}
+            x \\
+            y \\
+            z
+        \end{bmatrix}
+    }_V =
+    \underbrace{
+        \begin{bmatrix}
+            s_x & 0 & 0 \\
+            0 & s_y & 0 \\
+            0 & 0 & s_z
+        \end{bmatrix}
+    }_S
+    \underbrace{
+        \begin{bmatrix}
+                1 & m_{xy} & m_{xz} \\
+                m_{yx} & 1 & m_{yz} \\
+                m_{zx} & m_{zy} & 1
+        \end{bmatrix}
+    }_M
+    \underbrace{
+        \begin{bmatrix}
+            \tilde{x} \\
+            \tilde{y} \\
+            \tilde{z}
+        \end{bmatrix}
+    }_\tilde{V} -
+    \underbrace{
+        \begin{bmatrix}
+                b_x \\
+                b_y \\
+                b_z
+        \end{bmatrix}
+    }_B.
+
+The matrices :math:`S`, :math:`M` and :math:`B` can be estimated
+by using least squares regression of measurements where the expected
+output is known.
+
+Below in :numref:`acc-static-errors` the residuals of a regression of
+six different measurements is shown. Where each axis is aligned with
+the gravity, in both the positive and the negative direction.
+
+.. _acc-static-errors:
+.. figure:: figures/acc_static_errors.svg
+    :width: 100%
+
+    MLSE residuals of accelerometer statical error estimation.
+
+One can see that the fitted model doesn't manage to remove all errors.
+There might exist non-linearities left to model.
+
+Gyro Bias
+""""""""""
+The gyro output contains an bias which needs to be compensated for. This
+can be estimated dynamically during the standstill of the drone.
+
+Hard Iron Bias
+"""""""""""""""
 Magnetic fields affecting the magnetometer other than earth's need to be compensated
 for. One of those is hard iron (the other being soft iron) effects. These are static
 magnetic fields e.g., components on the PCB.
 
-These offsets can easily be estimated using least squares (offset of a sphere)
+These biases can easily be estimated using least squares (offset of a sphere)
 
 .. math::
 
     \underset{V}{\text{minimize}} (B-V)^T (B-V) = B^2.
 
 To get a good estimate, the magnetometer should be rotated in space to excite all
-directions, see :numref:`hard_iron_offset`.
+directions, see :numref:`hard_iron_bias`.
 
-.. _hard_iron_offset:
-.. figure:: figures/hard_iron_offset.svg
+.. _hard_iron_bias:
+.. figure:: figures/hard_iron_bias.svg
     :width: 100%
 
-    Hard iron offset estimation and correction.
-
-.. _force-torque-estimation:
+    Hard iron bias estimation and correction.
 
 State Control
 =================

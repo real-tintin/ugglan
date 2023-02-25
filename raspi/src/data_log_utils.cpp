@@ -48,7 +48,7 @@ void _add_signals(json& header)
         };
     }
 }
-} /* anonymous */
+} /* namespace anonymous */
 
 void add_data_log_metadata_to_json(json& data)
 {
@@ -99,5 +99,5 @@ DataLogSignalInfo get_data_log_signal_info(DataLogSignal signal)
         throw std::runtime_error("Unknown signal type");
     }
 }
-} /* utils */
-} /* data_log */
+} /* namespace utils */
+} /* namespace data_log */
