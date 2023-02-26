@@ -315,7 +315,7 @@ class AttEstKalman(AttEst):
     def __init__(self, dt: float):
         super().__init__(dt)
 
-        self.P_0 = np.zeros((3, 3))
+        self.P_0 = np.identity(3)
 
         G = np.array([0.5 * dt ** 2, dt, 1])
         self.Q = self.Q_SCALE * np.outer(G, G)

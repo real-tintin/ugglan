@@ -264,7 +264,7 @@ with the selected covariance matrices
         \kappa_{R_0} & 0 \\
         0 & \kappa_{R_1}
     \end{bmatrix},
-    \mathbf{P}_0= 0.
+    \mathbf{P}_0= I.
 
 The :math:`\kappa` are tunable parameters of the filter.
 

@@ -9,6 +9,8 @@
 
 namespace att_est
 {
+inline const Eigen::Matrix3d KALMAN_STATE_P_0 = Eigen::Matrix3d::Identity();
+
 struct Imu {
     double acc_x;       // [m/s^2]
     double acc_y;       // [m/s^2]
@@ -26,7 +28,7 @@ struct Imu {
 struct KalmanState {
     Eigen::Vector3d x {{0}, {0}, {0}};
     Eigen::Vector2d z {{0}, {0}};
-    Eigen::Matrix3d P {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+    Eigen::Matrix3d P = KALMAN_STATE_P_0;
 };
 
 struct AttState {
@@ -104,10 +106,10 @@ private:
     bool _is_gyro_bias_compensated = false;
     uint8_t _n_samples_gyro_bias_compensated = 0;
 
-    Eigen::Matrix<double, 2, 3> _H {{1, 0, 0}, {0, 1, 0}};
-    Eigen::Matrix<double, 3, 2> _H_t = _H.transpose();
+    const Eigen::Matrix<double, 2, 3> _H {{1, 0, 0}, {0, 1, 0}};
+    const Eigen::Matrix<double, 3, 2> _H_t = _H.transpose();
 
-    Eigen::Matrix3d _I {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    const Eigen::Matrix3d _I = Eigen::Matrix3d::Identity();
 
     Eigen::Matrix3d _Q;
     Eigen::Matrix2d _R;
