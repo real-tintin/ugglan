@@ -5,7 +5,6 @@ import numpy as np
 from ugglan_tools.multi_body_sim.euclidean_transform import rotation_matrix
 from ugglan_tools.non_linear_sim.att_estimator import AttEstimator, ImuOut, AttEstimate
 from ugglan_tools.non_linear_sim.att_estimator import Params as AttEstParams
-from ugglan_tools.non_linear_sim.att_estimator import AttState
 from ugglan_tools.non_linear_sim.drone_model import DroneModel, DroneParams, EnvParams, CtrlInput, MotorAngRates
 from ugglan_tools.non_linear_sim.pilot_ctrl import Params as PilotCtrlParams
 from ugglan_tools.non_linear_sim.pilot_ctrl import RefInput, PilotCtrl
@@ -34,7 +33,6 @@ class Simulator:
                  imu_noise: ImuNoise,
                  dt: float,
                  init_state: SixDofState = get_zero_initialized_state(),
-                 standstill_calib_att_est: bool = True,
                  init_motors_with_fz_mg: bool = True
                  ):
         self._att_estimator = AttEstimator(params=att_est_params, dt=dt)
@@ -44,7 +42,6 @@ class Simulator:
 
         self._imu_noise = imu_noise
         self._g = env_params.g
-        self._standstill_calib_att_est = standstill_calib_att_est
 
         self.reset(state=init_state)
 
@@ -83,13 +80,6 @@ class Simulator:
         self._att_estimator.reset()
         self._pilot_ctrl.reset()
         self._drone_model.reset(state=state)
-
-        if self._standstill_calib_att_est:
-            self._calib_att_est()
-
-    def _calib_att_est(self):
-        while not self._att_estimator.is_calibrated():
-            self._att_estimator.update(imu_out=self._extract_imu_out(self._drone_model.get_6dof_state()))
 
     def _extract_imu_out(self, state: SixDofState) -> ImuOut:
         imu_acc = self._body_acc_to_imu_acc(state.a_b, state.n_i, self._g)

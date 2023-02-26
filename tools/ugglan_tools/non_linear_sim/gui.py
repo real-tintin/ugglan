@@ -15,9 +15,9 @@ from ugglan_tools.non_linear_sim.pilot_ctrl import DEFAULT_PILOT_CTRL_PARAMS, Re
 from ugglan_tools.non_linear_sim.rolling_buffer import RollingBuffer
 from ugglan_tools.non_linear_sim.simulator import DEFAULT_IMU_NOISE, ImuNoise
 from ugglan_tools.non_linear_sim.simulator import Simulator
+from ugglan_tools.non_linear_sim.six_dof_model import get_zero_initialized_state
 from ugglan_tools.non_linear_sim.subplot_widgets import SixDofWidget, LinePlotWidget
 from ugglan_tools.non_linear_sim.threaded_task import ThreadedTask
-from ugglan_tools.non_linear_sim.six_dof_model import get_zero_initialized_state
 
 FORMAT_MENU_LABEL = "{key}: {val}"
 
@@ -58,7 +58,6 @@ class ConfSim:
     imu_noise: ImuNoise = DEFAULT_IMU_NOISE
     dt_s: float = 0.01
 
-    standstill_calib_att_est: bool = True
     init_motors_with_fz_mg: bool = True
 
 
@@ -359,7 +358,6 @@ class Gui(QtWidgets.QMainWindow):
             env_params=self._conf_sim.env_params,
             imu_noise=self._conf_sim.imu_noise,
             dt=self._conf_sim.dt_s,
-            standstill_calib_att_est=self._conf_sim.standstill_calib_att_est,
             init_motors_with_fz_mg=self._conf_sim.init_motors_with_fz_mg
         )
 
@@ -447,30 +445,30 @@ class Gui(QtWidgets.QMainWindow):
         return LinePlotWidget(data_cb=self._cb_roll_ref_widget,
                               labels=["act", "est", "ref"],
                               line_styles=[
-                                QtCore.Qt.PenStyle.SolidLine,
-                                QtCore.Qt.PenStyle.SolidLine,
-                                QtCore.Qt.PenStyle.DashLine
-                                ],
+                                  QtCore.Qt.PenStyle.SolidLine,
+                                  QtCore.Qt.PenStyle.SolidLine,
+                                  QtCore.Qt.PenStyle.DashLine
+                              ],
                               y_label="Roll", y_unit="rad")
 
     def _init_pitch_ref_widget(self):
         return LinePlotWidget(data_cb=self._cb_pitch_ref_widget,
                               labels=["act", "est", "ref"],
                               line_styles=[
-                                QtCore.Qt.PenStyle.SolidLine,
-                                QtCore.Qt.PenStyle.SolidLine,
-                                QtCore.Qt.PenStyle.DashLine
-                                ],
+                                  QtCore.Qt.PenStyle.SolidLine,
+                                  QtCore.Qt.PenStyle.SolidLine,
+                                  QtCore.Qt.PenStyle.DashLine
+                              ],
                               y_label="Pitch", y_unit="rad")
 
     def _init_yaw_rate_ref_widget(self):
         return LinePlotWidget(data_cb=self._cb_yaw_rate_ref_widget,
                               labels=["act", "est", "ref"],
                               line_styles=[
-                                QtCore.Qt.PenStyle.SolidLine,
-                                QtCore.Qt.PenStyle.SolidLine,
-                                QtCore.Qt.PenStyle.DashLine
-                                ],
+                                  QtCore.Qt.PenStyle.SolidLine,
+                                  QtCore.Qt.PenStyle.SolidLine,
+                                  QtCore.Qt.PenStyle.DashLine
+                              ],
                               y_label="Yaw-rate", y_unit="rad/s")
 
     def _init_body_ctrl_widget(self):

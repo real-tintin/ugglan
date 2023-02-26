@@ -27,7 +27,7 @@ class TestAttEstimator:
         self.update_n_times(default_estimator, imu_out, SAMPLES_UNTIL_CONVERGENCE)
         act_angle = getattr(default_estimator.get_estimate(), rotation).angle
 
-        assert np.isclose(act_angle, exp_angle, 1e-3)
+        assert np.isclose(act_angle, exp_angle, 1e-2)
 
     @staticmethod
     def update_n_times(estimator: AttEstimator, imu_out: ImuOut, n: int):

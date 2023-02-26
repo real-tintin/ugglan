@@ -320,6 +320,8 @@ class AttEstKalman(AttEst):
         G = np.array([0.5 * dt ** 2, dt, 1])
         self.Q = self.Q_SCALE * np.outer(G, G)
 
+        self.R = np.diag([self.R_0, self.R_1])
+
         self.F = np.array([
             [1, dt, 0.5 * dt ** 2],
             [0, 1, dt],
@@ -330,8 +332,6 @@ class AttEstKalman(AttEst):
             [1, 0, 0],
             [0, 1, 0]
         ])
-
-        self.R = np.diag([self.R_0, self.R_1])
 
     def _execute(self, imu_out: ImuOut):
         phi_acc = self._to_phi(imu_out.acc_y, imu_out.acc_z)
