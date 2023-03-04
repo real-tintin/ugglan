@@ -6,7 +6,7 @@ DOC_ROOT = /$(shell pwd)/
 IMAGE_ROOT = /doc
 
 UID = $(shell id -u)
-GID = $(shell id -u)
+GID = $(shell id -g)
 
 SPHINXOPTS ?=
 SOURCEDIR   = source/

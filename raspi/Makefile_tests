@@ -6,7 +6,7 @@ RASPI_ROOT = $(shell pwd)
 IMAGE_ROOT = /raspi
 
 UID = $(shell id -u)
-GID = $(shell id -u)
+GID = $(shell id -g)
 
 IMAGE_NAME = raspi_host
 
