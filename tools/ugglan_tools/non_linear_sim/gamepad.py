@@ -14,7 +14,7 @@ class Gamepad:
     Note, as the inputs function get_gamepad is blocking, the core
     inputs features are used and 're-packed' to make it non-blocking.
 
-    Note, tested on Windows using a Xbox 360 controller.
+    Note, tested on Windows using an Xbox 360 controller.
     """
 
     def __init__(self, ref_scale: RefInput):

@@ -91,11 +91,6 @@ class ConfInput:
 
 
 class Gui(QtWidgets.QMainWindow):
-    """
-    Note, some tasks are run in threads without any locks. It is deemed that
-    this approach is fine (w.r.t race conditions) as long as we only read
-    (non-modifiable access) e.g., from the simulator.
-    """
 
     def __init__(self, parent=None):
         super(Gui, self).__init__(parent)
