@@ -20,9 +20,6 @@ class ImuNoise:
     mag_std: float = 0.002
 
 
-DEFAULT_IMU_NOISE = ImuNoise()
-
-
 class Simulator:
 
     def __init__(self,

@@ -64,9 +64,6 @@ class Params:
     R_1: float = 0.1
 
 
-DEFAULT_ATT_EST_PARAMS = Params()
-
-
 class AttEstimator:
     def __init__(self, params: Params, dt: float):
         self._params = params

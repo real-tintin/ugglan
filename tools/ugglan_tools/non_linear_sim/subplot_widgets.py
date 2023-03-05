@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Callable, List
 
 import numpy as np
@@ -16,6 +17,11 @@ DEFAULT_COLOR_ORDER = [QColor(31, 119, 180),
                        QColor(255, 127, 14),
                        QColor(127, 127, 127),
                        QColor(23, 190, 207)]  # Matplotlib v2.0 color palette
+
+
+@dataclass
+class SixDofConfig:
+    lock_origin: bool = False
 
 
 class SubplotWidget(ABC):
@@ -60,8 +66,10 @@ class SixDofWidget(SubplotWidget):
     Note, as the axis in the 6dof model is rotated with pi about x, we set -y and -z.
     """
 
-    def __init__(self, data_cb: Callable):
+    def __init__(self, data_cb: Callable, config: SixDofConfig = SixDofConfig()):
         super().__init__(data_cb)
+
+        self._config = config
 
     def _ini_base_widget(self):
         self._base_widget = gl.GLViewWidget()
@@ -83,6 +91,13 @@ class SixDofWidget(SubplotWidget):
         self._base_widget.addItem(gl.GLTextItem(pos=[0, 0, -1], text='z (m)', font=QFont('Helvetica', 7)))
 
     def _update(self, r_i: np.ndarray, v_i: np.ndarray, a_i: np.ndarray, n_i: np.ndarray):
+        if self._config.lock_origin:
+            camera_pos = QtGui.QVector3D(0, 0, 0)
+        else:
+            camera_pos = QtGui.QVector3D(r_i[0], -r_i[1], -r_i[2])
+
+        self._base_widget.setCameraPosition(pos=camera_pos)
+
         transform = QMatrix4x4()
 
         transform.translate(r_i[0], -r_i[1], -r_i[2])

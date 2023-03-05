@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from ugglan_tools.non_linear_sim.att_estimator import AttEstimator, DEFAULT_ATT_EST_PARAMS, ImuOut
+from ugglan_tools.non_linear_sim.att_estimator import AttEstimator, Params, ImuOut
 
 TEST_DT = 0.01
 
@@ -11,7 +11,7 @@ SAMPLES_UNTIL_CONVERGENCE = 1000
 @pytest.fixture
 def default_estimator():
     yield AttEstimator(
-        params=DEFAULT_ATT_EST_PARAMS,
+        params=Params(),
         dt=TEST_DT,
     )
 

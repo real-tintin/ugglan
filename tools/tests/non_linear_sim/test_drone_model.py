@@ -1,17 +1,17 @@
 import numpy as np
 import pytest
 
-from ugglan_tools.non_linear_sim.drone_model import DroneModel, CtrlInput, DEFAULT_ENV_PARAMS, DEFAULT_DRONE_PARAMS
+from ugglan_tools.non_linear_sim.drone_model import DroneModel, CtrlInput, EnvParams, DroneParams
 
 TEST_DT = 0.01
 
-MG = DEFAULT_DRONE_PARAMS.m * DEFAULT_ENV_PARAMS.g
+MG = DroneParams().m * EnvParams().g
 
 
 @pytest.fixture
 def drone_model():
-    yield DroneModel(drone_params=DEFAULT_DRONE_PARAMS,
-                     env_params=DEFAULT_ENV_PARAMS,
+    yield DroneModel(drone_params=DroneParams(),
+                     env_params=EnvParams(),
                      dt=TEST_DT)
 
 

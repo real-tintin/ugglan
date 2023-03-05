@@ -53,16 +53,10 @@ class DroneParams:
     sq_motor_cmd_max: float = 750 ** 2  # [rad^2/s^2]
 
 
-DEFAULT_DRONE_PARAMS = DroneParams()
-
-
 @dataclass
 class EnvParams:
     g: float = 9.82  # gravity of earth [m/s^2]
     rho_air: float = 1.225  # air density [kg/m^3]
-
-
-DEFAULT_ENV_PARAMS = EnvParams()
 
 
 class DroneModel:

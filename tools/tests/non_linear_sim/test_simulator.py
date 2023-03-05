@@ -1,24 +1,26 @@
 import numpy as np
 import pytest
 
-from ugglan_tools.non_linear_sim.att_estimator import DEFAULT_ATT_EST_PARAMS
-from ugglan_tools.non_linear_sim.drone_model import DEFAULT_ENV_PARAMS, DEFAULT_DRONE_PARAMS
-from ugglan_tools.non_linear_sim.pilot_ctrl import DEFAULT_PILOT_CTRL_PARAMS, RefInput
-from ugglan_tools.non_linear_sim.simulator import Simulator, DEFAULT_IMU_NOISE
+from ugglan_tools.non_linear_sim.att_estimator import Params as AttEstParams
+from ugglan_tools.non_linear_sim.drone_model import EnvParams, DroneParams
+from ugglan_tools.non_linear_sim.pilot_ctrl import Params as PilotCtrlParams
+from ugglan_tools.non_linear_sim.pilot_ctrl import RefInput
+from ugglan_tools.non_linear_sim.simulator import Simulator, ImuNoise
 
 TEST_DT = 0.01
-MG = DEFAULT_DRONE_PARAMS.m * DEFAULT_ENV_PARAMS.g
-G = DEFAULT_ENV_PARAMS.g
+
+G = EnvParams().g
+MG = DroneParams().m * G
 
 
 @pytest.fixture
 def default_sim():
     yield Simulator(
-        att_est_params=DEFAULT_ATT_EST_PARAMS,
-        pilot_ctrl_params=DEFAULT_PILOT_CTRL_PARAMS,
-        drone_params=DEFAULT_DRONE_PARAMS,
-        env_params=DEFAULT_ENV_PARAMS,
-        imu_noise=DEFAULT_IMU_NOISE,
+        att_est_params=AttEstParams(),
+        pilot_ctrl_params=PilotCtrlParams(),
+        drone_params=DroneParams(),
+        env_params=EnvParams(),
+        imu_noise=ImuNoise(),
         dt=TEST_DT,
     )
 

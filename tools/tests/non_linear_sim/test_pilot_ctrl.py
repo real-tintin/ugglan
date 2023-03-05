@@ -1,10 +1,11 @@
-import numpy as np
-import pytest
 from copy import copy
 from typing import Set
 
+import numpy as np
+import pytest
+
 from ugglan_tools.non_linear_sim.att_estimator import AttEstimate
-from ugglan_tools.non_linear_sim.pilot_ctrl import PilotCtrl, DEFAULT_PILOT_CTRL_PARAMS, RefInput, CtrlInput
+from ugglan_tools.non_linear_sim.pilot_ctrl import PilotCtrl, Params, RefInput, CtrlInput
 
 TEST_DT = 0.01
 
@@ -14,7 +15,7 @@ ZERO_ATT_ESTIMATE = AttEstimate()
 @pytest.fixture
 def default_pilot_ctrl():
     yield PilotCtrl(
-        params=DEFAULT_PILOT_CTRL_PARAMS,
+        params=Params(),
         dt=TEST_DT,
     )
 

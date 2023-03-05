@@ -1,6 +1,6 @@
 import argparse
 import sys
-from dataclasses import dataclass, is_dataclass
+from dataclasses import dataclass, is_dataclass, field
 from enum import Enum
 from functools import partial
 
@@ -8,15 +8,16 @@ import numpy as np
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtWidgets import QInputDialog, QStackedWidget
 
-from ugglan_tools.non_linear_sim.att_estimator import DEFAULT_ATT_EST_PARAMS
-from ugglan_tools.non_linear_sim.drone_model import DEFAULT_DRONE_PARAMS, DEFAULT_ENV_PARAMS, DroneParams, EnvParams
+from ugglan_tools.non_linear_sim.att_estimator import Params as AttEstParams
+from ugglan_tools.non_linear_sim.drone_model import DroneParams, EnvParams
 from ugglan_tools.non_linear_sim.gamepad import Gamepad
-from ugglan_tools.non_linear_sim.pilot_ctrl import DEFAULT_PILOT_CTRL_PARAMS, RefInput
+from ugglan_tools.non_linear_sim.pilot_ctrl import Params as PilotCtrlParams
+from ugglan_tools.non_linear_sim.pilot_ctrl import RefInput
 from ugglan_tools.non_linear_sim.rolling_buffer import RollingBuffer
-from ugglan_tools.non_linear_sim.simulator import DEFAULT_IMU_NOISE, ImuNoise
+from ugglan_tools.non_linear_sim.simulator import ImuNoise
 from ugglan_tools.non_linear_sim.simulator import Simulator
 from ugglan_tools.non_linear_sim.six_dof_model import get_zero_initialized_state
-from ugglan_tools.non_linear_sim.subplot_widgets import SixDofWidget, LinePlotWidget
+from ugglan_tools.non_linear_sim.subplot_widgets import SixDofWidget, LinePlotWidget, SixDofConfig
 from ugglan_tools.non_linear_sim.threaded_task import ThreadedTask
 
 FORMAT_MENU_LABEL = "{key}: {val}"
@@ -52,25 +53,20 @@ class GuiState(Enum):
 
 @dataclass
 class ConfSim:
-    drone_params: DroneParams = DEFAULT_DRONE_PARAMS
-    env_params: EnvParams = DEFAULT_ENV_PARAMS
+    drone_params: DroneParams = field(default_factory=lambda: DroneParams())
+    env_params: EnvParams = field(default_factory=lambda: EnvParams())
 
-    imu_noise: ImuNoise = DEFAULT_IMU_NOISE
+    imu_noise: ImuNoise = field(default_factory=lambda: ImuNoise())
     dt_s: float = 0.01
 
     init_motors_with_fz_mg: bool = True
-
-
-DEFAULT_CONF_SIM = ConfSim()
 
 
 @dataclass
 class ConfGui:
     refresh_rate_s: float = 1 / 30  # 30 Hz
     t_window_size_s: float = 10.0
-
-
-DEFAULT_CONF_GUI = ConfGui()
+    six_dof: SixDofConfig = field(default_factory=lambda: SixDofConfig())
 
 
 @dataclass
@@ -95,11 +91,11 @@ class Gui(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         super(Gui, self).__init__(parent)
 
-        self._att_est_params = DEFAULT_ATT_EST_PARAMS
-        self._pilot_ctrl_params = DEFAULT_PILOT_CTRL_PARAMS
+        self._att_est_params = AttEstParams()
+        self._pilot_ctrl_params = PilotCtrlParams()
 
-        self._conf_sim = DEFAULT_CONF_SIM
-        self._conf_gui = DEFAULT_CONF_GUI
+        self._conf_sim = ConfSim()
+        self._conf_gui = ConfGui()
 
         self._conf_input = ConfInput(step_response=self._get_default_conf_step_response(),
                                      gamepad=self._get_default_conf_gamepad())
@@ -434,7 +430,7 @@ class Gui(QtWidgets.QMainWindow):
         self._gui_timer.stop()
 
     def _init_6dof_widget(self):
-        return SixDofWidget(data_cb=self._cb_6dof_widget)
+        return SixDofWidget(data_cb=self._cb_6dof_widget, config=self._conf_gui.six_dof)
 
     def _init_roll_ref_widget(self):
         return LinePlotWidget(data_cb=self._cb_roll_ref_widget,

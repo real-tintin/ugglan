@@ -45,9 +45,6 @@ class Params:
     anti_windup_sat_psi: float = 2.4
 
 
-DEFAULT_PILOT_CTRL_PARAMS = Params()
-
-
 class PilotCtrl:
 
     def __init__(self, params: Params, dt: float):
