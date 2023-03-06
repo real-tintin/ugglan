@@ -26,7 +26,7 @@ else
 fi
 
 pip install --upgrade pip
-pip install ./tools
+pip install -e ./tools
 
 # Init and update submodules.
 git submodule init

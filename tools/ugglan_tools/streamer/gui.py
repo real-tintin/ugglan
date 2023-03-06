@@ -1,3 +1,4 @@
+import argparse
 from dataclasses import dataclass, field
 from typing import List
 
@@ -188,6 +189,9 @@ def update_graph_live(_):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Launches gui for live streaming of data.')
+    parser.parse_args()
+
     gui.run_server(debug=True)
 
 
