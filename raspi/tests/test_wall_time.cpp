@@ -1,4 +1,4 @@
-#include <catch.h>
+#include "catch.h"
 
 #include <thread>
 #include <wall_time.h>
