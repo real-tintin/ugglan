@@ -28,6 +28,7 @@ build_image:
 
 build_app: build_image
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--platform linux/arm/v7 \
 		--user $(UID):$(GID) \
 		--env TARGET_NAME=${TARGET_NAME} \
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
@@ -35,6 +36,7 @@ build_app: build_image
 
 build_dpkg: build_app
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--platform linux/arm/v7 \
 		--user $(UID):$(GID) \
 		--env TARGET_NAME=${TARGET_NAME} \
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
@@ -42,6 +44,7 @@ build_dpkg: build_app
 
 build_app_for_profiling: build_image
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--platform linux/arm/v7 \
 		--user $(UID):$(GID) \
 		--env TARGET_NAME=${TARGET_NAME} \
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
@@ -50,6 +53,7 @@ build_app_for_profiling: build_image
 
 build_dpkg_for_profiling: build_app_for_profiling
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--platform linux/arm/v7 \
 		--user $(UID):$(GID) \
 		--env TARGET_NAME=${TARGET_NAME} \
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \

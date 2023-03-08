@@ -5,5 +5,5 @@
 .PHONY: build_pkg_and_test
 
 build_pkg_and_test:
-	docker build --platform linux/amd64 . -t tools
-	docker run tools python -m pytest
+	docker build --platform linux/amd64 -t tools .
+	docker run --platform linux/amd64 tools python -m pytest
