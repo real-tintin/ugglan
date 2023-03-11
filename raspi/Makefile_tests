@@ -8,7 +8,7 @@ IMAGE_ROOT = /raspi
 UID = $(shell id -u)
 GID = $(shell id -g)
 
-IMAGE_NAME = raspi_host
+IMAGE_NAME = raspi:host
 
 TARGET_NAME = ugglan_tests
 BUILD_FOR_TEST = TRUE
@@ -25,8 +25,9 @@ TARGET_PATH = ./build_${BUILD_SUFFIX}/${TARGET_NAME}
 build_and_run_tests clean
 
 build_image:
-	docker build . -t ${IMAGE_NAME} \
-		--build-arg IMAGE_ROOT=${IMAGE_ROOT}
+	docker build -t ${IMAGE_NAME} \
+		--build-arg IMAGE_ROOT=${IMAGE_ROOT} \
+		.
 
 build_tests: build_image
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \

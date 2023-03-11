@@ -9,7 +9,7 @@ IMAGE_ROOT = /raspi
 UID = $(shell id -u)
 GID = $(shell id -g)
 
-IMAGE_NAME = raspi_target
+IMAGE_NAME = raspi:target
 
 TARGET_NAME = ugglan_app
 BUILD_SUFFIX = dpkg
@@ -23,25 +23,29 @@ build_dpkg_for_profiling clean
 
 build_image:
 	docker build --platform linux/arm/v7 \
-		-f Dockerfile . -t ${IMAGE_NAME} \
-		--build-arg IMAGE_ROOT=${IMAGE_ROOT}
+		-t ${IMAGE_NAME} \
+		--build-arg IMAGE_ROOT=${IMAGE_ROOT} \
+		.
 
 build_app: build_image
-	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+	docker run  --platform linux/arm/v7 \
+		-v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		--env TARGET_NAME=${TARGET_NAME} \
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
 		${IMAGE_NAME} make all -j8
 
 build_dpkg: build_app
-	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+	docker run  --platform linux/arm/v7 \
+		-v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		--env TARGET_NAME=${TARGET_NAME} \
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
 		${IMAGE_NAME} ./build_dpkg.sh
 
 build_app_for_profiling: build_image
-	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+	docker run  --platform linux/arm/v7 \
+		-v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		--env TARGET_NAME=${TARGET_NAME} \
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
@@ -49,14 +53,16 @@ build_app_for_profiling: build_image
 		${IMAGE_NAME} make all -j8
 
 build_dpkg_for_profiling: build_app_for_profiling
-	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+	docker run  --platform linux/arm/v7 \
+		-v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		--env TARGET_NAME=${TARGET_NAME} \
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
 		${IMAGE_NAME} ./build_dpkg.sh
 
 clean:
-	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+	docker run  --platform linux/arm/v7 \
+		-v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		--env TARGET_NAME=${TARGET_NAME} \
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \

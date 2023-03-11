@@ -10,6 +10,8 @@ env:
   release-name: Release latest
   release-tag: latest
 
+  DOCKER_BUILDKIT: 1
+
 jobs:
   build-test:
     runs-on: ubuntu-latest
@@ -20,10 +22,10 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Setup docker buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
       -
         name: Setup qemu
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: linux/arm/v7
       -
