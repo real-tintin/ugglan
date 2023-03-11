@@ -1,14 +1,13 @@
-
 name: ci
 on: [push]
 
 env:
-  artifact-path: ./raspi/build_dpkg/ugglan.deb
-  artifact-name: ugglan.deb
-  artifact-mime-type: application/x-tar
+  ARTIFACT_PATH: ./raspi/build_dpkg/ugglan.deb
+  ARTIFACT_NAME: ugglan.deb
+  ARTIFACT_MIME_TYPE: application/x-tar
 
-  release-name: Release latest
-  release-tag: latest
+  RELEASE_NAME: Release latest
+  RELEASE_TAG: latest
 
   DOCKER_BUILDKIT: 1
 
@@ -44,7 +43,7 @@ jobs:
         name: Cache (upload) release artifact
         uses: actions/cache@v2
         with:
-          path: ${{ env.artifact-path }}
+          path: ${{ env.ARTIFACT_PATH }}
           key: ${{ runner.os }}-artifact-${{ github.sha }}
 
   release:
@@ -57,14 +56,14 @@ jobs:
         name: Cache (download) release artifact
         uses: actions/cache@v2
         with:
-          path: ${{ env.artifact-path }}
+          path: ${{ env.ARTIFACT_PATH }}
           key: ${{ runner.os }}-artifact-${{ github.sha }}
       -
         name: Remove previous release
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
           delete_release: true
-          tag_name: ${{ env.release-tag }}
+          tag_name: ${{ env.RELEASE_TAG }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       -
@@ -74,8 +73,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.release-tag }}
-          release_name: ${{ env.release-name }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          release_name: ${{ env.RELEASE_NAME }}
       -
         name: Upload release asset
         uses: actions/upload-release-asset@v1
@@ -83,6 +82,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ${{ env.artifact-path }}
-          asset_name: ${{ env.artifact-name }}
-          asset_content_type: ${{ env.artifact-mime-type }}
+          asset_path: ${{ env.ARTIFACT_PATH }}
+          asset_name: ${{ env.ARTIFACT_NAME }}
+          asset_content_type: ${{ env.ARTIFACT_MIME_TYPE }}
