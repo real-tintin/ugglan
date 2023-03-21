@@ -11,7 +11,7 @@
 namespace catch_utils
 {
 inline const std::filesystem::path TEST_ROOT = common_utils::get_env("TEST_ROOT");
-inline const std::filesystem::path RESOURCES_ROOT = common_utils::get_env("RESOURCES_ROOT");
+inline const std::filesystem::path RESOURCE_ROOT = common_utils::get_env("RESOURCE_ROOT");
 
 std::string read_file(std::filesystem::path path);
 

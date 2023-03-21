@@ -15,7 +15,7 @@ BUILD_FOR_TEST = TRUE
 BUILD_SUFFIX = tests
 
 TEST_ROOT= ${IMAGE_ROOT}/tests
-RESOURCES_ROOT = ${TEST_ROOT}/resources
+RESOURCE_ROOT = ${TEST_ROOT}/resources
 
 TARGET_PATH = ./build_${BUILD_SUFFIX}/${TARGET_NAME}
 
@@ -51,7 +51,7 @@ build_and_run_tests: build_tests
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		--env TEST_ROOT=${TEST_ROOT} \
-		--env RESOURCES_ROOT=${RESOURCES_ROOT} \
+		--env RESOURCE_ROOT=${RESOURCE_ROOT} \
 		${IMAGE_NAME} ${TARGET_PATH}
 
 clean:

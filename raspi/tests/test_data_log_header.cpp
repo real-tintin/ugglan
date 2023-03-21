@@ -8,7 +8,7 @@
 #include <data_log_header.h>
 
 static const std::time_t HEADER_TIME = 0;
-static const std::filesystem::path HEADER_PATH = catch_utils::RESOURCES_ROOT / "header.json";
+static const std::filesystem::path HEADER_PATH = catch_utils::RESOURCE_ROOT / "header.json";
 
 TEST_CASE("data_log_header")
 {
