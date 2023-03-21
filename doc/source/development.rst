@@ -26,8 +26,17 @@ To build the C++ application for debug::
 
     make -C ./raspi -f Makefile_tests build_tests_for_debug
 
+This will produce debugging information for ``gdb``. Hence, install
+gdb and debug the built binary::
+
+    apt-get install gdb
+    gdb path/to/binary
+
 Note, this requires a setup of the env, see *raspi/Dockerfile* and
 *raspi/Makefile_tests*.
+
+For convince one can run and debug in the ``raspi`` Docker container.
+Attache VS code to the running instance for an IDE.
 
 ESC Compile & Flash
 =====================
