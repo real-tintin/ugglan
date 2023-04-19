@@ -1,11 +1,9 @@
 ---
 Checks: 'clang-diagnostic-*,
          clang-analyzer-*,
-         -clang-analyzer-cplusplus*,
-         -clang-analyzer-security.insecureAPI.strcpy,
          bugprone-*,
          performance-*,
          readability-*,
          -readability-avoid-const-params-in-decls'
 WarningsAsErrors: ''
-HeaderFilterRegex: 'powerhub-application'
+HeaderFilterRegex: 'inc'
