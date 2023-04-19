@@ -10,7 +10,7 @@
 
 class ZmqConn
 {
-  public:
+public:
     ZmqConn(std::string address, zmq::socket_type type);
 
     virtual bool open();
@@ -19,7 +19,7 @@ class ZmqConn
     virtual size_t recv(zmq::message_t &msg, bool non_blocking = true);
     virtual size_t send(zmq::message_t &msg, bool non_blocking = true);
 
-  protected:
+protected:
     static zmq::context_t _context;
 
     std::string _address;
@@ -28,7 +28,7 @@ class ZmqConn
 
 class ZmqRep : public ZmqConn
 {
-  public:
+public:
     ZmqRep(std::string address) : ZmqConn(address, zmq::socket_type::rep)
     {
     }
@@ -36,7 +36,7 @@ class ZmqRep : public ZmqConn
 
 class ZmqPush : public ZmqConn
 {
-  public:
+public:
     ZmqPush(std::string address) : ZmqConn(address, zmq::socket_type::push)
     {
     }

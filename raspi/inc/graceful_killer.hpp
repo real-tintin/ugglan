@@ -6,7 +6,7 @@
 
 class GracefulKiller
 {
-  public:
+public:
     GracefulKiller()
     {
         std::signal(SIGINT, GracefulKiller::_signal_handler);
@@ -18,7 +18,7 @@ class GracefulKiller
         return (_sigint_called);
     }
 
-  private:
+private:
     inline static std::atomic_bool _sigint_called{false};
 
     static void _signal_handler(int value)

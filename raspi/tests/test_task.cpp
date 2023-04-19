@@ -15,10 +15,10 @@ static uint8_t n_calls_finish = 0;
 
 class TestTask : public Task
 {
-  public:
+public:
     using Task::Task;
 
-  protected:
+protected:
     void _setup() override
     {
         n_calls_setup++;

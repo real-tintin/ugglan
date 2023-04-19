@@ -18,7 +18,7 @@ extern "C"
 
 class I2cConn
 {
-  public:
+public:
     I2cConn(std::string device, uint8_t address);
 
     virtual bool open();
@@ -30,7 +30,7 @@ class I2cConn
     virtual bool write_byte_data(uint8_t reg, uint8_t data);
     virtual bool write_block_data(uint8_t reg, uint8_t size, uint8_t *buf);
 
-  private:
+private:
     int8_t _fd;
     std::string _device;
     uint8_t _address;

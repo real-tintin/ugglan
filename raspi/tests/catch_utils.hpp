@@ -26,13 +26,13 @@ void set_env(std::string env, std::string val);
 
 class TmpDir
 {
-  public:
+public:
     TmpDir(bool remove_when_done = true);
     ~TmpDir();
 
     std::filesystem::path get_path();
 
-  private:
+private:
     std::filesystem::path _path;
     bool _remove_when_done;
 
@@ -41,13 +41,13 @@ class TmpDir
 
 class PatchStdCout
 {
-  public:
+public:
     PatchStdCout();
     ~PatchStdCout();
 
     std::string get();
 
-  private:
+private:
     std::ostringstream _patch_buf;
     std::streambuf *_org_buf;
 };

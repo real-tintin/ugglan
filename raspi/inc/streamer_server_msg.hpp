@@ -35,7 +35,7 @@ enum class Code
 
 template <class T> class Base
 {
-  public:
+public:
     Base() : _metadata{}, _data({}), _valid{false}
     {
     }
@@ -117,7 +117,7 @@ template <class T> class Base
         return j;
     }
 
-  protected:
+protected:
     const T _get_metadata()
     {
         return _metadata;
@@ -129,7 +129,7 @@ template <class T> class Base
         return "";
     }
 
-  private:
+private:
     T _metadata;
     json _data;
     bool _valid;
@@ -142,7 +142,7 @@ template <class T> class Base
 
 class Request : public Base<Method>
 {
-  public:
+public:
     using Base::Base;
 
     const Method method()
@@ -150,7 +150,7 @@ class Request : public Base<Method>
         return _get_metadata();
     }
 
-  protected:
+protected:
     const std::string _get_metadata_key() override
     {
         return "method";
@@ -159,7 +159,7 @@ class Request : public Base<Method>
 
 class Response : public Base<Code>
 {
-  public:
+public:
     using Base::Base;
 
     const Code code()
@@ -167,7 +167,7 @@ class Response : public Base<Code>
         return _get_metadata();
     }
 
-  protected:
+protected:
     const std::string _get_metadata_key() override
     {
         return "code";

@@ -16,7 +16,7 @@ typedef std::vector<uint8_t> I2cWriteMap;
 
 class I2cConnStub : public I2cConn
 {
-  public:
+public:
     I2cConnStub() : I2cConn("not/used", 0){};
 
     void set_read_byte_map(I2cReadByteMap read_byte_map);
@@ -50,7 +50,7 @@ class I2cConnStub : public I2cConn
         return _n_calls_write_block_data;
     }
 
-  private:
+private:
     uint32_t _n_calls_read_byte_data = 0;
     uint32_t _n_calls_read_block_data = 0;
 

@@ -84,7 +84,7 @@ struct Config
 
 class Estimator
 {
-  public:
+public:
     Estimator(double input_sample_rate_s, Config config);
 
     void update(Imu imu_uncompensated);
@@ -95,7 +95,7 @@ class Estimator
     bool is_calibrated();
     bool is_standstill();
 
-  private:
+private:
     const double _dt;
     const Config _config;
 

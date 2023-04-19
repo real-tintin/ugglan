@@ -31,10 +31,10 @@ DataLogger data_logger(queue, tmpdir.get_path());
 
 class TestTaskImu : public Task
 {
-  public:
+public:
     using Task::Task;
 
-  protected:
+protected:
     void _execute() override
     {
         if (i_push_imu < IMU_N_PUSH_TO_QUEUE)
@@ -47,10 +47,10 @@ class TestTaskImu : public Task
 
 class TestTaskEsc : public Task
 {
-  public:
+public:
     using Task::Task;
 
-  protected:
+protected:
     void _execute() override
     {
         if (i_push_esc < ESC_N_PUSH_TO_QUEUE)
@@ -63,10 +63,10 @@ class TestTaskEsc : public Task
 
 class TestTaskLogger : public Task
 {
-  public:
+public:
     using Task::Task;
 
-  protected:
+protected:
     void _setup() override
     {
         data_logger.start();

@@ -63,7 +63,7 @@ PilotCtrlRef tgyia6c_to_pilot_ctrl_ref(double gimbal_left_x,
 
 class PilotControl
 {
-  public:
+public:
     PilotControl(double input_sample_rate_s, PilotCtrlConfig config);
 
     void update(att_est::Attitude attitude, PilotCtrlRef ref);
@@ -73,7 +73,7 @@ class PilotControl
 
     double get_state(PilotCtrlState state);
 
-  private:
+private:
     const double _sample_rate_s;
     const PilotCtrlConfig _config;
 

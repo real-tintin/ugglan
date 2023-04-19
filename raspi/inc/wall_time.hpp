@@ -6,7 +6,7 @@
 
 class WallTime
 {
-  public:
+public:
     uint32_t millis();
     uint32_t micros();
 };

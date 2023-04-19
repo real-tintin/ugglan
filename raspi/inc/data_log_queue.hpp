@@ -25,7 +25,7 @@ struct DataLogSample
 
 class DataLogQueue
 {
-  public:
+public:
     template <typename T> void push(T data, DataLogSignal signal);
 
     DataLogSample pop();
@@ -34,7 +34,7 @@ class DataLogQueue
 
     bool is_empty();
 
-  private:
+private:
     bool _first_sample = true;
     uint32_t _prev_timestamp_ms;
     std::deque<DataLogSample> _samples;

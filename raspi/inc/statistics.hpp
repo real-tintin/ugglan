@@ -9,7 +9,7 @@ namespace statistics
 {
 class RollingStats
 {
-  public:
+public:
     RollingStats(uint32_t window_size);
 
     void update(double x_new);
@@ -22,7 +22,7 @@ class RollingStats
         return _buf_status == BufStatus::Full;
     };
 
-  private:
+private:
     enum class BufStatus
     {
         Empty,

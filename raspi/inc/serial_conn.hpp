@@ -26,7 +26,7 @@ typedef uint16_t Mode;
 
 class SerialConn
 {
-  public:
+public:
     SerialConn(std::string device);
 
     virtual bool open(Mode mode, ControlFlags flags);
@@ -35,7 +35,7 @@ class SerialConn
     virtual size_t bytes_available();
     virtual size_t read(uint8_t *buf, size_t size);
 
-  private:
+private:
     int8_t _fd;
     std::string _device;
 };

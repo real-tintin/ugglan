@@ -32,10 +32,10 @@ DataLogQueue data_log_queue_multi;
 
 class TestTaskOne : public Task
 {
-  public:
+public:
     using Task::Task;
 
-  protected:
+protected:
     void _execute() override
     {
         data_log_queue_multi.push(double(1.0), DataLogSignal::ImuAccelerationX);
@@ -44,10 +44,10 @@ class TestTaskOne : public Task
 
 class TestTaskTwo : public Task
 {
-  public:
+public:
     using Task::Task;
 
-  protected:
+protected:
     void _execute() override
     {
         data_log_queue_multi.push(uint8_t(0x02), DataLogSignal::EscStatus0);

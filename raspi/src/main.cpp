@@ -71,7 +71,7 @@ enum class TaskId
 
 class TaskAccMag : public Task
 {
-  public:
+public:
     TaskAccMag(uint32_t exec_period_ms,
                std::string name,
                std::string i2c_device,
@@ -82,7 +82,7 @@ class TaskAccMag : public Task
     {
     }
 
-  protected:
+protected:
     void _execute() override
     {
         _acc_mag.update();
@@ -99,7 +99,7 @@ class TaskAccMag : public Task
         _data_log_queue.push(uint8_t(TaskId::AccMag), DataLogSignal::TaskExecute);
     }
 
-  private:
+private:
     I2cConn _i2c_conn;
     Lsm303d _acc_mag;
     DataLogQueue &_data_log_queue;
@@ -107,7 +107,7 @@ class TaskAccMag : public Task
 
 class TaskGyro : public Task
 {
-  public:
+public:
     TaskGyro(uint32_t exec_period_ms,
              std::string name,
              std::string i2c_device,
@@ -118,7 +118,7 @@ class TaskGyro : public Task
     {
     }
 
-  protected:
+protected:
     void _execute() override
     {
         _gyro.update();
@@ -131,7 +131,7 @@ class TaskGyro : public Task
         _data_log_queue.push(uint8_t(TaskId::Gyro), DataLogSignal::TaskExecute);
     }
 
-  private:
+private:
     I2cConn _i2c_conn;
     L3gd20h _gyro;
     DataLogQueue &_data_log_queue;
@@ -139,7 +139,7 @@ class TaskGyro : public Task
 
 class TaskBarometer : public Task
 {
-  public:
+public:
     TaskBarometer(uint32_t exec_period_ms,
                   std::string name,
                   std::string i2c_device,
@@ -150,7 +150,7 @@ class TaskBarometer : public Task
     {
     }
 
-  protected:
+protected:
     void _execute() override
     {
         _barometer.update();
@@ -162,7 +162,7 @@ class TaskBarometer : public Task
         _data_log_queue.push(uint8_t(TaskId::Barometer), DataLogSignal::TaskExecute);
     }
 
-  private:
+private:
     I2cConn _i2c_conn;
     Lps25h _barometer;
     DataLogQueue &_data_log_queue;
@@ -170,7 +170,7 @@ class TaskBarometer : public Task
 
 class TaskStateEst : public Task
 {
-  public:
+public:
     TaskStateEst(uint32_t exec_period_ms,
                  std::string name,
                  double input_sample_rate_s,
@@ -180,7 +180,7 @@ class TaskStateEst : public Task
     {
     }
 
-  protected:
+protected:
     void _execute() override
     {
         _data_log_queue.last_signal_data(&_imu_uncompensated.acc_x, DataLogSignal::ImuAccelerationX);
@@ -230,7 +230,7 @@ class TaskStateEst : public Task
         _data_log_queue.push(uint8_t(TaskId::StateEst), DataLogSignal::TaskExecute);
     }
 
-  private:
+private:
     att_est::Imu _imu_uncompensated;
     att_est::Imu _imu_compensated;
     att_est::Attitude _attitude;
@@ -241,7 +241,7 @@ class TaskStateEst : public Task
 
 class TaskStateCtrl : public Task
 {
-  public:
+public:
     TaskStateCtrl(uint32_t exec_period_ms,
                   std::string name,
                   double input_sample_rate_s,
@@ -251,7 +251,7 @@ class TaskStateCtrl : public Task
     {
     }
 
-  protected:
+protected:
     void _execute() override
     {
         _exec_pilot_ctrl();
@@ -260,7 +260,7 @@ class TaskStateCtrl : public Task
         _data_log_queue.push(uint8_t(TaskId::StateCtrl), DataLogSignal::TaskExecute);
     }
 
-  private:
+private:
     bool _att_est_is_calibrated;
     bool _state_ctrl_reset;
     att_est::Attitude _attitude;
@@ -353,13 +353,13 @@ class TaskStateCtrl : public Task
 
 class TaskEscRead : public Task
 {
-  public:
+public:
     TaskEscRead(uint32_t exec_period_ms, std::string name, AfroEsc (&esc)[N_ESC], DataLogQueue &data_log_queue)
         : Task(exec_period_ms / N_ESC, name), _esc(esc), _data_log_queue(data_log_queue)
     {
     }
 
-  protected:
+protected:
     void _execute() override
     {
         uint8_t i_esc = _load_balance_step;
@@ -376,7 +376,7 @@ class TaskEscRead : public Task
         _load_balance_step = (_load_balance_step + 1) % N_ESC;
     }
 
-  private:
+private:
     AfroEsc (&_esc)[N_ESC];
     DataLogQueue &_data_log_queue;
 
@@ -410,13 +410,13 @@ class TaskEscRead : public Task
 
 class TaskEscWrite : public Task
 {
-  public:
+public:
     TaskEscWrite(uint32_t exec_period_ms, std::string name, AfroEsc (&esc)[N_ESC], DataLogQueue &data_log_queue)
         : Task(exec_period_ms, name), _esc(esc), _data_log_queue(data_log_queue)
     {
     }
 
-  protected:
+protected:
     void _setup() override
     {
         _arm_escs();
@@ -440,7 +440,7 @@ class TaskEscWrite : public Task
         _push_task_state_to_data_log(DataLogSignal::TaskFinish);
     }
 
-  private:
+private:
     enum class EscState
     {
         Run,
@@ -565,13 +565,13 @@ class TaskEscWrite : public Task
 
 class TaskRcReceiver : public Task
 {
-  public:
+public:
     TaskRcReceiver(uint32_t exec_period_ms, std::string name, std::string serial_device, DataLogQueue &data_log_queue)
         : Task(exec_period_ms, name), _serial_conn(serial_device), _rc(_serial_conn), _data_log_queue(data_log_queue)
     {
     }
 
-  protected:
+protected:
     void _execute() override
     {
         _rc.update();
@@ -591,7 +591,7 @@ class TaskRcReceiver : public Task
         _data_log_queue.push(uint8_t(TaskId::RcReceiver), DataLogSignal::TaskExecute);
     }
 
-  private:
+private:
     SerialConn _serial_conn;
     Tgyia6c _rc;
     DataLogQueue &_data_log_queue;
@@ -599,7 +599,7 @@ class TaskRcReceiver : public Task
 
 class TaskDataLogger : public Task
 {
-  public:
+public:
     TaskDataLogger(uint32_t exec_period_ms,
                    std::string name,
                    std::filesystem::path root_path,
@@ -608,7 +608,7 @@ class TaskDataLogger : public Task
     {
     }
 
-  protected:
+protected:
     void _setup() override
     {
         _data_logger.start();
@@ -625,14 +625,14 @@ class TaskDataLogger : public Task
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskFinish);
     }
 
-  private:
+private:
     DataLogger _data_logger;
     DataLogQueue &_data_log_queue;
 };
 
 class TaskStreamerServer : public Task
 {
-  public:
+public:
     TaskStreamerServer(uint32_t exec_period_ms,
                        std::string name,
                        std::string zmq_address_request,
@@ -643,7 +643,7 @@ class TaskStreamerServer : public Task
     {
     }
 
-  protected:
+protected:
     void _setup() override
     {
         _server.connect();
@@ -660,7 +660,7 @@ class TaskStreamerServer : public Task
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskFinish);
     }
 
-  private:
+private:
     ZmqRep _request;
     ZmqPush _stream;
 

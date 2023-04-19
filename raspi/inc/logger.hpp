@@ -25,7 +25,7 @@ inline const std::string LOGGER_LEVEL_STR_ERROR = "ERROR";
 
 class Logger
 {
-  public:
+public:
     void debug(std::string msg);
     void info(std::string msg);
     void warn(std::string msg);
@@ -34,7 +34,7 @@ class Logger
     void set_level(LogLevel level);
     LogLevel get_level();
 
-  private:
+private:
     LogLevel _level = LogLevel::info;
     std::mutex _mutex;
 

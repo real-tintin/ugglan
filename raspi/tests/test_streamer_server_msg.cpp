@@ -15,7 +15,7 @@ enum class Status
 
 class Mail : public Base<Status>
 {
-  public:
+public:
     using Base::Base;
 
     const Status status()
@@ -23,7 +23,7 @@ class Mail : public Base<Status>
         return _get_metadata();
     }
 
-  protected:
+protected:
     const std::string _get_metadata_key() override
     {
         return "status";

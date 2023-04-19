@@ -21,7 +21,7 @@ inline const std::string DATA_LOG_FILE_EXT = "dat";
 
 class DataLogger
 {
-  public:
+public:
     DataLogger(DataLogQueue &queue, std::filesystem::path root_path);
 
     void start();
@@ -30,7 +30,7 @@ class DataLogger
 
     std::filesystem::path get_file_path();
 
-  private:
+private:
     DataLogQueue &_queue;
     std::ofstream _ofs;
 

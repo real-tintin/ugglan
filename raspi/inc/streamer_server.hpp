@@ -26,14 +26,14 @@ inline const size_t MAX_SELECTED_DATA_LOG_SIGNALS = 25;
 
 class Server
 {
-  public:
+public:
     Server(ZmqRep &request, ZmqPush &stream, DataLogQueue &data_log_queue);
 
     void connect();
     void execute();
     void disconnect();
 
-  private:
+private:
     ZmqRep &_request;
     ZmqPush &_stream;
 

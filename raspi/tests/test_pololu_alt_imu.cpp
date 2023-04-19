@@ -37,7 +37,7 @@ static I2cReadByteMap MISMATCHING_READ_BYTE_MAP = {{TEST_CONFIG_REG_0, TEST_CONF
 
 class TestPololuAltImu : public PololuAltImu
 {
-  public:
+public:
     TestPololuAltImu(I2cConn &i2c_conn) : PololuAltImu(i2c_conn, "TestPololuAltImu")
     {
         _setup(CONFIG_MAP, READ_MAP);

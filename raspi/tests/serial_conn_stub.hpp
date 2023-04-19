@@ -17,7 +17,7 @@ inline const size_t MAX_BUF_SIZE = 4096;
 
 class SerialConnStub : public SerialConn
 {
-  public:
+public:
     SerialConnStub() : SerialConn("not/used"){};
 
     void set_read_buf(uint8_t *buf, size_t size);
@@ -28,7 +28,7 @@ class SerialConnStub : public SerialConn
     size_t bytes_available() override;
     size_t read(uint8_t *buf, size_t size) override;
 
-  private:
+private:
     uint8_t _read_buf[MAX_BUF_SIZE] = {0};
     size_t _read_buf_size = 0;
 };

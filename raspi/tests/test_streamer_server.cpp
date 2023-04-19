@@ -19,12 +19,12 @@ const json JSON_EMPTY_LIST = json::parse("[]");
 
 class ServerTestFixture
 {
-  public:
+public:
     ServerTestFixture() : server(req_conn, stream_conn, queue)
     {
     }
 
-  protected:
+protected:
     ZmqRepStub req_conn{};
     ZmqPushStub stream_conn{};
 
@@ -44,7 +44,7 @@ class ServerTestFixture
         REQUIRE(exp_res.data() == act_res.data());
     }
 
-  private:
+private:
     void _send_request(Request &req)
     {
         zmq::message_t msg{};

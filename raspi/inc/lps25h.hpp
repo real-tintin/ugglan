@@ -64,7 +64,7 @@ inline const ReadMap LPS25H_READ_MAP = {
 
 class Lps25h : public PololuAltImu
 {
-  public:
+public:
     Lps25h(I2cConn &i2c_conn);
 
     double get_pressure();

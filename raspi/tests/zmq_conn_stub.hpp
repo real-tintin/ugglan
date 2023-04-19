@@ -12,7 +12,7 @@
 #define ZMQ_CONN_STUB_IMP(ZmqConnStub, ZmqConnParent)                                                                  \
     class ZmqConnStub : public ZmqConnParent                                                                           \
     {                                                                                                                  \
-      public:                                                                                                          \
+    public:                                                                                                            \
         ZmqConnStub() : ZmqConnParent("not/used"){};                                                                   \
                                                                                                                        \
         bool open() override                                                                                           \
@@ -64,7 +64,7 @@
             return _last_send_msg.rebuild();                                                                           \
         }                                                                                                              \
                                                                                                                        \
-      private:                                                                                                         \
+    private:                                                                                                           \
         zmq::message_t _exp_recv_msg;                                                                                  \
         zmq::message_t _last_send_msg;                                                                                 \
                                                                                                                        \

@@ -14,7 +14,7 @@ namespace config
 {
 class Config
 {
-  public:
+public:
     void load();
     void print_to_debug();
 
@@ -61,7 +61,7 @@ class Config
         return _pilot_ctrl;
     }
 
-  private:
+private:
     std::vector<std::string> _env_lines;
 
     std::filesystem::path _data_log_root;

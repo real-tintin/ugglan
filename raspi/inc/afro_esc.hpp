@@ -66,7 +66,7 @@ inline const uint8_t AFRO_STATUS_ERR_READ = 0x10;
 
 class AfroEsc
 {
-  public:
+public:
     AfroEsc(I2cConn &i2c_conn);
 
     void arm();
@@ -86,7 +86,7 @@ class AfroEsc
 
     uint8_t get_status();
 
-  private:
+private:
     void _open_i2c_conn();
     void _arm_wake_up();
     void _arm_nudge();

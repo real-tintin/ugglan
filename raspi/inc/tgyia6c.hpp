@@ -90,7 +90,7 @@ inline const ControlFlags TGYIA6C_SERIAL_OPT = {.c_cflag = (B115200 | CS8 | CLOC
 
 class Tgyia6c
 {
-  public:
+public:
     Tgyia6c(SerialConn &serial_conn);
 
     ~Tgyia6c();
@@ -111,7 +111,7 @@ class Tgyia6c
 
     uint8_t get_status();
 
-  private:
+private:
     uint8_t _status = TGYIA6C_STATUS_OK;
 
     uint8_t _buf[TGYIA6C_BUF_SIZE] = {0};
