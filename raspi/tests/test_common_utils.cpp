@@ -4,9 +4,9 @@ extern "C"
 #include <math.h>
 }
 
-#include <catch.hpp>
-#include <catch_utils.hpp>
+#include <catch/catch.hpp>
 
+#include <catch_utils.hpp>
 #include <common_utils.hpp>
 
 using namespace common_utils;

@@ -1,8 +1,8 @@
 #include <thread>
 
-#include <catch.hpp>
-#include <catch_utils.hpp>
+#include <catch/catch.hpp>
 
+#include <catch_utils.hpp>
 #include <data_log_queue.hpp>
 #include <data_logger.hpp>
 #include <task.hpp>

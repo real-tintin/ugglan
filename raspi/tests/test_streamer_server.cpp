@@ -1,14 +1,14 @@
 #include <cstring>
 
-#include <catch.hpp>
+#include <catch/catch.hpp>
 #include <nlohmann/json.hpp>
 #include <zmq/zmq.hpp>
-#include <zmq_conn_stub.hpp>
 
 #include <data_log_queue.hpp>
 #include <data_log_utils.hpp>
 #include <streamer_server.hpp>
 #include <streamer_server_msg.hpp>
+#include <zmq_conn_stub.hpp>
 
 using json = nlohmann::ordered_json;
 using namespace streamer;

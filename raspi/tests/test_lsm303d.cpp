@@ -1,4 +1,4 @@
-#include <catch.hpp>
+#include <catch/catch.hpp>
 
 #include <i2c_conn_stub.hpp>
 #include <lsm303d.hpp>

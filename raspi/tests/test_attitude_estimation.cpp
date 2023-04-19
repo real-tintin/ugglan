@@ -3,7 +3,7 @@ extern "C"
 #include <math.h>
 }
 
-#include <catch.hpp>
+#include <catch/catch.hpp>
 
 #include <attitude_estimation.hpp>
 

@@ -1,10 +1,10 @@
 #include <string>
 #include <vector>
 
-#include <catch.hpp>
-#include <catch_utils.hpp>
+#include <catch/catch.hpp>
 #include <nlohmann/json.hpp>
 
+#include <catch_utils.hpp>
 #include <data_log_signals.hpp>
 #include <data_log_types.hpp>
 #include <data_log_utils.hpp>

@@ -1,7 +1,7 @@
 #include <cstring>
 #include <thread>
 
-#include <catch.hpp>
+#include <catch/catch.hpp>
 
 #include <data_log_queue.hpp>
 #include <task.hpp>

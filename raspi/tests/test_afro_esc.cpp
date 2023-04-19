@@ -1,6 +1,6 @@
 #include <thread>
 
-#include <catch.hpp>
+#include <catch/catch.hpp>
 
 #include <afro_esc.hpp>
 #include <i2c_conn_stub.hpp>

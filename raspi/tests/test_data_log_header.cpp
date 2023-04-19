@@ -3,9 +3,9 @@
 #include <filesystem>
 #include <string>
 
-#include <catch.hpp>
-#include <catch_utils.hpp>
+#include <catch/catch.hpp>
 
+#include <catch_utils.hpp>
 #include <data_log_header.hpp>
 
 static const std::time_t HEADER_TIME = 0;

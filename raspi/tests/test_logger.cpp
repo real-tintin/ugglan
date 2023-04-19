@@ -2,9 +2,9 @@
 #include <string>
 #include <vector>
 
-#include <catch.hpp>
-#include <catch_utils.hpp>
+#include <catch/catch.hpp>
 
+#include <catch_utils.hpp>
 #include <logger.hpp>
 
 void write_at_all_levels()

@@ -1,6 +1,6 @@
 #include <thread>
 
-#include <catch.hpp>
+#include <catch/catch.hpp>
 
 #include <wall_time.hpp>
 

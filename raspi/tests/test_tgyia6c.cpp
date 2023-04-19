@@ -1,4 +1,4 @@
-#include <catch.hpp>
+#include <catch/catch.hpp>
 
 #include <serial_conn_stub.hpp>
 #include <tgyia6c.hpp>
