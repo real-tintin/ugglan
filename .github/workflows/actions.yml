@@ -35,7 +35,7 @@ jobs:
         run: make -C ./tools
       -
         name: Run clang-format in raspi
-        run: make -C ./raspi -f Makefile_clang clang-format
+        run: make -C ./raspi -f Makefile_clang clang_format
       -
         name: Compile (host) raspi & unit test
         run: make -C ./raspi -f Makefile_tests
