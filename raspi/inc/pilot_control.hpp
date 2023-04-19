@@ -61,7 +61,8 @@ PilotCtrlRef tgyia6c_to_pilot_ctrl_ref(double gimbal_left_x,
                                        double gimbal_right_x,
                                        double gimbal_right_y);
 
-class PilotControl {
+class PilotControl
+{
   public:
     PilotControl(double input_sample_rate_s, PilotCtrlConfig config);
 

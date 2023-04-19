@@ -4,7 +4,8 @@
 #include <chrono>
 #include <cstdint>
 
-class WallTime {
+class WallTime
+{
   public:
     uint32_t millis();
     uint32_t micros();

@@ -4,7 +4,8 @@
 #include <atomic>
 #include <csignal>
 
-class GracefulKiller {
+class GracefulKiller
+{
   public:
     GracefulKiller()
     {

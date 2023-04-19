@@ -8,7 +8,8 @@
 
 #include <logger.hpp>
 
-class ZmqConn {
+class ZmqConn
+{
   public:
     ZmqConn(std::string address, zmq::socket_type type);
 
@@ -25,14 +26,16 @@ class ZmqConn {
     zmq::socket_t _socket;
 };
 
-class ZmqRep : public ZmqConn {
+class ZmqRep : public ZmqConn
+{
   public:
     ZmqRep(std::string address) : ZmqConn(address, zmq::socket_type::rep)
     {
     }
 };
 
-class ZmqPush : public ZmqConn {
+class ZmqPush : public ZmqConn
+{
   public:
     ZmqPush(std::string address) : ZmqConn(address, zmq::socket_type::push)
     {

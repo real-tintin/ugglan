@@ -1,7 +1,8 @@
 #ifndef DRONE_PROPS_HPP
 #define DRONE_PROPS_HPP
 
-namespace droneprops {
+namespace droneprops
+{
 inline const double I_XX = 0.014; // Moment of inertia about x [kgm^2].
 inline const double I_YY = 0.014; // Moment of inertia about y [kgm^2].
 inline const double I_ZZ = 0.026; // Moment of inertia about z [kgm^2].

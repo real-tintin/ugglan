@@ -8,8 +8,10 @@
 
 #include <data_log_signals.hpp>
 
-namespace data_log {
-namespace utils {
+namespace data_log
+{
+namespace utils
+{
 void add_data_log_metadata_to_json(nlohmann::ordered_json &data);
 
 size_t get_data_log_type_size(DataLogType type);

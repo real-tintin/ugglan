@@ -18,12 +18,14 @@
 #include <wall_time.hpp>
 #include <zmq_conn.hpp>
 
-namespace streamer {
+namespace streamer
+{
 using json = nlohmann::ordered_json;
 
 inline const size_t MAX_SELECTED_DATA_LOG_SIGNALS = 25;
 
-class Server {
+class Server
+{
   public:
     Server(ZmqRep &request, ZmqPush &stream, DataLogQueue &data_log_queue);
 

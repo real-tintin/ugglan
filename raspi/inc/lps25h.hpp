@@ -62,7 +62,8 @@ inline const ReadMap LPS25H_READ_MAP = {
     {LPS25H_REG_TEMP_OUT_P_L, LPS25H_BUF_TEMP_SIZE},
 };
 
-class Lps25h : public PololuAltImu {
+class Lps25h : public PololuAltImu
+{
   public:
     Lps25h(I2cConn &i2c_conn);
 

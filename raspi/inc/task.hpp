@@ -10,7 +10,8 @@
 #include <logger.hpp>
 #include <wall_time.hpp>
 
-class Task {
+class Task
+{
   public:
     Task(uint32_t exec_period_ms, std::string name = "N.N.");
 

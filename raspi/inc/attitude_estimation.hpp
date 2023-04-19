@@ -12,7 +12,8 @@ extern "C"
 
 #include <statistics.hpp>
 
-namespace att_est {
+namespace att_est
+{
 inline const Eigen::Matrix3d KALMAN_STATE_P_0 = Eigen::Matrix3d::Identity();
 
 struct Imu
@@ -81,7 +82,8 @@ struct Config
     double hard_iron_bias_z;
 };
 
-class Estimator {
+class Estimator
+{
   public:
     Estimator(double input_sample_rate_s, Config config);
 

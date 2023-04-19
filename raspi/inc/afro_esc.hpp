@@ -64,7 +64,8 @@ inline const uint8_t AFRO_STATUS_ERR_ARM = 0x04;
 inline const uint8_t AFRO_STATUS_ERR_WRITE = 0x08;
 inline const uint8_t AFRO_STATUS_ERR_READ = 0x10;
 
-class AfroEsc {
+class AfroEsc
+{
   public:
     AfroEsc(I2cConn &i2c_conn);
 

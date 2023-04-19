@@ -5,8 +5,10 @@
 #include <stdexcept>
 #include <vector>
 
-namespace statistics {
-class RollingStats {
+namespace statistics
+{
+class RollingStats
+{
   public:
     RollingStats(uint32_t window_size);
 

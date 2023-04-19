@@ -15,7 +15,8 @@
 
 #include <logger.hpp>
 
-namespace common_utils {
+namespace common_utils
+{
 std::string get_env(std::string);
 
 template <typename T> void read_and_cast_env(T &dst, std::string name)

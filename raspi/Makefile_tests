@@ -54,6 +54,22 @@ build_and_run_tests: build_tests
 		--env RESOURCE_ROOT=${RESOURCE_ROOT} \
 		${IMAGE_NAME} ${TARGET_PATH}
 
+clang_format: build_image
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		${IMAGE_NAME} \
+		find ./tests -type f -iname "*.cpp" -o -iname "*.hpp" | xargs \
+		clang-format \
+        -style=file \
+        --Werror \
+        --dry-run
+
+clang_tidy: build_image
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		${IMAGE_NAME} \
+		echo "TODO"
+
 clean:
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \

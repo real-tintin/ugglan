@@ -12,7 +12,8 @@
 
 #include <common_utils.hpp>
 
-namespace catch_utils {
+namespace catch_utils
+{
 inline const std::filesystem::path TEST_ROOT = common_utils::get_env("TEST_ROOT");
 inline const std::filesystem::path RESOURCE_ROOT = common_utils::get_env("RESOURCE_ROOT");
 
@@ -23,7 +24,8 @@ bool str_contains_non(std::string str, std::vector<std::string> contains);
 
 void set_env(std::string env, std::string val);
 
-class TmpDir {
+class TmpDir
+{
   public:
     TmpDir(bool remove_when_done = true);
     ~TmpDir();
@@ -37,7 +39,8 @@ class TmpDir {
     std::string _folder_name();
 };
 
-class PatchStdCout {
+class PatchStdCout
+{
   public:
     PatchStdCout();
     ~PatchStdCout();

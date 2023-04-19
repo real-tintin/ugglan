@@ -19,7 +19,8 @@
 inline const std::string DATA_LOG_ENDL = "\n";
 inline const std::string DATA_LOG_FILE_EXT = "dat";
 
-class DataLogger {
+class DataLogger
+{
   public:
     DataLogger(DataLogQueue &queue, std::filesystem::path root_path);
 

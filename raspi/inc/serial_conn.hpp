@@ -24,7 +24,8 @@ struct ControlFlags
 
 typedef uint16_t Mode;
 
-class SerialConn {
+class SerialConn
+{
   public:
     SerialConn(std::string device);
 

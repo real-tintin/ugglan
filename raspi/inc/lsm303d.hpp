@@ -106,7 +106,8 @@ inline const ReadMap LSM303D_READ_MAP = {
     {LSM303D_REG_OUT_X_L_M, LSM303D_BUF_MAG_SIZE},
 };
 
-class Lsm303d : public PololuAltImu {
+class Lsm303d : public PololuAltImu
+{
   public:
     Lsm303d(I2cConn &i2c_conn);
 

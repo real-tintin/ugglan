@@ -60,6 +60,24 @@ build_dpkg_for_profiling: build_app_for_profiling
 		--env BUILD_SUFFIX=${BUILD_SUFFIX} \
 		${IMAGE_NAME} ./build_dpkg.sh
 
+clang_format: build_image
+	docker run  --platform linux/arm/v7 \
+		-v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		${IMAGE_NAME} \
+		find ./src ./inc -type f -iname "*.cpp" -o -iname "*.hpp" | xargs \
+		clang-format \
+        -style=file \
+        --Werror \
+        --dry-run
+
+clang_tidy: build_image
+	docker run  --platform linux/arm/v7 \
+		-v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		${IMAGE_NAME} \
+		echo "TODO"
+
 clean:
 	docker run  --platform linux/arm/v7 \
 		-v ${RASPI_ROOT}:${IMAGE_ROOT} \

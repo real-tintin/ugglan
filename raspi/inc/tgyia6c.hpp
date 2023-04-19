@@ -88,7 +88,8 @@ inline const ControlFlags TGYIA6C_SERIAL_OPT = {.c_cflag = (B115200 | CS8 | CLOC
                                                 .c_oflag = 0,
                                                 .c_lflag = 0};
 
-class Tgyia6c {
+class Tgyia6c
+{
   public:
     Tgyia6c(SerialConn &serial_conn);
 

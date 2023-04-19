@@ -16,7 +16,8 @@ extern "C"
 #include <common_utils.hpp>
 #include <logger.hpp>
 
-class I2cConn {
+class I2cConn
+{
   public:
     I2cConn(std::string device, uint8_t address);
 

@@ -23,7 +23,8 @@ inline const std::string LOGGER_LEVEL_STR_INFO = "INFO ";
 inline const std::string LOGGER_LEVEL_STR_WARN = "WARN ";
 inline const std::string LOGGER_LEVEL_STR_ERROR = "ERROR";
 
-class Logger {
+class Logger
+{
   public:
     void debug(std::string msg);
     void info(std::string msg);
