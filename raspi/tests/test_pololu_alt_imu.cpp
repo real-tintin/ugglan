@@ -1,7 +1,7 @@
-#include <catch.h>
+#include <catch.hpp>
 
-#include <i2c_conn_stub.h>
-#include <pololu_alt_imu.h>
+#include <i2c_conn_stub.hpp>
+#include <pololu_alt_imu.hpp>
 
 static const uint8_t TEST_CONFIG_REG_0 = 0x03;
 static const uint8_t TEST_CONFIG_REG_1 = 0x30;
@@ -16,57 +16,44 @@ static const uint8_t TEST_READ_REG_SIZE = 4;
 static uint8_t TEST_READ_DATA_0[TEST_READ_REG_SIZE] = {0, 1, 2, 3};
 static uint8_t TEST_READ_DATA_1[TEST_READ_REG_SIZE] = {4, 5, 6, 7};
 
-static ConfigMap CONFIG_MAP = {
-    {TEST_CONFIG_REG_0, TEST_CONFIG_DATA_0},
-    {TEST_CONFIG_REG_1, TEST_CONFIG_DATA_1}
-};
-static ReadMap READ_MAP = {
-    {TEST_READ_REG_0, TEST_READ_REG_SIZE},
-    {TEST_READ_REG_1, TEST_READ_REG_SIZE}
-};
+static ConfigMap CONFIG_MAP = {{TEST_CONFIG_REG_0, TEST_CONFIG_DATA_0}, {TEST_CONFIG_REG_1, TEST_CONFIG_DATA_1}};
+static ReadMap READ_MAP = {{TEST_READ_REG_0, TEST_READ_REG_SIZE}, {TEST_READ_REG_1, TEST_READ_REG_SIZE}};
 
-static I2cReadBlockMap VALID_READ_BLOCK_MAP = {
-    {TEST_READ_REG_0 | POLOLU_AUTO_INCREMENT, TEST_READ_DATA_0},
-    {TEST_READ_REG_1 | POLOLU_AUTO_INCREMENT, TEST_READ_DATA_1}
-};
-static I2cWriteMap VALID_WRITE_MAP = {
-    TEST_CONFIG_REG_0,
-    TEST_CONFIG_REG_1
-};
+static I2cReadBlockMap VALID_READ_BLOCK_MAP = {{TEST_READ_REG_0 | POLOLU_AUTO_INCREMENT, TEST_READ_DATA_0},
+                                               {TEST_READ_REG_1 | POLOLU_AUTO_INCREMENT, TEST_READ_DATA_1}};
+static I2cWriteMap VALID_WRITE_MAP = {TEST_CONFIG_REG_0, TEST_CONFIG_REG_1};
 
-static I2cReadBlockMap INVALID_READ_BLOCK_MAP = {
-    {TEST_READ_REG_0 + 1, TEST_READ_DATA_0},
-    {TEST_READ_REG_1 | POLOLU_AUTO_INCREMENT, TEST_READ_DATA_1}
-};
+static I2cReadBlockMap INVALID_READ_BLOCK_MAP = {{TEST_READ_REG_0 + 1, TEST_READ_DATA_0},
+                                                 {TEST_READ_REG_1 | POLOLU_AUTO_INCREMENT, TEST_READ_DATA_1}};
 static I2cWriteMap INVALID_WRITE_MAP = {
     TEST_CONFIG_REG_0 + 1,
     TEST_CONFIG_REG_1,
 };
 
-static I2cReadByteMap MATCHING_READ_BYTE_MAP = {
-    {TEST_CONFIG_REG_0, TEST_CONFIG_DATA_0},
-    {TEST_CONFIG_REG_1, TEST_CONFIG_DATA_1}
-};
-static I2cReadByteMap MISMATCHING_READ_BYTE_MAP = {
-    {TEST_CONFIG_REG_0, TEST_CONFIG_DATA_0 + 1},
-    {TEST_CONFIG_REG_1, TEST_CONFIG_DATA_1 + 1}
-};
+static I2cReadByteMap MATCHING_READ_BYTE_MAP = {{TEST_CONFIG_REG_0, TEST_CONFIG_DATA_0},
+                                                {TEST_CONFIG_REG_1, TEST_CONFIG_DATA_1}};
+static I2cReadByteMap MISMATCHING_READ_BYTE_MAP = {{TEST_CONFIG_REG_0, TEST_CONFIG_DATA_0 + 1},
+                                                   {TEST_CONFIG_REG_1, TEST_CONFIG_DATA_1 + 1}};
 
 class TestPololuAltImu : public PololuAltImu
 {
-public:
-    TestPololuAltImu(I2cConn& i2c_conn) : PololuAltImu(i2c_conn, "TestPololuAltImu")
+  public:
+    TestPololuAltImu(I2cConn &i2c_conn) : PololuAltImu(i2c_conn, "TestPololuAltImu")
     {
         _setup(CONFIG_MAP, READ_MAP);
     }
 
-    uint8_t* get_reg_0_bytes() { return _get_buffer(TEST_READ_REG_0); }
-    uint8_t* get_reg_1_bytes() { return _get_buffer(TEST_READ_REG_1); }
+    uint8_t *get_reg_0_bytes()
+    {
+        return _get_buffer(TEST_READ_REG_0);
+    }
+    uint8_t *get_reg_1_bytes()
+    {
+        return _get_buffer(TEST_READ_REG_1);
+    }
 };
 
-I2cConnStub get_i2c_conn_stub(I2cReadByteMap read_byte_map,
-                              I2cReadBlockMap read_block_map,
-                              I2cWriteMap write_map)
+I2cConnStub get_i2c_conn_stub(I2cReadByteMap read_byte_map, I2cReadBlockMap read_block_map, I2cWriteMap write_map)
 {
     I2cConnStub i2c_conn;
 
@@ -98,7 +85,8 @@ TEST_CASE("valid i2c registry")
 
 TEST_CASE("invalid i2c registry")
 {
-    I2cConnStub invalid_i2c_conn = get_i2c_conn_stub(MISMATCHING_READ_BYTE_MAP, INVALID_READ_BLOCK_MAP, INVALID_WRITE_MAP);
+    I2cConnStub invalid_i2c_conn =
+        get_i2c_conn_stub(MISMATCHING_READ_BYTE_MAP, INVALID_READ_BLOCK_MAP, INVALID_WRITE_MAP);
     TestPololuAltImu alt_imu(invalid_i2c_conn);
 
     SECTION("config")

@@ -1,8 +1,6 @@
-#include <pololu_alt_imu.h>
+#include <pololu_alt_imu.hpp>
 
-PololuAltImu::PololuAltImu(I2cConn& i2c_conn, std::string sensor_name) :
-    _i2c_conn(i2c_conn),
-    _sensor_name(sensor_name)
+PololuAltImu::PololuAltImu(I2cConn &i2c_conn, std::string sensor_name) : _i2c_conn(i2c_conn), _sensor_name(sensor_name)
 {
     _open_i2c_conn();
 }
@@ -17,7 +15,7 @@ void PololuAltImu::update()
 {
     bool did_read = true;
 
-    for (auto const &it: _read_map)
+    for (auto const &it : _read_map)
     {
         uint8_t reg = it.first;
         uint8_t size = it.second;
@@ -67,7 +65,7 @@ void PololuAltImu::_write_config()
     bool did_read = true;
     bool did_write = true;
 
-    for (auto const& it: _config_map)
+    for (auto const &it : _config_map)
     {
         uint8_t reg = it.first;
         uint8_t exp_data = it.second;
@@ -91,31 +89,31 @@ void PololuAltImu::_write_config()
 void PololuAltImu::_write_config_log_msg(uint8_t reg, uint8_t exp_data, uint8_t act_data)
 {
     logger.debug(_sensor_name + " updating config: " + common_utils::byte_to_hex_str(reg) + ": " +
-        common_utils::byte_to_bit_str(act_data) + " -> " + common_utils::byte_to_bit_str(exp_data));
+                 common_utils::byte_to_bit_str(act_data) + " -> " + common_utils::byte_to_bit_str(exp_data));
 }
 
 void PololuAltImu::_allocate_buffer()
 {
-    for (auto const& it: _read_map)
+    for (auto const &it : _read_map)
     {
         uint8_t reg = it.first;
         uint8_t size = it.second;
 
-        uint8_t* buf = new uint8_t[size];
+        uint8_t *buf = new uint8_t[size];
         _buffer.insert({reg, buf});
     }
 }
 
 void PololuAltImu::_deallocate_buffer()
 {
-    for (auto const& it: _buffer)
+    for (auto const &it : _buffer)
     {
-        uint8_t* buf = it.second;
+        uint8_t *buf = it.second;
         delete[] buf;
     }
 }
 
-uint8_t* PololuAltImu::_get_buffer(uint8_t reg)
+uint8_t *PololuAltImu::_get_buffer(uint8_t reg)
 {
     auto it = _buffer.find(reg);
 

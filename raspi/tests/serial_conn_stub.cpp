@@ -1,6 +1,6 @@
-#include <serial_conn_stub.h>
+#include <serial_conn_stub.hpp>
 
-void SerialConnStub::set_read_buf(uint8_t* buf, size_t size)
+void SerialConnStub::set_read_buf(uint8_t *buf, size_t size)
 {
     _read_buf_size = size;
 
@@ -23,7 +23,7 @@ size_t SerialConnStub::bytes_available()
     return _read_buf_size;
 }
 
-size_t SerialConnStub::read(uint8_t* buf, size_t size)
+size_t SerialConnStub::read(uint8_t *buf, size_t size)
 {
     size_t bytes_to_read = std::min(_read_buf_size, size);
     std::memcpy(buf, _read_buf, bytes_to_read);

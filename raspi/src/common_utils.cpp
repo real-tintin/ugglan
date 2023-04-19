@@ -1,10 +1,10 @@
-#include <common_utils.h>
+#include <common_utils.hpp>
 
 namespace common_utils
 {
 std::string get_env(std::string name)
 {
-    const char* value = std::getenv(name.c_str());
+    const char *value = std::getenv(name.c_str());
 
     if (value == NULL)
     {
@@ -18,8 +18,7 @@ std::string byte_to_hex_str(uint8_t byte)
 {
     std::stringstream buf;
 
-    buf << "0x" << ((byte < 16) ? "0" : "") <<
-    std::uppercase << std::hex << int(byte);
+    buf << "0x" << ((byte < 16) ? "0" : "") << std::uppercase << std::hex << int(byte);
 
     return buf.str();
 }
@@ -48,4 +47,4 @@ std::string pack_gzip_base64(const std::string unpacked)
 
     return encoded;
 }
-} /* common_utils */
+} // namespace common_utils

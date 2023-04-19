@@ -1,18 +1,18 @@
-#include <catch.h>
-
 #include <array>
-#include <statistics.h>
+
+#include <catch.hpp>
+
+#include <statistics.hpp>
 
 using namespace statistics;
 
 static const double FLOAT_TOL = 1e-9;
 static const uint32_t WINDOW_SIZE = 20;
 
-void _fill_with_and_expect_mean_and_variance(
-    RollingStats& rolling_stats,
-    std::array<double, WINDOW_SIZE> samples,
-    double exp_mean,
-    double exp_variance)
+void _fill_with_and_expect_mean_and_variance(RollingStats &rolling_stats,
+                                             std::array<double, WINDOW_SIZE> samples,
+                                             double exp_mean,
+                                             double exp_variance)
 {
     for (uint32_t i_sample = 0; i_sample < WINDOW_SIZE; i_sample++)
     {
@@ -42,16 +42,10 @@ TEST_CASE("RollingMeanVariance")
     SECTION("mean & variance")
     {
         _fill_with_and_expect_mean_and_variance(
-            rolling_stats,
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19},
-            9.5,
-            33.25);
+            rolling_stats, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}, 9.5, 33.25);
 
         _fill_with_and_expect_mean_and_variance(
-            rolling_stats,
-            {-1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1},
-            0.0,
-            1.0);
+            rolling_stats, {-1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1}, 0.0, 1.0);
 
         _fill_with_and_expect_mean_and_variance(
             rolling_stats,

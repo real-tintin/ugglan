@@ -1,7 +1,6 @@
-#include <tgyia6c.h>
+#include <tgyia6c.hpp>
 
-Tgyia6c::Tgyia6c(SerialConn& serial_conn) :
-    _serial_conn(serial_conn)
+Tgyia6c::Tgyia6c(SerialConn &serial_conn) : _serial_conn(serial_conn)
 {
     _open_serial_conn();
     _set_init_values();
@@ -22,35 +21,34 @@ void Tgyia6c::update()
 double Tgyia6c::get_gimbal_left_x()
 {
     return (TGYIA6C_GIMBAL_SCALE *
-        (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_X]) + TGYIA6C_GIMBAL_OFFSET));
+            (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_X]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns gimbal left Y [0.0-1.0]
 double Tgyia6c::get_gimbal_left_y()
 {
     return (TGYIA6C_GIMBAL_SCALE *
-        (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_Y]) + TGYIA6C_GIMBAL_OFFSET));
+            (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_Y]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns gimbal right X [0.0-1.0]
 double Tgyia6c::get_gimbal_right_x()
 {
     return (TGYIA6C_GIMBAL_SCALE *
-        (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_X]) + TGYIA6C_GIMBAL_OFFSET));
+            (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_X]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns gimbal right Y [0.0-1.0]
 double Tgyia6c::get_gimbal_right_y()
 {
     return (TGYIA6C_GIMBAL_SCALE *
-        (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_Y]) + TGYIA6C_GIMBAL_OFFSET));
+            (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_Y]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns knob [0.0-1.0]
 double Tgyia6c::get_knob()
 {
-    return (TGYIA6C_KNOB_SCALE *
-        (static_cast<double>(_channel[TGYIA6C_CHANNEL_KNOB]) + TGYIA6C_KNOB_OFFSET));
+    return (TGYIA6C_KNOB_SCALE * (static_cast<double>(_channel[TGYIA6C_CHANNEL_KNOB]) + TGYIA6C_KNOB_OFFSET));
 }
 
 // Returns switch left [low, mid, high]
@@ -125,72 +123,70 @@ void Tgyia6c::_parse_buffer()
 
         switch (_parse_state)
         {
-            case TGYIA6C_PARSE_LENGTH:
+        case TGYIA6C_PARSE_LENGTH:
 
-                if ((byte <= TGYIA6C_PROTOCOL_LENGTH) &&
-                    (byte > TGYIA6C_PROTOCOL_OVERHEAD))
-                {
-                  _raw_channel_idx = 0;
-                  _pkg_len = byte - TGYIA6C_PROTOCOL_OVERHEAD;
-                  _pkg_chksum = 0xFFFF - byte;
+            if ((byte <= TGYIA6C_PROTOCOL_LENGTH) && (byte > TGYIA6C_PROTOCOL_OVERHEAD))
+            {
+                _raw_channel_idx = 0;
+                _pkg_len = byte - TGYIA6C_PROTOCOL_OVERHEAD;
+                _pkg_chksum = 0xFFFF - byte;
 
-                  _parse_state = TGYIA6C_PARSE_DATA;
-                }
-                else
-                {
-                  _parse_state = TGYIA6C_PARSE_DISCARD;
-                }
-
-                break;
-
-            case TGYIA6C_PARSE_DATA:
-
-                _raw_channel[_raw_channel_idx++] = byte;
-                _pkg_chksum -= byte;
-
-                if (_raw_channel_idx >= _pkg_len)
-                {
-                  _parse_state = TGYIA6C_PARSE_CHKSUML;
-                }
-
-                break;
-
-            case TGYIA6C_PARSE_CHKSUML:
-
-                _rec_chksum_l = byte;
-                _parse_state = TGYIA6C_PARSE_CHKSUMH;
-
-                break;
-
-            case TGYIA6C_PARSE_CHKSUMH:
-
-                rec_chksum = (byte << 8) + _rec_chksum_l;
-
-                if (_pkg_chksum == rec_chksum)
-                {
-                    switch (_raw_channel[TGYIA6C_RAW_CHANNEL_COMMAND])
-                    {
-                        case TGYIA6C_PROTOCOL_COMMAND40:
-
-                            for (uint8_t i_raw = 1; i_raw < (TGYIA6C_PROTOCOL_CHANNELS * 2 + 1); i_raw += 2)
-                            {
-                                _channel[i_raw / 2] = (_raw_channel[i_raw + 1] << 8) | _raw_channel[i_raw];
-                            }
-
-                            break;
-
-                        default:
-                            break;
-
-                    }
-                }
+                _parse_state = TGYIA6C_PARSE_DATA;
+            }
+            else
+            {
                 _parse_state = TGYIA6C_PARSE_DISCARD;
+            }
 
-                break;
+            break;
 
-            case TGYIA6C_PARSE_DISCARD:
-            default:
-                break;
+        case TGYIA6C_PARSE_DATA:
+
+            _raw_channel[_raw_channel_idx++] = byte;
+            _pkg_chksum -= byte;
+
+            if (_raw_channel_idx >= _pkg_len)
+            {
+                _parse_state = TGYIA6C_PARSE_CHKSUML;
+            }
+
+            break;
+
+        case TGYIA6C_PARSE_CHKSUML:
+
+            _rec_chksum_l = byte;
+            _parse_state = TGYIA6C_PARSE_CHKSUMH;
+
+            break;
+
+        case TGYIA6C_PARSE_CHKSUMH:
+
+            rec_chksum = (byte << 8) + _rec_chksum_l;
+
+            if (_pkg_chksum == rec_chksum)
+            {
+                switch (_raw_channel[TGYIA6C_RAW_CHANNEL_COMMAND])
+                {
+                case TGYIA6C_PROTOCOL_COMMAND40:
+
+                    for (uint8_t i_raw = 1; i_raw < (TGYIA6C_PROTOCOL_CHANNELS * 2 + 1); i_raw += 2)
+                    {
+                        _channel[i_raw / 2] = (_raw_channel[i_raw + 1] << 8) | _raw_channel[i_raw];
+                    }
+
+                    break;
+
+                default:
+                    break;
+                }
+            }
+            _parse_state = TGYIA6C_PARSE_DISCARD;
+
+            break;
+
+        case TGYIA6C_PARSE_DISCARD:
+        default:
+            break;
         }
     }
 }

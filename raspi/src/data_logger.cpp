@@ -1,8 +1,6 @@
-#include <data_logger.h>
+#include <data_logger.hpp>
 
-DataLogger::DataLogger(DataLogQueue& queue, std::filesystem::path root_path) :
-    _queue(queue),
-    _root_path(root_path)
+DataLogger::DataLogger(DataLogQueue &queue, std::filesystem::path root_path) : _queue(queue), _root_path(root_path)
 {
 }
 
@@ -38,8 +36,8 @@ void DataLogger::_create_and_write_header()
     std::string header_unpacked = generate_header(now_time);
     std::string header_packed = common_utils::pack_gzip_base64(header_unpacked);
 
-    _write((uint8_t*) header_packed.c_str(), header_packed.size());
-    _write((uint8_t*) DATA_LOG_ENDL.c_str(), DATA_LOG_ENDL.size());
+    _write((uint8_t *)header_packed.c_str(), header_packed.size());
+    _write((uint8_t *)DATA_LOG_ENDL.c_str(), DATA_LOG_ENDL.size());
 }
 
 void DataLogger::_create_file_path()
@@ -63,9 +61,9 @@ void DataLogger::_pack_queue_until_empty()
         sample = _queue.pop();
         size = data_log::utils::get_data_log_type_size(sample.type);
 
-        _write((uint8_t*) &sample.signal, sizeof(uint16_t));
-        _write((uint8_t*) &sample.data, size);
-        _write((uint8_t*) &sample.rel_timestamp_ms, sizeof(uint8_t));
+        _write((uint8_t *)&sample.signal, sizeof(uint16_t));
+        _write((uint8_t *)&sample.data, size);
+        _write((uint8_t *)&sample.rel_timestamp_ms, sizeof(uint8_t));
     }
 }
 
@@ -74,9 +72,9 @@ void DataLogger::_open()
     _ofs = std::ofstream(_file_path, std::ios_base::out | std::ios_base::binary);
 }
 
-void DataLogger::_write(uint8_t* buf, size_t size)
+void DataLogger::_write(uint8_t *buf, size_t size)
 {
-    _ofs.write((char*) buf, size);
+    _ofs.write((char *)buf, size);
 }
 
 void DataLogger::_close()

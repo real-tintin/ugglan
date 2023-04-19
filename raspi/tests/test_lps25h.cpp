@@ -1,20 +1,17 @@
-#include <catch.h>
+#include <catch.hpp>
 
-#include <i2c_conn_stub.h>
-#include <pololu_alt_imu.h>
-#include <lps25h.h>
+#include <i2c_conn_stub.hpp>
+#include <lps25h.hpp>
+#include <pololu_alt_imu.hpp>
 
 static const double FLOAT_TOL = 1e-4;
 
 static I2cWriteMap WRITE_MAP = {LPS25H_REG_CTRL_REG1, LPS25H_REG_RES_CONF};
 
-void set_lps25h_stub_data(I2cConnStub& i2c_conn, uint8_t pres[LPS25H_BUF_PRES_SIZE],
-                          uint8_t temp[LPS25H_BUF_TEMP_SIZE])
+void set_lps25h_stub_data(I2cConnStub &i2c_conn, uint8_t pres[LPS25H_BUF_PRES_SIZE], uint8_t temp[LPS25H_BUF_TEMP_SIZE])
 {
-    I2cReadBlockMap read_map = {
-        {LPS25H_REG_PRESS_OUT_XL | POLOLU_AUTO_INCREMENT, pres},
-        {LPS25H_REG_TEMP_OUT_P_L | POLOLU_AUTO_INCREMENT, temp}
-    };
+    I2cReadBlockMap read_map = {{LPS25H_REG_PRESS_OUT_XL | POLOLU_AUTO_INCREMENT, pres},
+                                {LPS25H_REG_TEMP_OUT_P_L | POLOLU_AUTO_INCREMENT, temp}};
 
     i2c_conn.set_read_block_map(read_map);
 }
@@ -29,8 +26,8 @@ TEST_CASE("lps25h interpretation")
     SECTION("zero")
     {
         uint8_t pres_data[LPS25H_BUF_PRES_SIZE] = {0};
-        uint8_t temp_data[LPS25H_BUF_TEMP_SIZE] = {
-            80, 176}; // Compensate for offset on temperature -42.5 * 480 = -20400
+        uint8_t temp_data[LPS25H_BUF_TEMP_SIZE] = {80,
+                                                   176}; // Compensate for offset on temperature -42.5 * 480 = -20400
 
         set_lps25h_stub_data(i2c_conn, pres_data, temp_data);
         barometer.update();
@@ -40,10 +37,8 @@ TEST_CASE("lps25h interpretation")
     }
     SECTION("non-zero")
     {
-        uint8_t pres_data[LPS25H_BUF_PRES_SIZE] = {
-            0, 84, 63}; // 101325 / 100 * 4096 = 4150272
-        uint8_t temp_data[LPS25H_BUF_TEMP_SIZE] = {
-            176, 245}; // (37 - 42.5) * 480 = -2640
+        uint8_t pres_data[LPS25H_BUF_PRES_SIZE] = {0, 84, 63}; // 101325 / 100 * 4096 = 4150272
+        uint8_t temp_data[LPS25H_BUF_TEMP_SIZE] = {176, 245};  // (37 - 42.5) * 480 = -2640
 
         set_lps25h_stub_data(i2c_conn, pres_data, temp_data);
         barometer.update();

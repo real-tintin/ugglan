@@ -1,7 +1,8 @@
-#include <catch.h>
-
 #include <thread>
-#include <task.h>
+
+#include <catch.hpp>
+
+#include <task.hpp>
 
 static const uint32_t EXEC_SLEEP_MS = 100;
 static const uint32_t MAIN_SLEEP_MS = 1000;
@@ -14,9 +15,10 @@ static uint8_t n_calls_finish = 0;
 
 class TestTask : public Task
 {
-public:
+  public:
     using Task::Task;
-protected:
+
+  protected:
     void _setup() override
     {
         n_calls_setup++;

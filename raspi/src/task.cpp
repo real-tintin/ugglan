@@ -1,11 +1,8 @@
-#include <task.h>
+#include <task.hpp>
 
 static const uint32_t WARN_EXCEEDED_EXEC_PERIOD_PERC = 20; // [%]
 
-Task::Task(uint32_t exec_period_ms,
-           std::string name) :
-    _exec_period_ms(exec_period_ms),
-    _name(name)
+Task::Task(uint32_t exec_period_ms, std::string name) : _exec_period_ms(exec_period_ms), _name(name)
 {
 }
 
@@ -44,9 +41,9 @@ void Task::_execute_thread()
 
             if (exec_exceed_perc > WARN_EXCEEDED_EXEC_PERIOD_PERC)
             {
-                logger.warn("Execution period exceeded for task " + _name + \
-                    " by " + std::to_string(exec_time_ms - _exec_period_ms)  + \
-                    " ms (" + std::to_string(exec_exceed_perc) + " %).");
+                logger.warn("Execution period exceeded for task " + _name + " by " +
+                            std::to_string(exec_time_ms - _exec_period_ms) + " ms (" +
+                            std::to_string(exec_exceed_perc) + " %).");
             }
         }
         else

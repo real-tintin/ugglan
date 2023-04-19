@@ -1,17 +1,16 @@
-#include <afro_esc.h>
+#include <afro_esc.hpp>
 
-inline const double THERMISTOR_NOMINAL  = 10000; // Resistance at 25 degrees [C]
-inline const double TEMPERATURE_NOMINAL = 25;    // Temperature for nominal resistance [C]
-inline const double B_COEFFICIENT       = 3900;  // The beta coefficient of the thermistor (usually 3000-4000)
-inline const double SERIES_RESISTOR     = 3300;  // The value of the 'other' resistor
+inline const double THERMISTOR_NOMINAL = 10000; // Resistance at 25 degrees [C]
+inline const double TEMPERATURE_NOMINAL = 25;   // Temperature for nominal resistance [C]
+inline const double B_COEFFICIENT = 3900;       // The beta coefficient of the thermistor (usually 3000-4000)
+inline const double SERIES_RESISTOR = 3300;     // The value of the 'other' resistor
 
 static const uint16_t WAKE_UP_TIME_MS = 50;
-static const uint16_t NUDGE_TIME_MS   = 100;
+static const uint16_t NUDGE_TIME_MS = 100;
 
 static const double MS_IN_S = 1000.0;
 
-AfroEsc::AfroEsc(I2cConn& i2c_conn) :
-    _i2c_conn(i2c_conn)
+AfroEsc::AfroEsc(I2cConn &i2c_conn) : _i2c_conn(i2c_conn)
 {
     _open_i2c_conn();
 }
@@ -33,9 +32,15 @@ void AfroEsc::arm()
     }
 }
 
-void AfroEsc::arm_fast() { write(0U); }
+void AfroEsc::arm_fast()
+{
+    write(0U);
+}
 
-void AfroEsc::halt() { write(0U); }
+void AfroEsc::halt()
+{
+    write(0U);
+}
 
 void AfroEsc::read()
 {
@@ -116,7 +121,7 @@ double AfroEsc::get_angular_rate()
     if (_rev_dt_ms > 0)
     {
         angular_rate = (static_cast<double>(raw_rev) * MS_IN_S * 2.0 * M_PI) /
-            (static_cast<double>(_rev_dt_ms) * static_cast<double>(AFRO_MOTOR_POLES));
+                       (static_cast<double>(_rev_dt_ms) * static_cast<double>(AFRO_MOTOR_POLES));
     }
 
     return angular_rate;
@@ -166,8 +171,14 @@ void AfroEsc::_update_rev_timer()
 {
     uint32_t t_now_ms = wall_time.millis();
 
-    if (!_rev_first_sample) { _rev_dt_ms = t_now_ms - _rev_t_ms; }
-    else { _rev_first_sample = false; }
+    if (!_rev_first_sample)
+    {
+        _rev_dt_ms = t_now_ms - _rev_t_ms;
+    }
+    else
+    {
+        _rev_first_sample = false;
+    }
 
     _rev_t_ms = t_now_ms;
 }

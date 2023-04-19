@@ -1,7 +1,8 @@
-#include <catch.h>
-
 #include <thread>
-#include <wall_time.h>
+
+#include <catch.hpp>
+
+#include <wall_time.hpp>
 
 TEST_CASE("wall time")
 {

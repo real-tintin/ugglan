@@ -1,4 +1,4 @@
-#include <data_log_queue.h>
+#include <data_log_queue.hpp>
 
 DataLogSample DataLogQueue::pop()
 {

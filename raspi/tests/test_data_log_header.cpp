@@ -1,11 +1,12 @@
-#include <catch.h>
-#include <catch_utils.h>
 
 #include <ctime>
-#include <string>
 #include <filesystem>
+#include <string>
 
-#include <data_log_header.h>
+#include <catch.hpp>
+#include <catch_utils.hpp>
+
+#include <data_log_header.hpp>
 
 static const std::time_t HEADER_TIME = 0;
 static const std::filesystem::path HEADER_PATH = catch_utils::RESOURCE_ROOT / "header.json";

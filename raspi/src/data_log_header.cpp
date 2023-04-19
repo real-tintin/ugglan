@@ -1,11 +1,11 @@
-#include <data_log_header.h>
+#include <data_log_header.hpp>
 
 static const uint8_t JSON_INDENT_SIZE = 4;
 
 using json = nlohmann::ordered_json;
 
-void _add_header_start_time(json& header, std::time_t start_time);
-void _add_header_data_log_metadata(json& header);
+void _add_header_start_time(json &header, std::time_t start_time);
+void _add_header_data_log_metadata(json &header);
 
 std::string generate_header(std::time_t start_time)
 {
@@ -17,7 +17,7 @@ std::string generate_header(std::time_t start_time)
     return header.dump(JSON_INDENT_SIZE);
 }
 
-void _add_header_start_time(json& header, std::time_t t)
+void _add_header_start_time(json &header, std::time_t t)
 {
     std::stringstream buf;
 
@@ -27,7 +27,7 @@ void _add_header_start_time(json& header, std::time_t t)
     header["start_time"] = buf.str();
 }
 
-void _add_header_data_log_metadata(json& header)
+void _add_header_data_log_metadata(json &header)
 {
     data_log::utils::add_data_log_metadata_to_json(header);
 }

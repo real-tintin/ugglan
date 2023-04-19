@@ -1,9 +1,13 @@
-#include <catch.h>
-
 #include <string>
+extern "C"
+{
 #include <math.h>
-#include <catch_utils.h>
-#include <common_utils.h>
+}
+
+#include <catch.hpp>
+#include <catch_utils.hpp>
+
+#include <common_utils.hpp>
 
 using namespace common_utils;
 
