@@ -6,13 +6,15 @@
 
 #include <nlohmann/json.hpp>
 
-#include <common_utils.h>
-#include <logger.h>
+#include <common_utils.hpp>
+#include <logger.hpp>
 #include <zmq/zmq.hpp>
-#include <zmq_conn.h>
+#include <zmq_conn.hpp>
 
-namespace streamer {
-namespace msg {
+namespace streamer
+{
+namespace msg
+{
 using json = nlohmann::ordered_json;
 
 enum class Method
@@ -31,7 +33,8 @@ enum class Code
     Error = 1
 };
 
-template <class T> class Base {
+template <class T> class Base
+{
   public:
     Base() : _metadata{}, _data({}), _valid{false}
     {
@@ -71,7 +74,8 @@ template <class T> class Base {
             _data = unpacked_as_json[_get_data_key()];
 
             _valid = true;
-        } catch (const std::exception &e)
+        }
+        catch (const std::exception &e)
         {
             logger.error("Unable to unpack request: " + std::string(e.what()));
             _valid = false;
@@ -136,7 +140,8 @@ template <class T> class Base {
     }
 };
 
-class Request : public Base<Method> {
+class Request : public Base<Method>
+{
   public:
     using Base::Base;
 
@@ -152,7 +157,8 @@ class Request : public Base<Method> {
     }
 };
 
-class Response : public Base<Code> {
+class Response : public Base<Code>
+{
   public:
     using Base::Base;
 

@@ -8,10 +8,10 @@
 #include <mutex>
 #include <type_traits>
 
-#include <data_log_signals.h>
-#include <data_log_utils.h>
-#include <logger.h>
-#include <wall_time.h>
+#include <data_log_signals.hpp>
+#include <data_log_utils.hpp>
+#include <logger.hpp>
+#include <wall_time.hpp>
 
 inline const uint32_t DATA_LOG_QUEUE_WARN_LARGE = 1e4;
 
@@ -23,7 +23,8 @@ struct DataLogSample
     DataLogSignal signal;
 };
 
-class DataLogQueue {
+class DataLogQueue
+{
   public:
     template <typename T> void push(T data, DataLogSignal signal);
 

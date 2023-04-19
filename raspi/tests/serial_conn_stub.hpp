@@ -11,11 +11,12 @@ extern "C"
 #include <stdio.h>
 }
 
-#include <serial_conn.h>
+#include <serial_conn.hpp>
 
 inline const size_t MAX_BUF_SIZE = 4096;
 
-class SerialConnStub : public SerialConn {
+class SerialConnStub : public SerialConn
+{
   public:
     SerialConnStub() : SerialConn("not/used"){};
 

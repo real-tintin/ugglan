@@ -1,6 +1,6 @@
 #include <cstring>
 
-#include <catch.h>
+#include <catch.hpp>
 #include <nlohmann/json.hpp>
 #include <zmq/zmq.hpp>
 #include <zmq_conn_stub.hpp>

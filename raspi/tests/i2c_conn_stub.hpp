@@ -7,14 +7,15 @@
 #include <map>
 #include <vector>
 
-#include <i2c_conn.h>
+#include <i2c_conn.hpp>
 
 typedef std::map<uint8_t, uint8_t> I2cReadByteMap;
 typedef std::map<uint8_t, uint8_t *> I2cReadBlockMap;
 
 typedef std::vector<uint8_t> I2cWriteMap;
 
-class I2cConnStub : public I2cConn {
+class I2cConnStub : public I2cConn
+{
   public:
     I2cConnStub() : I2cConn("not/used", 0){};
 

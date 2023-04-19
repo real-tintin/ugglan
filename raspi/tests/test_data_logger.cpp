@@ -1,4 +1,3 @@
-#include <task.h>
 #include <thread>
 
 #include <catch.hpp>
@@ -6,6 +5,7 @@
 
 #include <data_log_queue.hpp>
 #include <data_logger.hpp>
+#include <task.hpp>
 
 catch_utils::TmpDir tmpdir;
 
