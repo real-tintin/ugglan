@@ -4,6 +4,7 @@ Checks: 'clang-diagnostic-*,
          bugprone-*,
          performance-*,
          readability-*,
-         -readability-avoid-const-params-in-decls'
+         -readability-avoid-const-params-in-decls,
+         -readability-magic-numbers'
 WarningsAsErrors: ''
 HeaderFilterRegex: 'inc'

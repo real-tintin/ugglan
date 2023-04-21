@@ -70,7 +70,12 @@ clang_tidy: build_image
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		${IMAGE_NAME} \
-		echo "TODO"
+		bash -c " \
+		clang-tidy \
+		./tests/*.hpp ./tests/*.cpp -- \
+		-isystem ./lib -isystem ./inc -I ./tests \
+		-Wall -Werror -Wno-psabi -std=c++17 -pthread -MD -D UNIT_TEST \
+		"
 
 clean:
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
