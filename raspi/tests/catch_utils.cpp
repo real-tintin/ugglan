@@ -2,7 +2,7 @@
 
 namespace catch_utils
 {
-std::string read_file(std::filesystem::path path)
+std::string read_file(std::filesystem::path &path)
 {
     std::ifstream file(path);
     std::stringstream buf;
@@ -16,33 +16,21 @@ std::string read_file(std::filesystem::path path)
     return buf.str();
 }
 
-bool str_contains_all(std::string str, std::vector<std::string> contains)
+bool str_contains_all(std::string &str, std::vector<std::string> &contains)
 {
-    for (auto const &s : contains)
-    {
-        if (str.find(s) == std::string::npos)
-        {
-            return false;
-        }
-    }
-    return true;
+    return std::all_of(
+        contains.cbegin(), contains.cend(), [str](const std::string &s) { return str.find(s) != std::string::npos; });
 }
 
-bool str_contains_non(std::string str, std::vector<std::string> contains)
+bool str_contains_non(std::string &str, std::vector<std::string> &contains)
 {
-    for (auto const &s : contains)
-    {
-        if (str.find(s) != std::string::npos)
-        {
-            return false;
-        }
-    }
-    return true;
+    return std::all_of(
+        contains.cbegin(), contains.cend(), [str](const std::string &s) { return str.find(s) == std::string::npos; });
 }
 
-void set_env(std::string env, std::string val)
+void set_env(std::string &env, std::string &val)
 {
-    setenv(env.c_str(), val.c_str(), true);
+    setenv(env.c_str(), val.c_str(), 1);
 }
 
 TmpDir::TmpDir(bool remove_when_done) : _remove_when_done(remove_when_done)

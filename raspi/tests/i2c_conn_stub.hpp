@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <cstring>
 #include <map>
+#include <utility>
 #include <vector>
 
 #include <i2c_conn.hpp>
@@ -32,20 +33,22 @@ public:
     bool write_byte_data(uint8_t reg, uint8_t data) override;
     bool write_block_data(uint8_t reg, uint8_t size, uint8_t *buf) override;
 
-    uint32_t get_n_calls_read_byte_data()
+    uint32_t get_n_calls_read_byte_data() const
     {
         return _n_calls_read_byte_data;
     }
-    uint32_t get_n_calls_read_block_data()
+
+    uint32_t get_n_calls_read_block_data() const
     {
         return _n_calls_read_block_data;
     }
 
-    uint32_t get_n_calls_write_byte_data()
+    uint32_t get_n_calls_write_byte_data() const
     {
         return _n_calls_write_byte_data;
     }
-    uint32_t get_n_calls_write_block_data()
+
+    uint32_t get_n_calls_write_block_data() const
     {
         return _n_calls_write_block_data;
     }

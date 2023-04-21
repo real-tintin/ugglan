@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include <common_utils.hpp>
 
@@ -36,7 +37,7 @@ private:
     std::filesystem::path _path;
     bool _remove_when_done;
 
-    std::string _folder_name();
+    static std::string _folder_name();
 };
 
 class PatchStdCout

@@ -24,8 +24,6 @@
                            (float, DataLogSignal::Float, DataLogType::FLOAT),                                          \
                            (double, DataLogSignal::Double, DataLogType::DOUBLE))
 
-static const double FLOAT_TOL = 1e-4;
-
 static const uint8_t TASK_EXEC_SAMPLES_TOL = 1;
 
 DataLogQueue data_log_queue_multi;

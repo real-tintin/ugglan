@@ -16,6 +16,6 @@ TEST_CASE("data_log_header")
     std::string exp_header = catch_utils::read_file(HEADER_PATH);
     std::string act_header = generate_header(HEADER_TIME);
 
-    REQUIRE(act_header.size() > 0);
-    REQUIRE(exp_header.compare(act_header) == 0);
+    REQUIRE_FALSE(act_header.empty());
+    REQUIRE(exp_header == act_header);
 }

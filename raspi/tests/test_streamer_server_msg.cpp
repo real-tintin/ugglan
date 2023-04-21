@@ -18,13 +18,13 @@ class Mail : public Base<Status>
 public:
     using Base::Base;
 
-    const Status status()
+    Status status()
     {
         return _get_metadata();
     }
 
 protected:
-    const std::string _get_metadata_key() override
+    std::string _get_metadata_key() override
     {
         return "status";
     }
@@ -49,9 +49,10 @@ TEST_CASE("to msg and back")
 
 TEST_CASE("invalid msg")
 {
+    Mail mail;
     zmq::message_t msg{std::string("not_valid")};
 
-    Mail mail{msg};
+    mail.from_msg(msg);
 
     REQUIRE(mail.valid() == false);
 }

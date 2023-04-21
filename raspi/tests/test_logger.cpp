@@ -25,7 +25,7 @@ TEST_CASE("logger: levels")
         logger.set_level(LogLevel::off);
         write_at_all_levels();
 
-        REQUIRE(patched_cout.get().size() == 0);
+        REQUIRE(patched_cout.get().empty());
     }
     SECTION("debug")
     {

@@ -263,7 +263,7 @@ TEST_CASE_METHOD(ServerTestFixture, "streaming")
                 server.execute();
 
                 const zmq::message_t &msg = stream_conn.get_last_send_msg();
-                REQUIRE(msg.size() > 0);
+                REQUIRE_FALSE(msg.empty());
 
                 AND_GIVEN("a set request sent to stop stream")
                 {
@@ -279,7 +279,7 @@ TEST_CASE_METHOD(ServerTestFixture, "streaming")
                         server.execute();
 
                         const zmq::message_t &msg = stream_conn.get_last_send_msg();
-                        REQUIRE(msg.size() == 0);
+                        REQUIRE(msg.empty());
                     }
                 }
             }

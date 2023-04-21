@@ -33,7 +33,7 @@ TEST_CASE("pilot control")
 
     PilotControl pilot_ctrl(SAMPLE_RATE_S, CONFIG);
 
-    att_est::Attitude attitude = {0};
+    att_est::Attitude attitude = {{0}};
     PilotCtrlRef ref = {0};
     BodyControl ctrl = {0};
 

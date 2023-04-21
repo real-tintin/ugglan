@@ -19,6 +19,7 @@
         {                                                                                                              \
             return true;                                                                                               \
         };                                                                                                             \
+                                                                                                                       \
         bool close() override                                                                                          \
         {                                                                                                              \
             return true;                                                                                               \
@@ -45,11 +46,12 @@
             _exp_recv_msg.rebuild(msg.data(), msg.size());                                                             \
         }                                                                                                              \
                                                                                                                        \
-        const uint32_t get_n_calls_recv()                                                                              \
+        uint32_t get_n_calls_recv() const                                                                              \
         {                                                                                                              \
             return _n_calls_recv;                                                                                      \
         }                                                                                                              \
-        const uint32_t get_n_calls_send()                                                                              \
+                                                                                                                       \
+        uint32_t get_n_calls_send() const                                                                              \
         {                                                                                                              \
             return _n_calls_send;                                                                                      \
         }                                                                                                              \

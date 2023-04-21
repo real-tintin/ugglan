@@ -53,7 +53,7 @@ public:
     }
 };
 
-I2cConnStub get_i2c_conn_stub(I2cReadByteMap read_byte_map, I2cReadBlockMap read_block_map, I2cWriteMap write_map)
+I2cConnStub get_i2c_conn_stub(I2cReadByteMap &read_byte_map, I2cReadBlockMap &read_block_map, I2cWriteMap &write_map)
 {
     I2cConnStub i2c_conn;
 

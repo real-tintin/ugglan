@@ -105,10 +105,11 @@ TEST_CASE("data_logger")
     task_esc.teardown();
     task_logger.teardown();
 
-    std::string header, data;
+    std::string header;
+    std::string data;
     std::string raw = catch_utils::read_file(data_logger.get_file_path());
     split_raw_into_header_and_data(raw, header, data);
 
-    REQUIRE(header.size() > 0);
+    REQUIRE_FALSE(header.empty());
     REQUIRE(data.size() == EXP_DATA_SIZE);
 }

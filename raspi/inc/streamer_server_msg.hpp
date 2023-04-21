@@ -48,16 +48,11 @@ public:
     {
     }
 
-    Base(zmq::message_t &msg)
-    {
-        from_msg(msg);
-    }
-
-    const json data()
+    json data()
     {
         return _data;
     }
-    const bool valid()
+    bool valid()
     {
         return _valid;
     }
@@ -118,12 +113,12 @@ public:
     }
 
 protected:
-    const T _get_metadata()
+    T _get_metadata()
     {
         return _metadata;
     }
 
-    virtual const std::string _get_metadata_key()
+    virtual std::string _get_metadata_key()
     {
         std::logic_error("Not implemented");
         return "";
@@ -134,7 +129,7 @@ private:
     json _data;
     bool _valid;
 
-    const std::string _get_data_key()
+    std::string _get_data_key()
     {
         return "data";
     }
@@ -145,13 +140,13 @@ class Request : public Base<Method>
 public:
     using Base::Base;
 
-    const Method method()
+    Method method()
     {
         return _get_metadata();
     }
 
 protected:
-    const std::string _get_metadata_key() override
+    std::string _get_metadata_key() override
     {
         return "method";
     }
@@ -162,13 +157,13 @@ class Response : public Base<Code>
 public:
     using Base::Base;
 
-    const Code code()
+    Code code()
     {
         return _get_metadata();
     }
 
 protected:
-    const std::string _get_metadata_key() override
+    std::string _get_metadata_key() override
     {
         return "code";
     }
