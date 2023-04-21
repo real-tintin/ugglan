@@ -34,11 +34,11 @@ jobs:
         name: Install tools & unit test
         run: make -C ./tools
       -
-        name: Run clang-format on raspi app
-        run: make -C ./raspi -f Makefile_dpkg clang_format
+        name: Run clang-format
+        run: make -C ./raspi -f Makefile_clang clang_format
       -
-        name: Run clang-format on raspi tests
-        run: make -C ./raspi -f Makefile_tests clang_format
+        name: Run clang-tidy
+        run: make -C ./raspi -f Makefile_clang clang_tidy
       -
         name: Compile (host) raspi & unit test
         run: make -C ./raspi -f Makefile_tests

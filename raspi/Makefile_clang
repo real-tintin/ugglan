@@ -1,0 +1,41 @@
+# Makefile for running clang-dev tools i.e.,
+# clang-format and clang-tidy.
+#
+
+RASPI_ROOT = $(shell pwd)
+IMAGE_ROOT = /raspi
+
+UID = $(shell id -u)
+GID = $(shell id -g)
+
+IMAGE_NAME = raspi:host
+
+.PHONY: build_image clang_format clang_tidy
+
+build_image:
+	docker build -t ${IMAGE_NAME} \
+		--build-arg IMAGE_ROOT=${IMAGE_ROOT} \
+		.
+
+clang_format: build_image
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		${IMAGE_NAME} \
+		bash -c " \
+		find ./inc ./src ./tests -type f -iname "*.cpp" -o -iname "*.hpp" | xargs \
+		clang-format \
+        -style=file \
+        --Werror \
+        --dry-run \
+		"
+
+clang_tidy: build_image
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		${IMAGE_NAME} \
+		bash -c " \
+		clang-tidy \
+		./inc/*.hpp ./src/*.cpp ./tests/*.hpp ./tests/*.cpp -- \
+		-isystem ./lib -I ./inc -I ./tests \
+		-Wall -Werror -Wno-psabi -std=c++17 -pthread -MD \
+		"

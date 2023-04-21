@@ -1,6 +1,7 @@
 #ifndef CATCH_UTILS_HPP
 #define CATCH_UTILS_HPP
 
+#include <algorithm>
 #include <ctime>
 #include <filesystem>
 #include <fstream>
@@ -9,7 +10,6 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 #include <common_utils.hpp>
 
