@@ -65,11 +65,13 @@ clang_format: build_image
 		-v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		${IMAGE_NAME} \
+		bash -c " \
 		find ./src ./inc -type f -iname "*.cpp" -o -iname "*.hpp" | xargs \
 		clang-format \
         -style=file \
         --Werror \
-        --dry-run
+        --dry-run \
+		"
 
 clang_tidy: build_image
 	docker run  --platform linux/arm/v7 \
