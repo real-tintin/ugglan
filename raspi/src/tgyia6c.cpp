@@ -18,58 +18,58 @@ void Tgyia6c::update()
 }
 
 // Returns gimbal left X [0.0-1.0]
-double Tgyia6c::get_gimbal_left_x()
+double Tgyia6c::get_gimbal_left_x() const
 {
     return (TGYIA6C_GIMBAL_SCALE *
             (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_X]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns gimbal left Y [0.0-1.0]
-double Tgyia6c::get_gimbal_left_y()
+double Tgyia6c::get_gimbal_left_y() const
 {
     return (TGYIA6C_GIMBAL_SCALE *
             (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_LEFT_Y]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns gimbal right X [0.0-1.0]
-double Tgyia6c::get_gimbal_right_x()
+double Tgyia6c::get_gimbal_right_x() const
 {
     return (TGYIA6C_GIMBAL_SCALE *
             (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_X]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns gimbal right Y [0.0-1.0]
-double Tgyia6c::get_gimbal_right_y()
+double Tgyia6c::get_gimbal_right_y() const
 {
     return (TGYIA6C_GIMBAL_SCALE *
             (static_cast<double>(_channel[TGYIA6C_CHANNEL_GIMBAL_RIGHT_Y]) + TGYIA6C_GIMBAL_OFFSET));
 }
 
 // Returns knob [0.0-1.0]
-double Tgyia6c::get_knob()
+double Tgyia6c::get_knob() const
 {
     return (TGYIA6C_KNOB_SCALE * (static_cast<double>(_channel[TGYIA6C_CHANNEL_KNOB]) + TGYIA6C_KNOB_OFFSET));
 }
 
 // Returns switch left [low, mid, high]
-SwitchLr Tgyia6c::get_switch_left()
+SwitchLr Tgyia6c::get_switch_left() const
 {
     return SwitchLrMap.find(_channel[TGYIA6C_CHANNEL_SWITCH_LEFT])->second;
 }
 
 // Returns switch right [low, mid, high]
-SwitchLr Tgyia6c::get_switch_right()
+SwitchLr Tgyia6c::get_switch_right() const
 {
     return SwitchLrMap.find(_channel[TGYIA6C_CHANNEL_SWITCH_RIGHT])->second;
 }
 
 // Returns switch middle [low, high]
-SwitchM Tgyia6c::get_switch_middle()
+SwitchM Tgyia6c::get_switch_middle() const
 {
     return SwitchMMap.find(_channel[TGYIA6C_CHANNEL_SWITCH_MIDDLE])->second;
 }
 
-uint8_t Tgyia6c::get_status()
+uint8_t Tgyia6c::get_status() const
 {
     return _status;
 }
@@ -169,7 +169,8 @@ void Tgyia6c::_parse_buffer()
                 {
                 case TGYIA6C_PROTOCOL_COMMAND40:
 
-                    for (uint8_t i_raw = 1; i_raw < (TGYIA6C_PROTOCOL_CHANNELS * 2 + 1); i_raw += 2)
+                    for (uint8_t i_raw = 1; i_raw < static_cast<u_int8_t>(TGYIA6C_PROTOCOL_CHANNELS * 2 + 1);
+                         i_raw += 2)
                     {
                         _channel[i_raw / 2] = (_raw_channel[i_raw + 1] << 8) | _raw_channel[i_raw];
                     }

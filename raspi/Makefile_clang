@@ -17,25 +17,53 @@ build_image:
 		--build-arg IMAGE_ROOT=${IMAGE_ROOT} \
 		.
 
-clang_format: build_image
+clang_format_app: build_image
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		${IMAGE_NAME} \
 		bash -c " \
-		find ./inc ./src ./tests -type f -iname "*.cpp" -o -iname "*.hpp" | xargs \
+		find ./inc ./src -type f -iname "*.cpp" -o -iname "*.hpp" | xargs \
 		clang-format \
         -style=file \
         --Werror \
         --dry-run \
 		"
 
-clang_tidy: build_image
+clang_format_tests: build_image
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		${IMAGE_NAME} \
+		bash -c " \
+		find ./tests -type f -iname "*.cpp" -o -iname "*.hpp" | xargs \
+		clang-format \
+        -style=file \
+        --Werror \
+        --dry-run \
+		"
+
+clang_format: clang_format_app clang_format_tests
+
+
+clang_tidy_app: build_image
 	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
 		--user $(UID):$(GID) \
 		${IMAGE_NAME} \
 		bash -c " \
 		clang-tidy \
-		./inc/*.hpp ./src/*.cpp ./tests/*.hpp ./tests/*.cpp -- \
-		-isystem ./lib -I ./inc -I ./tests \
+		./src/main.cpp -- \
+		-isystem ./lib -I ./inc \
 		-Wall -Werror -Wno-psabi -std=c++17 -pthread -MD \
 		"
+
+clang_tidy_tests: build_image
+	docker run -v ${RASPI_ROOT}:${IMAGE_ROOT} \
+		--user $(UID):$(GID) \
+		${IMAGE_NAME} \
+		bash -c " \
+		clang-tidy \
+		./tests/*.hpp ./tests/*.cpp -- \
+		-isystem ./lib -isystem ./inc -I ./tests \
+		-Wall -Werror -Wno-psabi -std=c++17 -pthread -MD -D UNIT_TEST \
+		"
+
+clang_tidy: clang_tidy_app clang_tidy_tests

@@ -13,7 +13,7 @@ static uint8_t n_calls_setup = 0;
 static uint8_t n_calls_execute = 0;
 static uint8_t n_calls_finish = 0;
 
-class TestTask : public Task
+class TestTask final : public Task
 {
 public:
     using Task::Task;

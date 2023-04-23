@@ -33,7 +33,7 @@ void PololuAltImu::update()
     }
 }
 
-uint8_t PololuAltImu::get_status()
+uint8_t PololuAltImu::get_status() const
 {
     return _status;
 }

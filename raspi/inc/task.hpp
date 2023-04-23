@@ -14,6 +14,7 @@ class Task
 {
 public:
     Task(uint32_t exec_period_ms, std::string name = "N.N.");
+    virtual ~Task() = default;
 
     void launch();
     void teardown();

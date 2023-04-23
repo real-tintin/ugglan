@@ -13,7 +13,7 @@ enum class Status
     Lost = 1
 };
 
-class Mail : public Base<Status>
+class Mail final : public Base<Status>
 {
 public:
     using Base::Base;

@@ -26,7 +26,9 @@ void Task::teardown()
 
 void Task::_execute_thread()
 {
-    uint32_t start_time_ms, exec_time_ms, sleep_ms;
+    uint32_t start_time_ms;
+    uint32_t exec_time_ms;
+    uint32_t sleep_ms;
 
     while (_run_thread)
     {

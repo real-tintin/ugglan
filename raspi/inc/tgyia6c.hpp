@@ -97,19 +97,19 @@ public:
 
     void update();
 
-    double get_gimbal_left_x();
-    double get_gimbal_left_y();
+    double get_gimbal_left_x() const;
+    double get_gimbal_left_y() const;
 
-    double get_gimbal_right_x();
-    double get_gimbal_right_y();
+    double get_gimbal_right_x() const;
+    double get_gimbal_right_y() const;
 
-    double get_knob();
+    double get_knob() const;
 
-    SwitchLr get_switch_left();
-    SwitchLr get_switch_right();
-    SwitchM get_switch_middle();
+    SwitchLr get_switch_left() const;
+    SwitchLr get_switch_right() const;
+    SwitchM get_switch_middle() const;
 
-    uint8_t get_status();
+    uint8_t get_status() const;
 
 private:
     uint8_t _status = TGYIA6C_STATUS_OK;

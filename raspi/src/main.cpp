@@ -69,7 +69,7 @@ enum class TaskId
     StreamerServer
 };
 
-class TaskAccMag : public Task
+class TaskAccMag final : public Task
 {
 public:
     TaskAccMag(uint32_t exec_period_ms,
@@ -82,8 +82,10 @@ public:
     {
     }
 
+    ~TaskAccMag() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _acc_mag.update();
 
@@ -105,7 +107,7 @@ private:
     DataLogQueue &_data_log_queue;
 };
 
-class TaskGyro : public Task
+class TaskGyro final : public Task
 {
 public:
     TaskGyro(uint32_t exec_period_ms,
@@ -118,8 +120,10 @@ public:
     {
     }
 
+    ~TaskGyro() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _gyro.update();
 
@@ -137,7 +141,7 @@ private:
     DataLogQueue &_data_log_queue;
 };
 
-class TaskBarometer : public Task
+class TaskBarometer final : public Task
 {
 public:
     TaskBarometer(uint32_t exec_period_ms,
@@ -150,8 +154,10 @@ public:
     {
     }
 
+    ~TaskBarometer() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _barometer.update();
 
@@ -168,7 +174,7 @@ private:
     DataLogQueue &_data_log_queue;
 };
 
-class TaskStateEst : public Task
+class TaskStateEst final : public Task
 {
 public:
     TaskStateEst(uint32_t exec_period_ms,
@@ -180,8 +186,10 @@ public:
     {
     }
 
+    ~TaskStateEst() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _data_log_queue.last_signal_data(&_imu_uncompensated.acc_x, DataLogSignal::ImuAccelerationX);
         _data_log_queue.last_signal_data(&_imu_uncompensated.acc_y, DataLogSignal::ImuAccelerationY);
@@ -239,7 +247,7 @@ private:
     DataLogQueue &_data_log_queue;
 };
 
-class TaskStateCtrl : public Task
+class TaskStateCtrl final : public Task
 {
 public:
     TaskStateCtrl(uint32_t exec_period_ms,
@@ -251,8 +259,10 @@ public:
     {
     }
 
+    ~TaskStateCtrl() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _exec_pilot_ctrl();
         _exec_motor_ctrl();
@@ -351,7 +361,7 @@ private:
     }
 };
 
-class TaskEscRead : public Task
+class TaskEscRead final : public Task
 {
 public:
     TaskEscRead(uint32_t exec_period_ms, std::string name, AfroEsc (&esc)[N_ESC], DataLogQueue &data_log_queue)
@@ -359,8 +369,10 @@ public:
     {
     }
 
+    ~TaskEscRead() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         uint8_t i_esc = _load_balance_step;
         _esc[i_esc].read();
@@ -408,7 +420,7 @@ private:
     uint8_t _load_balance_step = 0;
 };
 
-class TaskEscWrite : public Task
+class TaskEscWrite final : public Task
 {
 public:
     TaskEscWrite(uint32_t exec_period_ms, std::string name, AfroEsc (&esc)[N_ESC], DataLogQueue &data_log_queue)
@@ -416,14 +428,16 @@ public:
     {
     }
 
+    ~TaskEscWrite() = default;
+
 protected:
-    void _setup() override
+    void _setup() final
     {
         _arm_escs();
         _push_task_state_to_data_log(DataLogSignal::TaskSetup);
     }
 
-    void _execute() override
+    void _execute() final
     {
         EscState user_reqeusted_esc_state = _get_user_requested_esc_state();
         EscState limited_esc_state = _limit_change_of_esc_state(user_reqeusted_esc_state, _old_esc_state);
@@ -434,7 +448,7 @@ protected:
         _push_task_state_to_data_log(DataLogSignal::TaskExecute);
     }
 
-    void _finish() override
+    void _finish() final
     {
         _halt_escs();
         _push_task_state_to_data_log(DataLogSignal::TaskFinish);
@@ -486,7 +500,7 @@ private:
         {
             return EscState(uint8_t(old_esc_state) + 1U);
         }
-        else if (new_esc_state < old_esc_state)
+        if (new_esc_state < old_esc_state)
         {
             return EscState(uint8_t(old_esc_state) - 1U);
         }
@@ -559,7 +573,7 @@ private:
     }
 };
 
-class TaskRcReceiver : public Task
+class TaskRcReceiver final : public Task
 {
 public:
     TaskRcReceiver(uint32_t exec_period_ms, std::string name, std::string serial_device, DataLogQueue &data_log_queue)
@@ -567,8 +581,10 @@ public:
     {
     }
 
+    ~TaskRcReceiver() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _rc.update();
 
@@ -593,7 +609,7 @@ private:
     DataLogQueue &_data_log_queue;
 };
 
-class TaskDataLogger : public Task
+class TaskDataLogger final : public Task
 {
 public:
     TaskDataLogger(uint32_t exec_period_ms,
@@ -604,18 +620,20 @@ public:
     {
     }
 
+    ~TaskDataLogger() = default;
+
 protected:
-    void _setup() override
+    void _setup() final
     {
         _data_logger.start();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskSetup);
     }
-    void _execute() override
+    void _execute() final
     {
         _data_logger.pack();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskExecute);
     }
-    void _finish() override
+    void _finish() final
     {
         _data_logger.stop();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskFinish);
@@ -626,7 +644,7 @@ private:
     DataLogQueue &_data_log_queue;
 };
 
-class TaskStreamerServer : public Task
+class TaskStreamerServer final : public Task
 {
 public:
     TaskStreamerServer(uint32_t exec_period_ms,
@@ -639,18 +657,20 @@ public:
     {
     }
 
+    ~TaskStreamerServer() = default;
+
 protected:
-    void _setup() override
+    void _setup() final
     {
         _server.connect();
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskSetup);
     }
-    void _execute() override
+    void _execute() final
     {
         _server.execute();
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskExecute);
     }
-    void _finish() override
+    void _finish() final
     {
         _server.disconnect();
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskFinish);
@@ -697,10 +717,11 @@ int main()
     DataLogQueue data_log_queue;
     std::vector<std::unique_ptr<Task>> tasks;
 
-    I2cConn esc_conn_0(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_0),
-        esc_conn_1(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_1),
-        esc_conn_2(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_2),
-        esc_conn_3(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_3);
+    I2cConn esc_conn_0(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_0);
+    I2cConn esc_conn_1(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_1);
+    I2cConn esc_conn_2(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_2);
+    I2cConn esc_conn_3(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_3);
+
     AfroEsc esc[N_ESC] = {esc_conn_0, esc_conn_1, esc_conn_2, esc_conn_3};
 
     tasks.emplace_back(new TaskAccMag(

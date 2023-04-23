@@ -79,7 +79,7 @@ bool Server::_recv_request(msg::Request &req)
     zmq::message_t msg{};
     _request.recv(msg);
 
-    if (msg.size() > 0)
+    if (!msg.empty())
     {
         req.from_msg(msg);
         logger.debug("Streamer server received request: " + req.as_string());
@@ -153,7 +153,7 @@ bool Server::_set_selected_data_log_signals(json data)
         {
             DataLogSignal signal = static_cast<DataLogSignal>(*it);
 
-            if (DATA_LOG_SIGNAL_MAP.count(signal))
+            if (DATA_LOG_SIGNAL_MAP.count(signal) != 0U)
             {
                 new_sel_data_log_signals.push_back(signal);
             }
@@ -174,10 +174,8 @@ bool Server::_set_selected_data_log_signals(json data)
 
         return true;
     }
-    else
-    {
-        return false;
-    }
+
+    return false;
 }
 
 void Server::_start_stream()

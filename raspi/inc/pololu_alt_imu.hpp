@@ -29,7 +29,7 @@ public:
 
     void update();
 
-    uint8_t get_status();
+    uint8_t get_status() const;
 
 protected:
     void _open_i2c_conn();

@@ -37,7 +37,7 @@ private:
     ZmqRep &_request;
     ZmqPush &_stream;
 
-    DataLogQueue &_data_log_queue;
+    DataLogQueue &_data_log_queue; // NOLINT(clang-diagnostic-unused-private-field)
 
     std::vector<DataLogSignal> _sel_data_log_signals{};
 
@@ -57,10 +57,10 @@ private:
     void _stop_stream();
     void _send_on_stream();
 
-    bool _is_unique(std::vector<DataLogSignal> signals);
-
     void _pack_stream_bytes(std::vector<uint8_t> &package);
-    void _append_bytes_to_vector(std::vector<uint8_t> &v, const uint8_t *const bytes, size_t size);
+
+    static void _append_bytes_to_vector(std::vector<uint8_t> &v, const uint8_t *const bytes, size_t size);
+    static bool _is_unique(std::vector<DataLogSignal> signals);
 };
 } // namespace streamer
 
