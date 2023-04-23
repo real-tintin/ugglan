@@ -29,7 +29,7 @@ static uint8_t i_push_esc = 0;
 DataLogQueue queue;
 DataLogger data_logger(queue, tmpdir.get_path());
 
-class TestTaskImu : public Task
+class TestTaskImu final : public Task
 {
 public:
     using Task::Task;
@@ -45,7 +45,7 @@ protected:
     }
 };
 
-class TestTaskEsc : public Task
+class TestTaskEsc final : public Task
 {
 public:
     using Task::Task;
@@ -61,7 +61,7 @@ protected:
     }
 };
 
-class TestTaskLogger : public Task
+class TestTaskLogger final : public Task
 {
 public:
     using Task::Task;

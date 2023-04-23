@@ -28,7 +28,7 @@ static const uint8_t TASK_EXEC_SAMPLES_TOL = 1;
 
 DataLogQueue data_log_queue_multi;
 
-class TestTaskOne : public Task
+class TestTaskOne final : public Task
 {
 public:
     using Task::Task;
@@ -40,7 +40,7 @@ protected:
     }
 };
 
-class TestTaskTwo : public Task
+class TestTaskTwo final : public Task
 {
 public:
     using Task::Task;

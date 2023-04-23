@@ -85,7 +85,7 @@ public:
     ~TaskAccMag() = default;
 
 protected:
-    void _execute() final
+    void _execute() override
     {
         _acc_mag.update();
 
@@ -123,7 +123,7 @@ public:
     ~TaskGyro() = default;
 
 protected:
-    void _execute() final
+    void _execute() override
     {
         _gyro.update();
 
@@ -157,7 +157,7 @@ public:
     ~TaskBarometer() = default;
 
 protected:
-    void _execute() final
+    void _execute() override
     {
         _barometer.update();
 
@@ -189,7 +189,7 @@ public:
     ~TaskStateEst() = default;
 
 protected:
-    void _execute() final
+    void _execute() override
     {
         _data_log_queue.last_signal_data(&_imu_uncompensated.acc_x, DataLogSignal::ImuAccelerationX);
         _data_log_queue.last_signal_data(&_imu_uncompensated.acc_y, DataLogSignal::ImuAccelerationY);
@@ -262,7 +262,7 @@ public:
     ~TaskStateCtrl() = default;
 
 protected:
-    void _execute() final
+    void _execute() override
     {
         _exec_pilot_ctrl();
         _exec_motor_ctrl();
@@ -372,7 +372,7 @@ public:
     ~TaskEscRead() = default;
 
 protected:
-    void _execute() final
+    void _execute() override
     {
         uint8_t i_esc = _load_balance_step;
         _esc[i_esc].read();
@@ -431,13 +431,13 @@ public:
     ~TaskEscWrite() = default;
 
 protected:
-    void _setup() final
+    void _setup() override
     {
         _arm_escs();
         _push_task_state_to_data_log(DataLogSignal::TaskSetup);
     }
 
-    void _execute() final
+    void _execute() override
     {
         EscState user_reqeusted_esc_state = _get_user_requested_esc_state();
         EscState limited_esc_state = _limit_change_of_esc_state(user_reqeusted_esc_state, _old_esc_state);
@@ -448,7 +448,7 @@ protected:
         _push_task_state_to_data_log(DataLogSignal::TaskExecute);
     }
 
-    void _finish() final
+    void _finish() override
     {
         _halt_escs();
         _push_task_state_to_data_log(DataLogSignal::TaskFinish);
@@ -584,7 +584,7 @@ public:
     ~TaskRcReceiver() = default;
 
 protected:
-    void _execute() final
+    void _execute() override
     {
         _rc.update();
 
@@ -623,17 +623,17 @@ public:
     ~TaskDataLogger() = default;
 
 protected:
-    void _setup() final
+    void _setup() override
     {
         _data_logger.start();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskSetup);
     }
-    void _execute() final
+    void _execute() override
     {
         _data_logger.pack();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskExecute);
     }
-    void _finish() final
+    void _finish() override
     {
         _data_logger.stop();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskFinish);
@@ -660,17 +660,17 @@ public:
     ~TaskStreamerServer() = default;
 
 protected:
-    void _setup() final
+    void _setup() override
     {
         _server.connect();
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskSetup);
     }
-    void _execute() final
+    void _execute() override
     {
         _server.execute();
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskExecute);
     }
-    void _finish() final
+    void _finish() override
     {
         _server.disconnect();
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskFinish);
