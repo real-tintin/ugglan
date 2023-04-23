@@ -23,6 +23,7 @@ build_dpkg_for_profiling clean
 
 build_image:
 	docker build --platform linux/arm/v7 \
+		--target builder \
 		-t ${IMAGE_NAME} \
 		--build-arg IMAGE_ROOT=${IMAGE_ROOT} \
 		.

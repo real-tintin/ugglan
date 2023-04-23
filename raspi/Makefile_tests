@@ -26,6 +26,7 @@ build_and_run_tests clean
 
 build_image:
 	docker build -t ${IMAGE_NAME} \
+		--target builder \
 		--build-arg IMAGE_ROOT=${IMAGE_ROOT} \
 		.
 
