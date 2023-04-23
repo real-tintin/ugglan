@@ -50,7 +50,7 @@ clang_tidy_app: build_image
 		${IMAGE_NAME} \
 		bash -c " \
 		clang-tidy \
-		./src/main.cpp -- \
+		./inc/*.hpp ./src/*.cpp -- \
 		-isystem ./lib -I ./inc \
 		-Wall -Werror -Wno-psabi -std=c++17 -pthread -MD \
 		"
