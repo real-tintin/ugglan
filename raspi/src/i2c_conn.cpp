@@ -10,16 +10,11 @@ bool I2cConn::open()
     {
         logger.debug("Successfully opened i2c connection at: " + _device + " (" +
                      common_utils::byte_to_hex_str(_address) + ")");
-
         return true;
     }
-    else
-    {
-        logger.error("Failed to open i2c connection at: " + _device + " (" + common_utils::byte_to_hex_str(_address) +
-                     ")");
 
-        return false;
-    }
+    logger.error("Failed to open i2c connection at: " + _device + " (" + common_utils::byte_to_hex_str(_address) + ")");
+    return false;
 }
 
 bool I2cConn::close()
@@ -29,11 +24,9 @@ bool I2cConn::close()
         logger.debug("Successfully closed i2c connection at: " + _device);
         return true;
     }
-    else
-    {
-        logger.error("Failed to close i2c connection at: " + _device);
-        return false;
-    }
+
+    logger.error("Failed to close i2c connection at: " + _device);
+    return false;
 }
 
 bool I2cConn::read_byte_data(uint8_t reg, uint8_t *data)

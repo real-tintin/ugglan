@@ -64,7 +64,7 @@ PilotCtrlRef tgyia6c_to_pilot_ctrl_ref(double gimbal_left_x,
 class PilotControl
 {
 public:
-    PilotControl(double input_sample_rate_s, PilotCtrlConfig config);
+    PilotControl(double input_sample_rate_s, const PilotCtrlConfig &config);
 
     void update(att_est::Attitude attitude, PilotCtrlRef ref);
     void reset();
@@ -75,7 +75,7 @@ public:
 
 private:
     const double _sample_rate_s;
-    const PilotCtrlConfig _config;
+    const PilotCtrlConfig &_config;
 
     BodyControl _ctrl = {0};
 
@@ -94,8 +94,8 @@ private:
     void _update_ctrl_mz();
     void _update_ctrl_fz(PilotCtrlRef &ref);
 
-    double _feedback_ctrl(Eigen::Vector4d x, Eigen::RowVector4d L);
-    double _feedback_ctrl(Eigen::Vector3d x, Eigen::RowVector3d L);
+    double _feedback_ctrl(const Eigen::Vector4d &x, const Eigen::RowVector4d &L);
+    double _feedback_ctrl(const Eigen::Vector3d &x, const Eigen::RowVector3d &L);
 };
 
 #endif /* PILOT_CONTROL_HPP */

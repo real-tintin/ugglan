@@ -203,7 +203,7 @@ void Server::_send_on_stream()
 void Server::_pack_stream_bytes(std::vector<uint8_t> &package)
 {
     uint64_t signal_bytes;
-    uint32_t now_timestamp_ms = wall_time.millis();
+    uint32_t now_timestamp_ms = WallTime::millis();
 
     _append_bytes_to_vector(package, (uint8_t *)&now_timestamp_ms, sizeof(uint32_t));
 

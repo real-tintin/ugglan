@@ -47,7 +47,7 @@ private:
 
     uint32_t _get_rel_timestamp();
 
-    void _check_signal_type(DataLogSignal signal, DataLogType type);
+    static void _check_signal_type(DataLogSignal &signal, DataLogType &type);
 };
 
 template <typename T> void DataLogQueue::push(T data, DataLogSignal signal)

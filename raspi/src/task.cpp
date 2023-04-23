@@ -30,9 +30,9 @@ void Task::_execute_thread()
 
     while (_run_thread)
     {
-        start_time_ms = wall_time.millis();
+        start_time_ms = WallTime::millis();
         _execute();
-        exec_time_ms = wall_time.millis() - start_time_ms;
+        exec_time_ms = WallTime::millis() - start_time_ms;
 
         if (exec_time_ms > _exec_period_ms)
         {

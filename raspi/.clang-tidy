@@ -2,6 +2,7 @@
 Checks: 'clang-diagnostic-*,
          clang-analyzer-*,
          bugprone-*,
+         -bugprone-reserved-identifier,
          performance-*,
          readability-*,
          -readability-avoid-const-params-in-decls,

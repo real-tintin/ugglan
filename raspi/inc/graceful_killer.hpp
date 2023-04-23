@@ -13,13 +13,13 @@ public:
         std::signal(SIGTERM, GracefulKiller::_signal_handler);
     }
 
-    bool kill()
+    static bool kill()
     {
-        return (_sigint_called);
+        return _sigint_called;
     }
 
 private:
-    inline static std::atomic_bool _sigint_called{false};
+    inline static std::atomic_bool _sigint_called = false;
 
     static void _signal_handler(int value)
     {

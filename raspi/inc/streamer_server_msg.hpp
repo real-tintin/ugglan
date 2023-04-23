@@ -120,7 +120,7 @@ protected:
 
     virtual std::string _get_metadata_key()
     {
-        std::logic_error("Not implemented");
+        throw std::logic_error("Not implemented");
         return "";
     }
 

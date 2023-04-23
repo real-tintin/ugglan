@@ -4,13 +4,13 @@ namespace att_est
 {
 namespace
 {
-static const double MODULO_ROLL = M_PI;
-static const double MODULO_PITCH = M_PI / 2;
-static const double MODULO_YAW = M_PI;
+const double MODULO_ROLL = M_PI;
+const double MODULO_PITCH = M_PI / 2;
+const double MODULO_YAW = M_PI;
 
-static const double STANDSTILL_ANG_VAR_LIM = 0.02;   // [rad]
-static const double STANDSTILL_RATE_VAR_LIM = 0.005; // [rad/s]
-} // namespace
+const double STANDSTILL_ANG_VAR_LIM = 0.02;   // [rad]
+const double STANDSTILL_RATE_VAR_LIM = 0.005; // [rad/s]
+} // anonymous namespace
 
 Estimator::Estimator(double input_sample_rate_s, Config config)
     : _dt(input_sample_rate_s), _config(config),
@@ -62,12 +62,12 @@ Imu Estimator::get_imu_compensated()
     return _imu_compensated;
 }
 
-bool Estimator::is_calibrated()
+bool Estimator::is_calibrated() const
 {
     return _is_gyro_bias_compensated;
 }
 
-bool Estimator::is_standstill()
+bool Estimator::is_standstill() const
 {
     return _is_standstill;
 }
@@ -155,18 +155,6 @@ void Estimator::_update_kalman_state(KalmanState &state)
     state.P.noalias() = (_I - _K * _H) * _P_pri;
 }
 
-void Estimator::_kalman_state_to_att_state(KalmanState &kalman, AttState &att)
-{
-    att.angle = kalman.x(0);
-    att.rate = kalman.x(1);
-    att.acc = kalman.x(2);
-}
-
-void Estimator::_modulo_angle(double *angle, double limit)
-{
-    *angle = fmod(*angle + limit, 2.0 * limit) - limit;
-}
-
 void Estimator::_acc_static_compensation()
 {
     _imu_compensated.acc_x = _config.acc_error_s_x * _imu_uncompensated.acc_x +
@@ -217,4 +205,17 @@ void Estimator::_hard_iron_bias_compensation()
     _imu_compensated.mag_field_y = _imu_uncompensated.mag_field_y - _config.hard_iron_bias_y;
     _imu_compensated.mag_field_z = _imu_uncompensated.mag_field_z - _config.hard_iron_bias_z;
 }
+
+void Estimator::_kalman_state_to_att_state(KalmanState &kalman, AttState &att)
+{
+    att.angle = kalman.x(0);
+    att.rate = kalman.x(1);
+    att.acc = kalman.x(2);
+}
+
+void Estimator::_modulo_angle(double *angle, double limit)
+{
+    *angle = fmod(*angle + limit, 2.0 * limit) - limit;
+}
+
 } /* namespace att_est */

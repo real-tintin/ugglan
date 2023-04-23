@@ -1,6 +1,7 @@
 #ifndef DATA_LOG_TYPES_HPP
 #define DATA_LOG_TYPES_HPP
 
+#include <map>
 #include <string>
 
 enum class DataLogType

@@ -23,11 +23,9 @@ bool SerialConn::open(Mode mode, ControlFlags flags)
         logger.debug("Successfully opened serial connection at: " + _device);
         return true;
     }
-    else
-    {
-        logger.error("Failed to open serial connection at: " + _device);
-        return false;
-    }
+
+    logger.error("Failed to open serial connection at: " + _device);
+    return false;
 }
 
 bool SerialConn::close()
@@ -37,11 +35,9 @@ bool SerialConn::close()
         logger.debug("Successfully closed serial connection at: " + _device);
         return true;
     }
-    else
-    {
-        logger.error("Failed to close serial connection at: " + _device);
-        return false;
-    }
+
+    logger.error("Failed to close serial connection at: " + _device);
+    return false;
 }
 
 size_t SerialConn::bytes_available()
@@ -64,8 +60,6 @@ size_t SerialConn::read(uint8_t *buf, size_t size)
     {
         return n_bytes;
     }
-    else
-    {
-        return 0;
-    }
+
+    return 0;
 }

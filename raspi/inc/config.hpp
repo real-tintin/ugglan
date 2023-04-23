@@ -87,7 +87,7 @@ private:
     void _load_att_est();
     void _load_pilot_ctrl();
 
-    LogLevel _log_str_to_level(std::string);
+    static LogLevel _log_str_to_level(std::string &log_level);
 
     template <typename T> void _read_env(T &dst, std::string name)
     {

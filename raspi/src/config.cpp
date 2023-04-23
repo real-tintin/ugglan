@@ -16,7 +16,7 @@ void Config::load()
 
 void Config::print_to_debug()
 {
-    for (auto env_line : _env_lines)
+    for (const auto &env_line : _env_lines)
     {
         logger.debug(env_line);
     }
@@ -102,31 +102,29 @@ void Config::_load_pilot_ctrl()
     _read_env(_pilot_ctrl.L_yaw_rate[2], "PILOT_CTRL_L_YAW_RATE_2");
 }
 
-LogLevel Config::_log_str_to_level(std::string log_level)
+LogLevel Config::_log_str_to_level(std::string &log_level)
 {
     if (log_level == "DEBUG")
     {
         return LogLevel::debug;
     }
-    else if (log_level == "INFO")
+    if (log_level == "INFO")
     {
         return LogLevel::info;
     }
-    else if (log_level == "WARN")
+    if (log_level == "WARN")
     {
         return LogLevel::warn;
     }
-    else if (log_level == "ERROR")
+    if (log_level == "ERROR")
     {
         return LogLevel::error;
     }
-    else if (log_level == "OFF")
+    if (log_level == "OFF")
     {
         return LogLevel::off;
     }
-    else
-    {
-        return logger.get_level();
-    }
+
+    return logger.get_level();
 }
 } /* namespace config */

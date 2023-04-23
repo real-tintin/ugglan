@@ -470,16 +470,17 @@ private:
         {
         case SwitchLr::Low:
             return EscState::Run;
+
         case SwitchLr::Middle:
             return EscState::Arm;
+
         case SwitchLr::High:
-            return EscState::Disarm;
         default:
             return EscState::Disarm;
         }
     }
 
-    EscState _limit_change_of_esc_state(EscState new_esc_state, EscState old_esc_state)
+    static EscState _limit_change_of_esc_state(EscState new_esc_state, EscState old_esc_state)
     {
         if (new_esc_state > old_esc_state)
         {
@@ -489,10 +490,8 @@ private:
         {
             return EscState(uint8_t(old_esc_state) - 1U);
         }
-        else
-        {
-            return new_esc_state;
-        }
+
+        return new_esc_state;
     }
 
     void _update_escs(EscState esc_state)
@@ -510,9 +509,6 @@ private:
             break;
 
         case EscState::Disarm:
-            _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
-            break;
-
         default:
             _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
             break;
@@ -682,9 +678,7 @@ bool user_requested_shutdown(DataLogQueue &data_log_queue)
 
 void wait_for_shutdown(DataLogQueue &data_log_queue)
 {
-    GracefulKiller killer;
-
-    while (!user_requested_shutdown(data_log_queue) && !killer.kill())
+    while (!user_requested_shutdown(data_log_queue) && !GracefulKiller::kill())
     {
         logger.debug("Shutdown not requested. Keep running.");
         std::this_thread::sleep_for(std::chrono::milliseconds(MAIN_SLEEP_MS));

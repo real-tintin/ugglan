@@ -1,6 +1,8 @@
 #ifndef DRONE_PROPS_HPP
 #define DRONE_PROPS_HPP
 
+#include <cstdint>
+
 namespace droneprops
 {
 inline const double I_XX = 0.014; // Moment of inertia about x [kgm^2].

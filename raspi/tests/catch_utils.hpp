@@ -20,8 +20,8 @@ inline const std::filesystem::path RESOURCE_ROOT = common_utils::get_env("RESOUR
 
 std::string read_file(std::filesystem::path path);
 
-bool str_contains_all(std::string str, std::vector<std::string> contains);
-bool str_contains_non(std::string str, std::vector<std::string> contains);
+bool str_contains_all(std::string str, std::vector<std::string> &contains);
+bool str_contains_non(std::string str, std::vector<std::string> &contains);
 
 void set_env(std::string env, std::string val);
 

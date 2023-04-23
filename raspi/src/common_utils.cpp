@@ -32,7 +32,7 @@ std::string byte_to_bit_str(uint8_t byte)
     return buf.str();
 }
 
-std::string unpack_base64_gzip(const std::string packed)
+std::string unpack_base64_gzip(const std::string &packed)
 {
     std::string decoded = base64_decode(packed);
     std::string decompressed = gzip::decompress(decoded.c_str(), decoded.size());
@@ -40,7 +40,7 @@ std::string unpack_base64_gzip(const std::string packed)
     return decompressed;
 }
 
-std::string pack_gzip_base64(const std::string unpacked)
+std::string pack_gzip_base64(const std::string &unpacked)
 {
     std::string compressed = gzip::compress(unpacked.c_str(), unpacked.size());
     std::string encoded = base64_encode(compressed.c_str(), compressed.size());

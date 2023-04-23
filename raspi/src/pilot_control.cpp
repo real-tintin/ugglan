@@ -1,9 +1,5 @@
 #include <pilot_control.hpp>
 
-static const double C_PHI = 1 / droneprops::I_XX;
-static const double C_THETA = 1 / droneprops::I_YY;
-static const double C_PSI = 1 / droneprops::I_ZZ;
-
 static const double ROTATION_SCALE = 2.0;
 static const double ROTATION_OFFSET = -1.0;
 
@@ -37,7 +33,7 @@ PilotCtrlRef tgyia6c_to_pilot_ctrl_ref(double gimbal_left_x,  /* [0.0-1.0] */
     return ref;
 }
 
-PilotControl::PilotControl(double input_sample_rate_s, PilotCtrlConfig config)
+PilotControl::PilotControl(double input_sample_rate_s, const PilotCtrlConfig &config)
     : _sample_rate_s(input_sample_rate_s), _config(config)
 {
 }
@@ -154,13 +150,13 @@ void PilotControl::_update_ctrl_fz(PilotCtrlRef &ref)
     _ctrl.f_z = ref.f_z;
 }
 
-double PilotControl::_feedback_ctrl(Eigen::Vector4d x, Eigen::RowVector4d L)
+double PilotControl::_feedback_ctrl(const Eigen::Vector4d &x, const Eigen::RowVector4d &L)
 {
     _u.noalias() = L.lazyProduct(x);
     return -_u(0);
 }
 
-double PilotControl::_feedback_ctrl(Eigen::Vector3d x, Eigen::RowVector3d L)
+double PilotControl::_feedback_ctrl(const Eigen::Vector3d &x, const Eigen::RowVector3d &L)
 {
     _u.noalias() = L.lazyProduct(x);
     return -_u(0);

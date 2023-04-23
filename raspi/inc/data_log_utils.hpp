@@ -14,9 +14,9 @@ namespace utils
 {
 void add_data_log_metadata_to_json(nlohmann::ordered_json &data);
 
-size_t get_data_log_type_size(DataLogType type);
+size_t get_data_log_type_size(const DataLogType &type);
 
-DataLogSignalInfo get_data_log_signal_info(DataLogSignal signal);
+DataLogSignalInfo get_data_log_signal_info(const DataLogSignal &signal);
 } /* namespace utils */
 } /* namespace data_log */
 

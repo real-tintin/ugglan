@@ -17,7 +17,7 @@
 
 namespace common_utils
 {
-std::string get_env(std::string);
+std::string get_env(std::string name);
 
 template <typename T> void read_and_cast_env(T &dst, std::string name)
 {
@@ -48,8 +48,8 @@ template <typename T> void read_and_cast_env(T &dst, std::string name)
 std::string byte_to_hex_str(uint8_t byte);
 std::string byte_to_bit_str(uint8_t byte);
 
-std::string unpack_base64_gzip(const std::string packed);
-std::string pack_gzip_base64(const std::string unpacked);
+std::string unpack_base64_gzip(const std::string &packed);
+std::string pack_gzip_base64(const std::string &unpacked);
 } // namespace common_utils
 
 #endif /* COMMON_UTILS_HPP */

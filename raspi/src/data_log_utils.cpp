@@ -53,7 +53,7 @@ void add_data_log_metadata_to_json(json &data)
     _add_signals(data);
 }
 
-size_t get_data_log_type_size(DataLogType type)
+size_t get_data_log_type_size(const DataLogType &type)
 {
     switch (type)
     {
@@ -80,20 +80,17 @@ size_t get_data_log_type_size(DataLogType type)
     }
 }
 
-DataLogSignalInfo get_data_log_signal_info(DataLogSignal signal)
+DataLogSignalInfo get_data_log_signal_info(const DataLogSignal &signal)
 {
     auto it = DATA_LOG_SIGNAL_MAP.find(signal);
 
     if (it != DATA_LOG_SIGNAL_MAP.end())
     {
         DataLogSignalInfo info = it->second;
-
         return info;
     }
-    else
-    {
-        throw std::runtime_error("Unknown signal type");
-    }
+
+    throw std::runtime_error("Unknown signal type");
 }
 } /* namespace utils */
 } /* namespace data_log */

@@ -92,8 +92,8 @@ public:
     Attitude get_attitude();
     Imu get_imu_compensated();
 
-    bool is_calibrated();
-    bool is_standstill();
+    bool is_calibrated() const;
+    bool is_standstill() const;
 
 private:
     const double _dt;
@@ -102,7 +102,7 @@ private:
     Imu _imu_uncompensated = {0};
     Imu _imu_compensated = {0};
 
-    Attitude _attitude = {0};
+    Attitude _attitude = {{0}};
 
     bool _is_standstill = false;
 
@@ -159,10 +159,10 @@ private:
     void _update_yaw();
 
     void _update_att_state(double z_0, double z_1, KalmanState &kalman_state, AttState &att_state, double modulo_lim);
-
     void _update_kalman_state(KalmanState &state);
-    void _kalman_state_to_att_state(KalmanState &kalman, AttState &att);
-    void _modulo_angle(double *angle, double limit);
+
+    static void _kalman_state_to_att_state(KalmanState &kalman, AttState &att);
+    static void _modulo_angle(double *angle, double limit);
 };
 } /* namespace att_est */
 

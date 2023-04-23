@@ -146,9 +146,9 @@ void AfroEsc::_open_i2c_conn()
 
 void AfroEsc::_arm_wake_up()
 {
-    uint32_t wake_up_t_ms = wall_time.millis();
+    uint32_t wake_up_t_ms = WallTime::millis();
 
-    while (WAKE_UP_TIME_MS > (wall_time.millis() - wake_up_t_ms))
+    while (WAKE_UP_TIME_MS > (WallTime::millis() - wake_up_t_ms))
     {
         write(0);
     }
@@ -156,9 +156,9 @@ void AfroEsc::_arm_wake_up()
 
 void AfroEsc::_arm_nudge()
 {
-    uint32_t nudge_t_ms = wall_time.millis();
+    uint32_t nudge_t_ms = WallTime::millis();
 
-    while ((NUDGE_TIME_MS > (wall_time.millis() - nudge_t_ms)) && !get_is_alive())
+    while ((NUDGE_TIME_MS > (WallTime::millis() - nudge_t_ms)) && !get_is_alive())
     {
         write(1U);
         read();
@@ -169,7 +169,7 @@ void AfroEsc::_arm_nudge()
 
 void AfroEsc::_update_rev_timer()
 {
-    uint32_t t_now_ms = wall_time.millis();
+    uint32_t t_now_ms = WallTime::millis();
 
     if (!_rev_first_sample)
     {
