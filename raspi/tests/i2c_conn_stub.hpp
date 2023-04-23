@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <cstring>
 #include <map>
-#include <utility>
 #include <vector>
 
 #include <i2c_conn.hpp>

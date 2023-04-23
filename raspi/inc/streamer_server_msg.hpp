@@ -135,7 +135,7 @@ private:
     }
 };
 
-class Request  final: public Base<Method>
+class Request final : public Base<Method>
 {
 public:
     using Base::Base;
@@ -152,7 +152,7 @@ protected:
     }
 };
 
-class Response  final: public Base<Code>
+class Response final : public Base<Code>
 {
 public:
     using Base::Base;

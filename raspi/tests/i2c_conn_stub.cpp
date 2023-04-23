@@ -2,17 +2,17 @@
 
 void I2cConnStub::set_read_byte_map(I2cReadByteMap read_byte_map)
 {
-    _read_byte_map = std::move(read_byte_map);
+    _read_byte_map = read_byte_map;
 }
 
 void I2cConnStub::set_read_block_map(I2cReadBlockMap read_block_map)
 {
-    _read_block_map = std::move(read_block_map);
+    _read_block_map = read_block_map;
 }
 
 void I2cConnStub::set_write_map(I2cWriteMap write_map)
 {
-    _write_map = std::move(write_map);
+    _write_map = write_map;
 }
 
 bool I2cConnStub::open()
