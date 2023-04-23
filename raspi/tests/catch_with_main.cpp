@@ -1,6 +1,8 @@
 #define CATCH_CONFIG_MAIN
-#include "catch.h"
-#include "logger.h"
+
+#include <catch/catch.hpp>
+
+#include <logger.hpp>
 
 void run_before_catch()
 {

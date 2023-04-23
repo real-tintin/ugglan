@@ -1,11 +1,9 @@
-#include <streamer_server.h>
+#include <streamer_server.hpp>
 
 namespace streamer
 {
-Server::Server(ZmqRep& request, ZmqPush& stream, DataLogQueue& data_log_queue) :
-    _request(request),
-    _stream(stream),
-    _data_log_queue(data_log_queue)
+Server::Server(ZmqRep &request, ZmqPush &stream, DataLogQueue &data_log_queue)
+    : _request(request), _stream(stream), _data_log_queue(data_log_queue)
 {
 }
 
@@ -76,12 +74,12 @@ void Server::disconnect()
     _stream.close();
 }
 
-bool Server::_recv_request(msg::Request& req)
+bool Server::_recv_request(msg::Request &req)
 {
     zmq::message_t msg{};
     _request.recv(msg);
 
-    if (msg.size() > 0)
+    if (!msg.empty())
     {
         req.from_msg(msg);
         logger.debug("Streamer server received request: " + req.as_string());
@@ -125,7 +123,7 @@ void Server::_send_error_on_request()
     _send_response_on_request(res);
 }
 
-void Server::_send_response_on_request(msg::Response& res)
+void Server::_send_response_on_request(msg::Response &res)
 {
     zmq::message_t msg{};
 
@@ -155,7 +153,7 @@ bool Server::_set_selected_data_log_signals(json data)
         {
             DataLogSignal signal = static_cast<DataLogSignal>(*it);
 
-            if (DATA_LOG_SIGNAL_MAP.count(signal))
+            if (DATA_LOG_SIGNAL_MAP.count(signal) != 0U)
             {
                 new_sel_data_log_signals.push_back(signal);
             }
@@ -176,10 +174,8 @@ bool Server::_set_selected_data_log_signals(json data)
 
         return true;
     }
-    else
-    {
-        return false;
-    }
+
+    return false;
 }
 
 void Server::_start_stream()
@@ -202,26 +198,26 @@ void Server::_send_on_stream()
     _stream.send(msg);
 }
 
-void Server::_pack_stream_bytes(std::vector<uint8_t>& package)
+void Server::_pack_stream_bytes(std::vector<uint8_t> &package)
 {
     uint64_t signal_bytes;
-    uint32_t now_timestamp_ms = wall_time.millis();
+    uint32_t now_timestamp_ms = WallTime::millis();
 
-     _append_bytes_to_vector(package, (uint8_t*) &now_timestamp_ms, sizeof(uint32_t));
+    _append_bytes_to_vector(package, (uint8_t *)&now_timestamp_ms, sizeof(uint32_t));
 
-    for (auto const& signal: _sel_data_log_signals)
+    for (auto const &signal : _sel_data_log_signals)
     {
         DataLogSignalInfo info = data_log::utils::get_data_log_signal_info(signal);
         size_t signal_size = data_log::utils::get_data_log_type_size(info.type);
 
         _data_log_queue.last_signal_data(&signal_bytes, signal);
 
-        _append_bytes_to_vector(package, (uint8_t*) &signal, sizeof(uint16_t));
-        _append_bytes_to_vector(package, (uint8_t*) &signal_bytes, signal_size);
+        _append_bytes_to_vector(package, (uint8_t *)&signal, sizeof(uint16_t));
+        _append_bytes_to_vector(package, (uint8_t *)&signal_bytes, signal_size);
     }
 }
 
-void Server::_append_bytes_to_vector(std::vector<uint8_t>& v, const uint8_t* const bytes, size_t size)
+void Server::_append_bytes_to_vector(std::vector<uint8_t> &v, const uint8_t *const bytes, size_t size)
 {
     for (size_t i_byte = 0; i_byte < size; i_byte++)
     {
@@ -236,4 +232,4 @@ bool Server::_is_unique(std::vector<DataLogSignal> signals)
 
     return is_unique;
 }
-} /* streamer */
+} // namespace streamer

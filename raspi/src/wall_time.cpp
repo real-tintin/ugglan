@@ -1,6 +1,5 @@
-#include <wall_time.h>
+#include <wall_time.hpp>
 
-WallTime wall_time;
 static auto _t_start = std::chrono::high_resolution_clock::now();
 
 uint32_t WallTime::millis()

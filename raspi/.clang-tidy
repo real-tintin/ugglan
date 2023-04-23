@@ -1,0 +1,13 @@
+---
+Checks: 'clang-diagnostic-*,
+         clang-analyzer-*,
+         bugprone-*,
+         -bugprone-macro-parentheses,
+         -bugprone-reserved-identifier,
+         performance-*,
+         -performance-unnecessary-value-param,
+         readability-*,
+         -readability-avoid-const-params-in-decls,
+         -readability-magic-numbers'
+WarningsAsErrors: ''
+HeaderFilterRegex: 'inc'

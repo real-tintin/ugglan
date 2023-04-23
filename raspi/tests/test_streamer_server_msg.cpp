@@ -1,25 +1,33 @@
-#include <catch.h>
-
-#include <zmq/zmq.hpp>
+#include <catch/catch.hpp>
 #include <nlohmann/json.hpp>
-#include <streamer_server_msg.h>
+#include <zmq/zmq.hpp>
+
+#include <streamer_server_msg.hpp>
 
 using json = nlohmann::ordered_json;
 using namespace streamer::msg;
 
-enum class Status {
+enum class Status
+{
     Received = 0,
     Lost = 1
 };
 
-class Mail : public Base<Status>
+class Mail final : public Base<Status>
 {
 public:
     using Base::Base;
 
-    const Status status() { return _get_metadata(); }
+    Status status()
+    {
+        return _get_metadata();
+    }
+
 protected:
-    const std::string _get_metadata_key() override { return "status"; }
+    std::string _get_metadata_key() override
+    {
+        return "status";
+    }
 };
 
 TEST_CASE("to msg and back")
@@ -41,9 +49,10 @@ TEST_CASE("to msg and back")
 
 TEST_CASE("invalid msg")
 {
+    Mail mail;
     zmq::message_t msg{std::string("not_valid")};
 
-    Mail mail{msg};
+    mail.from_msg(msg);
 
     REQUIRE(mail.valid() == false);
 }

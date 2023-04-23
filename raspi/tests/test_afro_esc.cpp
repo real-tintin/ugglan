@@ -1,8 +1,9 @@
-#include <catch.h>
-
 #include <thread>
-#include <i2c_conn_stub.h>
-#include <afro_esc.h>
+
+#include <catch/catch.hpp>
+
+#include <afro_esc.hpp>
+#include <i2c_conn_stub.hpp>
 
 static const double ANG_RATE_TOL = 5.0;
 static const double FLOAT_TOL = 1e-1;
@@ -16,8 +17,7 @@ Expected read buffer:
     Byte 6-7 : Current set to 7.3 [A]
     Byte 8   : Alive byte set to true
 */
-uint8_t READ_BUF[AFRO_READ_BUF_SIZE] =
-{
+uint8_t READ_BUF[AFRO_READ_BUF_SIZE] = {
     // 456 / 2 / pi * 7 ~ 508 (0b00000001 | 0b11111100)
     0b00000001, // MSB
     0b11111100, // LSB
@@ -35,11 +35,10 @@ uint8_t READ_BUF[AFRO_READ_BUF_SIZE] =
     0b10011001, // MSB
     0b01101001, // LSB
 
-    AFRO_IF_ALIVE_BYTE
-};
+    AFRO_IF_ALIVE_BYTE};
 
 static I2cWriteMap WRITE_MAP = {AFRO_REG_WRITE_THROTTLE_H};
-static I2cReadBlockMap READ_MAP = { {AFRO_REG_READ_REV_H, READ_BUF} };
+static I2cReadBlockMap READ_MAP = {{AFRO_REG_READ_REV_H, READ_BUF}};
 
 TEST_CASE("afro esc")
 {

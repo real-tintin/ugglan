@@ -1,10 +1,11 @@
-#include <catch.h>
-#include <catch_utils.h>
-
 #include <sstream>
-#include <vector>
 #include <string>
-#include <logger.h>
+#include <vector>
+
+#include <catch/catch.hpp>
+
+#include <catch_utils.hpp>
+#include <logger.hpp>
 
 void write_at_all_levels()
 {
@@ -24,16 +25,12 @@ TEST_CASE("logger: levels")
         logger.set_level(LogLevel::off);
         write_at_all_levels();
 
-        REQUIRE(patched_cout.get().size() == 0);
+        REQUIRE(patched_cout.get().empty());
     }
     SECTION("debug")
     {
         std::vector<std::string> should_contain = {
-            LOGGER_LEVEL_STR_DEBUG,
-            LOGGER_LEVEL_STR_INFO,
-            LOGGER_LEVEL_STR_WARN,
-            LOGGER_LEVEL_STR_ERROR
-        };
+            LOGGER_LEVEL_STR_DEBUG, LOGGER_LEVEL_STR_INFO, LOGGER_LEVEL_STR_WARN, LOGGER_LEVEL_STR_ERROR};
 
         logger.set_level(LogLevel::debug);
         write_at_all_levels();
@@ -43,13 +40,8 @@ TEST_CASE("logger: levels")
     SECTION("info")
     {
         std::vector<std::string> should_contain = {
-            LOGGER_LEVEL_STR_INFO,
-            LOGGER_LEVEL_STR_WARN,
-            LOGGER_LEVEL_STR_ERROR
-        };
-        std::vector<std::string> should_not_contain = {
-            LOGGER_LEVEL_STR_DEBUG
-        };
+            LOGGER_LEVEL_STR_INFO, LOGGER_LEVEL_STR_WARN, LOGGER_LEVEL_STR_ERROR};
+        std::vector<std::string> should_not_contain = {LOGGER_LEVEL_STR_DEBUG};
 
         logger.set_level(LogLevel::info);
         write_at_all_levels();
@@ -59,14 +51,8 @@ TEST_CASE("logger: levels")
     }
     SECTION("warn")
     {
-        std::vector<std::string> should_contain = {
-            LOGGER_LEVEL_STR_WARN,
-            LOGGER_LEVEL_STR_ERROR
-        };
-        std::vector<std::string> should_not_contain = {
-            LOGGER_LEVEL_STR_DEBUG,
-            LOGGER_LEVEL_STR_INFO
-        };
+        std::vector<std::string> should_contain = {LOGGER_LEVEL_STR_WARN, LOGGER_LEVEL_STR_ERROR};
+        std::vector<std::string> should_not_contain = {LOGGER_LEVEL_STR_DEBUG, LOGGER_LEVEL_STR_INFO};
 
         logger.set_level(LogLevel::warn);
         write_at_all_levels();
@@ -76,14 +62,9 @@ TEST_CASE("logger: levels")
     }
     SECTION("error")
     {
-        std::vector<std::string> should_contain = {
-            LOGGER_LEVEL_STR_ERROR
-        };
+        std::vector<std::string> should_contain = {LOGGER_LEVEL_STR_ERROR};
         std::vector<std::string> should_not_contain = {
-            LOGGER_LEVEL_STR_WARN,
-            LOGGER_LEVEL_STR_DEBUG,
-            LOGGER_LEVEL_STR_INFO
-        };
+            LOGGER_LEVEL_STR_WARN, LOGGER_LEVEL_STR_DEBUG, LOGGER_LEVEL_STR_INFO};
 
         logger.set_level(LogLevel::error);
         write_at_all_levels();

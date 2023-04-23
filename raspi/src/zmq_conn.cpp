@@ -1,10 +1,8 @@
-#include <zmq_conn.h>
+#include <zmq_conn.hpp>
 
 zmq::context_t ZmqConn::_context;
 
-ZmqConn::ZmqConn(std::string address,  zmq::socket_type type) :
-    _address(address),
-    _socket(_context, type)
+ZmqConn::ZmqConn(std::string address, zmq::socket_type type) : _address(address), _socket(_context, type)
 {
 }
 
@@ -32,7 +30,7 @@ bool ZmqConn::close()
     return true;
 }
 
-size_t ZmqConn::recv(zmq::message_t& msg, bool non_blocking)
+size_t ZmqConn::recv(zmq::message_t &msg, bool non_blocking)
 {
     zmq::recv_flags flags = zmq::recv_flags::none;
 
@@ -46,7 +44,7 @@ size_t ZmqConn::recv(zmq::message_t& msg, bool non_blocking)
     return result.value_or(0);
 }
 
-size_t ZmqConn::send(zmq::message_t& msg, bool non_blocking)
+size_t ZmqConn::send(zmq::message_t &msg, bool non_blocking)
 {
     zmq::send_flags flags = zmq::send_flags::none;
 

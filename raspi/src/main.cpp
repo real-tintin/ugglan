@@ -1,39 +1,40 @@
 #include <filesystem>
 #include <string>
-#include <vector>
 #include <thread>
-#include <i2c_conn.h>
-#include <serial_conn.h>
-#include <zmq_conn.h>
-#include <data_log_queue.h>
-#include <data_logger.h>
-#include <task.h>
-#include <lsm303d.h>
-#include <l3gd20h.h>
-#include <lps25h.h>
-#include <afro_esc.h>
-#include <tgyia6c.h>
-#include <attitude_estimation.h>
-#include <motor_control.h>
-#include <pilot_control.h>
-#include <streamer_server.h>
-#include <drone_props.h>
-#include <config.h>
-#include <graceful_killer.h>
+#include <vector>
 
-static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS         = 10;   // 100 Hz.
-static const uint32_t TASK_GYRO_EXEC_PERIOD_MS            = 10;   // 100 Hz.
-static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS       = 100;  // 10 Hz.
-static const uint32_t TASK_STATE_EST_EXEC_PERIOD_MS       = 10;   // 100 Hz.
-static const uint32_t TASK_STATE_CTRL_EXEC_PERIOD_MS      = 10;   // 100 Hz.
-static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS        = 1000; // 1 Hz.
-static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS       = 10;   // 100 Hz.
-static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS     = 10;   // 100 Hz.
-static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS     = 100;  // 10 Hz.
-static const uint32_t TASK_STREAMER_SERVER_EXEC_PERIOD_MS = 10;   // 100 Hz.
+#include <afro_esc.hpp>
+#include <attitude_estimation.hpp>
+#include <config.hpp>
+#include <data_log_queue.hpp>
+#include <data_logger.hpp>
+#include <drone_props.hpp>
+#include <graceful_killer.hpp>
+#include <i2c_conn.hpp>
+#include <l3gd20h.hpp>
+#include <lps25h.hpp>
+#include <lsm303d.hpp>
+#include <motor_control.hpp>
+#include <pilot_control.hpp>
+#include <serial_conn.hpp>
+#include <streamer_server.hpp>
+#include <task.hpp>
+#include <tgyia6c.hpp>
+#include <zmq_conn.hpp>
 
-static const uint8_t I2C_ADDRESS_ACC_MAG   = LSM303D_I2C_ADDRESS;
-static const uint8_t I2C_ADDRESS_GYRO      = L3GD20H_I2C_ADDRESS;
+static const uint32_t TASK_ACC_MAG_EXEC_PERIOD_MS = 10;         // 100 Hz.
+static const uint32_t TASK_GYRO_EXEC_PERIOD_MS = 10;            // 100 Hz.
+static const uint32_t TASK_BAROMETER_EXEC_PERIOD_MS = 100;      // 10 Hz.
+static const uint32_t TASK_STATE_EST_EXEC_PERIOD_MS = 10;       // 100 Hz.
+static const uint32_t TASK_STATE_CTRL_EXEC_PERIOD_MS = 10;      // 100 Hz.
+static const uint32_t TASK_ESC_READ_EXEC_PERIOD_MS = 1000;      // 1 Hz.
+static const uint32_t TASK_ESC_WRITE_EXEC_PERIOD_MS = 10;       // 100 Hz.
+static const uint32_t TASK_RC_RECEIVER_EXEC_PERIOD_MS = 10;     // 100 Hz.
+static const uint32_t TASK_DATA_LOGGER_EXEC_PERIOD_MS = 100;    // 10 Hz.
+static const uint32_t TASK_STREAMER_SERVER_EXEC_PERIOD_MS = 10; // 100 Hz.
+
+static const uint8_t I2C_ADDRESS_ACC_MAG = LSM303D_I2C_ADDRESS;
+static const uint8_t I2C_ADDRESS_GYRO = L3GD20H_I2C_ADDRESS;
 static const uint8_t I2C_ADDRESS_BAROMETER = LPS25H_I2C_ADDRESS;
 
 static const uint8_t I2C_ADDRESS_ESC_0 = 0x2a;
@@ -48,7 +49,8 @@ static const uint32_t MAIN_SLEEP_MS = 1000;
 static const double ATT_EST_INPUT_SAMPLE_RATE_S = 0.01; // 100 Hz (assumes IMU acc & gyro at 100 Hz)
 static const double PILOT_CTRL_INPUT_SAMPLE_RATE_S = ATT_EST_INPUT_SAMPLE_RATE_S;
 
-enum class TaskId {
+enum class TaskId
+{
     AccMag,
     Gyro,
     Barometer,
@@ -67,17 +69,23 @@ enum class TaskId {
     StreamerServer
 };
 
-class TaskAccMag : public Task
+class TaskAccMag final : public Task
 {
 public:
-    TaskAccMag(uint32_t exec_period_ms, std::string name,
-               std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-        _i2c_conn(i2c_device, i2c_address),
-        _acc_mag(_i2c_conn),
-        _data_log_queue(data_log_queue) {}
+    TaskAccMag(uint32_t exec_period_ms,
+               std::string name,
+               std::string i2c_device,
+               uint8_t i2c_address,
+               DataLogQueue &data_log_queue)
+        : Task(exec_period_ms, name), _i2c_conn(i2c_device, i2c_address), _acc_mag(_i2c_conn),
+          _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskAccMag() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _acc_mag.update();
 
@@ -92,23 +100,30 @@ protected:
         _data_log_queue.push(_acc_mag.get_status(), DataLogSignal::ImuAccMagStatus);
         _data_log_queue.push(uint8_t(TaskId::AccMag), DataLogSignal::TaskExecute);
     }
+
 private:
     I2cConn _i2c_conn;
     Lsm303d _acc_mag;
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 };
 
-class TaskGyro : public Task
+class TaskGyro final : public Task
 {
 public:
-    TaskGyro(uint32_t exec_period_ms, std::string name,
-             std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-        _i2c_conn(i2c_device, i2c_address),
-        _gyro(_i2c_conn),
-        _data_log_queue(data_log_queue) {}
+    TaskGyro(uint32_t exec_period_ms,
+             std::string name,
+             std::string i2c_device,
+             uint8_t i2c_address,
+             DataLogQueue &data_log_queue)
+        : Task(exec_period_ms, name), _i2c_conn(i2c_device, i2c_address), _gyro(_i2c_conn),
+          _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskGyro() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _gyro.update();
 
@@ -119,23 +134,30 @@ protected:
         _data_log_queue.push(_gyro.get_status(), DataLogSignal::ImuGyroStatus);
         _data_log_queue.push(uint8_t(TaskId::Gyro), DataLogSignal::TaskExecute);
     }
+
 private:
     I2cConn _i2c_conn;
     L3gd20h _gyro;
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 };
 
-class TaskBarometer : public Task
+class TaskBarometer final : public Task
 {
 public:
-    TaskBarometer(uint32_t exec_period_ms, std::string name,
-                  std::string i2c_device, uint8_t i2c_address, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-        _i2c_conn(i2c_device, i2c_address),
-        _barometer(_i2c_conn),
-        _data_log_queue(data_log_queue) {}
+    TaskBarometer(uint32_t exec_period_ms,
+                  std::string name,
+                  std::string i2c_device,
+                  uint8_t i2c_address,
+                  DataLogQueue &data_log_queue)
+        : Task(exec_period_ms, name), _i2c_conn(i2c_device, i2c_address), _barometer(_i2c_conn),
+          _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskBarometer() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _barometer.update();
 
@@ -145,23 +167,29 @@ protected:
         _data_log_queue.push(_barometer.get_status(), DataLogSignal::ImuBarometerStatus);
         _data_log_queue.push(uint8_t(TaskId::Barometer), DataLogSignal::TaskExecute);
     }
+
 private:
     I2cConn _i2c_conn;
     Lps25h _barometer;
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 };
 
-class TaskStateEst : public Task
+class TaskStateEst final : public Task
 {
 public:
-    TaskStateEst(uint32_t exec_period_ms, std::string name,
-                 double input_sample_rate_s, att_est::Config config,
-                 DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-        _estimator(input_sample_rate_s, config),
-        _data_log_queue(data_log_queue) {}
+    TaskStateEst(uint32_t exec_period_ms,
+                 std::string name,
+                 double input_sample_rate_s,
+                 att_est::Config config,
+                 DataLogQueue &data_log_queue)
+        : Task(exec_period_ms, name), _estimator(input_sample_rate_s, config), _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskStateEst() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _data_log_queue.last_signal_data(&_imu_uncompensated.acc_x, DataLogSignal::ImuAccelerationX);
         _data_log_queue.last_signal_data(&_imu_uncompensated.acc_y, DataLogSignal::ImuAccelerationY);
@@ -209,32 +237,39 @@ protected:
 
         _data_log_queue.push(uint8_t(TaskId::StateEst), DataLogSignal::TaskExecute);
     }
+
 private:
     att_est::Imu _imu_uncompensated;
     att_est::Imu _imu_compensated;
     att_est::Attitude _attitude;
     att_est::Estimator _estimator;
 
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 };
 
-class TaskStateCtrl : public Task
+class TaskStateCtrl final : public Task
 {
 public:
-    TaskStateCtrl(uint32_t exec_period_ms, std::string name,
-                  double input_sample_rate_s, PilotCtrlConfig config,
-                  DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-        _pilot_ctrl(input_sample_rate_s, config),
-        _data_log_queue(data_log_queue) {}
+    TaskStateCtrl(uint32_t exec_period_ms,
+                  std::string name,
+                  double input_sample_rate_s,
+                  PilotCtrlConfig config,
+                  DataLogQueue &data_log_queue)
+        : Task(exec_period_ms, name), _pilot_ctrl(input_sample_rate_s, config), _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskStateCtrl() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _exec_pilot_ctrl();
         _exec_motor_ctrl();
 
         _data_log_queue.push(uint8_t(TaskId::StateCtrl), DataLogSignal::TaskExecute);
     }
+
 private:
     bool _att_est_is_calibrated;
     bool _state_ctrl_reset;
@@ -245,14 +280,15 @@ private:
     PilotControl _pilot_ctrl;
     PilotCtrlRef _ctrl_ref;
 
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 
     BodyControl _body_ctrl;
     MotorControl _motor_ctrl;
 
-    static constexpr DataLogSignal _sid_motor_cmd[N_ESC] = {
-        DataLogSignal::EscMotorCmd0, DataLogSignal::EscMotorCmd1,
-        DataLogSignal::EscMotorCmd2, DataLogSignal::EscMotorCmd3};
+    static constexpr DataLogSignal _sid_motor_cmd[N_ESC] = {DataLogSignal::EscMotorCmd0,
+                                                            DataLogSignal::EscMotorCmd1,
+                                                            DataLogSignal::EscMotorCmd2,
+                                                            DataLogSignal::EscMotorCmd3};
 
     void _exec_pilot_ctrl()
     {
@@ -282,8 +318,7 @@ private:
             _data_log_queue.last_signal_data(&_gimbal_right_x, DataLogSignal::RcGimbalRightX);
             _data_log_queue.last_signal_data(&_gimbal_right_y, DataLogSignal::RcGimbalRightY);
 
-            _ctrl_ref = tgyia6c_to_pilot_ctrl_ref(_gimbal_left_x, _gimbal_left_y,
-                                                _gimbal_right_x, _gimbal_right_y);
+            _ctrl_ref = tgyia6c_to_pilot_ctrl_ref(_gimbal_left_x, _gimbal_left_y, _gimbal_right_x, _gimbal_right_y);
 
             _pilot_ctrl.update(_attitude, _ctrl_ref);
         }
@@ -326,16 +361,18 @@ private:
     }
 };
 
-class TaskEscRead : public Task
+class TaskEscRead final : public Task
 {
 public:
-    TaskEscRead(uint32_t exec_period_ms, std::string name,
-                AfroEsc (&esc)[N_ESC], DataLogQueue& data_log_queue) :
-        Task(exec_period_ms / N_ESC, name),
-        _esc(esc),
-        _data_log_queue(data_log_queue) {}
+    TaskEscRead(uint32_t exec_period_ms, std::string name, AfroEsc (&esc)[N_ESC], DataLogQueue &data_log_queue)
+        : Task(exec_period_ms / N_ESC, name), _esc(esc), _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskEscRead() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         uint8_t i_esc = _load_balance_step;
         _esc[i_esc].read();
@@ -350,33 +387,32 @@ protected:
 
         _load_balance_step = (_load_balance_step + 1) % N_ESC;
     }
+
 private:
     AfroEsc (&_esc)[N_ESC];
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 
     static constexpr DataLogSignal _sid_is_alive[N_ESC] = {
-        DataLogSignal::EscIsAlive0, DataLogSignal::EscIsAlive1,
-        DataLogSignal::EscIsAlive2, DataLogSignal::EscIsAlive3};
+        DataLogSignal::EscIsAlive0, DataLogSignal::EscIsAlive1, DataLogSignal::EscIsAlive2, DataLogSignal::EscIsAlive3};
 
-    static constexpr DataLogSignal _sid_ang_rate[N_ESC] = {
-        DataLogSignal::EscAngularRate0, DataLogSignal::EscAngularRate1,
-        DataLogSignal::EscAngularRate2, DataLogSignal::EscAngularRate3};
+    static constexpr DataLogSignal _sid_ang_rate[N_ESC] = {DataLogSignal::EscAngularRate0,
+                                                           DataLogSignal::EscAngularRate1,
+                                                           DataLogSignal::EscAngularRate2,
+                                                           DataLogSignal::EscAngularRate3};
 
     static constexpr DataLogSignal _sid_voltage[N_ESC] = {
-        DataLogSignal::EscVoltage0, DataLogSignal::EscVoltage1,
-        DataLogSignal::EscVoltage2, DataLogSignal::EscVoltage3};
+        DataLogSignal::EscVoltage0, DataLogSignal::EscVoltage1, DataLogSignal::EscVoltage2, DataLogSignal::EscVoltage3};
 
     static constexpr DataLogSignal _sid_current[N_ESC] = {
-        DataLogSignal::EscCurrent0, DataLogSignal::EscCurrent1,
-        DataLogSignal::EscCurrent2, DataLogSignal::EscCurrent3};
+        DataLogSignal::EscCurrent0, DataLogSignal::EscCurrent1, DataLogSignal::EscCurrent2, DataLogSignal::EscCurrent3};
 
-    static constexpr DataLogSignal _sid_temperature[N_ESC] = {
-        DataLogSignal::EscTemperature0, DataLogSignal::EscTemperature1,
-        DataLogSignal::EscTemperature2, DataLogSignal::EscTemperature3};
+    static constexpr DataLogSignal _sid_temperature[N_ESC] = {DataLogSignal::EscTemperature0,
+                                                              DataLogSignal::EscTemperature1,
+                                                              DataLogSignal::EscTemperature2,
+                                                              DataLogSignal::EscTemperature3};
 
     static constexpr DataLogSignal _sid_status[N_ESC] = {
-        DataLogSignal::EscStatus0, DataLogSignal::EscStatus1,
-        DataLogSignal::EscStatus2, DataLogSignal::EscStatus3};
+        DataLogSignal::EscStatus0, DataLogSignal::EscStatus1, DataLogSignal::EscStatus2, DataLogSignal::EscStatus3};
 
     static constexpr TaskId _task_read_ids[N_ESC] = {
         TaskId::EscRead0, TaskId::EscRead1, TaskId::EscRead2, TaskId::EscRead3};
@@ -384,22 +420,24 @@ private:
     uint8_t _load_balance_step = 0;
 };
 
-class TaskEscWrite : public Task
+class TaskEscWrite final : public Task
 {
 public:
-    TaskEscWrite(uint32_t exec_period_ms, std::string name,
-                 AfroEsc (&esc)[N_ESC], DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-        _esc(esc),
-        _data_log_queue(data_log_queue) {}
+    TaskEscWrite(uint32_t exec_period_ms, std::string name, AfroEsc (&esc)[N_ESC], DataLogQueue &data_log_queue)
+        : Task(exec_period_ms, name), _esc(esc), _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskEscWrite() = default;
+
 protected:
-    void _setup() override
+    void _setup() final
     {
         _arm_escs();
         _push_task_state_to_data_log(DataLogSignal::TaskSetup);
     }
 
-    void _execute() override
+    void _execute() final
     {
         EscState user_reqeusted_esc_state = _get_user_requested_esc_state();
         EscState limited_esc_state = _limit_change_of_esc_state(user_reqeusted_esc_state, _old_esc_state);
@@ -410,24 +448,27 @@ protected:
         _push_task_state_to_data_log(DataLogSignal::TaskExecute);
     }
 
-    void _finish() override
+    void _finish() final
     {
         _halt_escs();
         _push_task_state_to_data_log(DataLogSignal::TaskFinish);
     }
+
 private:
-    enum class EscState {
+    enum class EscState
+    {
         Run,
         Arm,
         Disarm
     };
 
     AfroEsc (&_esc)[N_ESC];
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 
-    static constexpr DataLogSignal _sid_motor_cmd[N_ESC] = {
-        DataLogSignal::EscMotorCmd0, DataLogSignal::EscMotorCmd1,
-        DataLogSignal::EscMotorCmd2, DataLogSignal::EscMotorCmd3};
+    static constexpr DataLogSignal _sid_motor_cmd[N_ESC] = {DataLogSignal::EscMotorCmd0,
+                                                            DataLogSignal::EscMotorCmd1,
+                                                            DataLogSignal::EscMotorCmd2,
+                                                            DataLogSignal::EscMotorCmd3};
 
     static constexpr TaskId _task_write_ids[N_ESC] = {
         TaskId::EscWrite0, TaskId::EscWrite1, TaskId::EscWrite2, TaskId::EscWrite3};
@@ -439,56 +480,52 @@ private:
         SwitchLr switch_left;
         _data_log_queue.last_signal_data(&switch_left, DataLogSignal::RcSwitchLeft, SwitchLr::High);
 
-        switch(switch_left)
+        switch (switch_left)
         {
-            case SwitchLr::Low:
-                return EscState::Run;
-            case SwitchLr::Middle:
-                return EscState::Arm;
-            case SwitchLr::High:
-                return EscState::Disarm;
-            default:
-                return EscState::Disarm;
+        case SwitchLr::Low:
+            return EscState::Run;
+
+        case SwitchLr::Middle:
+            return EscState::Arm;
+
+        case SwitchLr::High:
+        default:
+            return EscState::Disarm;
         }
     }
 
-    EscState _limit_change_of_esc_state(EscState new_esc_state, EscState old_esc_state)
+    static EscState _limit_change_of_esc_state(EscState new_esc_state, EscState old_esc_state)
     {
         if (new_esc_state > old_esc_state)
         {
             return EscState(uint8_t(old_esc_state) + 1U);
         }
-        else if (new_esc_state < old_esc_state)
+        if (new_esc_state < old_esc_state)
         {
             return EscState(uint8_t(old_esc_state) - 1U);
         }
-        else
-        {
-            return new_esc_state;
-        }
+
+        return new_esc_state;
     }
 
     void _update_escs(EscState esc_state)
     {
-        switch(esc_state)
+        switch (esc_state)
         {
-            case EscState::Run:
-                _data_log_queue.push(false, DataLogSignal::StateCtrlReset);
-                _get_and_write_cmds();
-                break;
+        case EscState::Run:
+            _data_log_queue.push(false, DataLogSignal::StateCtrlReset);
+            _get_and_write_cmds();
+            break;
 
-            case EscState::Arm:
-                _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
-                _arm_escs_fast();
-                break;
+        case EscState::Arm:
+            _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
+            _arm_escs_fast();
+            break;
 
-            case EscState::Disarm:
-                _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
-                break;
-
-            default:
-                _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
-                break;
+        case EscState::Disarm:
+        default:
+            _data_log_queue.push(true, DataLogSignal::StateCtrlReset);
+            break;
         }
     }
 
@@ -536,17 +573,18 @@ private:
     }
 };
 
-class TaskRcReceiver : public Task
+class TaskRcReceiver final : public Task
 {
 public:
-    TaskRcReceiver(uint32_t exec_period_ms, std::string name,
-                   std::string serial_device, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-        _serial_conn(serial_device),
-        _rc(_serial_conn),
-        _data_log_queue(data_log_queue) {}
+    TaskRcReceiver(uint32_t exec_period_ms, std::string name, std::string serial_device, DataLogQueue &data_log_queue)
+        : Task(exec_period_ms, name), _serial_conn(serial_device), _rc(_serial_conn), _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskRcReceiver() = default;
+
 protected:
-    void _execute() override
+    void _execute() final
     {
         _rc.update();
 
@@ -564,79 +602,90 @@ protected:
         _data_log_queue.push(_rc.get_status(), DataLogSignal::RcStatus);
         _data_log_queue.push(uint8_t(TaskId::RcReceiver), DataLogSignal::TaskExecute);
     }
+
 private:
     SerialConn _serial_conn;
     Tgyia6c _rc;
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 };
 
-class TaskDataLogger : public Task
+class TaskDataLogger final : public Task
 {
 public:
-    TaskDataLogger(uint32_t exec_period_ms, std::string name,
-                   std::filesystem::path root_path, DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-        _data_logger(data_log_queue, root_path),
-        _data_log_queue(data_log_queue) {}
+    TaskDataLogger(uint32_t exec_period_ms,
+                   std::string name,
+                   std::filesystem::path root_path,
+                   DataLogQueue &data_log_queue)
+        : Task(exec_period_ms, name), _data_logger(data_log_queue, root_path), _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskDataLogger() = default;
+
 protected:
-    void _setup() override
+    void _setup() final
     {
         _data_logger.start();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskSetup);
     }
-    void _execute() override
+    void _execute() final
     {
         _data_logger.pack();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskExecute);
     }
-    void _finish() override
+    void _finish() final
     {
         _data_logger.stop();
         _data_log_queue.push(uint8_t(TaskId::DataLogger), DataLogSignal::TaskFinish);
     }
+
 private:
     DataLogger _data_logger;
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 };
 
-class TaskStreamerServer : public Task
+class TaskStreamerServer final : public Task
 {
 public:
-    TaskStreamerServer(uint32_t exec_period_ms, std::string name,
+    TaskStreamerServer(uint32_t exec_period_ms,
+                       std::string name,
                        std::string zmq_address_request,
                        std::string zmq_address_stream,
-                       DataLogQueue& data_log_queue) :
-        Task(exec_period_ms, name),
-        _request(zmq_address_request),
-        _stream(zmq_address_stream),
-        _server(_request, _stream, data_log_queue),
-        _data_log_queue(data_log_queue) {}
+                       DataLogQueue &data_log_queue)
+        : Task(exec_period_ms, name), _request(zmq_address_request), _stream(zmq_address_stream),
+          _server(_request, _stream, data_log_queue), _data_log_queue(data_log_queue)
+    {
+    }
+
+    ~TaskStreamerServer() = default;
+
 protected:
-    void _setup() override
+    void _setup() final
     {
         _server.connect();
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskSetup);
     }
-    void _execute() override
+    void _execute() final
     {
         _server.execute();
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskExecute);
     }
-    void _finish() override
+    void _finish() final
     {
         _server.disconnect();
         _data_log_queue.push(uint8_t(TaskId::StreamerServer), DataLogSignal::TaskFinish);
     }
+
 private:
     ZmqRep _request;
     ZmqPush _stream;
 
     streamer::Server _server;
 
-    DataLogQueue& _data_log_queue;
+    DataLogQueue &_data_log_queue;
 };
 
-bool user_requested_shutdown(DataLogQueue& data_log_queue)
+bool user_requested_shutdown(DataLogQueue &data_log_queue)
 {
     SwitchLr switch_left = SwitchLr::Low;
     SwitchM switch_middle = SwitchM::High;
@@ -647,11 +696,9 @@ bool user_requested_shutdown(DataLogQueue& data_log_queue)
     return ((switch_left == SwitchLr::High) && (switch_middle == SwitchM::Low));
 }
 
-void wait_for_shutdown(DataLogQueue& data_log_queue)
+void wait_for_shutdown(DataLogQueue &data_log_queue)
 {
-    GracefulKiller killer;
-
-    while (!user_requested_shutdown(data_log_queue) && !killer.kill())
+    while (!user_requested_shutdown(data_log_queue) && !GracefulKiller::kill())
     {
         logger.debug("Shutdown not requested. Keep running.");
         std::this_thread::sleep_for(std::chrono::milliseconds(MAIN_SLEEP_MS));
@@ -670,47 +717,59 @@ int main()
     DataLogQueue data_log_queue;
     std::vector<std::unique_ptr<Task>> tasks;
 
-    I2cConn esc_conn_0(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_0),
-            esc_conn_1(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_1),
-            esc_conn_2(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_2),
-            esc_conn_3(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_3);
+    I2cConn esc_conn_0(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_0);
+    I2cConn esc_conn_1(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_1);
+    I2cConn esc_conn_2(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_2);
+    I2cConn esc_conn_3(config.get_i2c_device_esc(), I2C_ADDRESS_ESC_3);
+
     AfroEsc esc[N_ESC] = {esc_conn_0, esc_conn_1, esc_conn_2, esc_conn_3};
 
-    tasks.emplace_back(new TaskAccMag(TASK_ACC_MAG_EXEC_PERIOD_MS, "ImuAccMag",
-                                      config.get_i2c_device_imu(), I2C_ADDRESS_ACC_MAG, data_log_queue));
+    tasks.emplace_back(new TaskAccMag(
+        TASK_ACC_MAG_EXEC_PERIOD_MS, "ImuAccMag", config.get_i2c_device_imu(), I2C_ADDRESS_ACC_MAG, data_log_queue));
 
-    tasks.emplace_back(new TaskGyro(TASK_GYRO_EXEC_PERIOD_MS, "ImuGyro",
-                                    config.get_i2c_device_imu(), I2C_ADDRESS_GYRO, data_log_queue));
+    tasks.emplace_back(new TaskGyro(
+        TASK_GYRO_EXEC_PERIOD_MS, "ImuGyro", config.get_i2c_device_imu(), I2C_ADDRESS_GYRO, data_log_queue));
 
-    tasks.emplace_back(new TaskBarometer(TASK_BAROMETER_EXEC_PERIOD_MS, "ImuBarometer",
-                                         config.get_i2c_device_imu(), I2C_ADDRESS_BAROMETER, data_log_queue));
+    tasks.emplace_back(new TaskBarometer(TASK_BAROMETER_EXEC_PERIOD_MS,
+                                         "ImuBarometer",
+                                         config.get_i2c_device_imu(),
+                                         I2C_ADDRESS_BAROMETER,
+                                         data_log_queue));
 
-    tasks.emplace_back(new TaskEscWrite(TASK_ESC_WRITE_EXEC_PERIOD_MS, "EscWrite",
-                                        esc, data_log_queue));
+    tasks.emplace_back(new TaskEscWrite(TASK_ESC_WRITE_EXEC_PERIOD_MS, "EscWrite", esc, data_log_queue));
 
-    tasks.emplace_back(new TaskEscRead(TASK_ESC_READ_EXEC_PERIOD_MS, "EscRead",
-                                       esc, data_log_queue));
+    tasks.emplace_back(new TaskEscRead(TASK_ESC_READ_EXEC_PERIOD_MS, "EscRead", esc, data_log_queue));
 
-    tasks.emplace_back(new TaskRcReceiver(TASK_RC_RECEIVER_EXEC_PERIOD_MS, "RcReceiver",
-                                          config.get_serial_device(), data_log_queue));
+    tasks.emplace_back(
+        new TaskRcReceiver(TASK_RC_RECEIVER_EXEC_PERIOD_MS, "RcReceiver", config.get_serial_device(), data_log_queue));
 
-    tasks.emplace_back(new TaskStateEst(TASK_STATE_EST_EXEC_PERIOD_MS, "StateEst",
-                                        ATT_EST_INPUT_SAMPLE_RATE_S, config.get_att_est(), data_log_queue));
+    tasks.emplace_back(new TaskStateEst(
+        TASK_STATE_EST_EXEC_PERIOD_MS, "StateEst", ATT_EST_INPUT_SAMPLE_RATE_S, config.get_att_est(), data_log_queue));
 
-    tasks.emplace_back(new TaskStateCtrl(TASK_STATE_CTRL_EXEC_PERIOD_MS, "StateCtrl",
-                                         PILOT_CTRL_INPUT_SAMPLE_RATE_S, config.get_pilot_ctrl(), data_log_queue));
+    tasks.emplace_back(new TaskStateCtrl(TASK_STATE_CTRL_EXEC_PERIOD_MS,
+                                         "StateCtrl",
+                                         PILOT_CTRL_INPUT_SAMPLE_RATE_S,
+                                         config.get_pilot_ctrl(),
+                                         data_log_queue));
 
-    tasks.emplace_back(new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, "DataLogger",
-                                          config.get_data_log_root(), data_log_queue));
+    tasks.emplace_back(
+        new TaskDataLogger(TASK_DATA_LOGGER_EXEC_PERIOD_MS, "DataLogger", config.get_data_log_root(), data_log_queue));
 
-    tasks.emplace_back(new TaskStreamerServer(TASK_STREAMER_SERVER_EXEC_PERIOD_MS, "StreamerServer",
+    tasks.emplace_back(new TaskStreamerServer(TASK_STREAMER_SERVER_EXEC_PERIOD_MS,
+                                              "StreamerServer",
                                               config.get_zmq_address_request(),
                                               config.get_zmq_address_stream(),
                                               data_log_queue));
 
-    for(auto const& task: tasks) { task->launch(); }
+    for (auto const &task : tasks)
+    {
+        task->launch();
+    }
     wait_for_shutdown(data_log_queue);
-    for(auto const& task: tasks) { task->teardown(); }
+    for (auto const &task : tasks)
+    {
+        task->teardown();
+    }
 
     return 0;
 }

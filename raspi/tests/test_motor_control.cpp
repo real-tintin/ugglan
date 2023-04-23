@@ -1,11 +1,12 @@
-#include <catch.h>
+#include <catch/catch.hpp>
 
-#include <motor_control.h>
+#include <motor_control.hpp>
 
 TEST_CASE("body_to_motor_controls")
 {
     BodyControl body_controls;
-    MotorControl exp_motor_controls, act_motor_controls;
+    MotorControl exp_motor_controls;
+    MotorControl act_motor_controls;
 
     SECTION("all zero")
     {

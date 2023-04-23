@@ -1,9 +1,13 @@
-#include <catch.h>
-
 #include <string>
+extern "C"
+{
 #include <math.h>
-#include <catch_utils.h>
-#include <common_utils.h>
+}
+
+#include <catch/catch.hpp>
+
+#include <catch_utils.hpp>
+#include <common_utils.hpp>
 
 using namespace common_utils;
 
@@ -16,7 +20,7 @@ TEST_CASE("get_env")
         catch_utils::set_env("CATCH_TEST_GET_ENV", "whats_up");
 
         std::string value = get_env("CATCH_TEST_GET_ENV");
-        REQUIRE(value.compare("whats_up") == 0);
+        REQUIRE(value == "whats_up");
     }
     SECTION("non existing env")
     {
@@ -33,7 +37,7 @@ TEST_CASE("read_and_cast_env")
         catch_utils::set_env("CATCH_READ_AND_CAST_ENV", "whats_up");
 
         read_and_cast_env(env, "CATCH_READ_AND_CAST_ENV");
-        REQUIRE(env.compare("whats_up") == 0);
+        REQUIRE(env == "whats_up");
     }
     SECTION("double")
     {
@@ -63,16 +67,16 @@ TEST_CASE("read_and_cast_env")
 
 TEST_CASE("byte_to_hex_str")
 {
-    REQUIRE(byte_to_hex_str(0).compare("0x00") == 0);
-    REQUIRE(byte_to_hex_str(10).compare("0x0A") == 0);
-    REQUIRE(byte_to_hex_str(255).compare("0xFF") == 0);
+    REQUIRE(byte_to_hex_str(0) == "0x00");
+    REQUIRE(byte_to_hex_str(10) == "0x0A");
+    REQUIRE(byte_to_hex_str(255) == "0xFF");
 }
 
 TEST_CASE("byte_to_bit_str")
 {
-    REQUIRE(byte_to_bit_str(0).compare("0b00000000") == 0);
-    REQUIRE(byte_to_bit_str(10).compare("0b00001010") == 0);
-    REQUIRE(byte_to_bit_str(255).compare("0b11111111") == 0);
+    REQUIRE(byte_to_bit_str(0) == "0b00000000");
+    REQUIRE(byte_to_bit_str(10) == "0b00001010");
+    REQUIRE(byte_to_bit_str(255) == "0b11111111");
 }
 
 TEST_CASE("pack_and_unpack_base64_gzip")

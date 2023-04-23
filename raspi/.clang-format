@@ -1,0 +1,25 @@
+---
+Language: Cpp
+AccessModifierOffset: -4
+AlignAfterOpenBracket: true
+AllowShortFunctionsOnASingleLine: false
+BasedOnStyle: LLVM
+BinPackArguments: false
+BinPackParameters: false
+BraceWrapping:
+  AfterClass: true
+  AfterCaseLabel: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeWhile: true
+BreakBeforeBraces: Custom
+ColumnLimit: 120
+IndentWidth: 4
+PenaltyReturnTypeOnItsOwnLine: 1000000

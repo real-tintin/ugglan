@@ -1,4 +1,4 @@
-#include <data_log_queue.h>
+#include <data_log_queue.hpp>
 
 DataLogSample DataLogQueue::pop()
 {
@@ -13,13 +13,13 @@ DataLogSample DataLogQueue::pop()
 bool DataLogQueue::is_empty()
 {
     const std::lock_guard<std::mutex> lock(_mutex);
-    return _samples.size() == 0;
+    return _samples.empty();
 }
 
 uint32_t DataLogQueue::_get_rel_timestamp()
 {
     uint32_t rel_timestamp_ms;
-    uint32_t now_timestamp_ms = wall_time.millis();
+    uint32_t now_timestamp_ms = WallTime::millis();
 
     if (_first_sample)
     {
@@ -42,7 +42,7 @@ uint32_t DataLogQueue::_get_rel_timestamp()
     return rel_timestamp_ms;
 }
 
-void DataLogQueue::_check_signal_type(DataLogSignal signal, DataLogType type)
+void DataLogQueue::_check_signal_type(DataLogSignal &signal, DataLogType &type)
 {
     DataLogSignalInfo info = data_log::utils::get_data_log_signal_info(signal);
 

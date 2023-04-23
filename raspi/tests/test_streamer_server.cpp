@@ -1,13 +1,14 @@
-#include <catch.h>
-
 #include <cstring>
+
+#include <catch/catch.hpp>
 #include <nlohmann/json.hpp>
 #include <zmq/zmq.hpp>
-#include <zmq_conn_stub.h>
-#include <data_log_queue.h>
-#include <data_log_utils.h>
-#include <streamer_server.h>
-#include <streamer_server_msg.h>
+
+#include <data_log_queue.hpp>
+#include <data_log_utils.hpp>
+#include <streamer_server.hpp>
+#include <streamer_server_msg.hpp>
+#include <zmq_conn_stub.hpp>
 
 using json = nlohmann::ordered_json;
 using namespace streamer;
@@ -20,7 +21,9 @@ class ServerTestFixture
 {
 public:
     ServerTestFixture() : server(req_conn, stream_conn, queue)
-    {}
+    {
+    }
+
 protected:
     ZmqRepStub req_conn{};
     ZmqPushStub stream_conn{};
@@ -29,7 +32,7 @@ protected:
 
     Server server;
 
-    void send_request_and_expect_response(Request& req, Response& exp_res)
+    void send_request_and_expect_response(Request &req, Response &exp_res)
     {
         _send_request(req);
 
@@ -40,8 +43,9 @@ protected:
         REQUIRE(exp_res.code() == act_res.code());
         REQUIRE(exp_res.data() == act_res.data());
     }
+
 private:
-    void _send_request(Request& req)
+    void _send_request(Request &req)
     {
         zmq::message_t msg{};
 
@@ -53,7 +57,7 @@ private:
     Response _get_last_response()
     {
         Response res{};
-        const zmq::message_t& msg = req_conn.get_last_send_msg();
+        const zmq::message_t &msg = req_conn.get_last_send_msg();
 
         res.from_msg(msg);
 
@@ -143,10 +147,7 @@ TEST_CASE_METHOD(ServerTestFixture, "update with two valid data log signals")
 {
     WHEN("two valid signals are set")
     {
-        json signals = json(std::vector<DataLogSignal>{
-            DataLogSignal::ImuAccelerationX,
-            DataLogSignal::EscStatus0
-        });
+        json signals = json(std::vector<DataLogSignal>{DataLogSignal::ImuAccelerationX, DataLogSignal::EscStatus0});
 
         Request req{Method::Set_SelectedDataLogSignals, signals};
         Response exp_res{Code::Ok, JSON_EMPTY_DICT};
@@ -207,10 +208,8 @@ TEST_CASE_METHOD(ServerTestFixture, "invalid set selected data log signals reque
     }
     SECTION("not unique signals")
     {
-        json invalid_signals = json(std::vector<DataLogSignal>{
-            DataLogSignal::ImuAccelerationX,
-            DataLogSignal::ImuAccelerationX
-        });
+        json invalid_signals =
+            json(std::vector<DataLogSignal>{DataLogSignal::ImuAccelerationX, DataLogSignal::ImuAccelerationX});
         Request req{Method::Set_SelectedDataLogSignals, invalid_signals};
 
         send_request_and_expect_response(req, exp_res);
@@ -221,10 +220,7 @@ TEST_CASE_METHOD(ServerTestFixture, "invalid set data log signals request keeps 
 {
     GIVEN("an valid set request with two signals is send")
     {
-        json signals = json(std::vector<DataLogSignal>{
-            DataLogSignal::ImuAccelerationX,
-            DataLogSignal::EscStatus0
-        });
+        json signals = json(std::vector<DataLogSignal>{DataLogSignal::ImuAccelerationX, DataLogSignal::EscStatus0});
 
         Request req{Method::Set_SelectedDataLogSignals, signals};
         Response exp_res{Code::Ok, JSON_EMPTY_DICT};
@@ -266,8 +262,8 @@ TEST_CASE_METHOD(ServerTestFixture, "streaming")
 
                 server.execute();
 
-                const zmq::message_t& msg = stream_conn.get_last_send_msg();
-                REQUIRE(msg.size() > 0);
+                const zmq::message_t &msg = stream_conn.get_last_send_msg();
+                REQUIRE_FALSE(msg.empty());
 
                 AND_GIVEN("a set request sent to stop stream")
                 {
@@ -282,8 +278,8 @@ TEST_CASE_METHOD(ServerTestFixture, "streaming")
 
                         server.execute();
 
-                        const zmq::message_t& msg = stream_conn.get_last_send_msg();
-                        REQUIRE(msg.size() == 0);
+                        const zmq::message_t &msg = stream_conn.get_last_send_msg();
+                        REQUIRE(msg.empty());
                     }
                 }
             }
@@ -301,10 +297,8 @@ TEST_CASE_METHOD(ServerTestFixture, "streaming")
 
             WHEN("request to select the same two signals to be logged")
             {
-                json signals = json(std::vector<DataLogSignal>{
-                    DataLogSignal::ImuAccelerationX,
-                    DataLogSignal::EscStatus0
-                });
+                json signals =
+                    json(std::vector<DataLogSignal>{DataLogSignal::ImuAccelerationX, DataLogSignal::EscStatus0});
 
                 Request req{Method::Set_SelectedDataLogSignals, signals};
                 Response exp_res{Code::Ok, JSON_EMPTY_DICT};
@@ -326,8 +320,8 @@ TEST_CASE_METHOD(ServerTestFixture, "streaming")
 
                         server.execute();
 
-                        const zmq::message_t& msg = stream_conn.get_last_send_msg();
-                        const uint8_t* const bytes = (const uint8_t*) msg.data();
+                        const zmq::message_t &msg = stream_conn.get_last_send_msg();
+                        const uint8_t *const bytes = (const uint8_t *)msg.data();
 
                         REQUIRE(exp_size == msg.size());
                         REQUIRE(std::memcmp(&exp_imu_acc_x, &bytes[6], sizeof(double)) == 0);

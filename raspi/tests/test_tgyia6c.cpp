@@ -1,7 +1,7 @@
-#include <catch.h>
+#include <catch/catch.hpp>
 
-#include <serial_conn_stub.h>
-#include <tgyia6c.h>
+#include <serial_conn_stub.hpp>
+#include <tgyia6c.hpp>
 
 #define TWOS_COMP_1000_LSB 0b11101000
 #define TWOS_COMP_1000_MSB 0b00000011
@@ -48,35 +48,32 @@ i.e.,
     MSB checksum: 0b10010101
 */
 static const uint8_t VALID_BUF_SIZE = 24;
-uint8_t VALID_BUF[VALID_BUF_SIZE] =
-{
-    VALID_BUF_SIZE,
-    TGYIA6C_PROTOCOL_COMMAND40,
-    TWOS_COMP_1000_LSB,
-    TWOS_COMP_1000_MSB,
-    TWOS_COMP_1500_LSB,
-    TWOS_COMP_1500_MSB,
-    TWOS_COMP_2000_LSB,
-    TWOS_COMP_2000_MSB,
-    TWOS_COMP_1000_LSB,
-    TWOS_COMP_1000_MSB,
-    TWOS_COMP_1500_LSB,
-    TWOS_COMP_1500_MSB,
-    TWOS_COMP_2000_LSB,
-    TWOS_COMP_2000_MSB,
-    TWOS_COMP_1000_LSB,
-    TWOS_COMP_1000_MSB,
-    TWOS_COMP_1500_LSB,
-    TWOS_COMP_1500_MSB,
-    0U,
-    0U,
-    0U,
-    0U,
-    0b10010101,
-    0b11111000
-};
+uint8_t VALID_BUF[VALID_BUF_SIZE] = {VALID_BUF_SIZE,
+                                     TGYIA6C_PROTOCOL_COMMAND40,
+                                     TWOS_COMP_1000_LSB,
+                                     TWOS_COMP_1000_MSB,
+                                     TWOS_COMP_1500_LSB,
+                                     TWOS_COMP_1500_MSB,
+                                     TWOS_COMP_2000_LSB,
+                                     TWOS_COMP_2000_MSB,
+                                     TWOS_COMP_1000_LSB,
+                                     TWOS_COMP_1000_MSB,
+                                     TWOS_COMP_1500_LSB,
+                                     TWOS_COMP_1500_MSB,
+                                     TWOS_COMP_2000_LSB,
+                                     TWOS_COMP_2000_MSB,
+                                     TWOS_COMP_1000_LSB,
+                                     TWOS_COMP_1000_MSB,
+                                     TWOS_COMP_1500_LSB,
+                                     TWOS_COMP_1500_MSB,
+                                     0U,
+                                     0U,
+                                     0U,
+                                     0U,
+                                     0b10010101,
+                                     0b11111000};
 
-void assert_init_values(Tgyia6c& rc_receiver)
+void assert_init_values(Tgyia6c &rc_receiver)
 {
     REQUIRE(fabs(rc_receiver.get_gimbal_left_x() - 0.5) <= FLOAT_TOL);
     REQUIRE(fabs(rc_receiver.get_gimbal_left_y() - 0.0) <= FLOAT_TOL);
@@ -91,7 +88,7 @@ void assert_init_values(Tgyia6c& rc_receiver)
     REQUIRE(rc_receiver.get_switch_middle() == SwitchM::High);
 }
 
-void assert_valid_values(Tgyia6c& rc_receiver)
+void assert_valid_values(Tgyia6c &rc_receiver)
 {
     REQUIRE(fabs(rc_receiver.get_gimbal_left_x() - 0.0) <= FLOAT_TOL);
     REQUIRE(fabs(rc_receiver.get_gimbal_left_y() - 1.0) <= FLOAT_TOL);
@@ -117,7 +114,7 @@ TEST_CASE("tgyia6c initialized")
     }
     SECTION("init values")
     {
-       assert_init_values(rc_receiver);
+        assert_init_values(rc_receiver);
     }
 }
 

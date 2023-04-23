@@ -1,4 +1,4 @@
-#include <logger.h>
+#include <logger.hpp>
 
 Logger logger;
 
@@ -46,30 +46,32 @@ LogLevel Logger::get_level()
 
 void Logger::_disp_msg(std::string msg, LogLevel level)
 {
-    if (level < _level) { return; }
+    if (level < _level)
+    {
+        return;
+    }
 
     std::time_t t_now = std::time(nullptr);
     std::string level_str;
 
-    switch(level)
+    switch (level)
     {
-        case LogLevel::debug:
-            level_str = LOGGER_LEVEL_STR_DEBUG;
-            break;
-        case LogLevel::info:
-            level_str = LOGGER_LEVEL_STR_INFO;
-            break;
-        case LogLevel::warn:
-            level_str = LOGGER_LEVEL_STR_WARN;
-            break;
-        case LogLevel::error:
-            level_str = LOGGER_LEVEL_STR_ERROR;
-            break;
-        default:
-            throw std::runtime_error("Invalid logger level");
-            break;
+    case LogLevel::debug:
+        level_str = LOGGER_LEVEL_STR_DEBUG;
+        break;
+    case LogLevel::info:
+        level_str = LOGGER_LEVEL_STR_INFO;
+        break;
+    case LogLevel::warn:
+        level_str = LOGGER_LEVEL_STR_WARN;
+        break;
+    case LogLevel::error:
+        level_str = LOGGER_LEVEL_STR_ERROR;
+        break;
+    default:
+        throw std::runtime_error("Invalid logger level");
+        break;
     }
 
-    std::cout << std::put_time(std::localtime(&t_now), "[%F %T]") << " : "
-                << level_str << " : " << msg << std::endl;
+    std::cout << std::put_time(std::localtime(&t_now), "[%F %T]") << " : " << level_str << " : " << msg << std::endl;
 }

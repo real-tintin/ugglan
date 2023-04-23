@@ -1,25 +1,26 @@
-#include <catch.h>
-
+extern "C"
+{
 #include <math.h>
-#include <pilot_control.h>
+}
+
+#include <catch/catch.hpp>
+
+#include <pilot_control.hpp>
 
 static const double FLOAT_TOL = 1e-3;
 static const double SAMPLE_RATE_S = 0.02;
 
 static const uint16_t N_UPDATES_TO_SAT = 1000;
 
-static const PilotCtrlConfig CONFIG =
-{
-    1.0,
-    1.0,
-    1.0,
+static const PilotCtrlConfig CONFIG = {1.0,
+                                       1.0,
+                                       1.0,
 
-    Eigen::RowVector4d {1.0, 5.0, 0.5, 0.1},
-    Eigen::RowVector4d {1.0, 5.0, 0.5, 0.1},
-    Eigen::RowVector3d {1.0, 5.0, 0.5}
-};
+                                       Eigen::RowVector4d{1.0, 5.0, 0.5, 0.1},
+                                       Eigen::RowVector4d{1.0, 5.0, 0.5, 0.1},
+                                       Eigen::RowVector3d{1.0, 5.0, 0.5}};
 
-void update_until_saturated(PilotControl& pilot_ctrl, att_est::Attitude attitude, PilotCtrlRef ref)
+void update_until_saturated(PilotControl &pilot_ctrl, att_est::Attitude attitude, PilotCtrlRef ref)
 {
     for (uint16_t x = 0; x < N_UPDATES_TO_SAT; x++)
     {
@@ -32,7 +33,7 @@ TEST_CASE("pilot control")
 
     PilotControl pilot_ctrl(SAMPLE_RATE_S, CONFIG);
 
-    att_est::Attitude attitude = {0};
+    att_est::Attitude attitude = {{0}};
     PilotCtrlRef ref = {0};
     BodyControl ctrl = {0};
 
