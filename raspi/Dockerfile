@@ -24,9 +24,6 @@ RUN apt-get install -y \
 RUN wget https://apt.llvm.org/llvm.sh
 RUN chmod +x llvm.sh
 RUN ./llvm.sh ${CLANG_VERSION}
-RUN apt-get install -y \
-    clang-format-${CLANG_VERSION} \
-    clang-tidy-${CLANG_VERSION}
 
 RUN ln -sf /usr/bin/clang-format-${CLANG_VERSION} /usr/bin/clang-format
 RUN ln -sf /usr/bin/clang-tidy-${CLANG_VERSION} /usr/bin/clang-tidy
