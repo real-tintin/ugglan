@@ -6,7 +6,9 @@ I2cConn::I2cConn(std::string device, uint8_t address) : _device(device), _addres
 
 bool I2cConn::open()
 {
-    if (((_fd = ::open(_device.c_str(), O_RDWR)) != -1) && (ioctl(_fd, I2C_SLAVE, _address) != -1))
+    _fd = ::open(_device.c_str(), O_RDWR);
+
+    if (_fd != -1 && ioctl(_fd, I2C_SLAVE, _address) != -1)
     {
         logger.debug("Successfully opened i2c connection at: " + _device + " (" +
                      common_utils::byte_to_hex_str(_address) + ")");

@@ -12,6 +12,21 @@ RUN apt-get install -y \
     libzmq3-dev
 
 FROM builder as clang
+
+ENV CLANG_VERSION 15
+
 RUN apt-get install -y \
-    clang-format \
-    clang-tidy
+    wget \
+    lsb-release \
+    software-properties-common \
+    gnupg
+
+RUN wget https://apt.llvm.org/llvm.sh
+RUN chmod +x llvm.sh
+RUN ./llvm.sh ${CLANG_VERSION}
+RUN apt-get install -y \
+    clang-format-${CLANG_VERSION} \
+    clang-tidy-${CLANG_VERSION}
+
+RUN ln -sf /usr/bin/clang-format-${CLANG_VERSION} /usr/bin/clang-format
+RUN ln -sf /usr/bin/clang-tidy-${CLANG_VERSION} /usr/bin/clang-tidy

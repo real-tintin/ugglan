@@ -70,6 +70,7 @@ TEST_CASE_DATA_LOG_TYPES("data_log_queue: push and pop single thread")
         DataLogSample sample = data_log_queue.pop();
         REQUIRE(data_log_queue.is_empty() == true);
 
+        // NOLINTNEXTLINE(bugprone-suspicious-memory-comparison)
         REQUIRE(std::memcmp(&data, &sample.data, sizeof(TestType)) == 0);
         REQUIRE(sample.rel_timestamp_ms == 0);
         REQUIRE(sample.type == data_log_type);
@@ -102,11 +103,13 @@ TEST_CASE("data_log_queue: push and pop multi thread")
     {
         DataLogSample sample = data_log_queue_multi.pop();
 
+        // NOLINTNEXTLINE(bugprone-suspicious-memory-comparison)
         if ((std::memcmp(&exp_one_sample_data, &sample.data, sizeof(double)) == 0) &&
             sample.signal == DataLogSignal::ImuAccelerationX)
         {
             n_act_one_samples++;
         }
+        // NOLINTNEXTLINE(bugprone-suspicious-memory-comparison)
         else if ((std::memcmp(&exp_two_sample_data, &sample.data, sizeof(uint8_t)) == 0) &&
                  sample.signal == DataLogSignal::EscStatus0)
         {
@@ -131,6 +134,7 @@ TEST_CASE_DATA_LOG_TYPES("data_log_queue: last_signal_data")
         TestType exp_data = 0;
         data_log_queue.last_signal_data(&act_data, data_log_signal);
 
+        // NOLINTNEXTLINE(bugprone-suspicious-memory-comparison)
         REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
     }
     SECTION("empty queue - explicit default data")
@@ -139,6 +143,7 @@ TEST_CASE_DATA_LOG_TYPES("data_log_queue: last_signal_data")
         TestType exp_data = 1;
         data_log_queue.last_signal_data(&act_data, data_log_signal, TestType(1));
 
+        // NOLINTNEXTLINE(bugprone-suspicious-memory-comparison)
         REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
     }
     SECTION("non empty queue")
@@ -150,6 +155,7 @@ TEST_CASE_DATA_LOG_TYPES("data_log_queue: last_signal_data")
         data_log_queue.push(TestType(0), data_log_signal);
         data_log_queue.last_signal_data(&act_data, data_log_signal);
 
+        // NOLINTNEXTLINE(bugprone-suspicious-memory-comparison)
         REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
 
         /* Push a second sample */
@@ -157,6 +163,7 @@ TEST_CASE_DATA_LOG_TYPES("data_log_queue: last_signal_data")
         data_log_queue.push(TestType(1), data_log_signal);
         data_log_queue.last_signal_data(&act_data, data_log_signal);
 
+        // NOLINTNEXTLINE(bugprone-suspicious-memory-comparison)
         REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
 
         /* Empty queue */
@@ -166,6 +173,7 @@ TEST_CASE_DATA_LOG_TYPES("data_log_queue: last_signal_data")
         };
         data_log_queue.last_signal_data(&act_data, data_log_signal);
 
+        // NOLINTNEXTLINE(bugprone-suspicious-memory-comparison)
         REQUIRE(std::memcmp(&act_data, &exp_data, sizeof(TestType)) == 0);
     }
 }

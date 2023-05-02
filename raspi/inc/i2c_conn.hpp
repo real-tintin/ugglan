@@ -31,7 +31,7 @@ public:
     virtual bool write_block_data(uint8_t reg, uint8_t size, uint8_t *buf);
 
 private:
-    int8_t _fd;
+    int _fd;
     std::string _device;
     uint8_t _address;
 };

@@ -10,7 +10,7 @@ double Lsm303d::get_acceleration_x()
 {
     uint8_t *buf = _get_buffer(LSM303D_REG_OUT_X_L_A);
 
-    int16_t raw_acc_x = (buf[LSM303D_BUF_OUT_X_H_A] << 8) | buf[LSM303D_BUF_OUT_X_L_A];
+    int16_t raw_acc_x = static_cast<int16_t>((buf[LSM303D_BUF_OUT_X_H_A] << 8) | buf[LSM303D_BUF_OUT_X_L_A]);
     double acc_x = static_cast<double>(raw_acc_x) * LSM303D_ACC_SCALE / LSM303D_ACC_RESOLUTION;
 
     return acc_x;
@@ -21,7 +21,7 @@ double Lsm303d::get_acceleration_y()
 {
     uint8_t *buf = _get_buffer(LSM303D_REG_OUT_X_L_A);
 
-    int16_t raw_acc_y = (buf[LSM303D_BUF_OUT_Y_H_A] << 8) | buf[LSM303D_BUF_OUT_Y_L_A];
+    int16_t raw_acc_y = static_cast<int16_t>((buf[LSM303D_BUF_OUT_Y_H_A] << 8) | buf[LSM303D_BUF_OUT_Y_L_A]);
     double acc_y = static_cast<double>(raw_acc_y) * LSM303D_ACC_SCALE / LSM303D_ACC_RESOLUTION;
 
     return acc_y;
@@ -32,7 +32,7 @@ double Lsm303d::get_acceleration_z()
 {
     uint8_t *buf = _get_buffer(LSM303D_REG_OUT_X_L_A);
 
-    int16_t raw_acc_z = (buf[LSM303D_BUF_OUT_Z_H_A] << 8) | buf[LSM303D_BUF_OUT_Z_L_A];
+    int16_t raw_acc_z = static_cast<int16_t>((buf[LSM303D_BUF_OUT_Z_H_A] << 8) | buf[LSM303D_BUF_OUT_Z_L_A]);
     double acc_z = static_cast<double>(raw_acc_z) * LSM303D_ACC_SCALE / LSM303D_ACC_RESOLUTION;
 
     return acc_z;
@@ -43,7 +43,7 @@ double Lsm303d::get_magnetic_field_x()
 {
     uint8_t *buf = _get_buffer(LSM303D_REG_OUT_X_L_M);
 
-    int16_t raw_mag_x = (buf[LSM303D_BUF_OUT_X_H_M] << 8) | buf[LSM303D_BUF_OUT_X_L_M];
+    int16_t raw_mag_x = static_cast<int16_t>((buf[LSM303D_BUF_OUT_X_H_M] << 8) | buf[LSM303D_BUF_OUT_X_L_M]);
     double mag_x = static_cast<double>(raw_mag_x) * LSM303D_MAG_SCALE / LSM303D_MAG_RESOLUTION;
 
     return mag_x;
@@ -54,7 +54,7 @@ double Lsm303d::get_magnetic_field_y()
 {
     uint8_t *buf = _get_buffer(LSM303D_REG_OUT_X_L_M);
 
-    int16_t raw_mag_y = (buf[LSM303D_BUF_OUT_Y_H_M] << 8) | buf[LSM303D_BUF_OUT_Y_L_M];
+    int16_t raw_mag_y = static_cast<int16_t>((buf[LSM303D_BUF_OUT_Y_H_M] << 8) | buf[LSM303D_BUF_OUT_Y_L_M]);
     double mag_y = static_cast<double>(raw_mag_y) * LSM303D_MAG_SCALE / LSM303D_MAG_RESOLUTION;
 
     return mag_y;
@@ -65,7 +65,7 @@ double Lsm303d::get_magnetic_field_z()
 {
     uint8_t *buf = _get_buffer(LSM303D_REG_OUT_X_L_M);
 
-    int16_t raw_mag_z = (buf[LSM303D_BUF_OUT_Z_H_M] << 8) | buf[LSM303D_BUF_OUT_Z_L_M];
+    int16_t raw_mag_z = static_cast<int16_t>((buf[LSM303D_BUF_OUT_Z_H_M] << 8) | buf[LSM303D_BUF_OUT_Z_L_M]);
     double mag_z = static_cast<double>(raw_mag_z) * LSM303D_MAG_SCALE / LSM303D_MAG_RESOLUTION;
 
     return mag_z;

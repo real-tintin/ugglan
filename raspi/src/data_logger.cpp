@@ -74,7 +74,7 @@ void DataLogger::_open()
 
 void DataLogger::_write(uint8_t *buf, size_t size)
 {
-    _ofs.write((char *)buf, size);
+    _ofs.write((char *)buf, static_cast<std::streamsize>(size));
 }
 
 void DataLogger::_close()

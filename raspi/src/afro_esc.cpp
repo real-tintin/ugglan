@@ -115,7 +115,7 @@ double AfroEsc::get_temperature()
 // Returns angular rate [rad/s]
 double AfroEsc::get_angular_rate()
 {
-    int16_t raw_rev = (_buf_read[AFRO_READ_BUF_REV_H] << 8) | _buf_read[AFRO_READ_BUF_REV_L];
+    int16_t raw_rev = static_cast<int16_t>((_buf_read[AFRO_READ_BUF_REV_H] << 8) | _buf_read[AFRO_READ_BUF_REV_L]);
     double angular_rate = 0;
 
     if (_rev_dt_ms > 0)

@@ -324,8 +324,10 @@ TEST_CASE_METHOD(ServerTestFixture, "streaming")
                         const uint8_t *const bytes = (const uint8_t *)msg.data();
 
                         REQUIRE(exp_size == msg.size());
+                        // NOLINTBEGIN(bugprone-suspicious-memory-comparison)
                         REQUIRE(std::memcmp(&exp_imu_acc_x, &bytes[6], sizeof(double)) == 0);
                         REQUIRE(std::memcmp(&exp_esc_status_0, &bytes[16], sizeof(uint8_t)) == 0);
+                        // NOLINTEND(bugprone-suspicious-memory-comparison)
                     }
                 }
             }

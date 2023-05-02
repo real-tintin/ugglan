@@ -539,7 +539,7 @@ private:
 
     void _get_and_write_cmds()
     {
-        uint16_t motor_cmd;
+        int16_t motor_cmd;
 
         for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
         {

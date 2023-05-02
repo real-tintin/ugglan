@@ -2,12 +2,15 @@
 Checks: 'clang-diagnostic-*,
          clang-analyzer-*,
          bugprone-*,
+         -bugprone-easily-swappable-parameters,
          -bugprone-macro-parentheses,
          -bugprone-reserved-identifier,
          performance-*,
          -performance-unnecessary-value-param,
          readability-*,
          -readability-avoid-const-params-in-decls,
+         -readability-function-cognitive-complexity,
+         -readability-identifier-length,
          -readability-magic-numbers'
-WarningsAsErrors: ''
+WarningsAsErrors: '*'
 HeaderFilterRegex: 'inc'

@@ -36,7 +36,7 @@ public:
     virtual size_t read(uint8_t *buf, size_t size);
 
 private:
-    int8_t _fd;
+    int _fd;
     std::string _device;
 };
 

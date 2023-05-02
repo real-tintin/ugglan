@@ -6,7 +6,9 @@ SerialConn::SerialConn(std::string device) : _device(device)
 
 bool SerialConn::open(Mode mode, ControlFlags flags)
 {
-    if ((_fd = ::open(_device.c_str(), mode)) != -1)
+    _fd = ::open(_device.c_str(), mode);
+
+    if (_fd != -1)
     {
         struct termios options;
 
