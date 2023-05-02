@@ -21,9 +21,9 @@ RUN apt-get install -y \
     software-properties-common \
     gnupg
 
-RUN wget https://apt.llvm.org/llvm.sh
-RUN chmod +x llvm.sh
-RUN ./llvm.sh ${CLANG_VERSION}
+RUN wget -P ${HOME} https://apt.llvm.org/llvm.sh
+RUN chmod +x ${HOME}/llvm.sh
+RUN ${HOME}/llvm.sh ${CLANG_VERSION}
 RUN apt-get install -y \
     clang-format-${CLANG_VERSION} \
     clang-tidy-${CLANG_VERSION}
