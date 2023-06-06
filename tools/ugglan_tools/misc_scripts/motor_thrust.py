@@ -1,7 +1,9 @@
 import argparse
+import json
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List
+from pathlib import Path
+from typing import List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -38,69 +40,52 @@ class Figure(Enum):
 @dataclass
 class Measurements:
     command: List[int] = field(default_factory=list)
-    command_sq: List[int] = field(default_factory=list)
-
     ang_rate: List[int] = field(default_factory=list)
-    ang_rate_sq: List[int] = field(default_factory=list)
-
     thrust: List[int] = field(default_factory=list)
-    thrust_sq: List[int] = field(default_factory=list)
+
+    def append(self, command: int, ang_rate: int, thrust: int):
+        self.command.append(command)
+        self.ang_rate.append(ang_rate)
+        self.thrust.append(thrust)
+
+    @property
+    def command_sq(self):
+        return [x ** 2 for x in self.command]
+
+    @property
+    def ang_rate_sq(self):
+        return [x ** 2 for x in self.ang_rate]
+
+    @property
+    def thrust_sq(self):
+        return [x ** 2 for x in self.thrust]
 
 
-# command, rpm, thrust_g (z pointing down)
-raw_pos_meas = [
-    [0, 0, 0],
-    [1, 1272, -13],
-    [10, 1277, -13],
-    [100, 1296, -13],
-    [1000, 1576, -19],
-    [2000, 1847, -27],
-    [4000, 2334, -44],
-    [8000, 3099, -84],
-    [12000, 3712, -120],
-    [16000, 4209, -153],
-    [20000, 4920, -223],
-    [24000, 5616, -289],
-    [28000, 6312, -383],
-    [32000, 7019, -467]
-]
+def _parse_raw_measurements(path: Path) -> Tuple[Measurements, Measurements, str]:
+    positive = Measurements()
+    negative = Measurements()
 
-raw_neg_meas = [
-    [0, 0, 0],
-    [-1, -1268, 10],
-    [-10, -1260, 9],
-    [-100, -1290, 10],
-    [-1000, -1556, 15],
-    [-2000, -1833, 20],
-    [-4000, -2323, 28],
-    [-8000, -3054, 48],
-    [-12000, -3666, 66],
-    [-16000, -4178, 87],
-    [-20000, -4866, 119],
-    [-24000, -5479, 159],
-    [-28000, -6140, 211],
-    [-32000, -6835, 253],
-]
+    with open(file=path, mode="r") as file:
+        data = json.load(file)
 
+        name = data["name"]
 
-def _parse_raw_measurements(raw_measurements) -> Measurements:
-    measurements = Measurements()
+        for measurement in data["measurements"]:
+            command = measurement["cmd"]
+            ang_rate = measurement["rpm"] * RPM_2_RAD
+            thrust = measurement["thrust_g"] * GRAVITY * 0.001
 
-    for raw_m in raw_measurements:
-        command = raw_m[0]
-        ang_rate = raw_m[1] * RPM_2_RAD
-        thrust = raw_m[2] * GRAVITY * 0.001
+            if command == 0:
+                positive.append(command=command, ang_rate=ang_rate, thrust=thrust)
+                negative.append(command=command, ang_rate=ang_rate, thrust=thrust)
+            elif command > 0:
+                positive.append(command=command, ang_rate=ang_rate, thrust=thrust)
+            elif command < 0:
+                negative.append(command=command, ang_rate=ang_rate, thrust=thrust)
+            else:
+                RuntimeError("Unknown command")
 
-        measurements.command.append(command)
-        measurements.command_sq.append(command ** 2)
-
-        measurements.ang_rate.append(ang_rate)
-        measurements.ang_rate_sq.append(ang_rate ** 2)
-
-        measurements.thrust.append(thrust)
-        measurements.thrust_sq.append(thrust ** 2)
-
-    return measurements
+    return positive, negative, name
 
 
 def _plot_with_polyfit(x, y, used_coefs, skip_first_n, label, color):
@@ -129,20 +114,21 @@ def _plot_with_polyfit(x, y, used_coefs, skip_first_n, label, color):
     plt.plot(xp, yp, '-', label=label + ' polyfit: ' + coef_str, color=color)
 
 
-def _plot_correlation(pos_meas, neg_meas, label_x, label_y, used_coefs, skip_first_n=0):
-    x_pos = getattr(pos_meas, label_x)
-    y_pos = getattr(pos_meas, label_y)
+def _plot_correlation(pos_meas, neg_meas, title, attr_x, attr_y, used_coefs, skip_first_n=0):
+    x_pos = getattr(pos_meas, attr_x)
+    y_pos = getattr(pos_meas, attr_y)
 
-    x_neg = getattr(neg_meas, label_x)
-    y_neg = getattr(neg_meas, label_y)
+    x_neg = getattr(neg_meas, attr_x)
+    y_neg = getattr(neg_meas, attr_y)
 
     plt.figure()
 
     _plot_with_polyfit(x_pos, y_pos, used_coefs, skip_first_n, 'Positive rotation', 'C0')
     _plot_with_polyfit(x_neg, y_neg, used_coefs, skip_first_n, 'Negative rotation', 'C1')
 
-    plt.xlabel(LABEL_STRING.format(MATH_SYMBOLS[label_x], UNITS[label_x]))
-    plt.ylabel(LABEL_STRING.format(MATH_SYMBOLS[label_y], UNITS[label_y]))
+    plt.title(title)
+    plt.xlabel(LABEL_STRING.format(MATH_SYMBOLS[attr_x], UNITS[attr_x]))
+    plt.ylabel(LABEL_STRING.format(MATH_SYMBOLS[attr_y], UNITS[attr_y]))
     plt.grid()
     plt.legend()
 
@@ -160,27 +146,29 @@ def _print_h_inverse():
 
 def main():
     parser = argparse.ArgumentParser(description='Plot motor thrust curves.')
+    parser.add_argument('path', type=Path, help='Path to raw measurements json file')
     parser.add_argument('--figure', type=Figure, choices=list(Figure), nargs='+', default=list(Figure),
                         help='Selected figure(s)')
 
     args = parser.parse_args()
 
-    pos_meas = _parse_raw_measurements(raw_pos_meas)
-    neg_meas = _parse_raw_measurements(raw_neg_meas)
+    pos_meas, neg_meas, name = _parse_raw_measurements(args.path)
 
     _print_h_inverse()
 
     if Figure.THRUST_COMMAND in args.figure:
-        _plot_correlation(pos_meas, neg_meas, 'thrust', 'command', used_coefs=[1, 1, 1])
-        _plot_correlation(pos_meas, neg_meas, 'thrust', 'command_sq', used_coefs=[1, 1])
+        _plot_correlation(pos_meas, neg_meas, title=name, attr_x='thrust', attr_y='command', used_coefs=[1, 1, 1])
+        _plot_correlation(pos_meas, neg_meas, title=name, attr_x='thrust', attr_y='command_sq', used_coefs=[1, 1])
 
     if Figure.ANG_RATE_THRUST in args.figure:
-        _plot_correlation(pos_meas, neg_meas, 'ang_rate', 'thrust', used_coefs=[1, 1, 1])
-        _plot_correlation(pos_meas, neg_meas, 'ang_rate_sq', 'thrust', used_coefs=[1, 0])
+        _plot_correlation(pos_meas, neg_meas, title=name, attr_x='ang_rate', attr_y='thrust', used_coefs=[1, 1, 1])
+        _plot_correlation(pos_meas, neg_meas, title=name, attr_x='ang_rate_sq', attr_y='thrust', used_coefs=[1, 0])
 
     if Figure.ANG_RATE_COMMAND in args.figure:
-        _plot_correlation(pos_meas, neg_meas, 'ang_rate', 'command', used_coefs=[1, 1], skip_first_n=5)
-        _plot_correlation(pos_meas, neg_meas, 'ang_rate_sq', 'command', used_coefs=[1, 1, 1], skip_first_n=5)
+        _plot_correlation(pos_meas, neg_meas, title=name, attr_x='ang_rate', attr_y='command', used_coefs=[1, 1],
+                          skip_first_n=5)
+        _plot_correlation(pos_meas, neg_meas, title=name, attr_x='ang_rate_sq', attr_y='command', used_coefs=[1, 1, 1],
+                          skip_first_n=5)
 
     plt.show()
 

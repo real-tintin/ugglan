@@ -1,0 +1,140 @@
+{
+  "name": "Turnigy 2830 900KV with 9x4.7 propeller",
+  "measurements": [
+    {
+      "cmd": 0,
+      "rpm": 0,
+      "thrust_g": 0
+    },
+    {
+      "cmd": 1,
+      "rpm": 1272,
+      "thrust_g": -13
+    },
+    {
+      "cmd": 10,
+      "rpm": 1277,
+      "thrust_g": -13
+    },
+    {
+      "cmd": 100,
+      "rpm": 1296,
+      "thrust_g": -13
+    },
+    {
+      "cmd": 1000,
+      "rpm": 1576,
+      "thrust_g": -19
+    },
+    {
+      "cmd": 2000,
+      "rpm": 1847,
+      "thrust_g": -27
+    },
+    {
+      "cmd": 4000,
+      "rpm": 2334,
+      "thrust_g": -44
+    },
+    {
+      "cmd": 8000,
+      "rpm": 3099,
+      "thrust_g": -84
+    },
+    {
+      "cmd": 12000,
+      "rpm": 3712,
+      "thrust_g": -120
+    },
+    {
+      "cmd": 16000,
+      "rpm": 4209,
+      "thrust_g": -153
+    },
+    {
+      "cmd": 20000,
+      "rpm": 4920,
+      "thrust_g": -223
+    },
+    {
+      "cmd": 24000,
+      "rpm": 5616,
+      "thrust_g": -289
+    },
+    {
+      "cmd": 28000,
+      "rpm": 6312,
+      "thrust_g": -383
+    },
+    {
+      "cmd": 32000,
+      "rpm": 7019,
+      "thrust_g": -467
+    },
+    {
+      "cmd": -1,
+      "rpm": -1268,
+      "thrust_g": 10
+    },
+    {
+      "cmd": -10,
+      "rpm": -1260,
+      "thrust_g": 9
+    },
+    {
+      "cmd": -100,
+      "rpm": -1290,
+      "thrust_g": 10
+    },
+    {
+      "cmd": -1000,
+      "rpm": -1556,
+      "thrust_g": 15
+    },
+    {
+      "cmd": -2000,
+      "rpm": -1833,
+      "thrust_g": 20
+    },
+    {
+      "cmd": -4000,
+      "rpm": -2323,
+      "thrust_g": 28
+    },
+    {
+      "cmd": -8000,
+      "rpm": -3054,
+      "thrust_g": 48
+    },
+    {
+      "cmd": -12000,
+      "rpm": -3666,
+      "thrust_g": 66
+    },
+    {
+      "cmd": -16000,
+      "rpm": -4178,
+      "thrust_g": 87
+    },
+    {
+      "cmd": -20000,
+      "rpm": -4866,
+      "thrust_g": 119
+    },
+    {
+      "cmd": -24000,
+      "rpm": -5479,
+      "thrust_g": 159
+    },
+    {
+      "cmd": -28000,
+      "rpm": -6140,
+      "thrust_g": 211
+    },
+    {
+      "cmd": -32000,
+      "rpm": -6835,
+      "thrust_g": 253
+    }
+  ]
+}
