@@ -265,7 +265,7 @@ protected:
     void _execute() override
     {
         _exec_pilot_ctrl();
-        _exec_motor_ctrl();
+        //_exec_motor_ctrl();
 
         _data_log_queue.push(uint8_t(TaskId::StateCtrl), DataLogSignal::TaskExecute);
     }
@@ -698,10 +698,27 @@ bool user_requested_shutdown(DataLogQueue &data_log_queue)
 
 void wait_for_shutdown(DataLogQueue &data_log_queue)
 {
+    static constexpr DataLogSignal sid_motor_cmd[N_ESC] = {DataLogSignal::EscMotorCmd0,
+                                                           DataLogSignal::EscMotorCmd1,
+                                                           DataLogSignal::EscMotorCmd2,
+                                                           DataLogSignal::EscMotorCmd3};
+
+    std::string cmd_as_str;
+    int16_t cmd_as_int;
+
     while (!user_requested_shutdown(data_log_queue) && !GracefulKiller::kill())
     {
-        logger.debug("Shutdown not requested. Keep running.");
-        std::this_thread::sleep_for(std::chrono::milliseconds(MAIN_SLEEP_MS));
+        std::cout << "Enter command: " << std::endl;
+
+        std::getline(std::cin, cmd_as_str);
+        cmd_as_int = std::stoi(cmd_as_str);
+
+        logger.debug("Setting requested command: " + std::to_string(cmd_as_int));
+
+        for (uint8_t i_esc = 0; i_esc < N_ESC; i_esc++)
+        {
+            data_log_queue.push(cmd_as_int, sid_motor_cmd[i_esc]);
+        }
     }
     logger.info("Shutdown requested. Will shutdown.");
 }
