@@ -20,10 +20,10 @@ def main():
 
     update_inertia(drone)
 
-    _plot_multi_body(drone)
-
     if args.print_inertia:
         _print_mb_inertia(drone)
+
+    _plot_multi_body(drone)
 
 
 def _plot_multi_body(mb: MultiBody):

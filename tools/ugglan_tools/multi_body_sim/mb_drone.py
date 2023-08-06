@@ -58,18 +58,18 @@ esc = Body(
 )
 
 motor = Body(
-    name='Turnigy L2215J-900 Brushless Motor (200 W)',
-    shape_m=Cylinder(0.014, 0.03),
-    mass_kg=0.076,
-    trans_i_frame_m=np.array([0.23, 0, 0.015]),
+    name='T-MOTOR MN2212-V2.0 Brushless Motor (KV920)',
+    shape_m=Cylinder(0.014, 0.026),
+    mass_kg=0.062,
+    trans_i_frame_m=np.array([0.23, 0, 0.012]),
     color=[51, 51, 51]
 )
 
 propeller = Body(
-    name='GWS Style Slowfly Propeller 9x4.7',
-    shape_m=Cuboid(0.02, 0.228, 0.001),
-    mass_kg=0.007,
-    trans_i_frame_m=np.array([0.23, 0, 0.03]),
+    name='T-MOTOR T9545-A Propeller 9.5x4.5',
+    shape_m=Cuboid(0.02, 0.241, 0.001),
+    mass_kg=0.010,
+    trans_i_frame_m=np.array([0.23, 0, 0.026]),
     color=QColor('black')
 )
 

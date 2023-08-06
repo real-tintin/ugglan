@@ -18,7 +18,8 @@ The drone hardware components are is listed below
 * TGY-iA6C RC receiver
 * ZIPPY Compact 3300mAh 3S (or similar)
 * DC-DC step down voltage regulator 5V
-* Turnigy 2830 900KV L2215J-900 Brushless Motor
+* T-MOTOR MN2212-V2.0 Brushless Motor (KV920)
+* T-MOTOR T9545-A Propeller 9.5x4.5
 
 In addition, miscellaneous self manufactured components such as a cut plexiglas
 are used for mounting, see :numref:`ugglan_in_person`.

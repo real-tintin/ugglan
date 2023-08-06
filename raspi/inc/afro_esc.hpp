@@ -32,7 +32,7 @@ inline const uint8_t AFRO_REG_READ_ID = 0x0A;
 
 inline const uint8_t AFRO_IF_ALIVE_BYTE = 0xAB;
 
-inline const uint8_t AFRO_MOTOR_POLES = 7;
+inline const uint8_t AFRO_MOTOR_POLES = 8;
 
 inline const double AFRO_VOLTAGE_RESOLUTION = 65535;
 inline const double AFRO_CURRENT_RESOLUTION = 65535;

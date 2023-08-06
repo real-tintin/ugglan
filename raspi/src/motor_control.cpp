@@ -1,11 +1,11 @@
 #include <motor_control.hpp>
 
-static const double INV_THRUST_CONST_FZ = 29869;   // 1 / (4 * c_fz) [rad/Ns]
-static const double INV_THRUST_CONST_MZ = 129864;  // 1 / (4 * l_x * c_fz) [rad/Nms]
-static const double INV_TORQUE_CONST_MZ = 1493429; // 1 / (4 * c_mz) [rad/Nms]
+static const double INV_THRUST_CONST_FZ = 35211;   // 1 / (4 * c_fz) [rad/Ns]
+static const double INV_THRUST_CONST_MZ = 153093;  // 1 / (4 * l_x * c_fz) [rad/Nms]
+static const double INV_TORQUE_CONST_MZ = 1760563; // 1 / (4 * c_mz) [rad/Nms]
 
-static const double RAW_MOTOR_POLY_0 = 57.0;
-static const double RAW_MOTOR_POLY_1 = -9675.0;
+static const double RAW_MOTOR_POLY_0 = 45.0;
+static const double RAW_MOTOR_POLY_1 = -6656.0;
 
 static const double MIN_SQ_ANG_RATE = pow(200, 2); // [rad^2/s^2]
 

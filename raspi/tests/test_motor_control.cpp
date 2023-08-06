@@ -2,64 +2,84 @@
 
 #include <motor_control.hpp>
 
+void assert_motor_controls_are_positive(MotorControl &motor_controls)
+{
+    REQUIRE(motor_controls[0] > 0);
+    REQUIRE(motor_controls[1] > 0);
+    REQUIRE(motor_controls[2] > 0);
+    REQUIRE(motor_controls[3] > 0);
+}
+
 TEST_CASE("body_to_motor_controls")
 {
     BodyControl body_controls;
-    MotorControl exp_motor_controls;
-    MotorControl act_motor_controls;
+    MotorControl motor_controls;
 
     SECTION("all zero")
     {
         body_controls = BodyControl{0.0};
-        exp_motor_controls = MotorControl{0, 0, 0, 0};
+        motor_controls = body_to_motor_controls(body_controls);
 
-        REQUIRE(exp_motor_controls == body_to_motor_controls(body_controls));
+        REQUIRE(motor_controls[0] == 0);
+        REQUIRE(motor_controls[1] == 0);
+        REQUIRE(motor_controls[2] == 0);
+        REQUIRE(motor_controls[3] == 0);
     }
     SECTION("only positive fz")
     {
         body_controls = BodyControl{1.0, 0.0, 0.0, 0.0};
-        exp_motor_controls = MotorControl{0, 0, 0, 0};
+        motor_controls = body_to_motor_controls(body_controls);
 
-        REQUIRE(exp_motor_controls == body_to_motor_controls(body_controls));
+        REQUIRE(motor_controls[0] == 0);
+        REQUIRE(motor_controls[1] == 0);
+        REQUIRE(motor_controls[2] == 0);
+        REQUIRE(motor_controls[3] == 0);
     }
     SECTION("only negative fz")
     {
-        body_controls = BodyControl{-4.0, 0.0, 0.0, 0.0};
-        exp_motor_controls = MotorControl{10027, 10027, 10027, 10027}; // sqrt(119474) * 57 - 9675 / 4
+        body_controls = BodyControl{-10.0, 0.0, 0.0, 0.0};
+        motor_controls = body_to_motor_controls(body_controls);
 
-        REQUIRE(exp_motor_controls == body_to_motor_controls(body_controls));
+        assert_motor_controls_are_positive(motor_controls);
+
+        REQUIRE(motor_controls[0] == motor_controls[1]);
+        REQUIRE(motor_controls[1] == motor_controls[2]);
+        REQUIRE(motor_controls[2] == motor_controls[3]);
     }
     SECTION("positive roll")
     {
-        body_controls = BodyControl{-4.0, 0.1, 0.0, 0.0};
-        act_motor_controls = body_to_motor_controls(body_controls);
+        body_controls = BodyControl{-10.0, 0.1, 0.0, 0.0};
+        motor_controls = body_to_motor_controls(body_controls);
 
-        REQUIRE(act_motor_controls[0] == act_motor_controls[1]);
-        REQUIRE(act_motor_controls[2] == act_motor_controls[3]);
+        assert_motor_controls_are_positive(motor_controls);
 
-        REQUIRE(act_motor_controls[2] > act_motor_controls[0]);
-        REQUIRE(act_motor_controls[3] > act_motor_controls[1]);
+        REQUIRE(motor_controls[0] == motor_controls[1]);
+        REQUIRE(motor_controls[2] == motor_controls[3]);
+        REQUIRE(motor_controls[2] > motor_controls[0]);
+        REQUIRE(motor_controls[3] > motor_controls[1]);
     }
     SECTION("positive pitch")
     {
-        body_controls = BodyControl{-4.0, 0.0, 0.1, 0.0};
-        act_motor_controls = body_to_motor_controls(body_controls);
+        body_controls = BodyControl{-10.0, 0.0, 0.1, 0.0};
+        motor_controls = body_to_motor_controls(body_controls);
 
-        REQUIRE(act_motor_controls[0] == act_motor_controls[3]);
-        REQUIRE(act_motor_controls[1] == act_motor_controls[2]);
+        assert_motor_controls_are_positive(motor_controls);
 
-        REQUIRE(act_motor_controls[0] > act_motor_controls[1]);
-        REQUIRE(act_motor_controls[3] > act_motor_controls[2]);
+        REQUIRE(motor_controls[0] == motor_controls[3]);
+        REQUIRE(motor_controls[1] == motor_controls[2]);
+        REQUIRE(motor_controls[0] > motor_controls[1]);
+        REQUIRE(motor_controls[3] > motor_controls[2]);
     }
     SECTION("positive yaw")
     {
-        body_controls = BodyControl{-4.0, 0.0, 0.0, 0.1};
-        act_motor_controls = body_to_motor_controls(body_controls);
+        body_controls = BodyControl{-10.0, 0.0, 0.0, 0.1};
+        motor_controls = body_to_motor_controls(body_controls);
 
-        REQUIRE(act_motor_controls[0] == act_motor_controls[2]);
-        REQUIRE(act_motor_controls[1] == act_motor_controls[3]);
+        assert_motor_controls_are_positive(motor_controls);
 
-        REQUIRE(act_motor_controls[1] > act_motor_controls[0]);
-        REQUIRE(act_motor_controls[3] > act_motor_controls[2]);
+        REQUIRE(motor_controls[0] == motor_controls[2]);
+        REQUIRE(motor_controls[1] == motor_controls[3]);
+        REQUIRE(motor_controls[1] > motor_controls[0]);
+        REQUIRE(motor_controls[3] > motor_controls[2]);
     }
 }

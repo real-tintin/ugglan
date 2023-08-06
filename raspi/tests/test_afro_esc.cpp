@@ -18,9 +18,9 @@ Expected read buffer:
     Byte 8   : Alive byte set to true
 */
 uint8_t READ_BUF[AFRO_READ_BUF_SIZE] = {
-    // 456 / 2 / pi * 7 ~ 508 (0b00000001 | 0b11111100)
-    0b00000001, // MSB
-    0b11111100, // LSB
+    // 456 / 2 / pi * 8 ~ 581 (0b00000010 | 0b01000101)
+    0b00000010, // MSB
+    0b01000101, // LSB
 
     // 13.7 / 32.25 * 65535 ~ 27840 = (0b01101100 | 0b11000000)
     0b01101100, // MSB

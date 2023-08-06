@@ -1,0 +1,140 @@
+{
+  "name": "T-MOTOR MN2212-V2.0 with 9.5x4.5 propeller",
+  "measurements": [
+    {
+      "cmd": 0,
+      "rpm": 0,
+      "thrust_g": 0
+    },
+    {
+      "cmd": 1,
+      "rpm": 1213,
+      "thrust_g": -9
+    },
+    {
+      "cmd": 10,
+      "rpm": 1218,
+      "thrust_g": -9
+    },
+    {
+      "cmd": 100,
+      "rpm": 1237,
+      "thrust_g": -9
+    },
+    {
+      "cmd": 1000,
+      "rpm": 1514,
+      "thrust_g": -14
+    },
+    {
+      "cmd": 2000,
+      "rpm": 1783,
+      "thrust_g": -21
+    },
+    {
+      "cmd": 4000,
+      "rpm": 2278,
+      "thrust_g": -34
+    },
+    {
+      "cmd": 8000,
+      "rpm": 3087,
+      "thrust_g": -66
+    },
+    {
+      "cmd": 12000,
+      "rpm": 3933,
+      "thrust_g": -115
+    },
+    {
+      "cmd": 16000,
+      "rpm": 4839,
+      "thrust_g": -175
+    },
+    {
+      "cmd": 20000,
+      "rpm": 5716,
+      "thrust_g": -250
+    },
+    {
+      "cmd": 24000,
+      "rpm": 6550,
+      "thrust_g": -340
+    },
+    {
+      "cmd": 28000,
+      "rpm": 7354,
+      "thrust_g": -430
+    },
+    {
+      "cmd": 32000,
+      "rpm": 8087,
+      "thrust_g": -530
+    },
+    {
+      "cmd": -1,
+      "rpm": -1225,
+      "thrust_g": 5
+    },
+    {
+      "cmd": -10,
+      "rpm": -1230,
+      "thrust_g": 5
+    },
+    {
+      "cmd": -100,
+      "rpm": -1258,
+      "thrust_g": 6
+    },
+    {
+      "cmd": -1000,
+      "rpm": -1546,
+      "thrust_g": 8
+    },
+    {
+      "cmd": -2000,
+      "rpm": -1817,
+      "thrust_g":11
+    },
+    {
+      "cmd": -4000,
+      "rpm": -2310,
+      "thrust_g":19
+    },
+    {
+      "cmd": -8000,
+      "rpm": -3451,
+      "thrust_g":36
+    },
+    {
+      "cmd": -12000,
+      "rpm": -3941,
+      "thrust_g":57
+    },
+    {
+      "cmd": -16000,
+      "rpm": -4823,
+      "thrust_g":90
+    },
+    {
+      "cmd": -20000,
+      "rpm": -5711,
+      "thrust_g":123
+    },
+    {
+      "cmd": -24000,
+      "rpm": -6474,
+      "thrust_g":175
+    },
+    {
+      "cmd": -28000,
+      "rpm": -7276,
+      "thrust_g":210
+    },
+    {
+      "cmd": -32000,
+      "rpm": -7704,
+      "thrust_g":247
+    }
+  ]
+}

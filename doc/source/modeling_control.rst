@@ -38,13 +38,13 @@ This results in the following inertia estimates
 
     I_{est} =
     \begin{bmatrix}
-        0.014 & 0 & 0 \\
-        0 & 0.014 & 0 \\
-        0 & 0 & 0.026
+        0.013 & 0 & 0 \\
+        0 & 0.013 & 0 \\
+        0 & 0 & 0.024
     \end{bmatrix} \text{kgm}^2
 
-and :math:`m_{est}=1.071` kg. For comparison, the measured weight is :math:`m_{meas}=1.096` kg.
-Also its center of mass w.r.t the top frame is located at :math:`CM_{est}=[0, -0.001, -0.009]` m.
+and :math:`m_{est}=1.027` kg. For comparison, the measured weight is :math:`m_{meas}=1.071` kg.
+Also its center of mass w.r.t the top frame is located at :math:`CM_{est}=[0, -0.001, -0.011]` m.
 Hence, a rather good weight distribution.
 
 The Pendulum Experiment
@@ -556,7 +556,7 @@ when the motor is reversing (negative rotation). This is probably due to the non
 shape of the propeller. Hence, a non-linearity arises and :math:`H^{-1}` can't solely be used.
 Therefore reversing will for now not be used, maybe in the future.
 
-Anyhow, :numref:`ang_rate_sq_vs_thrust` also gives :math:`c_{Fz} = -8.37\times 10^{-6}` (positive rotation
+Anyhow, :numref:`ang_rate_sq_vs_thrust` also gives :math:`c_{Fz} = -7.10\times 10^{-6}` (positive rotation
 from now on only). The torque constant is given by :math:`c_{Mz} = \tfrac{1}{50} c_{Fz}` - empirical
 relation from the master thesis.
 
@@ -577,7 +577,7 @@ Hence, the final conversion is given by
 .. math::
     u_{M_i} =
     \begin{cases}
-        57\omega_{M_iz} - 9675 & \text{if } \omega_{M_iz} \geq 200 \\
+        45\omega_{M_iz} - 6656 & \text{if } \omega_{M_iz} \geq 200 \\
         0 & \text{otherwise}
     \end{cases}.
 
